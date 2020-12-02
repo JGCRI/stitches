@@ -6,7 +6,8 @@
 Amalgamate existing climate data to create monthly climate variable fields.
 
 ## Getting Started Using `stitches`
-This repository uses Binder to offer `nanites` Jupyter notebooks to users as an interactive service without the need for installation.
+Jupyter notebooks hosted on `stitches` use functionality that is contained within the accompanying Python package.  To install, run the following:
+`python -m pip install git+https://github.com/JGCRI/stitches.git`
 
 ## Tutorial Jupyter Notebooks
 ### Sample

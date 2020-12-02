@@ -15,5 +15,5 @@ python -m pip install git+https://github.com/JGCRI/stitches.git
 ## Tutorial Jupyter Notebooks
 ### Sample
 | Notebook | Description |
-|:-:|:-:|:-:|
+|:-:|:-:|
 | `sample.ipynb` | Sample notebook showing how to connect a Python package to a notebook |

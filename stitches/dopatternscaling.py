@@ -1,3 +1,10 @@
+from stitches.pkgimports import *
+
+# ###############################################################################################
+# libraries need for pattern scaling:
+from sklearn.linear_model import LinearRegression
+import itertools
+
 
 # ###############################################################################################
 # Helper function for doing regression on an xarray of monthly data,

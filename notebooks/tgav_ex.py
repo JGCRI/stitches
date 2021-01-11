@@ -1,32 +1,12 @@
 # Not a notebook since community version of pycharm does
 # not offer jupyter lab integration
 
-###############################################################################
-# Load all of the libraries
-###############################################################################
-
-from matplotlib import pyplot as plt
-import xarray as xr
-import numpy as np
-import pandas as pd
-import dask
-from dask.diagnostics import progress
-from tqdm.autonotebook import tqdm
-import intake
-import fsspec
-import seaborn as sns
-import sys
-from collections import defaultdict
-import nc_time_axis
-import fsspec
-# libraries need for pattern scaling:
-from sklearn.linear_model import LinearRegression
-import itertools
-import datetime
 
 ###############################################################################
-# Load the actual package
+# Load the actual package and shared libraries
 ###############################################################################
+
+from stitches.pkgimports import *
 
 import stitches
 import stitches.readpangeo as read
@@ -44,7 +24,7 @@ pangeo = intake.open_esm_datastore("https://storage.googleapis.com/cmip6/pangeo-
 ###############################################################################
 # Get a first cut list of models for proof of concept.
 # Only take models that have daily data; if they have daily, they almost
-# certainly # have monthly. Daily netcdfs are less commonly submitted, so doing
+# certainly have monthly. Daily netcdfs are less commonly submitted, so doing
 # the search on only daily will probably return fewer models for our proof of
 # concept + then we # can validate on both monthly and daily data.
 ###############################################################################
@@ -96,50 +76,11 @@ query = dict(
 
 # Subset the pangeo catalog with our query.
 # This is the master list of files that we want to calculate Tgav across.
-# Except it includes more than one physics setting so we have to subset further.
+# Subset further to only keep the p1 physics setting from each model.
 pangeo_subset = pangeo.search(**query)
 
-del (count_table)
-###############################################################################
-# Subset to only include the p1 settings.
-# I can't figure out how to form the query to make sure
-# we return all ensemble members but only for the p1
-# settings. So we will further subset our query results
-# to do this because it is easier for how much python
-# I know right now.
-###############################################################################
+pangeo_subset.df = read.keep_p1_results(pangeo_subset)
 
-# Convert to a pandas data frame now that we are just
-# down to a table of names of files that we want
-# to manipulate so that we can load the corresponding
-# netcdf via xarray
-df = pangeo_subset.df.copy()  # rest of code appears to work even without
-# explicitly turning into pandas data frame
-# with pd.DataFrame(pangeo_subset_day.df)
-###NNN
-# df.loc()
-# also lambda statements within applys (unnamed functions) and xarray applys.
-
-df['filter_id'] = pd.Series(df.member_id).str.contains('p1').tolist()
-
-# do the filter
-df1 = df[df['filter_id'] == True]
-
-# drop the filter_id column
-df1 = df1.drop('filter_id', 1, inplace=True)
-# inplace = True saves us from having to do .copy and overwriting -
-# df1.drop('filter_id', 1) will change what gets displayed, but
-#  doesn't affect df1.
-
-
-# and overwrite what is in our original name
-pangeo_subset.df = df1.copy()
-
-# and delete our intermediate data frames created
-# out of an abundance of caution and to keep things
-# separated/clearer to me while doing the filter
-del (df1)
-del (df)
 
 ###############################################################################
 # Summarize how many files we have to process when all is said and done:

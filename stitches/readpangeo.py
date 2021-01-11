@@ -1,29 +1,22 @@
-###############################################################################
-# Adapt Kalyn's code: Define a function to pull a list of big
-# models from pangeo based on some query criteria.
+from stitches.pkgimports import *
+
 ###############################################################################
 
-# Count the number of experiment/ensemble members per model for tas and pr,
-# this will help us idetify the models we will initally work with for the
-# first pass at  Stiches.
-#
-# Args
-#	obj: an intake object (the pangeo archive generated from intake.open_esm_datastore("https://storage.googleapis.com/cmip6/pangeo-cmip6.json"))
-# 	var_name: the variable name to look up, either tas or pr
-#	experiments: list of experiments of interest to query.
-#	table_ids: list of table ids (e.g. Amon, day) to query.
-#	min_ensemble_size: the minimum number of acceptable ensemble members.
-#
-# Returns
-#	a data array of the model, experiment count, and the average ensemble members
-#   per experiment
 def create_count_table(obj, var_name, experiments, table_ids,
                        min_ensemble_size):
-    "This function counts and sorts an experiment/ensemble count"  # what comes out of help(create_count_table)
-    # Triple quotes lets you go all the way down, including the args, etc
-    # param keyword for each argument; can also specify type with the type keyword (throws a warning
-    # but should still do testing and asserts.); and return, with description as returns get more complex.
-    # same on inputs, if it's complex, describe it.
+    """ This function counts the number of experiment/ensemble members per model for tas and pr.
+    This will help us identify the models we will initially work with for proof of concept.
+
+        :param obj:                 an intake object (eg the pangeo archive generated from intake.open_esm_datastore("https://storage.googleapis.com/cmip6/pangeo-cmip6.json"))
+        :param var_name:            the variable name to look up, either tas or pr
+        :type var_name:             str
+        :param experiments:         list of experiments of interest to query.
+        :param table_ids:           list of table ids (e.g. Amon, day) to query.
+        :param min_ensemble_size:   the minimum number of acceptable ensemble members.
+
+        :return:                    a data array of the model, experiment count, and the average ensemble members  per experiment.
+    """
+
 
     # Subset by the experiment and subset the variables.
     query = dict(experiment_id=experiments,
@@ -43,5 +36,15 @@ def create_count_table(obj, var_name, experiments, table_ids,
     return table;
 
 
-# End function definition
+###############################################################################
 
+def keep_p1_results(pangeo_query_result):
+    """ This function takes in the result of a pangeo query and returns a
+    subsetted result that only keeps the p1 experiments.
+    """
+
+    df = pangeo_query_result.df.copy()
+
+    df1 = df.loc[(df['member_id'].str.contains('p1') == True)].copy()
+
+    return df1;

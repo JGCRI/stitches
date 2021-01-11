@@ -4,8 +4,7 @@ from stitches.pkgimports import *
 
 def create_count_table(obj, var_name, experiments, table_ids,
                        min_ensemble_size):
-    """ This function counts the number of experiment/ensemble members per model for tas and pr.
-    This will help us identify the models we will initially work with for proof of concept.
+    """ This function counts the number of experiment/ensemble members per model for tas or pr.
 
         :param obj:                 an intake object (eg the pangeo archive generated from intake.open_esm_datastore("https://storage.googleapis.com/cmip6/pangeo-cmip6.json"))
         :param var_name:            the variable name to look up, either tas or pr
@@ -34,6 +33,41 @@ def create_count_table(obj, var_name, experiments, table_ids,
     table = table[table["member_id"] > min_ensemble_size]
     table = table.sort_values(by=["experiment_id", "member_id"], ascending=False)
     return table;
+
+
+###############################################################################
+
+def create_preliminary_model_list(obj, experiments, table_ids,
+                                  min_ensemble_size):
+    """ This function counts the number of experiment/ensemble members per model for tas and pr.
+        This will help us identify the models we will initially work with for proof of concept.
+
+            :param obj:                 an intake object (eg the pangeo archive generated from intake.open_esm_datastore("https://storage.googleapis.com/cmip6/pangeo-cmip6.json"))
+            :param experiments:         list of experiments of interest to query.
+            :param table_ids:           list of table ids (e.g. Amon, day) to query.
+            :param min_ensemble_size:   the minimum number of acceptable ensemble members.
+
+            :return:                    a data array of the model, experiment count, and the average ensemble members  per experiment.
+        """
+    # Get the ensemble/experiment counts
+    tas_table = create_count_table(obj,
+                                   "tas",
+                                   experiments=experiments,
+                                   table_ids=table_ids,
+                                   min_ensemble_size=min_ensemble_size)
+    pr_table = create_count_table(obj,
+                                  "pr",
+                                  experiments=experiments,
+                                  table_ids=table_ids,
+                                  min_ensemble_size=min_ensemble_size)
+
+    # Combine the tas and pr counts into a single object
+    tas_table.columns = ['source_id', 'tas_exp', 'tas_mem']
+    pr_table.columns = ['source_id', 'pr_exp', 'pr_mem']
+
+    count_table = tas_table.merge(pr_table, on="source_id", how="left")
+
+    return count_table;
 
 
 ###############################################################################

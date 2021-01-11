@@ -1,5 +1,12 @@
 # Not a notebook since community version of pycharm does
-# not offer jupyter lab integration
+# not offer jupyter lab integration.
+
+# Eventually, this needs to live in the create_archive_library module
+# and its outputs need to be minted in zenodo and brought in via
+# install supplement https://github.com/IMMM-SFA/im3py/blob/master/im3py/install_supplement.py
+# for use in the do_emulation module
+
+# * Names subject to change.
 
 
 ###############################################################################
@@ -35,28 +42,14 @@ expts = ['ssp126', 'ssp245', 'ssp370', 'ssp585', 'ssp119', 'ssp434',
 
 table_ids = ['day']
 
-# Get the ensemble/experiment counts
-tas_table = read.create_count_table(pangeo, "tas",
-                                    experiments=expts,
-                                    table_ids=table_ids,
-                                    min_ensemble_size=5)
-pr_table = read.create_count_table(pangeo, "pr",
-                                   experiments=expts,
-                                   table_ids=table_ids,
-                                   min_ensemble_size=5)
-
-# Combine the tas and pr counts into a single object
-tas_table.columns = ['source_id', 'tas_exp', 'tas_mem']
-pr_table.columns = ['source_id', 'pr_exp', 'pr_mem']
-
-count_table = tas_table.merge(pr_table, on="source_id", how="left")
+count_table = read.create_preliminary_model_list(pangeo,
+                                                 experiments=expts,
+                                                 table_ids=table_ids,
+                                                 min_ensemble_size=5)
 
 # Print the full list of models to process
 print('Models to process')
 print(count_table["source_id"].values)
-
-del (tas_table)
-del (pr_table)
 
 
 ###############################################################################

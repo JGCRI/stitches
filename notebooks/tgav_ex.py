@@ -72,7 +72,7 @@ query = dict(
 # Subset further to only keep the p1 physics setting from each model.
 pangeo_subset = pangeo.search(**query)
 
-pangeo_subset.df = read.keep_p1_results(pangeo_subset)
+pangeo_subset.df = read.keep_p1_results(pangeo_subset).copy()
 
 
 ###############################################################################
@@ -102,8 +102,8 @@ pangeo_df = pangeo_df[["activity_id", "source_id", "experiment_id",
                        "grid_label", "zstore"]]
 
 # save the pangeo list metadata
-pangeo_df.to_csv("created_data/pangeo_file_list_for_tgav.csv")
-# are some cases where pickle-ing to_pickle() lets you save
+pangeo_df.to_csv("stitches/data/created_data/pangeo_file_list_for_tgav.csv")
+# are some cases where pickle-ing [to_pickle()] lets you save
 # more structured files for ingesting back in later so that it
 # comes back in as the exact data structure (like saving as RDS)
 
@@ -111,89 +111,12 @@ pangeo_df.to_csv("created_data/pangeo_file_list_for_tgav.csv")
 all_tgav = pd.DataFrame()
 
 for file_index in [0]:  # list(range(0, len(pangeo_df) + 1)):
-
-    # get the file path one at a time from the master list pangeo_subset
-    file_path = pangeo_df.zstore.values[file_index]
-
-    # Load it up
-    ds = xr.open_zarr(fsspec.get_mapper(file_path), consolidated=True)
-
-    # some models run beyond the pandas Datetime accepted maximum in 2262. Keep
-    # Only the years to 2100:
-    ds = ds.sel(time=slice('1849-12-01', '2101-01-01'))
-    # slice syntax is good
-
-    # Calculate tgav
-    ds_tgav = ds.pipe(tgav.global_mean).coarsen(time=12).mean()  # annual mean in each year
-    # why .pipe(fcn) instead of fcn(ds)
-
-    # For some models, the time coordinate in the
-    # xarray is a cftime.DatetimeNoLeap object. This
-    # cannot be converted to a pandas datetime object.
-    #
-    # Obviously it is most likely that I did something
-    # stupid since the pangeo cmip6 gallery example above
-    # does not have this problem.
-    # So, after calculating tgav,
-    # the time coordinate is still a cftime.DatetimeNoLeap object,
-    # just automatically filled in to July 17 (midpoint of the year).
-    # we will convert to a datetime so that we can just keep the year from that.
-    # It will throw a warning but in this case we don't care:
-    # July 17, 1850 in a cftime object may not be the actual date July 17, 1850 as a
-    # datetime. Since we only care about the year anyway, it is fine.
-
-    # Only works when the time is a cftime.DatetimeNoLeap object. But the different
-    # ESMs are using different kinds of datetime objects when they store their
-    # time coordinate. Because of course.
-    # ACCESS uploads theirs already as a DatetimeIndex object. So:
-
-    # if it is already a DatetimeIndex, don't try to force to DatetimeIndex.
-    # just pull off the years
-    if isinstance(ds_tgav.indexes['time'], pd.DatetimeIndex):
-        years = np.asarray(ds_tgav.indexes['time'].year.copy())
-    else:
-        # otherwise, you have to make it a DatetimeIndex first
-        years = np.asarray(ds_tgav.indexes['time'].to_datetimeindex().year.copy())
-    # array of integers for year values instead of datetime objects - groupby's work
-    # with integers as well as datetimes, but you can't fill in missing data with integer
-    # years.
-    # With a datetime, you can tell it to interpolate the missing years.
-
-    tgav = ds_tgav.tas.values.copy()
-
-    del (ds)
-    del (ds_tgav)
-
-    # make a pandas data frame of the years, tgav and scenario info to save as csv
-    model_df = pd.DataFrame(data={'activity': pangeo_df["activity_id"].values[file_index],
-                                  'model': pangeo_df["source_id"].values[file_index],
-                                  'experiment': pangeo_df["experiment_id"].values[file_index],
-                                  'ensemble_member': pangeo_df["member_id"].values[file_index],
-                                  'timestep': pangeo_df["table_id"].values[file_index],
-                                  'grid_type': pangeo_df["grid_label"].values[file_index],
-                                  'year': years,
-                                  'tgav': tgav,
-                                  'file': pangeo_df["zstore"].values[file_index]})
-    # save the individual model's tgav
-    model_save_name = ("created_data/" + pangeo_df["source_id"].values[file_index] +
-                       "_" + pangeo_df["experiment_id"].values[file_index] + "_" + pangeo_df["member_id"].values[
-                           file_index] +
-                       "_tgav.csv")
-
-    model_df.to_csv(model_save_name)
+    tgav.calc_and_format_tgav(pangeo_df.iloc[file_index], save_individ_tgav=True)
 
     # and append to the full list
-    all_tgav = all_tgav.append(model_df)
-
-    # clean up
-    del (model_df)
-    del (model_save_name)
-    del (tgav)
-    del (years)
-    del (file_path)
-
+    all_tgav = all_tgav.append(tgav.calc_and_format_tgav(pangeo_df.iloc[file_index], save_individ_tgav=True))
 # end for loop over file index
 
-# save the full file of tgav values
 
-all_tgav.to_csv('created_data/main_tgav_all_pangeo_list_models.csv')
+# save the full file of tgav values
+all_tgav.to_csv('stitches/data/created_data/main_tgav_all_pangeo_list_models.csv')

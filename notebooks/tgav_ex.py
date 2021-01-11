@@ -1,7 +1,10 @@
 # Not a notebook since community version of pycharm does
 # not offer jupyter lab integration
 
+###############################################################################
 # Load all of the libraries
+###############################################################################
+
 from matplotlib import pyplot as plt
 import xarray as xr
 import numpy as np
@@ -21,24 +24,35 @@ from sklearn.linear_model import LinearRegression
 import itertools
 import datetime
 
-import stitches
+###############################################################################
+# Load the actual package
+###############################################################################
 
+import stitches
 import stitches.readpangeo as read
+import stitches.calculatetgav as tgav
+
 
 ###############################################################################
-# Get a first cut list of models.
+# Open up the connection to pangeo
 ###############################################################################
 
 # open up the full pangeo set of data
 pangeo = intake.open_esm_datastore("https://storage.googleapis.com/cmip6/pangeo-cmip6.json")
 
+
+###############################################################################
+# Get a first cut list of models for proof of concept.
+# Only take models that have daily data; if they have daily, they almost
+# certainly # have monthly. Daily netcdfs are less commonly submitted, so doing
+# the search on only daily will probably return fewer models for our proof of
+# concept + then we # can validate on both monthly and daily data.
+###############################################################################
+
 # define experiments of interest
 expts = ['ssp126', 'ssp245', 'ssp370', 'ssp585', 'ssp119', 'ssp434',
          'ssp460', 'ssp534-over', "historical"]
-# only take models that have daily data; if they have daily, they almost certainly
-# have monthly. Daily netcdfs are less commonly submitted, so doing the search on
-# only day will probably return fewer models for our proof of concept + then we
-# can validate on both monthly and daily data.
+
 table_ids = ['day']
 
 # Get the ensemble/experiment counts
@@ -87,7 +101,7 @@ pangeo_subset = pangeo.search(**query)
 
 del (count_table)
 ###############################################################################
-# Subset to only inclue the p1 settings.
+# Subset to only include the p1 settings.
 # I can't figure out how to form the query to make sure
 # we return all ensemble members but only for the p1
 # settings. So we will further subset our query results
@@ -176,7 +190,7 @@ for file_index in [0]:  # list(range(0, len(pangeo_df) + 1)):
     # slice syntax is good
 
     # Calculate tgav
-    ds_tgav = ds.pipe(global_mean).coarsen(time=12).mean()  # annual mean in each year
+    ds_tgav = ds.pipe(tgav.global_mean).coarsen(time=12).mean()  # annual mean in each year
     # why .pipe(fcn) instead of fcn(ds)
 
     # For some models, the time coordinate in the

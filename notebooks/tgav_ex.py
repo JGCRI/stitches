@@ -8,6 +8,7 @@
 
 # * Names subject to change.
 
+# TODO update the way we handle where things are getting saved
 
 ###############################################################################
 # Load the actual package and shared libraries
@@ -15,7 +16,6 @@
 
 from stitches.pkgimports import *
 
-import stitches
 import stitches.readpangeo as read
 import stitches.calculatetgav as tgav
 
@@ -110,7 +110,7 @@ pangeo_df.to_csv("stitches/data/created_data/pangeo_file_list_for_tgav.csv")
 # Initialize empty holder
 all_tgav = pd.DataFrame()
 
-for file_index in [0]:  # list(range(0, len(pangeo_df) + 1)):
+for file_index in list(range(0, len(pangeo_df)):
     tgav.calc_and_format_tgav(pangeo_df.iloc[file_index], save_individ_tgav=True)
 
     # and append to the full list

@@ -110,7 +110,7 @@ pangeo_df.to_csv("stitches/data/created_data/pangeo_file_list_for_tgav.csv")
 # Initialize empty holder
 all_tgav = pd.DataFrame()
 
-for file_index in list(range(0, len(pangeo_df)):
+for file_index in list(range(0, len(pangeo_df))):
     tgav.calc_and_format_tgav(pangeo_df.iloc[file_index], save_individ_tgav=True)
 
     # and append to the full list
@@ -119,4 +119,4 @@ for file_index in list(range(0, len(pangeo_df)):
 
 
 # save the full file of tgav values
-all_tgav.to_csv('stitches/data/created_data/main_tgav_all_pangeo_list_models.csv')
+all_tgav.to_csv('stitches/data/created_data/main_tgav_all_pangeo_list_models.csv', index=False)

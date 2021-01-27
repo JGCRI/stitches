@@ -99,6 +99,6 @@ def calc_and_format_tgav(pangeo_df_entry, save_individ_tgav = False):
         model_save_name = ("stitches/data/created_data/" + pangeo_df_entry["source_id"] +
                            "_" + pangeo_df_entry["experiment_id"] + "_" + pangeo_df_entry["member_id"] +
                            "_tgav.csv")
-        model_df.to_csv(model_save_name)
+        model_df.to_csv(model_save_name, index=False)
 
     return model_df

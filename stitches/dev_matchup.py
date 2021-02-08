@@ -2,8 +2,8 @@ from stitches.pkgimports import *
 
 ###############################################################################
 # Contains first draft of the functions used to match up, note that there are
-# some helper functions that will most likely be decpriated over time.
-# But I was struggeling to figure out how have functions work together
+# some helper functions that will most likely be deprecated over time.
+# But I was struggling to figure out how to have functions work together
 # that are defined in different py scripts :(
 
 
@@ -15,7 +15,7 @@ def cleanup_main_tgav(f):
         ./stitches/data/created_data/main_tgav_all_pangeo_list_models.csv
         :param save_individ_tgav:       True/False about whether to save the individual ensemble's
             Tgav in its own file.
-            TODO: make save path an argument. Also note that this will be removed/changed when the archive strucutre
+            TODO: make save path an argument. Also note that this will be removed/changed when the archive structure
             is finalized.
 
         :return:                    A formatted data frame of Tgav time series for the netcdf file, including metadata.
@@ -46,7 +46,7 @@ def select_model_to_emulate(model_name, df):
 
     :return:                   A pandas data frame of cmip tgav for a single model
 
-    # TODO hate the funciton name, wanted something that was easier to work with
+    # TODO hate the function name, wanted something that was easier to work with
     """
 
     if not (isinstance(df, pd.DataFrame)):

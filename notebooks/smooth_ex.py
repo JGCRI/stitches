@@ -1,15 +1,15 @@
 from stitches.pkgimports import *
 
-# Load the matchup realted functions.
+# Load the matchup related functions.
 import stitches.dev_matchup as matchup
 
 
-# Import the data and select the model to use, I susepct that in the future these will be
+# Import the data and select the model to use, I suspect that in the future these will be
 # combined into a single function call.
 data = matchup.cleanup_main_tgav("./stitches/data/created_data/main_tgav_all_pangeo_list_models.csv")
 tgav_data = matchup.select_model_to_emulate("CanESM5", data)
 
-# Calculate the the temperature anomaly relative to 1995 - 2014 (IPCC reference period).
+# Calculate the temperature anomaly relative to 1995 - 2014 (IPCC reference period).
 t_anomaly = matchup.calculate_anomaly(tgav_data)
 
 # So it turns out that something funky is going on with the ssp534-over values, it looks like

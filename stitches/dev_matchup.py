@@ -11,25 +11,21 @@ def cleanup_main_tgav(f):
     """ This function cleans up the main_tgav_all_pangeo_list_models.csv to prepare it for match up, temp use while
        the archive is still under devlopment.
 
-        :param f:         The path to the file to import, should be
-        ./stitches/data/created_data/main_tgav_all_pangeo_list_models.csv
-        :param save_individ_tgav:       True/False about whether to save the individual ensemble's
-            Tgav in its own file.
-            TODO: make save path an argument. Also note that this will be removed/changed when the archive structure
-            is finalized.
+        :param f:         The path to the file to import, should be ./stitches/data/created_data/main_tgav_all_pangeo_list_models.csv
+        :param save_individ_tgav:       True/False about whether to save the individual ensemble's Tgav in its own file.
 
         :return:                    A formatted data frame of Tgav time series for the netcdf file, including metadata.
+
+        TODO remove this fuction when no longer needed.
        """
     if not (os.path.isfile(f)):
         raise TypeError(f"file does not exist")
 
     df = pd.read_csv(f)
-    # Select the columns containing actual data
+    # Select the columns containing actual data, removing the index.
     df = df[['activity', 'model', 'experiment', 'ensemble_member', 'timestep', 'grid_type', 'file', 'year', 'tgav']]
     # Rename columns and add a variable column
-    df = df.rename(columns={'activity':'activity', 'model':'model', 'experiment':'experiment',
-                            'ensemble_member':'ensemble', 'timestep':'timestep',
-                            'grid_type':'grid_type', 'file':'file', 'year':'year', 'tgav':'value'})
+    df = df.rename(columns={'ensemble_member':'ensemble', 'tgav':'value'})
     df.columns = ['activity', 'model', 'experiment', 'ensemble', 'timestep',
                   'grid_type', 'file', 'year', 'value']
     df["variable"] = "tgav"
@@ -64,13 +60,21 @@ def select_model_to_emulate(model_name, df):
     return out
 
 #########################################################################################################
-def calculate_anomaly(data):
+def calculate_anomaly(data, startYr  = 1996, endYr = 2015):
 
-    """Convert the temp data from absolute into an anomaly
+    """Convert the temp data from absolute into an anomaly relative to a reference period.
+
     :param data:               A data frame of the cmip absolute temperature
     :type data:                pandas.core.frame.DataFrame
+    :param startYr:            The first year of the reference period, default set to 1996 corresponding to the
+    IPCC defined reference period.
+    :type startYr:             int
+    :param endYr:              The final year of the reference period, default set to 2015 corresponding to the
+    IPCC defined reference period.
+    :type endYr:                int
 
-    :return:                   A pandas data frame of cmip temperature as tgav
+    :return:                   A pandas data frame of cmip tgav as anomalies relative to a time-averaged value from
+    a reference period, default ues a reference period form 1996-2015
     """
     # inputs
     req_cols = {'activity', 'model', 'experiment', 'ensemble', 'timestep', 'grid_type',
@@ -80,25 +84,27 @@ def calculate_anomaly(data):
         raise TypeError(f'Missing columns from "{data}".')
 
     to_use = data[['model', 'experiment', 'ensemble', 'year', 'value']].copy()
-    # Subset the data so that it only contains the values from our defined reference years
-    # we follow the IPPC/CMIP6 reference years 1995 to 2014.
-    startYr = 1995
-    endYr = 2014
+
+    # Calculate the average value for the reference period defined
+    # by the startYr and ednYr arguments.
+    # The default reference period is set from 1996 - 2015.
+    #
+    # Start by subsetting the data so that it only includes values from the specified reference period.
     subset_data = to_use[to_use['year'].between(startYr, endYr)]
 
-    # Calculate the mean value for each ensemble member, this will be used as the reference value that is used to
-    # convert fom absolute to relative temp.
+    # Calculate the time-averaged reference value for each ensemble
+    # realization. This reference value will be used to convert from absolute to
+    # relative temperature.
     reference_values = subset_data.groupby(['model', 'ensemble']).agg(
         {'value': lambda x: sum(x) / len(x)}).reset_index().copy()
     reference_values = reference_values.rename(columns={"value": "ref_values"})
 
     # Combine the dfs that contain the absolute temperature values with the reference values.
+    # Then calculate the relative temperature.
     merged_df = data.merge(reference_values, on=['model', 'ensemble'], how='left')
     merged_df['value'] = merged_df['value'] - merged_df['ref_values']
     merged_df = merged_df.drop(columns='ref_values')
 
-    # Return the data frame, note might want to sort so that the time series are in order but
-    # not really necessary.
     return merged_df
 
 #########################################################################################################

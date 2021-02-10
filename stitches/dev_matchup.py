@@ -111,7 +111,7 @@ def calculate_anomaly(data, startYr  = 1995, endYr = 2014):
 
 def calculate_rolling_mean(input_data, size):
     """"
-    Calculate the rolling mean for the data frame
+    Calculate the rolling mean for the data frame with a user defined size centered window.
 
     :param input_data:               A data frame of the cmip absolute temperature
     :type input_data:                pandas.core.frame.DataFrame
@@ -154,8 +154,9 @@ def calculate_rolling_mean(input_data, size):
 
     # Index the data frame by the year, so that the rolling mean respects the years
     data.index = data['year']
-    # Now calculate the rolling mean, make sure that the data frame is properly sorted by the year value.
+
+    # Now calculate the rolling mean that uses a centered window.
     group_by = ['model', 'experiment', 'ensemble', 'variable']
-    rslt = data.groupby(group_by)['value'].rolling(size).mean().reset_index()
+    rslt = data.groupby(group_by)['value'].rolling(size, center=True).mean().reset_index()
 
     return rslt

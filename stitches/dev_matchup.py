@@ -60,21 +60,21 @@ def select_model_to_emulate(model_name, df):
     return out
 
 #########################################################################################################
-def calculate_anomaly(data, startYr  = 1996, endYr = 2015):
+def calculate_anomaly(data, startYr  = 1995, endYr = 2014):
 
     """Convert the temp data from absolute into an anomaly relative to a reference period.
 
     :param data:               A data frame of the cmip absolute temperature
     :type data:                pandas.core.frame.DataFrame
-    :param startYr:            The first year of the reference period, default set to 1996 corresponding to the
+    :param startYr:            The first year of the reference period, default set to 1995 corresponding to the
     IPCC defined reference period.
     :type startYr:             int
-    :param endYr:              The final year of the reference period, default set to 2015 corresponding to the
+    :param endYr:              The final year of the reference period, default set to 2014 corresponding to the
     IPCC defined reference period.
     :type endYr:                int
 
     :return:                   A pandas data frame of cmip tgav as anomalies relative to a time-averaged value from
-    a reference period, default ues a reference period form 1996-2015
+    a reference period, default ues a reference period form 1995-2014
     """
     # inputs
     req_cols = {'activity', 'model', 'experiment', 'ensemble', 'timestep', 'grid_type',
@@ -87,7 +87,7 @@ def calculate_anomaly(data, startYr  = 1996, endYr = 2015):
 
     # Calculate the average value for the reference period defined
     # by the startYr and ednYr arguments.
-    # The default reference period is set from 1996 - 2015.
+    # The default reference period is set from 1995 - 2014.
     #
     # Start by subsetting the data so that it only includes values from the specified reference period.
     subset_data = to_use[to_use['year'].between(startYr, endYr)]

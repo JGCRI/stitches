@@ -160,3 +160,125 @@ def calculate_rolling_mean(input_data, size):
     rslt = data.groupby(group_by)['value'].rolling(size, center=True).mean().reset_index()
 
     return rslt
+
+
+
+def chunk_ts(df, n):
+
+    """ Format a data frame into an array of data frames containing data for n-sized years of successive data.
+
+    :param df:         data frame of climate data to chunk into different periods
+    :type df:          pandas DataFrame
+
+    :param n:       the size of the windows to chunk into separate periods
+    :type n:        int
+
+    :return:       pandas DataFrame identical to df with the addition of a chunk column
+
+    # TODO hmmm do we want this function to also work on ESM data? If so do we need to change this function??
+    # TODO does it need to be for only one variable?
+    # TODO do we like chunks or are these windows?
+    """
+
+    # Check the inputs
+    req_cols = {'year', 'variable', 'value'}
+    col_names = set(df.columns)
+    if not (req_cols.issubset(col_names)):
+        raise TypeError(f'Missing columns from "{df}".')
+    if not (len(df["variable"].unique()) == 1):
+        raise TypeError(f'Multiple variables discovered in "{df}"')
+
+    # TODO How do we want to handle when the length of the time series cannot be split up into even chunks?
+    # Add a column of data that categorizes the data into the different periods, right now we allow for
+    # a list that is smaller than n at the end.
+    # Save a copy of the length of the list
+    yr_len = len(df["year"].unique())
+
+    # Determine the number of unique n sized chunks, right now we assume that at most a chunk
+    # can have n entries or less.
+    n_chunks = math.ceil(yr_len / n)
+    # Make a np array of the chunk labels, where each label repeates n times.
+    chunk_labels = np.repeat(list(range(0, n_chunks)), n)
+    # Subset the chunk list so that matches the length of the data frame.
+    chunk_labels = chunk_labels[range(0, yr_len)]
+    df["chunk"] = chunk_labels
+
+    return df
+
+
+def get_chunk_info(df):
+
+    """ Determine the value and the rate of change for each chunnk.
+
+    :param df:         data frame of climate data chunked into different periods
+    :type df:          pandas DataFrame
+
+    :return:       pandas DataFrame of the chunk information, the start and end years as well as the chunk value (fx)
+    and the chunk rate of chagne (dx).
+
+    TODO do we need more information? Like the size of the chunk? variable and scenario information?
+
+    """
+
+    # Check the inputs
+    req_cols = {'year', 'variable', 'value', 'chunk'}
+    col_names = set(df.columns)
+    if not (req_cols.issubset(col_names)):
+        raise TypeError(f'Missing columns from "{df}".')
+    if not (len(df["variable"].unique()) == 1):
+        raise TypeError(f'Multiple variables discovered in "{df}"')
+
+    # Save information that will be added to
+    extra_columns = set(df.columns).difference({"chunk", "value", "year"})
+    extra_info = df[extra_columns].drop_duplicates()
+    if not (len(extra_info) == 1):
+        raise TypeError(f'need to come up with a better error message, decide if this check is even necessary')
+
+
+    # Group the data frame by the chunk label so that we can use a for loop
+    # to extract information from each chunk of data.
+    df_gby = df.groupby('chunk')
+
+    # Make an empty data frame that to store the chunk data.
+    fx_dx_info = pd.DataFrame(columns=["start_yr", "end_yr", "fx", "dx"])
+
+    # Use the for loop to work our way through the different chunks/periods of
+    # data, gathering information about each start and stop year, the central
+    # value, and the rate of change.
+    for key, chunk in df_gby:
+
+        # Save some information about the period of data, when it starts and stops.
+        start_yr = min(chunk["year"])
+        end_yr = max(chunk["year"])
+
+        # how do we want to address if is no single middle year because the lenght of the
+        # chunks is even?
+        # Get the fx, the value of the center of the time period,
+        # TODO or should it be the average value over the time span?
+        x = math.ceil(np.median(chunk["year"])) # right now we select the one from the high year
+        fx = chunk[chunk["year"] == x]["value"].values[0]
+
+        # Prepare the x and y inputs from the data frame for the linear regression.
+        # LinearRegression imported from sklearn.linear_model requires numpy arrays
+        # instead of pandas objects.
+        x_input = chunk["year"].values.reshape(-1, 1)
+        y_input = chunk["value"].values.reshape(-1, 1)
+
+        # Fit a linear regression of the period of time, extract the slope or dx
+        # from the fit. Make sure that the dx is floating value that can be easily
+        # stored in a data frame.
+        model = LinearRegression()
+        model.fit(x_input, y_input)
+        dx = float(model.coef_[0])
+
+        # Format the the chunk data into a pandas data frame.
+        row = pd.DataFrame([[start_yr, end_yr, fx, dx]],  columns=["start_yr", "end_yr", "fx", "dx"])
+        fx_dx_info = fx_dx_info.append(row)
+
+    # for loop should end here
+    # Add the additional information to the fx and dx data frame.
+    extra_info
+    out = pd.concat([extra_info, fx_dx_info], axis=1, ignore_index=True)
+    out.columns = extra_info.columns.append(fx_dx_info.columns)
+
+    return out

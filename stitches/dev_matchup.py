@@ -240,7 +240,7 @@ def get_chunk_info(df):
     df_gby = df.groupby('chunk')
 
     # Make an empty data frame that to store the chunk data.
-    fx_dx_info = pd.DataFrame(columns=["start_yr", "end_yr", "fx", "dx"])
+    fx_dx_info = pd.DataFrame(columns=["start_yr", "end_yr", "year", "fx", "dx"])
 
     # Use the for loop to work our way through the different chunks/periods of
     # data, gathering information about each start and stop year, the central
@@ -272,13 +272,18 @@ def get_chunk_info(df):
         dx = float(model.coef_[0])
 
         # Format the the chunk data into a pandas data frame.
-        row = pd.DataFrame([[start_yr, end_yr, fx, dx]],  columns=["start_yr", "end_yr", "fx", "dx"])
+        row = pd.DataFrame([[start_yr, end_yr, x, fx, dx]],  columns=["start_yr", "end_yr", "year", "fx", "dx"])
         fx_dx_info = fx_dx_info.append(row)
 
     # for loop should end here
     # Add the additional information to the fx and dx data frame.
-    extra_info
     out = pd.concat([extra_info, fx_dx_info], axis=1, ignore_index=True)
     out.columns = extra_info.columns.append(fx_dx_info.columns)
+
+    # Make sure that the objects being returned have int values for the
+    # years instead of returning those values as a factor. This makes it
+    # easier to work with data objects returned from other functions.
+    data_types_dict = {'start_yr': 'int32', 'year': 'int32', 'end_yr': 'int32'}
+    out = out.astype(data_types_dict)
 
     return out

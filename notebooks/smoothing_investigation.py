@@ -6,13 +6,21 @@ import stitches.dev_matchup as matchup
 # plotting aesthetic
 sns.set_style('whitegrid')
 
+# have pandas print all columns in console
+pd.set_option('display.max_columns', None)
+
 # Import the data and select the model to use, I suspect that in the future these will be
 # combined into a single function call.
 data = matchup.cleanup_main_tgav("./stitches/data/created_data/main_tgav_all_pangeo_list_models.csv")
-tgav_data = matchup.select_model_to_emulate("CanESM5", data) # what we will loop over
+tgav_data = matchup.select_model_to_emulate("CanESM5", data)
+
+# investigate how many ensemble members per experiment
+a = tgav_data[['experiment', 'ensemble']].drop_duplicates().copy()
+print(a.groupby('experiment').agg(['count']))
 
 # Calculate the temperature anomaly relative to 1995 - 2014 (IPCC reference period).
-t_anomaly = matchup.calculate_anomaly(tgav_data)
+t_anomaly = matchup.calculate_anomaly(tgav_data).drop('activity', 1)
+
 
 # So it turns out that something funky is going on with the ssp534-over values, it looks like
 # the time series is incomplete for some reason, not really sure what we want to do with that
@@ -23,10 +31,11 @@ t_anomaly = t_anomaly[t_anomaly["experiment"] != "ssp534-over"]
 # Calculate reference anomaly Tgav time series for each experiment = the
 # average across ensemble members for each experiment.
 # want the grouping to be over experiment and year (so that we take the average
-# for each of those), but we group by activity and model
-t_anom_ref = t_anomaly.groupby(['activity', 'model', 'experiment', 'year',
+# for each of those), but we group by  model
+t_anom_ref = t_anomaly.groupby(['model', 'experiment', 'year',
                                 'timestep', 'grid_type','variable']).agg(
         {'value': lambda x: sum(x) / len(x)}).reset_index().rename(columns={'value':'refvalue'}).copy()
+
 
 # plot it
 # seaborn is very similar to using ggplot but it is _so slow_
@@ -43,23 +52,31 @@ p1.savefig('canesm5_ensemble_avg_byScenario.png')
 
 window_rms = pd.DataFrame()
 # loop over window size, smooth the raw data, compare to the ref value via rms, output something
-for windowsize in list(range(1,50)):
+for windowsize in list(range(1, 36)):
+
+    # note that matchup.calculate_rolling_mean appends the historical 1950-2014 data to
+    # the projected 2015-2100 data for each SSP-RCP scenario for smoothing. So Once we
+    # smooth everything, we have to relable the historical years as historical to compare
+    # to the ensemble-averaged reference.
     smoothed_t_anom = matchup.calculate_rolling_mean(t_anomaly, windowsize)
-    # recall that the rolling mean also combines the historical and future time series.
-    # for now, only operate on the SSPRCPs = post 2015
-    smoothed_t_anom = smoothed_t_anom[smoothed_t_anom['year']>=2015].copy()
+
+    # relabel hitorical years as historical,
+    smoothed_t_anom.loc[smoothed_t_anom['year'] < 2015, 'experiment'] = 'historical'
+
+
 
     # join in the reference values
     t_anom = smoothed_t_anom.merge(t_anom_ref,
-                                   on=['model', 'experiment', 'year', 'variable'],
-                                   how = 'left').copy()
+                                   on=['timestep', 'grid_type',
+                                       'model', 'experiment', 'year', 'variable'],
+                                   how='left').copy()
 
     # get the deviations from reference for each value
     t_anom['diff'] = t_anom['value'] - t_anom['refvalue']
 
     # group by ensemble to get an rms summary
     ens_rms = t_anom.groupby(['model', 'experiment', 'ensemble', 'variable',
-                              'activity', 'timestep', 'grid_type']).agg(
+                              'timestep', 'grid_type']).agg(
         {'diff': lambda x: np.sqrt(np.nansum(x*x) / len(x))}).reset_index().rename(
         columns={'diff':'rms'}).copy()
 
@@ -71,7 +88,7 @@ for windowsize in list(range(1,50)):
 
     # Get that max distance:
     ens_rms = ens_rms.groupby(['model', 'variable', #'experiment',
-                              'activity', 'timestep', 'grid_type']).agg(
+                              'timestep', 'grid_type']).agg(
         {'rms': lambda x: max(x)}).reset_index().rename(
         columns={'rms':'maxrms'}).copy()
 

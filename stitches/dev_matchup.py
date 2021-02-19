@@ -74,7 +74,7 @@ def calculate_anomaly(data, startYr = 1995, endYr = 2014):
   :type endYr:        int
 
   :return:          A pandas data frame of cmip tgav as anomalies relative to a time-averaged value from
-  a reference period, default ues a reference period form 1995-2014
+  a reference period, default uses a reference period form 1995-2014
   """
   # inputs
   req_cols = {'activity', 'model', 'experiment', 'ensemble', 'timestep', 'grid_type',

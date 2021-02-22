@@ -15,3 +15,5 @@ import nc_time_axis
 import fsspec
 import datetime
 import os as os
+import math as math
+from sklearn.linear_model import LinearRegression

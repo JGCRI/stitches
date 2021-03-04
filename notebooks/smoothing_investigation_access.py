@@ -26,6 +26,9 @@ data = matchup.cleanup_main_tgav("./stitches/data/created_data/main_tgav_all_pan
 ESM = "ACCESS-ESM1-5"
 tgav_data = matchup.select_model_to_emulate(ESM, data)
 
+w = tgav_data[tgav_data['experiment'] == 'ssp245'].copy()
+w['value'].isnull().values.any() # false, so no null values
+
 
 # #############################################################################
 ## some summary and cleanup
@@ -36,6 +39,19 @@ print(a.groupby('experiment').agg(['count']))
 
 # Calculate the temperature anomaly relative to 1995 - 2014 (IPCC reference period).
 t_anomaly = matchup.calculate_anomaly(tgav_data).drop('activity', 1)
+
+x = t_anomaly[t_anomaly['experiment'] == 'ssp245'].copy()
+x['value'].isnull().values.any() # True, so NaN have been introduced by this function
+
+
+# Narrow down ensemble members to look at
+x['null'] = x['value'].isnull()
+y = x[x['null'] == True].copy()
+
+y['ensemble'].unique()
+#['r21i1p1f1', 'r24i1p1f1', 'r25i1p1f1', 'r26i1p1f1', 'r27i1p1f1', 'r28i1p1f1', 'r29i1p1f1']
+
+z = tgav_data[tgav_data['ensemble'] == 'r28i1p1f1'].copy()
 
 # So it turns out that something funky is going on with the ssp534-over values, it looks like
 # the time series is incomplete for some reason, not really sure what we want to do with that

@@ -23,7 +23,7 @@ data = matchup.cleanup_main_tgav("./stitches/data/created_data/main_tgav_all_pan
 # Select an ESM to work with from
 # ['CanESM5', 'ACCESS-ESM1-5', 'MIROC6', 'UKESM1-0-LL',
 #  'MPI-ESM1-2-HR', 'MPI-ESM1-2-LR', 'GISS-E2-1-G', 'NorCPM1']
-ESM = "MPI-ESM1-2-HR"
+ESM = 'UKESM1-0-LL'
 tgav_data = matchup.select_model_to_emulate(ESM, data)
 
 
@@ -263,15 +263,15 @@ p5.savefig('./figs/' + ESM + '/' + ESM + '_time_series_r4i1p1f1_fewer_windows.pn
 
 # Filter to one single ensemble member for some plots digging into
 # smoothing
-window21 = smoothed[smoothed['window'] == '21'].copy()
-p6 = sns.relplot(data=window21, x='year', y='value',
+window17 = smoothed[smoothed['window'] == '17'].copy()
+p6 = sns.relplot(data=window17, x='year', y='value',
                  hue='ensemble',
                  col='experiment',
                  kind='line',
                  linewidth=0.6)
 p6.fig.subplots_adjust(top=0.85)
-p6.fig.suptitle(ESM + " all ensemble members, smoothing = 21")
-p6.savefig('./figs/' + ESM + '/' + ESM + '_time_series_all_ensemble_members21.png')
+p6.fig.suptitle(ESM + " all ensemble members, smoothing = 17")
+p6.savefig('./figs/' + ESM + '/' + ESM + '_time_series_all_ensemble_members17.png')
 
 
 window9 = smoothed[smoothed['window'] == '9'].copy()

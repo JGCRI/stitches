@@ -29,6 +29,12 @@ def cleanup_main_tgav(f):
   df.columns = ['activity', 'model', 'experiment', 'ensemble', 'timestep',
          'grid_type', 'file', 'year', 'value']
   df["variable"] = "tgav"
+  
+  # sort to clean up year ordering
+  # TODO go back into the script where we create the csv of Tgav values and figure out why MPI-LR has the years
+  # get out of order (there's only one netcdf per ensemble member so it isn't that).
+  df = df.sort_values(by=['activity', 'model', 'experiment', 'ensemble', 'timestep','grid_type', 'file', 'year']).copy()
+
   return df
 
 #########################################################################################################

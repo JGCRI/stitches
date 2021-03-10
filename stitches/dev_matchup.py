@@ -21,8 +21,14 @@ def cleanup_main_tgav(f):
   if not (os.path.isfile(f)):
     raise TypeError(f"file does not exist")
 
+  if(f[len(f) - 3 : ] == 'csv'):
+    df = pd.read_csv(f)
 
-  df = pd.read_csv(f)
+  if(f[len(f) - 3 : ] == 'dat'):
+    with open(f, 'rb') as f1:
+      # Pickle the 'data' dictionary using the highest protocol available.
+      pickle.load(f1)
+
 
   # Select the columns containing actual data, removing the index.
   df = df[['activity', 'model', 'experiment', 'ensemble_member', 'timestep', 'grid_type', 'file', 'year', 'tgav']]

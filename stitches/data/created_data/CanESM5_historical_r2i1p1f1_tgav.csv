@@ -1,166 +1,166 @@
-,activity,model,experiment,ensemble_member,timestep,grid_type,file,year,tgav
-0,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1850,286.5602129413989
-1,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1851,286.712306442558
-2,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1852,286.6871554989106
-3,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1853,286.7911000682488
-4,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1854,286.83422526163884
-5,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1855,286.81570299836716
-6,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1856,286.8744296357184
-7,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1857,286.69666007450786
-8,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1858,286.7029244413922
-9,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1859,286.99043315875906
-10,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1860,286.8069095565686
-11,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1861,286.79418992563774
-12,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1862,286.69826095001844
-13,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1863,286.48863332332235
-14,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1864,286.55986339351
-15,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1865,286.64706442523584
-16,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1866,286.70725283127035
-17,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1867,286.65253205181415
-18,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1868,286.700974738928
-19,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1869,286.8246582457452
-20,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1870,286.85513517970145
-21,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1871,286.71358398571596
-22,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1872,286.8142871452994
-23,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1873,286.71336432181056
-24,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1874,286.69529816356913
-25,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1875,286.6495313552417
-26,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1876,286.727495120774
-27,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1877,286.69886008568545
-28,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1878,286.8484423532193
-29,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1879,286.7975005300761
-30,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1880,286.73019355281167
-31,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1881,286.9151252753824
-32,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1882,286.949620574446
-33,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1883,286.67959381242935
-34,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1884,286.1128995272131
-35,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1885,286.26539431318105
-36,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1886,286.44964896591745
-37,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1887,286.5153211742122
-38,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1888,286.5111020966477
-39,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1889,286.6737273224268
-40,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1890,286.57211607145484
-41,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1891,286.4751758977142
-42,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1892,286.43571218079813
-43,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1893,286.53622057300566
-44,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1894,286.4280596502478
-45,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1895,286.55797403661063
-46,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1896,286.64476464177187
-47,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1897,286.7007392318534
-48,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1898,286.7227234249556
-49,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1899,286.6458685997172
-50,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1900,286.6620228647022
-51,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1901,286.6629481567422
-52,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1902,286.7504119277747
-53,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1903,286.5016002177733
-54,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1904,286.5418030117749
-55,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1905,286.41286259382895
-56,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1906,286.45308541983604
-57,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1907,286.5756637830553
-58,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1908,286.61986941448714
-59,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1909,286.87804192046303
-60,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1910,286.88778060055427
-61,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1911,286.74518613874005
-62,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1912,286.64194045893083
-63,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1913,286.5917542657027
-64,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1914,286.6001590883537
-65,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1915,286.65221980620476
-66,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1916,286.63104371209283
-67,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1917,286.63944154585676
-68,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1918,286.7187794682032
-69,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1919,286.70039011544804
-70,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1920,286.6606752804204
-71,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1921,286.7411554325288
-72,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1922,286.8057275537647
-73,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1923,286.7981533663182
-74,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1924,286.75516520289983
-75,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1925,286.87835463172195
-76,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1926,286.918218576685
-77,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1927,286.9588989895292
-78,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1928,286.84319489757996
-79,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1929,286.65471912583416
-80,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1930,286.7667593723929
-81,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1931,286.74852030329106
-82,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1932,286.6896384979396
-83,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1933,286.8347019094013
-84,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1934,286.73177664673864
-85,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1935,286.8050315179662
-86,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1936,286.82941605686693
-87,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1937,286.80684774602025
-88,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1938,286.8568163718777
-89,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1939,287.1666623410154
-90,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1940,287.0581031976188
-91,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1941,287.00949505093394
-92,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1942,287.1857297939585
-93,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1943,287.0298727038699
-94,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1944,286.9101234711871
-95,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1945,286.8611876183434
-96,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1946,286.8671824754155
-97,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1947,286.92146777472885
-98,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1948,286.89316219445044
-99,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1949,287.0437860303678
-100,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1950,287.0521283494158
-101,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1951,287.0672293894233
-102,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1952,287.09143916369175
-103,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1953,286.97967435868816
-104,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1954,287.10864708008876
-105,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1955,287.27560046455955
-106,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1956,287.04673628898445
-107,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1957,287.0615457056016
-108,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1958,286.98272306771486
-109,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1959,287.05646480316494
-110,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1960,287.02733471937796
-111,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1961,286.96380828550167
-112,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1962,287.0821085382167
-113,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1963,286.73451920581203
-114,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1964,286.6905888004329
-115,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1965,286.721977787635
-116,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1966,286.651911557718
-117,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1967,286.702279147463
-118,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1968,286.83531783812555
-119,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1969,287.07460534081645
-120,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1970,287.1268342677975
-121,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1971,286.95575588280013
-122,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1972,287.03545419598146
-123,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1973,287.16094040642645
-124,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1974,287.0547637850639
-125,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1975,287.03054480706027
-126,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1976,286.98697256709033
-127,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1977,286.96893105567915
-128,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1978,287.0609505957403
-129,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1979,287.1630931542557
-130,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1980,287.2236631602918
-131,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1981,287.1865144370679
-132,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1982,287.2474388834642
-133,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1983,287.14678402158955
-134,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1984,287.1846279001547
-135,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1985,287.208560596363
-136,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1986,287.1356673698615
-137,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1987,287.1683928209534
-138,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1988,287.1966655475665
-139,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1989,287.22438633496307
-140,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1990,287.414608305225
-141,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1991,287.54185963669414
-142,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1992,287.43985347718046
-143,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1993,287.2598466658892
-144,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1994,287.18309644275433
-145,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1995,287.2579056830535
-146,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1996,287.3661027353317
-147,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1997,287.5272887594072
-148,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1998,287.53213110448854
-149,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,1999,287.5895912216859
-150,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2000,287.7546464304658
-151,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2001,287.9215999780096
-152,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2002,287.8623983396016
-153,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2003,287.8811742180679
-154,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2004,287.9442871752486
-155,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2005,287.7759103126832
-156,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2006,287.8722799661425
-157,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2007,287.74253990359875
-158,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2008,287.93534091037935
-159,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2009,288.003478331636
-160,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2010,288.17074993513137
-161,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2011,288.04692243585686
-162,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2012,288.15783080954725
-163,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2013,288.1531512990712
-164,CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/,2014,288.26813745947317
+activity,model,experiment,ensemble_member,timestep,grid_type,file,year,time,tgav
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1850,1850-07-01 17:00:00,286.5602129413989
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1851,1851-07-01 17:00:00,286.712306442558
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1852,1852-07-01 17:00:00,286.6871554989106
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1853,1853-07-01 17:00:00,286.7911000682488
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1854,1854-07-01 17:00:00,286.83422526163884
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1855,1855-07-01 17:00:00,286.81570299836716
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1856,1856-07-01 17:00:00,286.8744296357184
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1857,1857-07-01 17:00:00,286.69666007450786
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1858,1858-07-01 17:00:00,286.7029244413922
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1859,1859-07-01 17:00:00,286.99043315875906
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1860,1860-07-01 17:00:00,286.8069095565686
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1861,1861-07-01 17:00:00,286.79418992563774
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1862,1862-07-01 17:00:00,286.69826095001844
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1863,1863-07-01 17:00:00,286.48863332332235
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1864,1864-07-01 17:00:00,286.55986339351
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1865,1865-07-01 17:00:00,286.64706442523584
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1866,1866-07-01 17:00:00,286.70725283127035
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1867,1867-07-01 17:00:00,286.65253205181415
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1868,1868-07-01 17:00:00,286.700974738928
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1869,1869-07-01 17:00:00,286.8246582457452
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1870,1870-07-01 17:00:00,286.85513517970145
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1871,1871-07-01 17:00:00,286.71358398571596
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1872,1872-07-01 17:00:00,286.8142871452994
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1873,1873-07-01 17:00:00,286.71336432181056
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1874,1874-07-01 17:00:00,286.69529816356913
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1875,1875-07-01 17:00:00,286.6495313552417
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1876,1876-07-01 17:00:00,286.727495120774
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1877,1877-07-01 17:00:00,286.69886008568545
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1878,1878-07-01 17:00:00,286.8484423532193
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1879,1879-07-01 17:00:00,286.7975005300761
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1880,1880-07-01 17:00:00,286.73019355281167
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1881,1881-07-01 17:00:00,286.9151252753824
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1882,1882-07-01 17:00:00,286.949620574446
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1883,1883-07-01 17:00:00,286.67959381242935
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1884,1884-07-01 17:00:00,286.1128995272131
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1885,1885-07-01 17:00:00,286.26539431318105
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1886,1886-07-01 17:00:00,286.44964896591745
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1887,1887-07-01 17:00:00,286.5153211742122
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1888,1888-07-01 17:00:00,286.5111020966477
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1889,1889-07-01 17:00:00,286.6737273224268
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1890,1890-07-01 17:00:00,286.57211607145484
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1891,1891-07-01 17:00:00,286.4751758977142
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1892,1892-07-01 17:00:00,286.43571218079813
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1893,1893-07-01 17:00:00,286.53622057300566
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1894,1894-07-01 17:00:00,286.4280596502478
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1895,1895-07-01 17:00:00,286.55797403661063
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1896,1896-07-01 17:00:00,286.64476464177187
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1897,1897-07-01 17:00:00,286.7007392318534
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1898,1898-07-01 17:00:00,286.7227234249556
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1899,1899-07-01 17:00:00,286.6458685997172
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1900,1900-07-01 17:00:00,286.6620228647022
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1901,1901-07-01 17:00:00,286.6629481567422
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1902,1902-07-01 17:00:00,286.7504119277747
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1903,1903-07-01 17:00:00,286.5016002177733
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1904,1904-07-01 17:00:00,286.5418030117749
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1905,1905-07-01 17:00:00,286.41286259382895
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1906,1906-07-01 17:00:00,286.45308541983604
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1907,1907-07-01 17:00:00,286.5756637830553
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1908,1908-07-01 17:00:00,286.61986941448714
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1909,1909-07-01 17:00:00,286.87804192046303
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1910,1910-07-01 17:00:00,286.88778060055427
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1911,1911-07-01 17:00:00,286.74518613874005
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1912,1912-07-01 17:00:00,286.64194045893083
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1913,1913-07-01 17:00:00,286.5917542657027
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1914,1914-07-01 17:00:00,286.6001590883537
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1915,1915-07-01 17:00:00,286.65221980620476
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1916,1916-07-01 17:00:00,286.63104371209283
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1917,1917-07-01 17:00:00,286.63944154585676
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1918,1918-07-01 17:00:00,286.7187794682032
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1919,1919-07-01 17:00:00,286.70039011544804
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1920,1920-07-01 17:00:00,286.6606752804204
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1921,1921-07-01 17:00:00,286.7411554325288
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1922,1922-07-01 17:00:00,286.8057275537647
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1923,1923-07-01 17:00:00,286.7981533663182
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1924,1924-07-01 17:00:00,286.75516520289983
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1925,1925-07-01 17:00:00,286.87835463172195
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1926,1926-07-01 17:00:00,286.918218576685
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1927,1927-07-01 17:00:00,286.9588989895292
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1928,1928-07-01 17:00:00,286.84319489757996
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1929,1929-07-01 17:00:00,286.65471912583416
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1930,1930-07-01 17:00:00,286.7667593723929
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1931,1931-07-01 17:00:00,286.74852030329106
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1932,1932-07-01 17:00:00,286.6896384979396
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1933,1933-07-01 17:00:00,286.8347019094013
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1934,1934-07-01 17:00:00,286.73177664673864
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1935,1935-07-01 17:00:00,286.8050315179662
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1936,1936-07-01 17:00:00,286.82941605686693
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1937,1937-07-01 17:00:00,286.80684774602025
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1938,1938-07-01 17:00:00,286.8568163718777
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1939,1939-07-01 17:00:00,287.1666623410154
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1940,1940-07-01 17:00:00,287.0581031976188
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1941,1941-07-01 17:00:00,287.00949505093394
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1942,1942-07-01 17:00:00,287.1857297939585
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1943,1943-07-01 17:00:00,287.0298727038699
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1944,1944-07-01 17:00:00,286.9101234711871
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1945,1945-07-01 17:00:00,286.8611876183434
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1946,1946-07-01 17:00:00,286.8671824754155
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1947,1947-07-01 17:00:00,286.92146777472885
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1948,1948-07-01 17:00:00,286.89316219445044
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1949,1949-07-01 17:00:00,287.0437860303678
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1950,1950-07-01 17:00:00,287.0521283494158
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1951,1951-07-01 17:00:00,287.0672293894233
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1952,1952-07-01 17:00:00,287.09143916369175
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1953,1953-07-01 17:00:00,286.97967435868816
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1954,1954-07-01 17:00:00,287.10864708008876
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1955,1955-07-01 17:00:00,287.27560046455955
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1956,1956-07-01 17:00:00,287.04673628898445
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1957,1957-07-01 17:00:00,287.0615457056016
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1958,1958-07-01 17:00:00,286.98272306771486
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1959,1959-07-01 17:00:00,287.05646480316494
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1960,1960-07-01 17:00:00,287.02733471937796
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1961,1961-07-01 17:00:00,286.96380828550167
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1962,1962-07-01 17:00:00,287.0821085382167
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1963,1963-07-01 17:00:00,286.73451920581203
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1964,1964-07-01 17:00:00,286.6905888004329
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1965,1965-07-01 17:00:00,286.721977787635
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1966,1966-07-01 17:00:00,286.651911557718
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1967,1967-07-01 17:00:00,286.702279147463
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1968,1968-07-01 17:00:00,286.83531783812555
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1969,1969-07-01 17:00:00,287.07460534081645
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1970,1970-07-01 17:00:00,287.1268342677975
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1971,1971-07-01 17:00:00,286.95575588280013
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1972,1972-07-01 17:00:00,287.03545419598146
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1973,1973-07-01 17:00:00,287.16094040642645
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1974,1974-07-01 17:00:00,287.0547637850639
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1975,1975-07-01 17:00:00,287.03054480706027
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1976,1976-07-01 17:00:00,286.98697256709033
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1977,1977-07-01 17:00:00,286.96893105567915
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1978,1978-07-01 17:00:00,287.0609505957403
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1979,1979-07-01 17:00:00,287.1630931542557
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1980,1980-07-01 17:00:00,287.2236631602918
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1981,1981-07-01 17:00:00,287.1865144370679
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1982,1982-07-01 17:00:00,287.2474388834642
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1983,1983-07-01 17:00:00,287.14678402158955
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1984,1984-07-01 17:00:00,287.1846279001547
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1985,1985-07-01 17:00:00,287.208560596363
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1986,1986-07-01 17:00:00,287.1356673698615
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1987,1987-07-01 17:00:00,287.1683928209534
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1988,1988-07-01 17:00:00,287.1966655475665
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1989,1989-07-01 17:00:00,287.22438633496307
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1990,1990-07-01 17:00:00,287.414608305225
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1991,1991-07-01 17:00:00,287.54185963669414
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1992,1992-07-01 17:00:00,287.43985347718046
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1993,1993-07-01 17:00:00,287.2598466658892
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1994,1994-07-01 17:00:00,287.18309644275433
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1995,1995-07-01 17:00:00,287.2579056830535
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1996,1996-07-01 17:00:00,287.3661027353317
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1997,1997-07-01 17:00:00,287.5272887594072
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1998,1998-07-01 17:00:00,287.53213110448854
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,1999,1999-07-01 17:00:00,287.5895912216859
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2000,2000-07-01 17:00:00,287.7546464304658
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2001,2001-07-01 17:00:00,287.9215999780096
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2002,2002-07-01 17:00:00,287.8623983396016
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2003,2003-07-01 17:00:00,287.8811742180679
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2004,2004-07-01 17:00:00,287.9442871752486
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2005,2005-07-01 17:00:00,287.7759103126832
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2006,2006-07-01 17:00:00,287.8722799661425
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2007,2007-07-01 17:00:00,287.74253990359875
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2008,2008-07-01 17:00:00,287.93534091037935
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2009,2009-07-01 17:00:00,288.003478331636
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2010,2010-07-01 17:00:00,288.17074993513137
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2011,2011-07-01 17:00:00,288.04692243585686
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2012,2012-07-01 17:00:00,288.15783080954725
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2013,2013-07-01 17:00:00,288.1531512990712
+CMIP,CanESM5,historical,r2i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/CCCma/CanESM5/historical/r2i1p1f1/Amon/tas/gn/v20190429/,2014,2014-07-01 17:00:00,288.26813745947317

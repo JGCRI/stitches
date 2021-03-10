@@ -1,166 +1,166 @@
-,activity,model,experiment,ensemble_member,timestep,grid_type,file,year,tgav
-0,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1850,288.0959625644638
-1,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1851,288.18820784823635
-2,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1852,288.3562893713506
-3,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1853,288.2720220829529
-4,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1854,288.2450357054667
-5,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1855,288.39224629817244
-6,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1856,288.38987337665986
-7,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1857,288.2505569454808
-8,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1858,288.38403865111763
-9,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1859,288.5415066157125
-10,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1860,288.50526056452384
-11,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1861,288.43568094096656
-12,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1862,288.3305907466627
-13,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1863,288.44066500178974
-14,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1864,288.54681106123746
-15,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1865,288.3743667498108
-16,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1866,288.3590458972014
-17,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1867,288.296644210577
-18,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1868,288.285777060763
-19,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1869,288.53107417721367
-20,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1870,288.57519967735874
-21,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1871,288.3346378416522
-22,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1872,288.2868847166336
-23,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1873,288.3122021943463
-24,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1874,288.3832495162302
-25,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1875,288.3095261955025
-26,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1876,288.52489512899723
-27,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1877,288.71699419700553
-28,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1878,288.5386517055121
-29,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1879,288.3510275257127
-30,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1880,288.4029008542448
-31,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1881,288.4019846759669
-32,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1882,288.43498196919256
-33,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1883,288.6307333262544
-34,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1884,288.38626012242406
-35,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1885,288.3730942695041
-36,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1886,288.21937441653
-37,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1887,288.1110345981835
-38,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1888,288.16776789661907
-39,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1889,288.3510779667672
-40,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1890,288.41709720201106
-41,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1891,288.3421132818487
-42,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1892,288.4003529389429
-43,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1893,288.4128135717856
-44,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1894,288.38208816480295
-45,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1895,288.3458917785401
-46,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1896,288.4481887889199
-47,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1897,288.45582016209573
-48,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1898,288.4676849364594
-49,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1899,288.4218199383005
-50,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1900,288.3081629532912
-51,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1901,288.3685621063573
-52,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1902,288.54905147430895
-53,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1903,288.4662249136615
-54,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1904,288.18427111407743
-55,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1905,288.26235439042296
-56,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1906,288.4046975951598
-57,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1907,288.4209792572198
-58,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1908,288.4642186081251
-59,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1909,288.5724237972843
-60,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1910,288.43544633745336
-61,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1911,288.3830308264542
-62,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1912,288.3631376235467
-63,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1913,288.2198970788871
-64,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1914,288.21238685997366
-65,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1915,288.28201793123304
-66,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1916,288.3377966233648
-67,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1917,288.54801247624545
-68,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1918,288.59361313360876
-69,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1919,288.4485214062038
-70,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1920,288.54558800296456
-71,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1921,288.4983002818376
-72,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1922,288.59141733978015
-73,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1923,288.6612512344101
-74,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1924,288.69957619719486
-75,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1925,288.6046055774688
-76,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1926,288.5458861411175
-77,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1927,288.6295365723536
-78,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1928,288.55789196117394
-79,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1929,288.7198364579223
-80,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1930,288.8854807099357
-81,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1931,288.82456134393874
-82,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1932,288.3963171525958
-83,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1933,288.32627963492115
-84,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1934,288.43187667954015
-85,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1935,288.4348473293516
-86,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1936,288.5633380201909
-87,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1937,288.8745659280297
-88,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1938,288.729296774737
-89,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1939,288.46326445797007
-90,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1940,288.43920168411233
-91,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1941,288.4021183959136
-92,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1942,288.48768087941676
-93,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1943,288.7438846504654
-94,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1944,288.86948610777677
-95,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1945,288.4845330432395
-96,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1946,288.43828189327377
-97,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1947,288.4047545021964
-98,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1948,288.64869789527273
-99,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1949,288.69284385984946
-100,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1950,288.49739618393863
-101,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1951,288.5341784712078
-102,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1952,288.58206305268214
-103,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1953,288.56154512306165
-104,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1954,288.670489942905
-105,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1955,288.92166629901226
-106,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1956,288.6636279667616
-107,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1957,288.43467983417867
-108,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1958,288.47420054245555
-109,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1959,288.5048874996307
-110,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1960,288.7279593305698
-111,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1961,288.71338947091164
-112,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1962,288.61739312365836
-113,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1963,288.42551322975373
-114,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1964,288.45194713755956
-115,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1965,288.5312737288694
-116,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1966,288.78372790432076
-117,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1967,288.6824758129008
-118,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1968,288.3744870221207
-119,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1969,288.3659173462045
-120,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1970,288.45305321271724
-121,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1971,288.5537868981316
-122,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1972,288.643879875888
-123,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1973,288.8991295526739
-124,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1974,288.7452051290914
-125,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1975,288.5281284101757
-126,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1976,288.5511443214513
-127,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1977,288.6077412446745
-128,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1978,288.5044406884809
-129,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1979,288.7447335965563
-130,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1980,289.0518477246132
-131,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1981,288.83925252871705
-132,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1982,288.5193236554158
-133,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1983,288.4532949277327
-134,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1984,288.55000186506146
-135,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1985,288.6436591699707
-136,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1986,288.62481224161803
-137,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1987,288.6782119944193
-138,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1988,288.5933896375072
-139,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1989,288.6467535755969
-140,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1990,288.6081480108466
-141,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1991,288.7006678129307
-142,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1992,288.7494729054263
-143,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1993,288.79340847648723
-144,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1994,288.5632547533758
-145,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1995,288.6254774397752
-146,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1996,288.8254484509674
-147,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1997,289.0235965058175
-148,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1998,289.1953012776391
-149,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,1999,288.8911920530065
-150,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2000,288.91139681677123
-151,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2001,288.939148101167
-152,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2002,288.99837477092245
-153,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2003,289.07672049296167
-154,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2004,289.1280799944812
-155,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2005,289.22022278436856
-156,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2006,289.2266070485053
-157,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2007,288.9841684409719
-158,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2008,288.9992163682418
-159,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2009,289.11522228913026
-160,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2010,289.27553470324364
-161,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2011,289.1965678329114
-162,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2012,289.07907032383747
-163,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2013,289.0862369764495
-164,CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/,2014,289.1563039267548
+activity,model,experiment,ensemble_member,timestep,grid_type,file,year,time,tgav
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1850,1850-07-01 17:00:00,288.0959625644638
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1851,1851-07-01 17:00:00,288.18820784823635
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1852,1852-07-01 14:00:00,288.3562893713506
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1853,1853-07-01 17:00:00,288.2720220829529
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1854,1854-07-01 17:00:00,288.2450357054667
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1855,1855-07-01 17:00:00,288.39224629817244
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1856,1856-07-01 14:00:00,288.38987337665986
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1857,1857-07-01 17:00:00,288.2505569454808
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1858,1858-07-01 17:00:00,288.38403865111763
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1859,1859-07-01 17:00:00,288.5415066157125
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1860,1860-07-01 14:00:00,288.50526056452384
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1861,1861-07-01 17:00:00,288.43568094096656
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1862,1862-07-01 17:00:00,288.3305907466627
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1863,1863-07-01 17:00:00,288.44066500178974
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1864,1864-07-01 14:00:00,288.54681106123746
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1865,1865-07-01 17:00:00,288.3743667498108
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1866,1866-07-01 17:00:00,288.3590458972014
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1867,1867-07-01 17:00:00,288.296644210577
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1868,1868-07-01 14:00:00,288.285777060763
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1869,1869-07-01 17:00:00,288.53107417721367
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1870,1870-07-01 17:00:00,288.57519967735874
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1871,1871-07-01 17:00:00,288.3346378416522
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1872,1872-07-01 14:00:00,288.2868847166336
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1873,1873-07-01 17:00:00,288.3122021943463
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1874,1874-07-01 17:00:00,288.3832495162302
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1875,1875-07-01 17:00:00,288.3095261955025
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1876,1876-07-01 14:00:00,288.52489512899723
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1877,1877-07-01 17:00:00,288.71699419700553
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1878,1878-07-01 17:00:00,288.5386517055121
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1879,1879-07-01 17:00:00,288.3510275257127
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1880,1880-07-01 14:00:00,288.4029008542448
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1881,1881-07-01 17:00:00,288.4019846759669
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1882,1882-07-01 17:00:00,288.43498196919256
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1883,1883-07-01 17:00:00,288.6307333262544
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1884,1884-07-01 14:00:00,288.38626012242406
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1885,1885-07-01 17:00:00,288.3730942695041
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1886,1886-07-01 17:00:00,288.21937441653
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1887,1887-07-01 17:00:00,288.1110345981835
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1888,1888-07-01 14:00:00,288.16776789661907
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1889,1889-07-01 17:00:00,288.3510779667672
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1890,1890-07-01 17:00:00,288.41709720201106
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1891,1891-07-01 17:00:00,288.3421132818487
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1892,1892-07-01 14:00:00,288.4003529389429
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1893,1893-07-01 17:00:00,288.4128135717856
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1894,1894-07-01 17:00:00,288.38208816480295
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1895,1895-07-01 17:00:00,288.3458917785401
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1896,1896-07-01 14:00:00,288.4481887889199
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1897,1897-07-01 17:00:00,288.45582016209573
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1898,1898-07-01 17:00:00,288.4676849364594
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1899,1899-07-01 17:00:00,288.4218199383005
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1900,1900-07-01 17:00:00,288.3081629532912
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1901,1901-07-01 17:00:00,288.3685621063573
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1902,1902-07-01 17:00:00,288.54905147430895
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1903,1903-07-01 17:00:00,288.4662249136615
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1904,1904-07-01 14:00:00,288.18427111407743
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1905,1905-07-01 17:00:00,288.26235439042296
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1906,1906-07-01 17:00:00,288.4046975951598
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1907,1907-07-01 17:00:00,288.4209792572198
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1908,1908-07-01 14:00:00,288.4642186081251
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1909,1909-07-01 17:00:00,288.5724237972843
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1910,1910-07-01 17:00:00,288.43544633745336
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1911,1911-07-01 17:00:00,288.3830308264542
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1912,1912-07-01 14:00:00,288.3631376235467
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1913,1913-07-01 17:00:00,288.2198970788871
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1914,1914-07-01 17:00:00,288.21238685997366
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1915,1915-07-01 17:00:00,288.28201793123304
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1916,1916-07-01 14:00:00,288.3377966233648
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1917,1917-07-01 17:00:00,288.54801247624545
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1918,1918-07-01 17:00:00,288.59361313360876
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1919,1919-07-01 17:00:00,288.4485214062038
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1920,1920-07-01 14:00:00,288.54558800296456
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1921,1921-07-01 17:00:00,288.4983002818376
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1922,1922-07-01 17:00:00,288.59141733978015
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1923,1923-07-01 17:00:00,288.6612512344101
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1924,1924-07-01 14:00:00,288.69957619719486
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1925,1925-07-01 17:00:00,288.6046055774688
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1926,1926-07-01 17:00:00,288.5458861411175
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1927,1927-07-01 17:00:00,288.6295365723536
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1928,1928-07-01 14:00:00,288.55789196117394
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1929,1929-07-01 17:00:00,288.7198364579223
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1930,1930-07-01 17:00:00,288.8854807099357
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1931,1931-07-01 17:00:00,288.82456134393874
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1932,1932-07-01 14:00:00,288.3963171525958
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1933,1933-07-01 17:00:00,288.32627963492115
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1934,1934-07-01 17:00:00,288.43187667954015
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1935,1935-07-01 17:00:00,288.4348473293516
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1936,1936-07-01 14:00:00,288.5633380201909
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1937,1937-07-01 17:00:00,288.8745659280297
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1938,1938-07-01 17:00:00,288.729296774737
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1939,1939-07-01 17:00:00,288.46326445797007
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1940,1940-07-01 14:00:00,288.43920168411233
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1941,1941-07-01 17:00:00,288.4021183959136
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1942,1942-07-01 17:00:00,288.48768087941676
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1943,1943-07-01 17:00:00,288.7438846504654
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1944,1944-07-01 14:00:00,288.86948610777677
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1945,1945-07-01 17:00:00,288.4845330432395
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1946,1946-07-01 17:00:00,288.43828189327377
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1947,1947-07-01 17:00:00,288.4047545021964
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1948,1948-07-01 14:00:00,288.64869789527273
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1949,1949-07-01 17:00:00,288.69284385984946
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1950,1950-07-01 17:00:00,288.49739618393863
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1951,1951-07-01 17:00:00,288.5341784712078
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1952,1952-07-01 14:00:00,288.58206305268214
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1953,1953-07-01 17:00:00,288.56154512306165
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1954,1954-07-01 17:00:00,288.670489942905
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1955,1955-07-01 17:00:00,288.92166629901226
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1956,1956-07-01 14:00:00,288.6636279667616
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1957,1957-07-01 17:00:00,288.43467983417867
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1958,1958-07-01 17:00:00,288.47420054245555
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1959,1959-07-01 17:00:00,288.5048874996307
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1960,1960-07-01 14:00:00,288.7279593305698
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1961,1961-07-01 17:00:00,288.71338947091164
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1962,1962-07-01 17:00:00,288.61739312365836
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1963,1963-07-01 17:00:00,288.42551322975373
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1964,1964-07-01 14:00:00,288.45194713755956
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1965,1965-07-01 17:00:00,288.5312737288694
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1966,1966-07-01 17:00:00,288.78372790432076
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1967,1967-07-01 17:00:00,288.6824758129008
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1968,1968-07-01 14:00:00,288.3744870221207
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1969,1969-07-01 17:00:00,288.3659173462045
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1970,1970-07-01 17:00:00,288.45305321271724
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1971,1971-07-01 17:00:00,288.5537868981316
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1972,1972-07-01 14:00:00,288.643879875888
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1973,1973-07-01 17:00:00,288.8991295526739
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1974,1974-07-01 17:00:00,288.7452051290914
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1975,1975-07-01 17:00:00,288.5281284101757
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1976,1976-07-01 14:00:00,288.5511443214513
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1977,1977-07-01 17:00:00,288.6077412446745
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1978,1978-07-01 17:00:00,288.5044406884809
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1979,1979-07-01 17:00:00,288.7447335965563
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1980,1980-07-01 14:00:00,289.0518477246132
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1981,1981-07-01 17:00:00,288.83925252871705
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1982,1982-07-01 17:00:00,288.5193236554158
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1983,1983-07-01 17:00:00,288.4532949277327
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1984,1984-07-01 14:00:00,288.55000186506146
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1985,1985-07-01 17:00:00,288.6436591699707
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1986,1986-07-01 17:00:00,288.62481224161803
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1987,1987-07-01 17:00:00,288.6782119944193
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1988,1988-07-01 14:00:00,288.5933896375072
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1989,1989-07-01 17:00:00,288.6467535755969
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1990,1990-07-01 17:00:00,288.6081480108466
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1991,1991-07-01 17:00:00,288.7006678129307
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1992,1992-07-01 14:00:00,288.7494729054263
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1993,1993-07-01 17:00:00,288.79340847648723
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1994,1994-07-01 17:00:00,288.5632547533758
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1995,1995-07-01 17:00:00,288.6254774397752
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1996,1996-07-01 14:00:00,288.8254484509674
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1997,1997-07-01 17:00:00,289.0235965058175
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1998,1998-07-01 17:00:00,289.1953012776391
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,1999,1999-07-01 17:00:00,288.8911920530065
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2000,2000-07-01 14:00:00,288.91139681677123
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2001,2001-07-01 17:00:00,288.939148101167
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2002,2002-07-01 17:00:00,288.99837477092245
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2003,2003-07-01 17:00:00,289.07672049296167
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2004,2004-07-01 14:00:00,289.1280799944812
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2005,2005-07-01 17:00:00,289.22022278436856
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2006,2006-07-01 17:00:00,289.2266070485053
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2007,2007-07-01 17:00:00,288.9841684409719
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2008,2008-07-01 14:00:00,288.9992163682418
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2009,2009-07-01 17:00:00,289.11522228913026
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2010,2010-07-01 17:00:00,289.27553470324364
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2011,2011-07-01 17:00:00,289.1965678329114
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2012,2012-07-01 14:00:00,289.07907032383747
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2013,2013-07-01 17:00:00,289.0862369764495
+CMIP,MIROC6,historical,r7i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/MIROC/MIROC6/historical/r7i1p1f1/Amon/tas/gn/v20181212/,2014,2014-07-01 17:00:00,289.1563039267548

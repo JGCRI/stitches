@@ -83,7 +83,9 @@ def calc_and_format_tgav(pangeo_df_entry, save_individ_tgav = False):
     # raise an exception if it's an ssp-rcp file with a max year before 2099 -
     # basically to handle/ignore the MIROC6 netcdfs under SSP245 that stop at 2039.
     if((years.min() > 2014) & (years.max() < 2099)):
-        raise Exception(f"This future scenario netcdf has a max year of data before 2100.")
+        raise Exception(f"This future scenario netcdf has a max year of data before 2100: " +
+                        "" + pangeo_df_entry["source_id"] + " " + pangeo_df_entry["experiment_id"] +
+                        " " + pangeo_df_entry["member_id"] )
 
 
     # pull off just the tgav values so we can make a new formatted table

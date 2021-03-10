@@ -21,7 +21,9 @@ def cleanup_main_tgav(f):
   if not (os.path.isfile(f)):
     raise TypeError(f"file does not exist")
 
+
   df = pd.read_csv(f)
+
   # Select the columns containing actual data, removing the index.
   df = df[['activity', 'model', 'experiment', 'ensemble_member', 'timestep', 'grid_type', 'file', 'year', 'tgav']]
   # Rename columns and add a variable column

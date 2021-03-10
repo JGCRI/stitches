@@ -1,166 +1,166 @@
-,activity,model,experiment,ensemble_member,timestep,grid_type,file,year,tgav
-0,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1850,286.7037929604869
-1,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1851,286.79297614812043
-2,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1852,286.9718745904283
-3,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1853,286.7922269943878
-4,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1854,286.83013773621076
-5,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1855,287.1429811135965
-6,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1856,287.1371260555595
-7,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1857,286.68641081220903
-8,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1858,286.80800041083205
-9,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1859,287.0120351045406
-10,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1860,287.07810771670574
-11,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1861,286.95096489681026
-12,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1862,286.7014195035593
-13,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1863,286.849997424283
-14,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1864,287.1455325876788
-15,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1865,287.1363790897448
-16,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1866,286.80866355334683
-17,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1867,286.80684021273305
-18,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1868,286.8790024062463
-19,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1869,286.94521384883245
-20,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1870,286.9765722034521
-21,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1871,286.9442340564348
-22,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1872,286.7712437281745
-23,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1873,286.7447671996366
-24,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1874,286.8846341169992
-25,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1875,287.0435493104714
-26,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1876,286.87491717463564
-27,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1877,286.7849468408418
-28,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1878,286.81327454018015
-29,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1879,287.0461750618461
-30,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1880,287.01670883805247
-31,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1881,286.66754027332684
-32,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1882,286.79891608123586
-33,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1883,286.95433267063567
-34,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1884,286.77567918011096
-35,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1885,286.90841775567645
-36,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1886,286.5213264635948
-37,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1887,286.6734888298193
-38,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1888,286.86427683576125
-39,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1889,287.12986593371716
-40,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1890,287.11126952954623
-41,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1891,286.8942946368508
-42,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1892,286.7419117425663
-43,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1893,286.89227775280966
-44,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1894,287.08621863151365
-45,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1895,286.92242789404224
-46,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1896,287.00815962854006
-47,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1897,287.1463060251185
-48,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1898,287.17087857667644
-49,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1899,286.7074233428121
-50,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1900,286.75193286937474
-51,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1901,287.100412450257
-52,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1902,287.08464175149504
-53,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1903,286.6665387477958
-54,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1904,286.6571135176847
-55,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1905,286.9012377525472
-56,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1906,287.1139396153945
-57,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1907,286.833159030255
-58,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1908,286.81132200839505
-59,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1909,286.92641046312093
-60,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1910,287.1211160534122
-61,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1911,287.02814061963215
-62,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1912,286.6948621164466
-63,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1913,286.63987348335013
-64,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1914,286.90190344720776
-65,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1915,287.07618262737896
-66,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1916,286.8668032435838
-67,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1917,286.7759364974941
-68,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1918,286.9608762949722
-69,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1919,287.2502159196095
-70,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1920,287.18519116051937
-71,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1921,286.8518472716725
-72,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1922,286.80682812282015
-73,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1923,286.9992843090154
-74,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1924,287.22147901942384
-75,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1925,286.93441432435804
-76,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1926,287.0177188767272
-77,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1927,287.1595524401319
-78,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1928,287.182042814315
-79,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1929,286.9162805558139
-80,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1930,286.9284819480929
-81,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1931,286.83218213617937
-82,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1932,287.1257626800508
-83,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1933,287.1229487954379
-84,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1934,287.1570420672351
-85,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1935,287.0553300965207
-86,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1936,287.0093663808688
-87,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1937,287.08152878214355
-88,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1938,287.2124456022792
-89,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1939,286.9404694788015
-90,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1940,286.8607669946121
-91,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1941,287.02999263552533
-92,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1942,286.99121976141936
-93,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1943,287.2021450904297
-94,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1944,287.1191258151844
-95,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1945,286.8349031020642
-96,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1946,286.8192921349623
-97,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1947,287.099981483439
-98,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1948,287.30157834172013
-99,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1949,286.9700594471083
-100,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1950,286.9785121207987
-101,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1951,287.2805479692525
-102,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1952,286.98557876518504
-103,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1953,287.0566501545405
-104,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1954,287.1176312706774
-105,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1955,287.21175604179274
-106,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1956,287.0228611234238
-107,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1957,286.9678561654373
-108,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1958,287.0961152440855
-109,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1959,287.09516939754184
-110,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1960,286.94078462267413
-111,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1961,287.09651439800365
-112,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1962,287.1815116008083
-113,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1963,286.9681762178421
-114,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1964,286.9719359978326
-115,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1965,287.07764250881485
-116,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1966,286.7935747596966
-117,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1967,286.9095541814683
-118,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1968,287.2090868835776
-119,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1969,287.1292397363233
-120,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1970,286.8482993822468
-121,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1971,286.83999092243204
-122,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1972,287.18279718519176
-123,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1973,287.2856588615349
-124,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1974,287.1012286275088
-125,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1975,286.9941424082886
-126,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1976,287.23730161438647
-127,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1977,287.17233896386034
-128,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1978,286.9464127546838
-129,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1979,287.0354155037359
-130,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1980,287.2696300291354
-131,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1981,287.1665407244608
-132,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1982,287.08761572878626
-133,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1983,287.1640219502015
-134,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1984,287.24473756140645
-135,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1985,287.00526306802186
-136,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1986,286.9086305496093
-137,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1987,287.2623225830194
-138,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1988,287.4407793023679
-139,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1989,287.2989448863645
-140,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1990,287.2974056468134
-141,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1991,287.42995175495986
-142,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1992,287.29005239517363
-143,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1993,287.05172465235574
-144,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1994,287.1305524710912
-145,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1995,287.4217413588546
-146,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1996,287.5081967149293
-147,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1997,287.233396255134
-148,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1998,287.3047320350561
-149,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,1999,287.71293635647976
-150,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2000,287.7237660414252
-151,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2001,287.47991567995376
-152,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2002,287.5788212010519
-153,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2003,287.7928261570002
-154,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2004,287.65926157627433
-155,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2005,287.4756626726845
-156,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2006,287.7421154113343
-157,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2007,287.8719847188164
-158,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2008,287.53167143545954
-159,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2009,287.50835160710125
-160,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2010,287.8172633462159
-161,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2011,288.0773727445817
-162,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2012,288.01830575131453
-163,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2013,287.77975138036874
-164,CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/,2014,287.88130704365955
+activity,model,experiment,ensemble_member,timestep,grid_type,file,year,time,tgav
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1850,1850-07-01 17:00:00,286.7037929604869
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1851,1851-07-01 17:00:00,286.79297614812043
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1852,1852-07-01 17:00:00,286.9718745904283
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1853,1853-07-01 17:00:00,286.7922269943878
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1854,1854-07-01 17:00:00,286.83013773621076
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1855,1855-07-01 17:00:00,287.1429811135965
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1856,1856-07-01 17:00:00,287.1371260555595
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1857,1857-07-01 17:00:00,286.68641081220903
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1858,1858-07-01 17:00:00,286.80800041083205
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1859,1859-07-01 17:00:00,287.0120351045406
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1860,1860-07-01 17:00:00,287.07810771670574
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1861,1861-07-01 17:00:00,286.95096489681026
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1862,1862-07-01 17:00:00,286.7014195035593
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1863,1863-07-01 17:00:00,286.849997424283
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1864,1864-07-01 17:00:00,287.1455325876788
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1865,1865-07-01 17:00:00,287.1363790897448
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1866,1866-07-01 17:00:00,286.80866355334683
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1867,1867-07-01 17:00:00,286.80684021273305
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1868,1868-07-01 17:00:00,286.8790024062463
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1869,1869-07-01 17:00:00,286.94521384883245
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1870,1870-07-01 17:00:00,286.9765722034521
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1871,1871-07-01 17:00:00,286.9442340564348
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1872,1872-07-01 17:00:00,286.7712437281745
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1873,1873-07-01 17:00:00,286.7447671996366
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1874,1874-07-01 17:00:00,286.8846341169992
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1875,1875-07-01 17:00:00,287.0435493104714
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1876,1876-07-01 17:00:00,286.87491717463564
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1877,1877-07-01 17:00:00,286.7849468408418
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1878,1878-07-01 17:00:00,286.81327454018015
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1879,1879-07-01 17:00:00,287.0461750618461
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1880,1880-07-01 17:00:00,287.01670883805247
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1881,1881-07-01 17:00:00,286.66754027332684
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1882,1882-07-01 17:00:00,286.79891608123586
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1883,1883-07-01 17:00:00,286.95433267063567
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1884,1884-07-01 17:00:00,286.77567918011096
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1885,1885-07-01 17:00:00,286.90841775567645
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1886,1886-07-01 17:00:00,286.5213264635948
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1887,1887-07-01 17:00:00,286.6734888298193
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1888,1888-07-01 17:00:00,286.86427683576125
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1889,1889-07-01 17:00:00,287.12986593371716
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1890,1890-07-01 17:00:00,287.11126952954623
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1891,1891-07-01 17:00:00,286.8942946368508
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1892,1892-07-01 17:00:00,286.7419117425663
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1893,1893-07-01 17:00:00,286.89227775280966
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1894,1894-07-01 17:00:00,287.08621863151365
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1895,1895-07-01 17:00:00,286.92242789404224
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1896,1896-07-01 17:00:00,287.00815962854006
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1897,1897-07-01 17:00:00,287.1463060251185
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1898,1898-07-01 17:00:00,287.17087857667644
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1899,1899-07-01 17:00:00,286.7074233428121
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1900,1900-07-01 17:00:00,286.75193286937474
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1901,1901-07-01 17:00:00,287.100412450257
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1902,1902-07-01 17:00:00,287.08464175149504
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1903,1903-07-01 17:00:00,286.6665387477958
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1904,1904-07-01 17:00:00,286.6571135176847
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1905,1905-07-01 17:00:00,286.9012377525472
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1906,1906-07-01 17:00:00,287.1139396153945
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1907,1907-07-01 17:00:00,286.833159030255
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1908,1908-07-01 17:00:00,286.81132200839505
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1909,1909-07-01 17:00:00,286.92641046312093
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1910,1910-07-01 17:00:00,287.1211160534122
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1911,1911-07-01 17:00:00,287.02814061963215
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1912,1912-07-01 17:00:00,286.6948621164466
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1913,1913-07-01 17:00:00,286.63987348335013
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1914,1914-07-01 17:00:00,286.90190344720776
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1915,1915-07-01 17:00:00,287.07618262737896
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1916,1916-07-01 17:00:00,286.8668032435838
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1917,1917-07-01 17:00:00,286.7759364974941
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1918,1918-07-01 17:00:00,286.9608762949722
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1919,1919-07-01 17:00:00,287.2502159196095
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1920,1920-07-01 17:00:00,287.18519116051937
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1921,1921-07-01 17:00:00,286.8518472716725
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1922,1922-07-01 17:00:00,286.80682812282015
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1923,1923-07-01 17:00:00,286.9992843090154
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1924,1924-07-01 17:00:00,287.22147901942384
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1925,1925-07-01 17:00:00,286.93441432435804
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1926,1926-07-01 17:00:00,287.0177188767272
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1927,1927-07-01 17:00:00,287.1595524401319
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1928,1928-07-01 17:00:00,287.182042814315
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1929,1929-07-01 17:00:00,286.9162805558139
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1930,1930-07-01 17:00:00,286.9284819480929
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1931,1931-07-01 17:00:00,286.83218213617937
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1932,1932-07-01 17:00:00,287.1257626800508
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1933,1933-07-01 17:00:00,287.1229487954379
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1934,1934-07-01 17:00:00,287.1570420672351
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1935,1935-07-01 17:00:00,287.0553300965207
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1936,1936-07-01 17:00:00,287.0093663808688
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1937,1937-07-01 17:00:00,287.08152878214355
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1938,1938-07-01 17:00:00,287.2124456022792
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1939,1939-07-01 17:00:00,286.9404694788015
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1940,1940-07-01 17:00:00,286.8607669946121
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1941,1941-07-01 17:00:00,287.02999263552533
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1942,1942-07-01 17:00:00,286.99121976141936
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1943,1943-07-01 17:00:00,287.2021450904297
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1944,1944-07-01 17:00:00,287.1191258151844
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1945,1945-07-01 17:00:00,286.8349031020642
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1946,1946-07-01 17:00:00,286.8192921349623
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1947,1947-07-01 17:00:00,287.099981483439
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1948,1948-07-01 17:00:00,287.30157834172013
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1949,1949-07-01 17:00:00,286.9700594471083
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1950,1950-07-01 17:00:00,286.9785121207987
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1951,1951-07-01 17:00:00,287.2805479692525
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1952,1952-07-01 17:00:00,286.98557876518504
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1953,1953-07-01 17:00:00,287.0566501545405
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1954,1954-07-01 17:00:00,287.1176312706774
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1955,1955-07-01 17:00:00,287.21175604179274
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1956,1956-07-01 17:00:00,287.0228611234238
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1957,1957-07-01 17:00:00,286.9678561654373
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1958,1958-07-01 17:00:00,287.0961152440855
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1959,1959-07-01 17:00:00,287.09516939754184
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1960,1960-07-01 17:00:00,286.94078462267413
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1961,1961-07-01 17:00:00,287.09651439800365
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1962,1962-07-01 17:00:00,287.1815116008083
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1963,1963-07-01 17:00:00,286.9681762178421
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1964,1964-07-01 17:00:00,286.9719359978326
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1965,1965-07-01 17:00:00,287.07764250881485
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1966,1966-07-01 17:00:00,286.7935747596966
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1967,1967-07-01 17:00:00,286.9095541814683
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1968,1968-07-01 17:00:00,287.2090868835776
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1969,1969-07-01 17:00:00,287.1292397363233
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1970,1970-07-01 17:00:00,286.8482993822468
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1971,1971-07-01 17:00:00,286.83999092243204
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1972,1972-07-01 17:00:00,287.18279718519176
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1973,1973-07-01 17:00:00,287.2856588615349
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1974,1974-07-01 17:00:00,287.1012286275088
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1975,1975-07-01 17:00:00,286.9941424082886
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1976,1976-07-01 17:00:00,287.23730161438647
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1977,1977-07-01 17:00:00,287.17233896386034
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1978,1978-07-01 17:00:00,286.9464127546838
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1979,1979-07-01 17:00:00,287.0354155037359
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1980,1980-07-01 17:00:00,287.2696300291354
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1981,1981-07-01 17:00:00,287.1665407244608
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1982,1982-07-01 17:00:00,287.08761572878626
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1983,1983-07-01 17:00:00,287.1640219502015
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1984,1984-07-01 17:00:00,287.24473756140645
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1985,1985-07-01 17:00:00,287.00526306802186
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1986,1986-07-01 17:00:00,286.9086305496093
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1987,1987-07-01 17:00:00,287.2623225830194
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1988,1988-07-01 17:00:00,287.4407793023679
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1989,1989-07-01 17:00:00,287.2989448863645
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1990,1990-07-01 17:00:00,287.2974056468134
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1991,1991-07-01 17:00:00,287.42995175495986
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1992,1992-07-01 17:00:00,287.29005239517363
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1993,1993-07-01 17:00:00,287.05172465235574
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1994,1994-07-01 17:00:00,287.1305524710912
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1995,1995-07-01 17:00:00,287.4217413588546
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1996,1996-07-01 17:00:00,287.5081967149293
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1997,1997-07-01 17:00:00,287.233396255134
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1998,1998-07-01 17:00:00,287.3047320350561
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,1999,1999-07-01 17:00:00,287.71293635647976
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2000,2000-07-01 17:00:00,287.7237660414252
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2001,2001-07-01 17:00:00,287.47991567995376
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2002,2002-07-01 17:00:00,287.5788212010519
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2003,2003-07-01 17:00:00,287.7928261570002
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2004,2004-07-01 17:00:00,287.65926157627433
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2005,2005-07-01 17:00:00,287.4756626726845
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2006,2006-07-01 17:00:00,287.7421154113343
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2007,2007-07-01 17:00:00,287.8719847188164
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2008,2008-07-01 17:00:00,287.53167143545954
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2009,2009-07-01 17:00:00,287.50835160710125
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2010,2010-07-01 17:00:00,287.8172633462159
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2011,2011-07-01 17:00:00,288.0773727445817
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2012,2012-07-01 17:00:00,288.01830575131453
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2013,2013-07-01 17:00:00,287.77975138036874
+CMIP,GISS-E2-1-G,historical,r8i1p1f1,Amon,gn,gs://cmip6/CMIP6/CMIP/NASA-GISS/GISS-E2-1-G/historical/r8i1p1f1/Amon/tas/gn/v20180830/,2014,2014-07-01 17:00:00,287.88130704365955

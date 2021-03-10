@@ -163,6 +163,8 @@ def calculate_rolling_mean(input_data, size):
   # Index the data frame by the year, so that the rolling mean respects the years
   data.index = data['year']
 
+  group_by = ['model', 'experiment', 'ensemble', 'variable']
+
   # previously, we just had a call:
   # rslt = data.groupby(group_by)['value'].rolling(size, center=True).mean().reset_index()
   # This returns the proper rolling mean on grouped data, but the first and last (size-1)/2

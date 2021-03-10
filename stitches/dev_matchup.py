@@ -205,6 +205,7 @@ def chunk_ts(df, n):
   # TODO hmmm do we want this function to also work on ESM data? If so do we need to change this function??
   # TODO does it need to be for only one variable?
   # TODO do we like chunks or are these windows?
+  # TODO do we really need the year column?
   """
 
   # Check the inputs
@@ -242,9 +243,6 @@ def get_chunk_info(df):
 
   :return:    pandas DataFrame of the chunk information, the start and end years as well as the chunk value (fx)
   and the chunk rate of change (dx).
-
-  TODO do we need more information? Like the size of the chunk? variable and scenario information?
-
   """
 
   # Check the inputs
@@ -259,7 +257,7 @@ def get_chunk_info(df):
   extra_columns = set(df.columns).difference({"chunk", "value", "year"})
   extra_info = df[extra_columns].drop_duplicates()
   if not (len(extra_info) == 1):
-    raise TypeError(f'need to come up with a better error message, decide if this check is even necessary')
+    raise TypeError(f'more than 1 type of data being read into the function')
 
 
   # Group the data frame by the chunk label so that we can use a for loop
@@ -281,7 +279,7 @@ def get_chunk_info(df):
     # how do we want to address if is no single middle year because the length of the
     # chunks is even?
     # Get the fx, the value of the center of the time period,
-    # TODO or should it be the average value over the time span?
+    # TODO or should it be the median value over the time span?
     x = math.ceil(np.median(chunk["year"])) # right now we select the one from the high year
     fx = chunk[chunk["year"] == x]["value"].values[0]
 
@@ -303,9 +301,15 @@ def get_chunk_info(df):
     fx_dx_info = fx_dx_info.append(row)
 
   # for loop should end here
-  # Add the additional information to the fx and dx data frame.
-  out = pd.concat([extra_info, fx_dx_info], axis=1, ignore_index=True)
-  out.columns = extra_info.columns.append(fx_dx_info.columns)
+
+  # Now add the extra or meta information to the data frame containing
+  # the results. There is most likely a more effecient way to do this
+  # in python but for now create an placeholder index column to join
+  # the meta data (1 row of data) to the output data.
+  extra_info["i"] = 1
+  fx_dx_info["i"] = 1
+  out = pd.merge(left = extra_info, right = fx_dx_info, left_on='i', right_on='i')
+  out = out.loc[:, out.columns != 'i'].copy()
 
   # Make sure that the objects being returned have int values for the
   # years instead of returning those values as a factor. This makes it
@@ -314,4 +318,3 @@ def get_chunk_info(df):
   out = out.astype(data_types_dict)
 
   return out
- 

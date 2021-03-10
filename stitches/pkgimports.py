@@ -16,4 +16,5 @@ import fsspec
 import datetime
 import os as os
 import math as math
+import pickle
 from sklearn.linear_model import LinearRegression

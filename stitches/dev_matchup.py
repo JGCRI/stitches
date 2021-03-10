@@ -29,6 +29,12 @@ def cleanup_main_tgav(f):
   df.columns = ['activity', 'model', 'experiment', 'ensemble', 'timestep',
          'grid_type', 'file', 'year', 'value']
   df["variable"] = "tgav"
+  
+  # sort to clean up year ordering
+  # TODO go back into the script where we create the csv of Tgav values and figure out why MPI-LR has the years
+  # get out of order (there's only one netcdf per ensemble member so it isn't that).
+  df = df.sort_values(by=['activity', 'model', 'experiment', 'ensemble', 'timestep','grid_type', 'file', 'year']).copy()
+
   return df
 
 #########################################################################################################
@@ -154,10 +160,31 @@ def calculate_rolling_mean(input_data, size):
 
   # Index the data frame by the year, so that the rolling mean respects the years
   data.index = data['year']
-
-  # Now calculate the rolling mean that uses a centered window.
+  
   group_by = ['model', 'experiment', 'ensemble', 'variable']
-  rslt = data.groupby(group_by)['value'].rolling(size, center=True).mean().reset_index()
+
+  # previously, we just had a call:
+  # rslt = data.groupby(group_by)['value'].rolling(size, center=True).mean().reset_index()
+  # This returns the proper rolling mean on grouped data, but the first and last (size-1)/2
+  # values in each grouped time series return as NaN because the full window isn't available
+  # on both sides of the values there. We want to still have 'semi-smoothed' values there, as
+  # in, we average whatever data we have in each grouped time series. So for a window size=5,
+  # the smoothed 2099 value would be the average of 2097-2100 in our goal set up (as opposed
+  # to 2097-2101 if we had the full 5 years of data centered on 2099).
+  # In theory, pd.rolling(min_periods=1) does exactly what we want; however, it's weird on
+  # grouped data. Sticking with the example of window size = 5, it was bringing in values from the
+  # next group's time series to fill in 2099 and 2100.
+  # To get pandas.rolling(min_periods-1) to apply correctly to grouped data, we have to wrap it
+  # in a call to `transform` and save that as a new column:
+
+  rslt = data.copy()
+  rslt['rollingAvg'] = rslt.groupby(group_by)['value'].transform(
+    lambda x: x.rolling(size, center=True, min_periods=1).mean())
+  # ^ seems like the way people usually get the functionality of a
+  # dplyr group_by %>% mutate()  call.
+
+  # rename so that value is the smoothed data:
+  rslt = rslt.drop('value', 1).rename(columns={'rollingAvg': 'value'}).reset_index(drop=True)
 
   return rslt
 

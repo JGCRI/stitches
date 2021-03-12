@@ -23,11 +23,12 @@ def cleanup_main_tgav(f):
 
   if(f[len(f) - 3 : ] == 'csv'):
     df = pd.read_csv(f)
-
-  if(f[len(f) - 3 : ] == 'dat'):
+  elif(f[len(f) - 3 : ] == 'dat'):
     with open(f, 'rb') as f1:
       # Pickle the 'data' dictionary using the highest protocol available.
-      pickle.load(f1)
+      df = pickle.load(f1)
+  else:
+    raise TypeError(f"unsupported file type, must be csv or dat")
 
 
   # Select the columns containing actual data, removing the index.

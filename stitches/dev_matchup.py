@@ -21,7 +21,16 @@ def cleanup_main_tgav(f):
   if not (os.path.isfile(f)):
     raise TypeError(f"file does not exist")
 
-  df = pd.read_csv(f)
+  if(f[len(f) - 3 : ] == 'csv'):
+    df = pd.read_csv(f)
+  elif(f[len(f) - 3 : ] == 'dat'):
+    with open(f, 'rb') as f1:
+      # Pickle the 'data' dictionary using the highest protocol available.
+      df = pickle.load(f1)
+  else:
+    raise TypeError(f"unsupported file type, must be csv or dat")
+
+
   # Select the columns containing actual data, removing the index.
   df = df[['activity', 'model', 'experiment', 'ensemble_member', 'timestep', 'grid_type', 'file', 'year', 'tgav']]
   # Rename columns and add a variable column
@@ -161,6 +170,8 @@ def calculate_rolling_mean(input_data, size):
   # Index the data frame by the year, so that the rolling mean respects the years
   data.index = data['year']
   
+  group_by = ['model', 'experiment', 'ensemble', 'variable']
+
   group_by = ['model', 'experiment', 'ensemble', 'variable']
 
   # previously, we just had a call:

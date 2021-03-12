@@ -79,6 +79,16 @@ def calc_and_format_tgav(pangeo_df_entry, save_individ_tgav = False):
     # years.
     # With a datetime, you can tell it to interpolate the missing years.
 
+
+    # raise an exception if it's an ssp-rcp file with a max year before 2099 -
+    # basically to handle/ignore the MIROC6 netcdfs under SSP245 that stop at 2039.
+    if((years.min() > 2014) & (years.max() < 2099)):
+        print(f"This future scenario netcdf has a max year of data before 2100: " +
+              "" + pangeo_df_entry["source_id"] + " " + pangeo_df_entry["experiment_id"] +
+              " " + pangeo_df_entry["member_id"] )
+        return
+
+
     # pull off just the tgav values so we can make a new formatted table
     # of year, tgav, metadata
     tgav = ds_tgav.tas.values.copy()
@@ -92,13 +102,23 @@ def calc_and_format_tgav(pangeo_df_entry, save_individ_tgav = False):
                                   'grid_type': pangeo_df_entry["grid_label"],
                                   'file': pangeo_df_entry["zstore"],
                                   'year': years,
+                                  'time': ds_tgav.indexes["time"],
                                   'tgav': tgav})
+
+    # add a sort condition on the years to deal with MPI-LR files
+    model_df = model_df.sort_values(by=['activity', 'model', 'experiment', 'ensemble_member',
+                                        'timestep', 'grid_type', 'file', 'year']).copy()
 
     if save_individ_tgav:
         # save the individual model's tgav
         model_save_name = ("stitches/data/created_data/" + pangeo_df_entry["source_id"] +
                            "_" + pangeo_df_entry["experiment_id"] + "_" + pangeo_df_entry["member_id"] +
-                           "_tgav.csv")
-        model_df.to_csv(model_save_name, index=False)
+                           "_tgav")
+        model_df.to_csv(model_save_name + ".csv", index=False)
+
+        with open(model_save_name+".dat", 'wb') as f:
+            # Pickle the 'data' dictionary using the highest protocol available.
+            pickle.dump(model_df, f, pickle.HIGHEST_PROTOCOL)
+
 
     return model_df

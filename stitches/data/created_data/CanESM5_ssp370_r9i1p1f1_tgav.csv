@@ -1,87 +1,87 @@
-,activity,model,experiment,ensemble_member,timestep,grid_type,file,year,tgav
-0,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2015,288.24043940417954
-1,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2016,288.25723777827756
-2,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2017,288.29654543237694
-3,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2018,288.3965981936447
-4,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2019,288.4817976795452
-5,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2020,288.69580226426194
-6,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2021,288.75256555646615
-7,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2022,288.72671564537677
-8,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2023,288.77066920437045
-9,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2024,288.86211201420684
-10,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2025,288.9029741720285
-11,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2026,288.8462109756493
-12,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2027,288.8243846184131
-13,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2028,289.0035631431247
-14,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2029,289.0534588387523
-15,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2030,289.0759425822627
-16,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2031,289.0207298873898
-17,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2032,289.01286219511866
-18,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2033,289.1884047065592
-19,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2034,289.21626457334094
-20,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2035,289.20472758310103
-21,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2036,289.3764621834313
-22,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2037,289.45647873635204
-23,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2038,289.5376270112952
-24,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2039,289.7157797952323
-25,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2040,289.4643727809375
-26,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2041,289.52621043519247
-27,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2042,289.7007538970009
-28,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2043,289.72903030848727
-29,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2044,289.87321506073084
-30,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2045,289.832979935574
-31,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2046,289.9430043577645
-32,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2047,289.9168195929213
-33,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2048,289.8228312050362
-34,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2049,290.13651747498676
-35,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2050,290.2029178004528
-36,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2051,290.25828928926245
-37,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2052,290.336808580528
-38,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2053,290.2997194478376
-39,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2054,290.40054500500946
-40,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2055,290.4312310349871
-41,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2056,290.35967386532843
-42,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2057,290.4311742241926
-43,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2058,290.7264777841014
-44,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2059,290.6726146530845
-45,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2060,290.7990281788456
-46,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2061,290.78674643512204
-47,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2062,290.7494848191542
-48,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2063,290.6807208076919
-49,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2064,291.05011468719675
-50,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2065,291.3506138596692
-51,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2066,291.27223914978543
-52,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2067,291.015428879075
-53,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2068,291.2142933953516
-54,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2069,291.23324005392556
-55,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2070,291.49246571852416
-56,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2071,291.4852242963855
-57,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2072,291.4021448117063
-58,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2073,291.36930961348907
-59,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2074,291.50271501344486
-60,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2075,291.55989874174605
-61,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2076,291.65782980147816
-62,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2077,291.81808890984297
-63,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2078,291.93001282368505
-64,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2079,291.8484588400659
-65,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2080,292.07398904314573
-66,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2081,292.06125002038704
-67,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2082,292.0935574349556
-68,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2083,292.06071231957804
-69,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2084,292.22897048500187
-70,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2085,292.51873518562735
-71,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2086,292.4532214494988
-72,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2087,292.2680718533965
-73,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2088,292.4411905417104
-74,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2089,292.62208769634
-75,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2090,292.49973439515435
-76,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2091,292.67185477612685
-77,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2092,292.793300880251
-78,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2093,292.88870271466175
-79,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2094,292.9604248949989
-80,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2095,292.92156946065097
-81,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2096,293.02154989462525
-82,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2097,293.0369031376202
-83,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2098,293.1082392530945
-84,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2099,293.1234829775121
-85,ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/,2100,293.2761313987057
+activity,model,experiment,ensemble_member,timestep,grid_type,file,year,time,tgav
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2015,2015-07-01 17:00:00,288.24043940417954
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2016,2016-07-01 17:00:00,288.25723777827756
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2017,2017-07-01 17:00:00,288.29654543237694
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2018,2018-07-01 17:00:00,288.3965981936447
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2019,2019-07-01 17:00:00,288.4817976795452
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2020,2020-07-01 17:00:00,288.69580226426194
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2021,2021-07-01 17:00:00,288.75256555646615
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2022,2022-07-01 17:00:00,288.72671564537677
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2023,2023-07-01 17:00:00,288.77066920437045
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2024,2024-07-01 17:00:00,288.86211201420684
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2025,2025-07-01 17:00:00,288.9029741720285
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2026,2026-07-01 17:00:00,288.8462109756493
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2027,2027-07-01 17:00:00,288.8243846184131
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2028,2028-07-01 17:00:00,289.0035631431247
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2029,2029-07-01 17:00:00,289.0534588387523
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2030,2030-07-01 17:00:00,289.0759425822627
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2031,2031-07-01 17:00:00,289.0207298873898
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2032,2032-07-01 17:00:00,289.01286219511866
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2033,2033-07-01 17:00:00,289.1884047065592
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2034,2034-07-01 17:00:00,289.21626457334094
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2035,2035-07-01 17:00:00,289.20472758310103
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2036,2036-07-01 17:00:00,289.3764621834313
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2037,2037-07-01 17:00:00,289.45647873635204
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2038,2038-07-01 17:00:00,289.5376270112952
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2039,2039-07-01 17:00:00,289.7157797952323
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2040,2040-07-01 17:00:00,289.4643727809375
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2041,2041-07-01 17:00:00,289.52621043519247
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2042,2042-07-01 17:00:00,289.7007538970009
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2043,2043-07-01 17:00:00,289.72903030848727
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2044,2044-07-01 17:00:00,289.87321506073084
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2045,2045-07-01 17:00:00,289.832979935574
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2046,2046-07-01 17:00:00,289.9430043577645
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2047,2047-07-01 17:00:00,289.9168195929213
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2048,2048-07-01 17:00:00,289.8228312050362
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2049,2049-07-01 17:00:00,290.13651747498676
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2050,2050-07-01 17:00:00,290.2029178004528
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2051,2051-07-01 17:00:00,290.25828928926245
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2052,2052-07-01 17:00:00,290.336808580528
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2053,2053-07-01 17:00:00,290.2997194478376
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2054,2054-07-01 17:00:00,290.40054500500946
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2055,2055-07-01 17:00:00,290.4312310349871
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2056,2056-07-01 17:00:00,290.35967386532843
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2057,2057-07-01 17:00:00,290.4311742241926
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2058,2058-07-01 17:00:00,290.7264777841014
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2059,2059-07-01 17:00:00,290.6726146530845
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2060,2060-07-01 17:00:00,290.7990281788456
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2061,2061-07-01 17:00:00,290.78674643512204
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2062,2062-07-01 17:00:00,290.7494848191542
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2063,2063-07-01 17:00:00,290.6807208076919
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2064,2064-07-01 17:00:00,291.05011468719675
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2065,2065-07-01 17:00:00,291.3506138596692
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2066,2066-07-01 17:00:00,291.27223914978543
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2067,2067-07-01 17:00:00,291.015428879075
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2068,2068-07-01 17:00:00,291.2142933953516
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2069,2069-07-01 17:00:00,291.23324005392556
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2070,2070-07-01 17:00:00,291.49246571852416
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2071,2071-07-01 17:00:00,291.4852242963855
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2072,2072-07-01 17:00:00,291.4021448117063
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2073,2073-07-01 17:00:00,291.36930961348907
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2074,2074-07-01 17:00:00,291.50271501344486
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2075,2075-07-01 17:00:00,291.55989874174605
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2076,2076-07-01 17:00:00,291.65782980147816
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2077,2077-07-01 17:00:00,291.81808890984297
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2078,2078-07-01 17:00:00,291.93001282368505
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2079,2079-07-01 17:00:00,291.8484588400659
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2080,2080-07-01 17:00:00,292.07398904314573
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2081,2081-07-01 17:00:00,292.06125002038704
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2082,2082-07-01 17:00:00,292.0935574349556
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2083,2083-07-01 17:00:00,292.06071231957804
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2084,2084-07-01 17:00:00,292.22897048500187
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2085,2085-07-01 17:00:00,292.51873518562735
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2086,2086-07-01 17:00:00,292.4532214494988
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2087,2087-07-01 17:00:00,292.2680718533965
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2088,2088-07-01 17:00:00,292.4411905417104
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2089,2089-07-01 17:00:00,292.62208769634
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2090,2090-07-01 17:00:00,292.49973439515435
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2091,2091-07-01 17:00:00,292.67185477612685
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2092,2092-07-01 17:00:00,292.793300880251
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2093,2093-07-01 17:00:00,292.88870271466175
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2094,2094-07-01 17:00:00,292.9604248949989
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2095,2095-07-01 17:00:00,292.92156946065097
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2096,2096-07-01 17:00:00,293.02154989462525
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2097,2097-07-01 17:00:00,293.0369031376202
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2098,2098-07-01 17:00:00,293.1082392530945
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2099,2099-07-01 17:00:00,293.1234829775121
+ScenarioMIP,CanESM5,ssp370,r9i1p1f1,Amon,gn,gs://cmip6/CMIP6/ScenarioMIP/CCCma/CanESM5/ssp370/r9i1p1f1/Amon/tas/gn/v20190429/,2100,2100-07-01 17:00:00,293.2761313987057

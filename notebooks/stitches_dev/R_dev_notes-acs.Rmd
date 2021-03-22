@@ -30,19 +30,17 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(knitr)
-library(kableExtra)
+# library(kableExtra)
 
-# Note this will need to changed to run on your local machine 
-BASE_DIR <- "/Users/dorh012/Documents/2021/stitches/notebooks/stitches_dev"
 
 # Load the functions that we will use! 
-source(file.path(BASE_DIR, "nearest_neighboor_matching.R"))
-source(file.path(BASE_DIR, "sitching_functions.R"))
+source("nearest_neighboor_matching.R")
+source("sitching_functions.R")
 
 
-archive_data <- read.csv(file.path(BASE_DIR, "inputs", "archive_data.csv"), stringsAsFactors = FALSE)
-target_data <- read.csv(file.path(BASE_DIR, "inputs", "target_data.csv"), stringsAsFactors = FALSE)
-tgav_data <- read.csv(file.path(BASE_DIR, "inputs", "tgav_data.csv"), stringsAsFactors = FALSE)
+archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
+tgav_data <- read.csv("inputs/tgav_data.csv", stringsAsFactors = FALSE)
 ```
 
 

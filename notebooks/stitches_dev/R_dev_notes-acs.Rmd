@@ -1,14 +1,18 @@
 ---
-title: 'R Devlopment of Matching for Stitches'
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
-  html_notebook: 
-    toc: true
-    toc_float:
-      toc_collapsed: true
-    toc_depth: 4
-    number_sections: true
+title: "R Devlopment of Matching for Stitches"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '4'
+  html_notebook:
+    number_sections: yes
     theme: lumen
+    toc: yes
+    toc_depth: 4
+    toc_float:
+      toc_collapsed: yes
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 
@@ -18,11 +22,11 @@ On March 15th we spoke about how we want to have some data to work with ASAP tha
 
 Materials 
 
-* `stitches/notebooks/produce_nearest_neighboor_inputs.py`: the python script that produces target and archive data that we will be used in the matching. This is data of values and rate of change for the different chunks of smoothed CanESM data. The target data contians data from a single experiment/ ensemble realization. While the target data contains this data for all of avaiable CanESM outputs. The outputs of this script are saved as csv files in `stitches/notebooks/stitches_dev/inputs` to be used in the R dev stage.
-* `stitches/notebooks/stitches_dev`: contains the materials for the R devlopment of the mathcing based on the nearest neighboor. 
-    * `nearest_neighboor_matching.R`: the functions that are used to find the nearest neighboor based on the elcudian distance between the target and arhcive data sets. Note that this only selcts the first nearest neihboor, it ignores cases where there are equa distant ties :( but that is a problem for another day. I spent a bit of time trying to find a pacakge/existing function that would be helpful here but there was nothing in R or python that looked like what we were looking for... 
+* `stitches/notebooks/produce_nearest_neighboor_inputs.py`: the python script that produces target and archive data that we will be used in the matching. This is data of values and rate of change for the different chunks of smoothed CanESM data. The target data contians data from a single experiment/ ensemble realization. The archive data contains this data for all of avaiable CanESM outputs. The outputs of this script are saved as csv files in `stitches/notebooks/stitches_dev/inputs` to be used in the R dev stage.
+* `stitches/notebooks/stitches_dev`: contains the materials for the R development of the matching based on the nearest neighbor. 
+    * `nearest_neighboor_matching.R`: the functions that are used to find the nearest neighboor based on the euclidean distance between the target and archive data sets. Note that this only selects the first nearest neighbor, it ignores cases where there are equa distant ties :( but that is a problem for another day. I spent a bit of time trying to find a pacakge/existing function that would be helpful here but there was nothing in R or python that looked like what we were looking for... 
     * `dev_notes.Rmd`: this document that walks through the matching process & the progress made on stitiching together the global mean time series so far. 
-    * `stitching_functions.R`: an attmpet at writing something that would use the information from the matched data frame to stitch together the global mean temp. It is unideal and there are probably some issues, the transition from historical to next experiment is missing data!
+    * `stitching_functions.R`: an attempt at writing something that would use the information from the matched data frame to stitch together the global mean temp anomalies. It is unideal and there are probably some issues, the transition from historical to next experiment is missing data!
     
     
 ```{r, message = FALSE, warning = FALSE}
@@ -38,9 +42,16 @@ source("nearest_neighboor_matching.R")
 source("stitching_functions.R")
 
 
-archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
-target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
+# The tgav anomaly data
 tgav_data <- read.csv("inputs/tgav_data.csv", stringsAsFactors = FALSE)
+
+# The archive of data: tgav anomalies converted to chunked windows with 
+# fx and dx calculated.
+archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+
+# The target dta is just the archive data, filtered to be ssp245 realization 1.
+# Saved and read in for convenience.
+target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
 ```
 
 
@@ -64,12 +75,15 @@ summary(self_match)
 ```
 
 
-What we woudl expect is that the archive results returns data from the exact same ensemble and then the same experiment as the target data, but note that the results from the historical period will be from the ssp119 scenario because all of the scenarios have identical historical data for the ensemble memeber and because we don't deal with tie breaks at the moment it will always select the first min it runs into. 
+What we would expect is that the archive results returns data from the exact same ensemble and then the same experiment as the target data, but note that the results from the historical period will be from the ssp119 scenario because all of the scenarios have identical historical data for the ensemble memeber and because we don't deal with tie breaks at the moment it will always select the first min it runs into. 
 
 ```{r}
-distinct(select(self_match, contains(c("model", "experiment", "ensemble")))) %>%  
-  kable() %>%  
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+self_match %>%
+  select(target_model, archive_model,
+         target_experiment, archive_experiment,
+         target_ensemble, archive_ensemble) %>%
+  distinct %>%
+  kable()
 ```
 
 
@@ -79,8 +93,8 @@ What does this look like?
 ggplot() + 
   geom_point(data = archive_data, 
              aes(fx, dx, color = "no match"), alpha = 0.1) + 
-  geom_point(data = self_match, aes(`archive-fx`, `archive-dx`,  color = "matched archive data")) + 
-  geom_point(data = self_match, aes(`target-fx`, `target-dx`,  color = "target data"), alpha = 0.4) + 
+  geom_point(data = self_match, aes(archive_fx, archive_dx,  color = "matched archive data")) + 
+  geom_point(data = self_match, aes(target_fx, target_dx,  color = "target data"), alpha = 0.4) + 
  scale_color_manual(values = c("matched archive data" = "red", 
                                "target data" = "blue", "no match" = "grey"))+
   theme_bw() + 
@@ -89,15 +103,16 @@ ggplot() +
        title = "Self select from the archive")
 ```
 
- Great we do see that the with the nearest neighboor we are able to self select the target data from the archive. 
+ Great we do see that with the nearest neighbor, we are able to self select the target data from the archive. 
  
 ## Match with boundry secnarios ssp126 and ssp585 
 
-Now what happens when the archive senario only consists of the two extreeme scenarios. We should see that the different scanrios are being selected from the archive. 
+Now what happens when the archive scenario only consists of the two extreme scenarios. We should see that the different scenarios are being selected from the archive. 
  
 ```{r}
 archive_ssp126_ssp585 <- filter(archive_data, experiment %in% c("ssp126", "ssp585"))
-# let's shuffel the entries 
+
+# let's shuffle the entries 
 set.seed(42)
 rows <- sample(nrow(archive_ssp126_ssp585), replace = FALSE) 
 archive_ssp126_ssp585 <- archive_ssp126_ssp585[rows, ]
@@ -110,9 +125,12 @@ boundary_ssps_match <- match_nearest_neighboor(target_data = target_data,
 When we check to see the sources of the matched entries from the archive we should see mulitple experiments and ensemble members! 
 
 ```{r}
-distinct(select(boundary_ssps_match, contains(c("model", "experiment", "ensemble")))) %>%  
-  kable() %>%  
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+boundary_ssps_match %>%
+  select(target_model, archive_model,
+         target_experiment, archive_experiment,
+         target_ensemble, archive_ensemble) %>%
+  distinct %>%
+  kable()
 ```
 
 
@@ -122,12 +140,12 @@ Now let's over lay the dx vs fx plots, note that lines are drawn between the pai
 ggplot() + 
   geom_point(data = archive_ssp126_ssp585, 
              aes(fx, dx, color = "no match"), alpha = 0.1) + 
-  geom_point(data = boundary_ssps_match, aes(`archive-fx`, `archive-dx`,  
+  geom_point(data = boundary_ssps_match, aes(archive_fx, archive_dx,  
                                              color = "matched archive data")) + 
-  geom_point(data = boundary_ssps_match, aes(`target-fx`, `target-dx`,  
+  geom_point(data = boundary_ssps_match, aes(target_fx, target_dx,  
                                              color = "target data"), alpha = 0.4) + 
-  geom_segment(data = boundary_ssps_match, aes(x = `target-fx`, y = `target-dx`, 
-                        xend = `archive-fx`, yend =  `archive-dx`), alpha = 0.4) +
+  geom_segment(data = boundary_ssps_match, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
  scale_color_manual(values = c("matched archive data" = "red", 
                                "target data" = "blue", "no match" = "grey"))+
   theme_bw() + 
@@ -140,15 +158,65 @@ What does the distance between the matched values look like?
 
 
 ```{r}
-summary(boundary_ssps_match$distance)
+summary(boundary_ssps_match$dist_l2)
+summary(boundary_ssps_match$dist_fx)
+summary(boundary_ssps_match$dist_dx)
 ```
 
 ```{r}
 ggplot() + 
-  geom_dotplot(data = boundary_ssps_match, aes(distance), bins = 40) + 
-  labs(x = "Distance between matched values", 
+  geom_dotplot(data = boundary_ssps_match, aes(dist_l2), bins = 40) + 
+  labs(x = "Euclidean Distance between matched values", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)")
+
+ggplot() + 
+  geom_dotplot(data = boundary_ssps_match, aes(dist_fx), bins = 40) + 
+  labs(x = "Distance between matched fx values", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)")
+
+ggplot() + 
+  geom_dotplot(data = boundary_ssps_match, aes(dist_dx), bins = 40) + 
+  labs(x = "Distance between matched dx values", 
        title = "Matching target (ssp245) with archive (ssp126 and ssp585)")
 ```
+
+## Investigate the matching
+
+It appears from the last scatter plot of figures that the points being selected as minimizing distance don't (visually) appear to actually be the minimized points. Label the points of the target data to make things a little simpler:
+
+```{r}
+ggplot() + 
+  geom_point(data = archive_ssp126_ssp585, 
+             aes(fx, dx, color = "no match"), alpha = 0.3) + 
+  geom_point(data = boundary_ssps_match, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data")) + 
+  geom_point(data = boundary_ssps_match, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+  geom_text(data = boundary_ssps_match, aes(target_fx, target_dx, 
+                                            label = target_year), size=2) +
+  geom_segment(data = boundary_ssps_match, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk)", 
+       x = "fx (value of median time per chunk)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" )
+```
+
+Select a few individual points where it seems to be wrong. Data points for `target_year > 2016`. It looks like the first time window that includes any future years (centered around 2016) is fine, but that as soon as we move to windows made entirely of future years, the matches get weird. Especially the windows centered at 2025, 2034, 2043, 2052.
+
+```{r}
+boundary_ssps_match %>%
+  filter(target_year %in% c(2025, 2034, 2043, 2052)) ->
+  orig_match
+
+
+
+
+```
+
+
 
 # Stitch Global Means 
 

@@ -10,8 +10,8 @@ library(assertthat)
 stitch_global_mean <- function(match, data){
   
   # check the match input make sure that the values are 
-  req_target_cols <- paste0("target-", c("variable", "start_yr", "end_yr"))
-  req_archive_cols <- paste0("archive-",  c("model", "start_yr", "end_yr", 
+  req_target_cols <- paste0("target_", c("variable", "start_yr", "end_yr"))
+  req_archive_cols <- paste0("archive_",  c("model", "start_yr", "end_yr", 
                                             "experiment", "variable", "model", "ensemble"))
   
   assert_that(has_name(x = match, which = c(req_archive_cols, req_target_cols)))
@@ -21,9 +21,9 @@ stitch_global_mean <- function(match, data){
   assert_that(has_name(x = data, which = req_cols))
   
   # Subset the data so that we are only working with archive data we are intrested with.
-  mod <- unique(match$`archive-model`)
-  exp <- c(unique(match$`archive-experiment`), "historical") # the historical experiments were renamed in our archive 
-  ens <- unique(match$`archive-ensemble`)
+  mod <- unique(match$archive_model)
+  exp <- c(unique(match$archive_experiment), "historical") # the historical experiments were renamed in our archive 
+  ens <- unique(match$archive_ensemble)
   
   data <- tgav_data
   index <- c(data$model %in% mod & data$experiment %in% exp & data$ensemble %in% ens)
@@ -34,20 +34,20 @@ stitch_global_mean <- function(match, data){
                         # select a single row of matched data, this is akward but not using a lapply here 
                         # because it will transform the int data into strings 
                         m <- match[i, ]
-                        yr <- m$`target-start_yr`:m$`target-end_yr`
+                        yr <- m$target_start_yr:m$target_end_yr
                         
-                        select_yrs <- m$`archive-start_yr`:m$`archive-end_yr`
+                        select_yrs <- m$archive_start_yr:m$archive_end_yr
                         
                         if(any(select_yrs < 2015)){
-                          rows <- c(data$year %in% select_yrs & data$ensemble == m$`archive-ensemble` & data$experiment == "historical")
+                          rows <- c(data$year %in% select_yrs & data$ensemble == m$archive_ensemble & data$experiment == "historical")
                           values <- data[rows, ]$value
                           } else {
-                            rows <- c(data$year %in% select_yrs & data$ensemble == m$`archive-ensemble` & data$experiment == m$`archive-experiment`)
+                            rows <- c(data$year %in% select_yrs & data$ensemble == m$archive_ensemble & data$experiment == m$archive_experiment)
                             values <- data[rows, ]$value
                             }
                         out <- data.frame(year = yr, 
                                           value = values[1:length(yr)], # somewhat confused why this is happenging
-                                          variable = m$`archive-variable`)
+                                          variable = m$archive_variable)
                         return(out)
                         })
   

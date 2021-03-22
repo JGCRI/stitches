@@ -4,21 +4,28 @@ library(assertthat)
 # and the archive values contained in the data frame. It will be used to help select which 
 # of the archive values best matches the target values. 
 # Args 
-#   fx: a single value of the target fx value
-#   dx: a single value of the target dx value 
-#   data: a data frame of the archive fx and dx values 
+#   fx_pt: a single value of the target fx value
+#   dx_pt: a single value of the target dx value 
+#   archivedata: a data frame of the archive fx and dx values 
 # Return: a dt
-internal_dist <- function(fx, dx, data){
+internal_dist <- function(fx_pt, dx_pt, archivedata){
 
+  # windowsize <- unique(archivedata$end_yr - archivedata$start_year)
+  # if(length(windowsize) > 1){
+  #   stop("you've made your archive by chunking with multiple window sizes, don't do that!")
+  # }
+  
+  names(archivedata) <- paste0('archive_', names(archivedata))
+  
   # calculate the euclidean distance between the target point 
   # and the archive observations.
   # Calculating distance d(target, archive_i) for each point i in the archive.
   # calculating the distance in the dx and fx dimensions separately because
   # now we want to track those in addition to the l2 distance.
-  
-  data.frame(dist_dx = abs(data$dx - dx),
-             dist_fx = abs(data$fx - fx)) %>%
-    mutate(dist_l2 = sqrt( (dist_fx)^2 + (dist_dx)^2 )) ->
+  archivedata %>% 
+    mutate(dist_dx = abs(archive_dx - dx_pt),
+           dist_fx = abs(archive_fx - fx_pt),
+           dist_l2 = sqrt( (dist_fx)^2 + (dist_dx)^2 )) ->
     dist
   
   # this returns the first minimum run into, which is not how we are going to want to do it, 
@@ -33,11 +40,8 @@ internal_dist <- function(fx, dx, data){
     stop("more than one identical match found!")
     }
   
-  out <- data[index, ]
-  names(out) <- paste0('archive_', names(out))
-  out$dist_dx <- dist$dist_dx[index]
-  out$dist_fx <- dist$dist_fx[index]
-  out$dist_l2 <- dist$dist_l2[index]
+  out <- dist[index, ]
+
   return(out)
   
 }
@@ -49,7 +53,7 @@ internal_dist <- function(fx, dx, data){
 #   archive_data: data frame created by the get_chunk_info containing information from the archive. 
 # Return: a data frame of the target data matched with the archive data, this is the information 
 # that will be used to look up and stich the archive values together, this is our "recepie card".
-match_nearest_neighboor <- function(target_data, archive_data){
+match_nearest_neighbor <- function(target_data, archive_data){
   
 # Check the inputs of the functions 
 req_cols <- c("experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx")  
@@ -57,9 +61,8 @@ assert_that(has_name(which = req_cols, x = archive_data))
 req_cols <- c("start_yr", "end_yr", "fx", "dx")
 assert_that(has_name(which = req_cols, x = target_data))
 
-
 # For every entry in the target data frame find its nearest neighboor from the archive data. 
-mapply(FUN = function(fx, dx){internal_dist(fx = fx, dx = dx, data = archive_data)},
+mapply(FUN = function(fx, dx){internal_dist(fx_pt = fx, dx_pt = dx, archivedata = archive_data)},
         fx = target_data$fx, dx = target_data$dx, SIMPLIFY = FALSE, USE.NAMES = FALSE) %>%  
   # concatenate the results into a sinngle data frame 
   do.call('rbind', args = .) -> 

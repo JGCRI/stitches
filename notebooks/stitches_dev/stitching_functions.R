@@ -25,7 +25,7 @@ stitch_global_mean <- function(match, data){
   exp <- c(unique(match$archive_experiment), "historical") # the historical experiments were renamed in our archive 
   ens <- unique(match$archive_ensemble)
   
-  data <- tgav_data
+  
   index <- c(data$model %in% mod & data$experiment %in% exp & data$ensemble %in% ens)
   data  <- data[index, ]
   

@@ -34,7 +34,7 @@ internal_dist <- function(fx, dx, data){
     }
   
   out <- data[index, ]
-  names(out) <- paste0('archive-', names(out))
+  names(out) <- paste0('archive_', names(out))
   out$dist_dx <- dist$dist_dx[index]
   out$dist_fx <- dist$dist_fx[index]
   out$dist_l2 <- dist$dist_l2[index]
@@ -70,7 +70,7 @@ mapply(FUN = function(fx, dx){internal_dist(fx = fx, dx = dx, data = archive_dat
 # Make sure it if clear which columns contain  data that comes from the target compared
 # to which ones correspond to the archive information. Right now there are lots of columns
 # that contain duplicate information for now it is probably fine to be moving these things around. 
-names(target_data) <- paste0('target-', names(target_data)) 
+names(target_data) <- paste0('target_', names(target_data)) 
 out <- cbind(target_data, matched)
 
 # Return the data frame of target values matched with the archive values with the distance. 

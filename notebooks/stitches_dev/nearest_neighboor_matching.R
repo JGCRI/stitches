@@ -1,25 +1,33 @@
 library(assertthat)
 
-# This function calculates the elucidian distance between the target values (dx and dy) with 
-# and the arhcive values contained in the data frame. It will be used to help select which 
-# of the arhive values best matches the target values. 
+# This function calculates the euclidean distance between the target values (fx and dx)  
+# and the archive values contained in the data frame. It will be used to help select which 
+# of the archive values best matches the target values. 
 # Args 
 #   fx: a single value of the target fx value
 #   dx: a single value of the target dx value 
 #   data: a data frame of the archive fx and dx values 
 # Return: a dt
 internal_dist <- function(fx, dx, data){
+
+  # calculate the euclidean distance between the target point 
+  # and the archive observations.
+  # Calculating distance d(target, archive_i) for each point i in the archive.
+  # calculating the distance in the dx and fx dimensions separately because
+  # now we want to track those in addition to the l2 distance.
   
-  #message(data)
-  # calculate the elucian distance between the target point 
-  # and the archive obversations 
-  dist <- unlist(sqrt((data['dx'] - dx)^2 + (data['fx'] - fx)^2))
+  data.frame(dist_dx = abs(data$dx - dx),
+             dist_fx = abs(data$fx - fx)) %>%
+    mutate(dist_l2 = sqrt( (dist_fx)^2 + (dist_dx)^2 )) ->
+    dist
+  
   # this returns the first minimum run into, which is not how we are going to want to do it, 
-  # we will want some way to keep track of the min and combine to havev different realizations 
+  # we will want some way to keep track of the min and combine to have different realizations 
   # or have some random generation. But for now I think that this is probably sufficent. 
-  index <- which.min(dist) 
+  index <- which.min(dist$dist_l2) 
+  
   # if there are mulitple matches then an error should be thrown! Why 
-  # is this not happening for the historiccal period? The ensemble memebers of 
+  # is this not happening for the historiccal period? The ensemble members of 
   # different experiments should be identical to one another! 
   if(length(index) > 1){
     stop("more than one identical match found!")
@@ -27,7 +35,9 @@ internal_dist <- function(fx, dx, data){
   
   out <- data[index, ]
   names(out) <- paste0('archive-', names(out))
-  out$distance <- dist[index]
+  out$dist_dx <- dist$dist_dx[index]
+  out$dist_fx <- dist$dist_fx[index]
+  out$dist_l2 <- dist$dist_l2[index]
   return(out)
   
 }

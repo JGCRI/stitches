@@ -35,7 +35,7 @@ library(knitr)
 
 # Load the functions that we will use! 
 source("nearest_neighboor_matching.R")
-source("sitching_functions.R")
+source("stitching_functions.R")
 
 
 archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)

@@ -2,19 +2,25 @@ library(assertthat)
 
 # This function calculates the euclidean distance between the target values (fx and dx)  
 # and the archive values contained in the data frame. It will be used to help select which 
-# of the archive values best matches the target values. 
+# of the archive values best matches the target values. To ensure a consisten unit across
+# all dimensions of the space, dx is updated to be windowsize*dx so that it has units of 
+# degC. This results in a distance metric (Euclidean/l2) in units of degC.
+# Could _very_ easily make that choice of unit consistency optional via arg and if-statement.
 # Args 
 #   fx_pt: a single value of the target fx value
 #   dx_pt: a single value of the target dx value 
-#   archivedata: a data frame of the archive fx and dx values 
-# Return: a dt
+#   archivedata: a data frame of the archive fx and dx values
+# Return: a data frame with the target data and the corresponding matched archive data. 
 internal_dist <- function(fx_pt, dx_pt, archivedata){
 
-  # windowsize <- unique(archivedata$end_yr - archivedata$start_year)
-  # if(length(windowsize) > 1){
-  #   stop("you've made your archive by chunking with multiple window sizes, don't do that!")
-  # }
-  
+  # Compute the window size of the archive data to use to update
+  # dx values to be windowsize*dx so that it has units of degC
+  windowsize <- unique(archivedata$end_yr - archivedata$start_year)
+  if(length(windowsize) > 1){
+    stop("you've made your archive by chunking with multiple window sizes, don't do that!")
+  }
+
+  # Update the names of the columns in the archive data.
   names(archivedata) <- paste0('archive_', names(archivedata))
   
   # calculate the euclidean distance between the target point 
@@ -23,7 +29,7 @@ internal_dist <- function(fx_pt, dx_pt, archivedata){
   # calculating the distance in the dx and fx dimensions separately because
   # now we want to track those in addition to the l2 distance.
   archivedata %>% 
-    mutate(dist_dx = abs(archive_dx - dx_pt),
+    mutate(dist_dx = windowsize*abs(archive_dx - dx_pt),
            dist_fx = abs(archive_fx - fx_pt),
            dist_l2 = sqrt( (dist_fx)^2 + (dist_dx)^2 )) ->
     dist

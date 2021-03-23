@@ -15,10 +15,15 @@ internal_dist <- function(fx_pt, dx_pt, archivedata){
 
   # Compute the window size of the archive data to use to update
   # dx values to be windowsize*dx so that it has units of degC
-  windowsize <- unique(archivedata$end_yr - archivedata$start_year)
-  if(length(windowsize) > 1){
-    stop("you've made your archive by chunking with multiple window sizes, don't do that!")
-  }
+  windowsize <- max(archivedata$end_yr - archivedata$start_yr)
+ # # For now comment out the code that enforces that there is only type of window size, 
+ # # however we do know that when the full ts is not divisible by a winndow size of 9 
+ # # or what not then we will run into issues with this. We do know that is will be 
+ # # important to ennsure that the size of the target chunk and archive chunks are equivalent. 
+ #TODO address this issue at a latter time. 
+ # if(length(windowsize) > 1){
+ #  stop("you've made your archive by chunking with multiple window sizes, don't do that!")
+ # }
 
   # Update the names of the columns in the archive data.
   names(archivedata) <- paste0('archive_', names(archivedata))
@@ -67,6 +72,9 @@ assert_that(has_name(which = req_cols, x = archive_data))
 req_cols <- c("start_yr", "end_yr", "fx", "dx")
 assert_that(has_name(which = req_cols, x = target_data))
 
+# shufflle the the archive data 
+archive_data <- shuffle_function(archive_data)
+
 # For every entry in the target data frame find its nearest neighboor from the archive data. 
 mapply(FUN = function(fx, dx){internal_dist(fx_pt = fx, dx_pt = dx, archivedata = archive_data)},
         fx = target_data$fx, dx = target_data$dx, SIMPLIFY = FALSE, USE.NAMES = FALSE) %>%  
@@ -86,6 +94,20 @@ out <- cbind(target_data, matched)
 return(out)
 
   
+}
+
+
+# Randomly shuffle the deck, this should help with the matching process. 
+# Args 
+#   dt: a data of archive values that will be used in the matching process. 
+# Return: a randomly ordered data frame
+# TODO this will be removed when we have figured out the ensemble situation however it will only have 
+# an effect if there are ties in the matching process, and it is unclear if that is the case yet. 
+shuffle_function <- function(dt){
+  
+  rows <- sample(nrow(dt), replace = FALSE) 
+  dt <-dt[rows, ]
+  return(dt)
 }
 
 

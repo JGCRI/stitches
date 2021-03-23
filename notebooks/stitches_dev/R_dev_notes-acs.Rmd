@@ -1,5 +1,5 @@
 ---
-title: "R Devlopment of Matching for Stitches"
+title: "Understanding and Fixing Matching - acs"
 output:
   html_document:
     df_print: paged
@@ -12,6 +12,8 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 
 # Goal
 We want to figure out what the nearest neighbor matching is doing in Kalyn's original write up. We have _not_ yet fixed the time jump in stitched Tgavs.
+
+Note that with the updated matching function identified by these notebooks, these notebooks will no longer run as is.
 
     
 ```{r, message = FALSE, warning = FALSE}
@@ -38,6 +40,7 @@ archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
 # Saved and read in for convenience.
 target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
 ```
+
 
 # Nearest Neighbor Matching 
 

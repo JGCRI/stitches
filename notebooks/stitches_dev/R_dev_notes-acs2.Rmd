@@ -1,5 +1,5 @@
 ---
-title: "R Devlopment of Matching for Stitches"
+title: "Understanding and fixing the historical to future gap - acs"
 output:
   html_document:
     df_print: paged
@@ -14,6 +14,8 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 Investigate the gap in stitched data at the historical to future boundary seen in Kalyn's work. Then try to understand the gaps from minimizing standardized data.
 
 Note: I'm going to use the word 'pasted' to refer to data where we've put the historical years into each SSP. Just as a way to differ from the stitched data we construct.
+
+Note that with the updated matching function identified by these notebooks, these notebooks will no longer run as is.
 
     
 ```{r, message = FALSE, warning = FALSE}

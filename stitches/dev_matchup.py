@@ -124,6 +124,40 @@ def calculate_anomaly(data, startYr = 1995, endYr = 2014):
 
 #########################################################################################################
 
+def paste_historical_data(input_data):
+  """"
+  Paste the appropriate historical data into each future scenario so that SSP585 realization 1, for
+  example, has the appropriate data from 1850-2100.
+
+  :param input_data:        A data frame of the cmip absolute temperature
+  :type input_data:        pandas.core.frame.DataFrame
+
+  :return:          A pandas data frame of the smoothed time series (rolling mean applied)
+  """
+  # TODO add some code that checks the inputs of the input_data
+  # Relabel the historical values so that there is a continuous rolling mean between the
+  # historical and future values.
+  # #######################################################
+  # Subset the historical data
+  historical_data = input_data[input_data["experiment"] == "historical"].copy()
+
+  # Create a subset of the future data
+  future_data = input_data[input_data["experiment"] != "historical"].copy()
+  future_scns = set(future_data["experiment"].unique())
+
+  frames = []
+  for scn in future_scns:
+    d = historical_data.copy()
+    d["experiment"] = scn
+    frames.append(d)
+
+  frames.append(future_data)
+  data = pd.concat(frames)
+
+  return(data)
+
+#########################################################################################################
+
 def calculate_rolling_mean(input_data, size):
   """"
   Calculate the rolling mean for the data frame with a user defined size centered window.
@@ -150,27 +184,10 @@ def calculate_rolling_mean(input_data, size):
 
   # Relabel the historical values so that there is a continuous rolling mean between the
   # historical and future values.
-  # #######################################################
-  # Subset the historical data
-  historical_data = input_data[input_data["experiment"] == "historical"].copy()
-
-  # Create a subset of the future data
-  future_data = input_data[input_data["experiment"] != "historical"].copy()
-  future_scns = set(future_data["experiment"].unique())
-
-  frames = []
-  for scn in future_scns:
-    d = historical_data.copy()
-    d["experiment"] = scn
-    frames.append(d)
-
-  frames.append(future_data)
-  data = pd.concat(frames)
+  data = paste_historical_data(input_data)
 
   # Index the data frame by the year, so that the rolling mean respects the years
   data.index = data['year']
-  
-  group_by = ['model', 'experiment', 'ensemble', 'variable']
 
   group_by = ['model', 'experiment', 'ensemble', 'variable']
 

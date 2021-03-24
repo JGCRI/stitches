@@ -1,0 +1,596 @@
+---
+title: "Understanding and Fixing Matching - acs"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '4'
+    toc_float: yes
+    number_sections: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+# Goal
+We want to figure out what the nearest neighbor matching is doing in Kalyn's original write up. We have _not_ yet fixed the time jump in stitched Tgavs.
+
+Note that with the updated matching function identified by these notebooks, these notebooks will no longer run as is.
+
+    
+```{r, message = FALSE, warning = FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+# library(kableExtra)
+
+
+# Load the functions that we will use! 
+source("nearest_neighbor_matching.R")
+source("stitching_functions.R")
+
+
+# The tgav anomaly data (unsmoothed, for constructing new realizations)
+tgav_data <- read.csv("inputs/tgav_data.csv", stringsAsFactors = FALSE)
+
+# The archive of data: smoothed tgav anomalies converted to chunked windows with 
+# fx and dx calculated.
+archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+
+# The target dta is just the archive data, filtered to be ssp245 realization 1.
+# Saved and read in for convenience.
+target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
+```
+
+
+# Nearest Neighbor Matching 
+
+We will use the function `match_nearest_neighbor` to match target data to its nearest neighboog defined that the observation in the arhive that minimizes the euclidean distance. Note that this picks the first nearest neighboor it runs into, it does not account for ties, 
+
+Proof of concept, if we read in the entire archive, this function should self select the target data, noramlly the target data will not also be included in the target data. 
+
+## Match with archive = boundary secnarios ssp126 and ssp585 
+
+Now what happens when the archive scenario only consists of the two extreme scenarios. We should see that the different scenarios are being selected from the archive. 
+ 
+```{r}
+archive_ssp126_ssp585 <- filter(archive_data, experiment %in% c("ssp126", "ssp585"))
+
+# let's shuffle the entries 
+set.seed(42)
+rows <- sample(nrow(archive_ssp126_ssp585), replace = FALSE) 
+archive_ssp126_ssp585 <- archive_ssp126_ssp585[rows, ]
+
+# Now match the target data with the limited archive 
+boundary_ssps_match <- match_nearest_neighbor(target_data = target_data, 
+                                              archive_data = archive_ssp126_ssp585)
+```
+
+When we check to see the sources of the matched entries from the archive we should see mulitple experiments and ensemble members! 
+
+```{r}
+boundary_ssps_match %>%
+  select(target_model, archive_model,
+         target_experiment, archive_experiment,
+         target_ensemble, archive_ensemble) %>%
+  distinct %>%
+  kable()
+```
+
+
+Now let's over lay the dx vs fx plots, note that lines are drawn between the pairs of data that are matched if no line is visible or the dot appears purple then it means that the matched values are stacked on top of one another. 
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+ggplot() + 
+  geom_point(data = archive_ssp126_ssp585, 
+             aes(fx, dx, color = "no match"), alpha = 0.1) + 
+  geom_point(data = boundary_ssps_match, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data")) + 
+  geom_point(data = boundary_ssps_match, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+  geom_segment(data = boundary_ssps_match, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk, degC/year)", 
+       x = "fx (value of median temperature per chunk, degC)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" )
+```
+
+
+## Investigate the matching
+
+It appears from the last scatter plot of figures that the points being selected as minimizing distance don't (visually) appear to actually be the minimized points. Label the points of the target data to make things a little simpler:
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+ggplot() + 
+  geom_point(data = archive_ssp126_ssp585, 
+             aes(fx, dx, color = "no match"), alpha = 0.3) + 
+  geom_point(data = boundary_ssps_match, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data")) + 
+  geom_point(data = boundary_ssps_match, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+  # geom_text(data = boundary_ssps_match, aes(target_fx, target_dx, 
+  #                                           label = target_year), size=2) +
+  geom_segment(data = boundary_ssps_match, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk, degC/year)", 
+       x = "fx (value of median temperature per chunk, degC)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" )
+```
+
+Select a few individual points where it seems to be wrong. Data points for `target_year > 2016`. It looks like the first time window that includes any future years (centered around 2016) is fine, but that as soon as we move to windows made entirely of future years, the matches get weird. Especially the windows centered at 2025, 2034, 2043, 2052.
+
+
+
+The window centered on 2025 is up first.
+Let's re-do the plot and zoom in around there.
+
+```{r,echo=FALSE, warning=FALSE,message=FALSE}
+# define some specific years to investigate
+yrs <- c(2025, 2034, 2043, 2052)
+
+# save the original match made by the above code for comparison.
+boundary_ssps_match %>%
+  filter(target_year %in% yrs) %>%
+  distinct ->
+  orig_match
+
+ggplot() + 
+  geom_point(data = archive_ssp126_ssp585, 
+             aes(fx, dx, color = "no match"), alpha = 0.5) + 
+  geom_text(data= archive_ssp126_ssp585, 
+            aes(fx, dx, label = interaction(experiment, ensemble, year)),
+            size = 1.8) +
+  geom_point(data = orig_match, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data"), alpha = 0.4) + 
+  geom_point(data = orig_match, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+  geom_text(data = orig_match, aes(target_fx, target_dx, 
+                                            label = target_year), size=2) +
+  geom_segment(data = orig_match, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey")) +
+  xlim(.85, .95) + ylim(.04, .05)+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk, degC/year)", 
+       x = "fx (value of median temperature per chunk, degC)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" ) 
+```
+
+So it _should_ be matching to a value from ssp585 realization 22, instead of the value it is matching to (from ssp126 realization 25).
+
+## The problem
+There's the problem: The ssp585 realization 22 only _looks_ closer to the target point because the x and y axes have such different units (degC vs degC/year) and therefore are such different orders of magnitude. A tick mark on the x-axis is a much bigger number than a tick mark on the y-axis.
+
+We re-make the figure on a consistent axis framing and it's clear that the matching is numerically working as intended:
+
+```{r,echo=FALSE, warning=FALSE,message=FALSE}
+
+archive_ssp126_ssp585 %>%
+  filter(fx >= 0.8 & fx <= 1,
+         dx >= 0.04 & dx <= 0.05,
+         (experiment == 'ssp585' & ensemble == 'r22i1p1f1') |
+            (experiment == 'ssp126' & ensemble == 'r25i1p1f1') ) ->
+  archivedata
+
+
+ggplot() + 
+  geom_point(data = distinct(archivedata), 
+             aes(fx, dx, color = "no match"), alpha = 0.5) + 
+  geom_text(data= archivedata, 
+            aes(fx, dx, label = interaction(experiment, ensemble, year)),
+            size = 1.8) +
+  geom_point(data = orig_match, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data"), alpha = 0.4) + 
+  geom_point(data = orig_match, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+  geom_text(data = orig_match, aes(target_fx, target_dx, 
+                                            label = target_year), size=2) +
+  geom_segment(data = orig_match, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey")) +
+  xlim(.875, .925) + ylim(-.005, .095)+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk, degC/year)", 
+       x = "fx (value of median temperature per chunk, degC)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" ) 
+```
+
+
+# Options to fix
+
+After consultation with Kalyn and Claudia, we will investigate two options:
+
+1. We will work with a 'new' distance metric with units of degC by working with window_size*dx in our minimization
+2. We will work with a 'new' distance metric (unitless) by standardizing both fx and dx by their respective standard deviations.
+
+## Minimizing on window-size*dx
+
+This results in a distance in units of degC.
+
+```{r}
+window_size <- 9
+
+archive_data %>% 
+  filter(experiment %in% c("ssp126", "ssp585")) %>%
+  mutate(orig_dx = dx,
+         dx = window_size * dx)->
+  archive_opt1
+
+# let's shuffle the entries 
+set.seed(42)
+rows <- sample(nrow(archive_opt1), replace = FALSE) 
+archive_opt1 <-archive_opt1[rows, ]
+
+
+target_data %>%
+   mutate(orig_dx = dx,
+         dx = window_size * dx)->
+  target_opt1
+
+
+# Now match the target data with the limited archive 
+boundary_ssps_match_opt1 <- match_nearest_neighbor(target_data = target_opt1, 
+                                              archive_data = archive_opt1)
+
+# kable(boundary_ssps_match_opt1)
+```
+
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE, fig.width=12, fig.height=10}
+p <- ggplot() + 
+  geom_point(data = archive_opt1, 
+             aes(fx, dx, color = "no match"), alpha = 0.3) + 
+  geom_point(data = boundary_ssps_match_opt1, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data")) + 
+  geom_point(data = boundary_ssps_match_opt1, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+    geom_segment(data = boundary_ssps_match_opt1, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  xlim(-2, 7) + ylim(-2,7)+
+  theme_bw() + 
+  labs(y = "adj. dx (degC)", 
+       x = "fx (value of median temperature per chunk, degC)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" )
+p
+
+ggsave('opt1_scatter.png',
+       p + 
+         geom_text(data = boundary_ssps_match_opt1,
+                   aes(archive_fx, archive_dx,
+                       label = interaction(archive_experiment, archive_ensemble, archive_year)),
+                   size = 1.8) +
+           geom_text(data = boundary_ssps_match_opt1,
+                     aes(target_fx, target_dx, label = target_year), 
+                     size=2), 
+       width = 12, height = 10, units = 'in')
+```
+
+
+## Minimizing standardized fx and dx
+
+This results in a unitless distance.
+
+### use standard deviations for each experiment
+
+We have to pull off the historical years before calculating standard deviations by scenario. Otherwise the fx and dx values in 1850-2014 will be very different under ssp126 vs ssp585 because they will have been standardized with different SD values. We end up getting matches of like 1850 = ssp126 2025 and the resulting stitched time series look awful and fail to match in history. A lot of this ugliness could be handled in the actual `internal_distance` function once we decide on a final option.
+
+As is, because of the smoothing and chunking we did, there will be small differences in the historical years near 2014 in SSP126 vs SSP585 in the archive and SSP245 for our target values.
+
+```{r}
+# get the standard deviations by experiment for 2015-2100
+archive_data %>%
+  filter(year >= 2015) %>%
+  group_by(variable, model, experiment) %>%
+  summarize(sd_fx = sd(fx),
+            sd_dx = sd(dx)) %>%
+  ungroup ->
+  archive_sdA
+
+# get the standard deviations for 1850-2014
+archive_data %>%
+  filter(year < 2015) %>% 
+  group_by(variable, model, experiment) %>%
+  summarize(sd_fx = sd(fx),
+            sd_dx = sd(dx)) %>%
+  ungroup ->
+  archive_sdA_hist
+
+
+# Join the appropriate standard deviations to the archive data so
+# that we have adjusted values fx, dx that we can use the minimizing
+# function on.
+# 2015-2100:
+archive_data %>% 
+  filter(experiment %in% c("ssp126", "ssp585"),
+         year >= 2015) %>%
+  left_join(archive_sdA, by=c('variable', 'model', 'experiment')) %>% 
+  mutate(fx = fx/sd_fx,
+         dx = dx/sd_dx) ->
+  archive_opt2a
+
+# 1850-2014
+archive_data %>% 
+  filter(experiment %in% c("ssp126", "ssp585"),
+         year < 2015) %>%
+  left_join(archive_sdA_hist, by=c('variable', 'model', 'experiment')) %>% 
+  mutate(fx = fx/sd_fx,
+         dx = dx/sd_dx) %>%
+  # and add to 2015-2100:
+  bind_rows(archive_opt2a)->
+  archive_opt2a
+
+# let's shuffle the entries 
+set.seed(42)
+rows <- sample(nrow(archive_opt2a), replace = FALSE) 
+archive_opt2a <-archive_opt2a[rows, ]
+
+
+# adjust the target data by their appropriate SDs
+target_data %>%
+  filter(year >=2015) %>%
+  left_join(archive_sdA, by=c('variable', 'model', 'experiment')) %>% 
+  mutate(fx = fx/sd_fx,
+         dx = dx/sd_dx) ->
+  target_opt2a
+
+target_data %>%
+  filter(year < 2015) %>%
+  left_join(archive_sdA_hist, by=c('variable', 'model', 'experiment')) %>% 
+  mutate(fx = fx/sd_fx,
+         dx = dx/sd_dx) %>%
+  bind_rows(target_opt2a) ->
+  target_opt2a
+
+# Now match the target data with the limited archive 
+boundary_ssps_match_opt2a <- match_nearest_neighbor(target_data = target_opt2a, 
+                                              archive_data = archive_opt2a)
+
+# kable(boundary_ssps_match_opt2a)
+```
+
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE, fig.width=12, fig.height=10}
+p <- ggplot() + 
+  geom_point(data = archive_opt2a, 
+             aes(fx, dx, color = "no match"), alpha = 0.3) + 
+  geom_point(data = boundary_ssps_match_opt2a, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data")) + 
+  geom_point(data = boundary_ssps_match_opt2a, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+    geom_segment(data = boundary_ssps_match_opt2a, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  xlim(-3, 6.5) + ylim(-3, 6.5) + 
+  theme_bw() + 
+  labs(y = "adj. dx (unitless)", 
+       x = "adj. fx (unitless)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" )
+p
+
+ggsave('opt2a_scatter.png', 
+       p + 
+         geom_text(data = boundary_ssps_match_opt2a,
+                   aes(archive_fx, archive_dx,
+                       label = interaction(archive_experiment, archive_ensemble, archive_year)),
+                   size = 1.8) +
+           geom_text(data = boundary_ssps_match_opt2a,
+                     aes(target_fx, target_dx, label = target_year), 
+                     size=2),
+       width = 12, height = 10, units = 'in')
+```
+
+
+### use standard deviations for each experiment*ensemble
+
+```{r}
+# get the standard deviations by experiment for 2015-2100
+archive_data %>%
+  filter(year >= 2015) %>%
+  group_by(variable, model, experiment, ensemble) %>%
+  summarize(sd_fx = sd(fx),
+            sd_dx = sd(dx)) %>%
+  ungroup ->
+  archive_sdB
+
+# get the standard deviations for 1850-2014
+archive_data %>%
+  filter(year < 2015) %>% 
+  group_by(variable, model, experiment, ensemble) %>%
+  summarize(sd_fx = sd(fx),
+            sd_dx = sd(dx)) %>%
+  ungroup ->
+  archive_sdB_hist
+
+
+# Join the appropriate standard deviations to the archive data so
+# that we have adjusted values fx, dx that we can use the minimizing
+# function on.
+# 2015-2100:
+archive_data %>% 
+  filter(experiment %in% c("ssp126", "ssp585"),
+         year >= 2015) %>%
+  left_join(archive_sdB, by=c('variable', 'model', 'experiment', 
+                              'ensemble')) %>% 
+  mutate(fx = fx/sd_fx,
+         dx = dx/sd_dx) ->
+  archive_opt2b
+
+# 1850-2014
+archive_data %>% 
+  filter(experiment %in% c("ssp126", "ssp585"),
+         year < 2015) %>%
+  left_join(archive_sdB_hist, by=c('variable', 'model', 'experiment', 'ensemble')) %>% 
+  mutate(fx = fx/sd_fx,
+         dx = dx/sd_dx) %>%
+  # and add to 2015-2100:
+  bind_rows(archive_opt2b)->
+  archive_opt2b
+
+
+# let's shuffle the entries 
+set.seed(42)
+rows <- sample(nrow(archive_opt2b), replace = FALSE) 
+archive_opt2b <-archive_opt2b[rows, ]
+
+
+# adjust the target data by their appropriate SDs
+target_data %>%
+  filter(year >=2015) %>%
+  left_join(archive_sdB, by=c('variable', 'model', 'experiment', 'ensemble')) %>% 
+  mutate(fx = fx/sd_fx,
+         dx = dx/sd_dx) ->
+  target_opt2b
+
+target_data %>%
+  filter(year < 2015) %>%
+  left_join(archive_sdB_hist, by=c('variable', 'model', 'experiment', 'ensemble')) %>% 
+  mutate(fx = fx/sd_fx,
+         dx = dx/sd_dx) %>%
+  bind_rows(target_opt2b) ->
+  target_opt2b
+
+# Now match the target data with the limited archive 
+boundary_ssps_match_opt2b <- match_nearest_neighbor(target_data = target_opt2b, 
+                                              archive_data = archive_opt2b)
+
+# kable(boundary_ssps_match_opt2b)
+```
+
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE, fig.width=12, fig.height=10}
+p <- ggplot() + 
+  geom_point(data = archive_opt2b, 
+             aes(fx, dx, color = "no match"), alpha = 0.3) + 
+  geom_point(data = boundary_ssps_match_opt2b, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data")) + 
+  
+  geom_point(data = boundary_ssps_match_opt2b, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+    geom_segment(data = boundary_ssps_match_opt2b, aes(x = target_fx, y = target_dx, 
+                        xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  xlim(-3, 7.6) + ylim(-3, 7.6)+
+  theme_bw() + 
+  labs(y = "adj. dx (unitless)", 
+       x = "adj. fx (unitless)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" )
+p
+
+ggsave('opt2b_scatter.png', 
+       p + 
+         geom_text(data = boundary_ssps_match_opt2b,
+                   aes(archive_fx, archive_dx,
+                       label = interaction(archive_experiment, archive_ensemble, archive_year)),
+                   size = 1.8) +
+           geom_text(data = boundary_ssps_match_opt2b,
+                     aes(target_fx, target_dx, label = target_year), 
+                     size=2),
+       width = 12, height = 10, units = 'in')
+```
+
+
+
+# Stitched time series
+Based on all of the scatter plots above of matched data, the matching appears to be working correctly even in the standardized data. In other words for each standardized (fx, dx) target point, it is selecting the correct standardized (fx,dx) point from the archive. Tested by: saving copies of figures with each red and blue dot labeled with more info, spot checking each of the matched data frames against several labeled dots per figure to make sure the table had the right info. It does.
+
+
+Stitch things together for each different matched data:
+```{r}
+out1 <- stitch_global_mean(data = tgav_data, match = boundary_ssps_match)
+out1$name <- "original"
+
+out2 <- stitch_global_mean(data = tgav_data, match = boundary_ssps_match_opt1)
+out2$name <- "window*dx"
+
+out3 <- stitch_global_mean(data = tgav_data, match = boundary_ssps_match_opt2a)
+out3$name <- "sd by experiment"
+
+out4 <- stitch_global_mean(data = tgav_data, match = boundary_ssps_match_opt2b)
+out4$name <- "sd by experiment*ensemble"
+
+```
+
+Prep the comparison data for plotting
+```{r}
+# prepare the comparison data this is the data that we are trying to emulate, which we smoothed in python. 
+tgav_data %>% 
+  dplyr::filter(experiment %in% c(unique(target_data$experiment), "historical") & ensemble == unique(target_data$ensemble) & model == unique(target_data$model)) -> 
+  comparison
+```
+
+Plot them all together:
+```{r, warning=FALSE, message=FALSE}
+ggplot() + 
+  geom_line(data = comparison, aes(year, value, color = "target data")) + 
+  geom_line(data = out1, aes(year, value, color = "original"), alpha = 0.6) + 
+  geom_line(data = out2, aes(year, value, color = "window*dx"), alpha = 0.6) + 
+  geom_line(data = out3, aes(year, value, color = "sd by experiment"), alpha = 0.6) + 
+  geom_line(data = out4, aes(year, value, color = "sd by experiment*ensemble"), alpha = 0.6) + 
+  theme_bw() + 
+  labs(y = 'Global Temp anomaly', 
+       x = "Year") + 
+  scale_color_manual(values = c("target data" = "grey", "original" = "red", 
+                                "window*dx" = "blue", "sd by experiment" = "green",
+                                "sd by experiment*ensemble" = "cyan"))
+```
+
+Some observations:
+
+- it would appear that the weird gap years between historical and future that we saw in the initial data set are occuring in different years in the standard deviation versions. 
+- some of the things that initially look like gaps (eg 2075 in the cyan curve) are not gaps but discontinuities.
+- it would appear that in the standardized space, continuity between chunks is not preserved. I should probably think through why. I also don't currently know to what extent this is the same phenomenon as the gap between historical and future in the stitched data seen in Kalyn's data and our blue and red stitched options.
+
+
+## Double check stitching
+
+There's more to be figured out with the stitching (such as the gap Kalyn found when going from historical to future years). For now, I'll do a quick spot check.
+
+A quick spot check that the values plotted on the stitched tgav time series plot are at least the correct values. We'll look at the sd by experiment*ensemble data for the target year 2052 (window 2048-2056).
+
+```{r}
+# THe matched data in that year:
+boundary_ssps_match_opt2b %>%
+  filter(target_year ==2052) -> 
+  matched_metadata
+
+kable(matched_metadata)
+```
+
+The stitching function should be taking the information about model, experiment, ensemble, and archive_years from the matched data, going into the unsmoothed tgav data, extracting the tgav data for that model, experiment, ensemble, set of years, and dropping it into our stitched time series at the target-years (2048-2056). The stitching function only cares about this meta-data, not the fx or dx values that were used in matching:
+
+```{r}
+# the unsmoothed tgav data:
+tgav_data %>%
+  filter(model == unique(matched_metadata$archive_model),
+         experiment == unique(matched_metadata$archive_experiment),
+         ensemble == unique(matched_metadata$archive_ensemble),
+         year >= unique(matched_metadata$archive_start_yr),
+         year <= unique(matched_metadata$archive_end_yr)) %>%
+  mutate(tgav_year = year,
+         year = c(unique(matched_metadata$target_start_yr):unique(matched_metadata$target_end_yr))) %>%
+  rename(tgav_value = value) ->
+  matched_tgav
+
+# Compare to what the stitching function output:
+matched_tgav %>%
+  select(-model, -experiment, -ensemble, -timestep, -grid_type, -file) %>% 
+  left_join(out4, by = c('year', 'variable') ) %>%
+  mutate(diff = abs(tgav_value - value)) ->
+  compare_stitched
+
+print(max(abs(compare_stitched$diff)))
+
+```
+
+So it does appear that the stitching is being done correctly (up to figuring out gaps). 

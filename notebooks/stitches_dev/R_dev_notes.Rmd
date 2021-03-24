@@ -1,0 +1,229 @@
+---
+title: 'R Devlopment of Matching for Stitches'
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_notebook: 
+    toc: true
+    toc_float:
+      toc_collapsed: true
+    toc_depth: 4
+    number_sections: true
+    theme: lumen
+---
+
+
+# Intro notes & set up 
+
+On March 15th we spoke about how we want to have some data to work with ASAP that can be used as proof of progress at the meeting on April 12th. To make speed this process up we decided to do some of the inital implmentation of the matching by nearest neighboor in R before translating it into python with good software design, this is a team effort and because the baton will be passed between memeber here are some note, potenitally excessive notes about what is going on. 
+
+Materials 
+
+* `stitches/notebooks/produce_nearest_neighboor_inputs.py`: the python script that produces target and archive data that we will be used in the matching. This is data of values and rate of change for the different chunks of smoothed CanESM data. The target data contians data from a single experiment/ ensemble realization. While the target data contains this data for all of avaiable CanESM outputs. The outputs of this script are saved as csv files in `stitches/notebooks/stitches_dev/inputs` to be used in the R dev stage.
+* `stitches/notebooks/stitches_dev`: contains the materials for the R devlopment of the mathcing based on the nearest neighboor. 
+    * `nearest_neighboor_matching.R`: the functions that are used to find the nearest neighboor based on the elcudian distance between the target and arhcive data sets. Note that this only selcts the first nearest neihboor, it ignores cases where there are equa distant ties :( but that is a problem for another day. I spent a bit of time trying to find a pacakge/existing function that would be helpful here but there was nothing in R or python that looked like what we were looking for... 
+    * `dev_notes.Rmd`: this document that walks through the matching process & the progress made on stitiching together the global mean time series so far. 
+    * `stitching_functions.R`: an attmpet at writing something that would use the information from the matched data frame to stitch together the global mean temp. It is unideal and there are probably some issues, the transition from historical to next experiment is missing data!
+    
+    
+```{r, message = FALSE, warning = FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
+# Note this will need to changed to run on your local machine 
+BASE_DIR <- "/Users/dorh012/Documents/2021/stitches/notebooks/stitches_dev"
+
+# Load the functions that we will use! 
+source(file.path(BASE_DIR, "nearest_neighboor_matching.R"))
+source(file.path(BASE_DIR, "sitching_functions.R"))
+
+
+archive_data <- read.csv(file.path(BASE_DIR, "inputs", "archive_data.csv"), stringsAsFactors = FALSE)
+target_data <- read.csv(file.path(BASE_DIR, "inputs", "target_data.csv"), stringsAsFactors = FALSE)
+tgav_data <- read.csv(file.path(BASE_DIR, "inputs", "tgav_data.csv"), stringsAsFactors = FALSE)
+```
+
+
+# Nearest Neighboor Matching 
+
+
+We will use the function `match_nearest_neighboor` to match target data to its nearest neighboog defined that the observation in the arhive that minimizes the euclidean distance. Note that this picks the first nearest neighboor it runs into, it does not account for ties, 
+
+Proof of concept, if we read in the entire archive, this function should self select the target data, noramlly the target data will not also be included in the target data. 
+
+## Self Matching
+
+```{r}
+self_match <- match_nearest_neighboor(target_data = target_data, archive_data = archive_data)
+```
+
+Let's take a look at the output. 
+
+```{r}
+summary(self_match)
+```
+
+
+What we woudl expect is that the archive results returns data from the exact same ensemble and then the same experiment as the target data, but note that the results from the historical period will be from the ssp119 scenario because all of the scenarios have identical historical data for the ensemble memeber and because we don't deal with tie breaks at the moment it will always select the first min it runs into. 
+
+```{r}
+distinct(select(self_match, contains(c("model", "experiment", "ensemble")))) %>%  
+  kable() %>%  
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+
+What does this look like? 
+
+```{r}
+ggplot() + 
+  geom_point(data = archive_data, 
+             aes(fx, dx, color = "no match"), alpha = 0.1) + 
+  geom_point(data = self_match, aes(`archive-fx`, `archive-dx`,  color = "matched archive data")) + 
+  geom_point(data = self_match, aes(`target-fx`, `target-dx`,  color = "target data"), alpha = 0.4) + 
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk)", 
+       x = "fx (value of median time per chunk)", 
+       title = "Self select from the archive")
+```
+
+ Great we do see that the with the nearest neighboor we are able to self select the target data from the archive. 
+ 
+## Match with boundry secnarios ssp126 and ssp585 
+
+Now what happens when the archive senario only consists of the two extreeme scenarios. We should see that the different scanrios are being selected from the archive. 
+ 
+```{r}
+archive_ssp126_ssp585 <- filter(archive_data, experiment %in% c("ssp126", "ssp585"))
+# let's shuffel the entries 
+set.seed(42)
+rows <- sample(nrow(archive_ssp126_ssp585), replace = FALSE) 
+archive_ssp126_ssp585 <- archive_ssp126_ssp585[rows, ]
+
+# Now match the target data with the limited archive 
+boundary_ssps_match <- match_nearest_neighboor(target_data = target_data, 
+                                               archive_data = archive_ssp126_ssp585)
+```
+
+When we check to see the sources of the matched entries from the archive we should see mulitple experiments and ensemble members! 
+
+```{r}
+distinct(select(boundary_ssps_match, contains(c("model", "experiment", "ensemble")))) %>%  
+  kable() %>%  
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+
+Now let's over lay the dx vs fx plots, note that lines are drawn between the pairs of data that are matched if no line is visible or the dot appears purple then it means that the matched values are stacked on top of one another. 
+
+```{r}
+ggplot() + 
+  geom_point(data = archive_ssp126_ssp585, 
+             aes(fx, dx, color = "no match"), alpha = 0.1) + 
+  geom_point(data = boundary_ssps_match, aes(`archive-fx`, `archive-dx`,  
+                                             color = "matched archive data")) + 
+  geom_point(data = boundary_ssps_match, aes(`target-fx`, `target-dx`,  
+                                             color = "target data"), alpha = 0.4) + 
+  geom_segment(data = boundary_ssps_match, aes(x = `target-fx`, y = `target-dx`, 
+                        xend = `archive-fx`, yend =  `archive-dx`), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk)", 
+       x = "fx (value of median time per chunk)", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)" )
+```
+
+What does the distance between the matched values look like? 
+
+
+```{r}
+summary(boundary_ssps_match$distance)
+```
+
+```{r}
+ggplot() + 
+  geom_dotplot(data = boundary_ssps_match, aes(distance), bins = 40) + 
+  labs(x = "Distance between matched values", 
+       title = "Matching target (ssp245) with archive (ssp126 and ssp585)")
+```
+
+# Stitch Global Means 
+
+
+```{r}
+out1 <- stitch_global_mean(data = tgav_data, match = boundary_ssps_match)
+out1$name <- "boundary ssp match"
+```
+
+
+```{r}
+# prepare the comparison data this is the data that we are trying to emulate, which we smoothed in python. 
+tgav_data %>% 
+  dplyr::filter(experiment %in% c(unique(target_data$experiment), "historical") & ensemble == unique(target_data$ensemble) & model == unique(target_data$model)) -> 
+  comparison
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+ggplot() + 
+  geom_line(data = comparison, aes(year, value, color = "target data")) + 
+  geom_line(data = out1, aes(year, value, color = "stitched 1"), alpha = 0.6) + 
+  theme_bw() + 
+  labs(y = 'Global Temp', 
+       x = "Year") + 
+  scale_color_manual(values = c("target data" = "grey", "stitched 1" = "red"))
+```
+
+The historical data is a perfect match, which is what we expected, there is the gap in the stiched data between the historical and ssp scneario which is a problem. But eye balling it looks reasonable to me.... 
+
+Let's compare when we do the matching with two different archives.... 
+
+
+```{r}
+# subset the archive so that it includes data from all of the scenarios with the exception of the ssp245
+archive_nonssp245 <- filter(archive_data, !experiment %in% c("ssp245"))
+# let's shuffel the entries 
+set.seed(42)
+rows <- sample(nrow(archive_nonssp245), replace = FALSE) 
+archive_nonssp245 <- archive_nonssp245[rows, ]
+
+# Now match the target data with the limited archive 
+nonspp245_match <- match_nearest_neighboor(target_data = target_data, 
+                                               archive_data = archive_nonssp245)
+```
+
+
+
+```{r}
+out2 <- stitch_global_mean(data = tgav_data, match = nonspp245_match)
+out2$name <- "non ssp245 match"
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+ggplot() + 
+  geom_line(data = comparison, aes(year, value, color = "target data")) + 
+  geom_line(data = out1, aes(year, value, color = "stitched 1"), alpha = 0.6) + 
+    geom_line(data = out2, aes(year, value, color = "stitched 2"), alpha = 0.6) + 
+
+  theme_bw() + 
+  labs(y = 'Global Temp', 
+       x = "Year") + 
+  scale_color_manual(values = c("target data" = "grey", "stitched 1" = "red", "stitched 2" = "blue"))
+```
+
+Okay something really funky is going on here... why are there no matches at the end of 2040? There is clearly something going on there but the other data doesn't look that horrible..... 
+
+
+# Net Steps 
+
+* figure out what is going on with the stitching function
+* figure out how to manage/work with the ties in the data and how it will be used to generate the ensemble of results 
+* How does the distance between the matched observations change when the archive changes? 
+* produce the syntheic global mean ts for the analysis for April 12th 
+* translate into python? 

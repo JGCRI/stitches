@@ -58,12 +58,13 @@ target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
 
 Use the function `match_nearest_neighbor` to match the target and archive data to one another. Right now the user will have to manually subset the contents of the archive so that we are not matching to other ESMs or the target scenario
 
-For the target data of CanESM5 SSP245, this archive consists of all other CanESM5 scenarios. Additional filtering, for example to just SSP126 and SSP585, would be done by updating this block of code.
+For the target data of CanESM5 SSP245, this archive consists of all other CanESM5 scenarios except ssp534-over. We've run into some data problems with that scenario and are excluding it for now. Additional filtering, for example to just SSP126 and SSP585, would be done by updating this block of code.
 
 ```{r}
 archive_data %>% 
   dplyr::filter(model == unique(target_data$model)) %>%  
-  dplyr::filter(experiment != unique(target_data$experiment)) -> 
+  dplyr::filter(experiment != unique(target_data$experiment) &
+                  experiment!= 'ssp534-over') ->
   archive_subset
 ```
 

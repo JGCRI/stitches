@@ -16,8 +16,9 @@ internal_dist <- function(fx_pt, dx_pt, archivedata){
   # Compute the window size of the archive data to use to update
   # dx values to be windowsize*dx so that it has units of degC
   windowsize <- max(archivedata$end_yr - archivedata$start_yr)
+  
  # # For now comment out the code that enforces that there is only type of window size, 
- # # however we do know that when the full ts is not divisible by a winndow size of 9 
+ # # however we do know that when the full ts is not divisible by a window size of 9 
  # # or what not then we will run into issues with this. We do know that is will be 
  # # important to ennsure that the size of the target chunk and archive chunks are equivalent. 
  #TODO address this issue at a latter time. 

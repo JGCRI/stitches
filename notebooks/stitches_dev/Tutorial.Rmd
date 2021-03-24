@@ -1,5 +1,5 @@
 ---
-title: "Tutorial: Basic matching and stitching"
+title: "Tutorial: Basic matching and stitching in R"
 output:
   html_document:
     df_print: paged
@@ -23,26 +23,32 @@ library(ggplot2)
 library(knitr)
 
 # The load the functions we will want to use, these are currently written in R and will be translated into python. 
-source("stitches_dev/nearest_neighbor_matching.R") # the function match_nearest_neighbor is defined here
-source("stitches_dev/stitching_functions.R")  # the function stitch_global_mean is definend here 
+source("nearest_neighbor_matching.R") # the function match_nearest_neighbor is defined here
+source("stitching_functions.R")  # the function stitch_global_mean is definend here 
 ```
 
 
-Load the inputs will be used in the tutorial. 
+Load the inputs that will be used in the tutorial. 
 
 ```{r}
-# Time sereis of the raw global mean temperature anomoly, this is the data that is going to be stitched together.
-tgav_data <- read.csv("stitches_dev/inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", stringsAsFactors = FALSE)
-
-# A chunked smoothed tgav anomaly archive archive of data. This was tgav_data but several steps were taken in python to 
-# transform it into the "chunked" data and save it so that we do not have to repeate this process so many times. 
-archive_data <- read.csv('stitches_dev/inputs/archive_data.csv', stringsAsFactors = FALSE)
-
+# Time series of the raw global mean temperature anomaly, this is the data that is 
+# going to be stitched together. Historical data is pasted into every scenario. No
+# smoothing has been done.
+tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+                      stringsAsFactors = FALSE) %>% dplyr::select(-X)
 
 
-# This is chunked smooth tgav anomaly for a single model/experiment/ensemble memeber, saved for our convience. 
-# If you decide that you want to work with a different different target data subset you can subset it from the archive_data daata frame. 
-target_data <- read.csv("stitches_dev/inputs/target_data.csv", stringsAsFactors = FALSE)
+# A chunked smoothed tgav anomaly archive of data. This was tgav_data but several 
+# steps were taken in python to transform it into the "chunked" data and save it 
+# so that we do not have to repeate this process so many times. 
+archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+
+
+# This is chunked smooth tgav anomaly for a single model/experiment/ensemble
+# member, saved for our convenience. If you decide that you want to work with 
+# a different different target data subset you can subset it from the
+# archive_data data frame. This file is SSP245 Realization 1.
+target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
 
 ```
 
@@ -50,18 +56,18 @@ target_data <- read.csv("stitches_dev/inputs/target_data.csv", stringsAsFactors 
 # Matching 
 
 
-Use the function `match_nearest_neighbor` to match the target and archive data to one another. Right now the user will have to manually subset the the contents of the archive so that we are not matching to multiple models or on its self. 
+Use the function `match_nearest_neighbor` to match the target and archive data to one another. Right now the user will have to manually subset the contents of the archive so that we are not matching to other ESMs or the target scenario
 
-
-Now that we have the subset of the archive we want to work with, we can use it in the nearest neighbor. 
+For the target data of CanESM5 SSP245, this archive consists of all other CanESM5 scenarios. Additional filtering, for example to just SSP126 and SSP585, would be done by updating this block of code.
 
 ```{r}
 archive_data %>% 
-  dplyr::filter(model == unique(target_data$model)) %>% 
+  dplyr::filter(model == unique(target_data$model)) %>%  
   dplyr::filter(experiment != unique(target_data$experiment)) -> 
   archive_subset
 ```
 
+Now that we have the subset of the archive we want to work with, we can use it in the nearest neighbor. 
 
 Match the target and archive data! 
 
@@ -70,7 +76,7 @@ matched_data <- match_nearest_neighbor(target_data = target_data, archive_data =
 ```
 
 
-It will return a rather large data frame, with 28 rows and 21 columns. It will contain information about the target and archive data matched together. Columns that contain information about the distance of the matched pairs are `dist_dx`, `dist_fx`, and `dst_l2`.  `dist_dx` and `dist_fx` reflect the distance between the dx and fx components. `dist_l2` contains the euclidean distance, this is the distance that we use to select the nearest neighbor. 
+It will return a rather large data frame, with 28 rows and 21 columns. It will contain information about the target and archive data matched together. Columns that contain information about the distance of the matched pairs are `dist_dx`, `dist_fx`, and `dist_l2`.  `dist_dx` and `dist_fx` reflect the distance between the `window-size*dx` and `fx` components. `dist_l2` contains the euclidean distance, this is the distance that we use to select the nearest neighbor. 
 
 
 ```{r}
@@ -93,7 +99,7 @@ Visualize the matched points.
 
 ```{r}
 ggplot(data = matched_data) + 
-  # Add the subset of the data that was read into the matching process. 
+  # Add the subset of the archive data that was read into the matching process. 
   geom_point(data = archive_subset, aes(fx, dx, color = "no match"), alpha = 0.4) + 
   # Add the matched together points and make clear which points are matched with which. 
   geom_point(aes(archive_fx, archive_dx, color = "matched archive data")) + 
@@ -111,7 +117,7 @@ ggplot(data = matched_data) +
 
 # Stitching 
 
-Subset the comparison data. 
+Subset the raw tgav anomalies to include only the modelXscenarioXensemble of the target data as comparison data for the constructed tgav anomalies. 
 
 ```{r}
 tgav_data %>%  
@@ -121,7 +127,7 @@ tgav_data %>%
 ```
 
 
-Now that we have a data frame with matched information use the function `stitch_global_mean` to produce the stiched data. 
+Now that we have a data frame with matched information, use the function `stitch_global_mean` to produce the stiched data. 
 
 
 ```{r}
@@ -141,7 +147,7 @@ ggplot(data = out1) +
 
 # Full Pipeline 
 
-If you want to do it all together in a single pipeline this is how it would be done. 
+If you want to do it all together in a single line this is how it would be done. 
 
 ```{r}
 rslts <- stitch_global_mean(match_nearest_neighbor(target_data, archive_subset), data = tgav_data)
@@ -152,7 +158,7 @@ rslts <- stitch_global_mean(match_nearest_neighbor(target_data, archive_subset),
 head(rslts)
 ```
 
-Change the stiched outputs by changing the experiments included in the archive.
+You can change the stitched outputs by changing the experiments included in the archive. 
 
 ```{r}
 # Subset the archive data to exlude a single experiment at a time.
@@ -194,8 +200,7 @@ ggplot() +
 
 ```
 
-
-
+You can also generate new SSP245 realizations by using the other CanESM5 realizations from the `archive_data` as the `target_data` in the above pipeline. For now, because we have nearest neighbor matching implemented, this is the limit of the number of constructed realizations that can be made.  For CanESM5, there are 25 SSP245 realizations - using each of these as target data and adjusting which of the other scenarios are included in the archive should give a few hundred realizations to work with evaluating while Kalyn and Abigail implement the neighborhood matching instead of selecting the single nearest neighbor. 
 
 
 

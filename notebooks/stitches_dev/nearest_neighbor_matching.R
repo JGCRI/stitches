@@ -82,7 +82,7 @@ internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0.01){
 
 # Return: a data frame of the target data matched with the archive data, this is the information 
 # that will be used to look up and stich the archive values together, this is our "recepie card".
-match_nearest_neighbor <- function(target_data, archive_data, tol = 0.01){
+match_nearest_neighbor <- function(target_data, archive_data){
   
 # Check the inputs of the functions 
 req_cols <- c("experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx")  
@@ -94,7 +94,7 @@ assert_that(has_name(which = req_cols, x = target_data))
 archive_data <- shuffle_function(archive_data)
 
 # For every entry in the target data frame find its nearest neighboor from the archive data. 
-mapply(FUN = function(fx, dx){internal_dist(fx_pt = fx, dx_pt = dx, archivedata = archive_data, tol=tol)},
+mapply(FUN = function(fx, dx){internal_dist(fx_pt = fx, dx_pt = dx, archivedata = archive_data, tol=0)},
         fx = target_data$fx, dx = target_data$dx, SIMPLIFY = FALSE, USE.NAMES = FALSE) %>%  
   # concatenate the results into a sinngle data frame 
   do.call('rbind', args = .) -> 
@@ -111,6 +111,59 @@ out <- cbind(target_data, matched)
 # Return the data frame of target values matched with the archive values with the distance. 
 return(out)
 
+  
+}
+
+
+
+# match a target data point with corresponding nearest neighboor from an archive data set. 
+# 
+# Args 
+#   target_data: data frame created by the get_chunk_info containg information from the target time series. 
+#   archive_data: data frame created by the get_chunk_info containing information from the archive. 
+#   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
+#        neighbor. If tol=0, only the nearest-neighbor is returned
+
+# Return: a data frame of the target data matched with the archive data, this is the information 
+# that will be used to look up and stich the archive values together, this is our "recepie card".
+match_neighborhood <- function(target_data, archive_data, tol = 0.01){
+  
+  # Check the inputs of the functions 
+  req_cols <- c("experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx")  
+  assert_that(has_name(which = req_cols, x = archive_data))
+  req_cols <- c("start_yr", "end_yr", "fx", "dx")
+  assert_that(has_name(which = req_cols, x = target_data))
+  
+  # shufflle the the archive data 
+  archive_data <- shuffle_function(archive_data)
+  
+  # For every entry in the target data frame find its nearest neighboor from the archive data. 
+  mapply(FUN = function(fx, dx){internal_dist(fx_pt = fx, dx_pt = dx, archivedata = archive_data, tol=tol) %>%
+      dplyr::mutate(target_fx = fx, target_dx = dx)},
+         fx = target_data$fx, dx = target_data$dx, SIMPLIFY = FALSE, USE.NAMES = FALSE) %>%  
+    # concatenate the results into a sinngle data frame 
+    do.call('rbind', args = .) -> 
+    matched
+  
+  
+  # Now add the information about the matches to the target data
+  # Make sure it if clear which columns contain  data that comes from the target compared
+  # to which ones correspond to the archive information. Right now there are lots of columns
+  # that contain duplicate information for now it is probably fine to be moving these things around. 
+  names(target_data) <- paste0('target_', names(target_data)) 
+  matched %>%
+    left_join(target_data, by = c('target_fx', 'target_dx')) %>%
+    # Keep all columns of data but order them the same as the original matching function:
+    select(target_variable, target_experiment, target_ensemble, target_model, 
+           target_start_yr, target_end_yr, target_year, target_fx, target_dx,
+           archive_experiment, archive_variable, archive_model, archive_ensemble,
+           archive_start_yr, archive_end_yr, archive_year, archive_fx, archive_dx,
+           dist_dx, dist_fx, dist_l2) ->
+    out
+  
+  # Return the data frame of target values matched with the archive values with the distance. 
+  return(out)
+  
   
 }
 

@@ -1,5 +1,5 @@
 library(assertthat)
-
+###############################################################################
 # This function calculates the euclidean distance between the target values (fx and dx)  
 # and the archive values contained in the data frame. It will be used to help select which 
 # of the archive values best matches the target values. To ensure a consisten unit across
@@ -72,6 +72,7 @@ internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0.01){
   
 }
 
+###############################################################################
 # match a target data point with corresponding nearest neighboor from an archive data set. 
 # 
 # Args 
@@ -113,9 +114,65 @@ return(out)
 
   
 }
+###############################################################################
+# A helper function to remove false duplicate matches in the historical period. For
+# example, target 1850 gets 1872 data from realization 13 of SSP126 and SSP585.
+# The metadata of these archive values are different, but the actual data 
+# values are identical because we just pasted in the same historical data to 
+# every Experiment. So this function keeps only the first match.
+# 
+# Args: matched_data: data output from match_neighborhood.
+#
+# Returns: a data frame of matched data with the same structure as the 
+# input, with false duplicates in the historical period dropped.
+drop_hist_false_duplicates <- function(matched_data){
+  matched_data %>%
+    # Because smoothing with window =9 has occured, 
+    # historical is actually 2010 or earlier: the chunks
+    # that had purely historical data in them and none 
+    # from the future when smoothing.
+    filter(target_year <= 2010) %>%
+    mutate(exp2 = archive_experiment) %>%
+    separate(exp2, c('trash', 'idvalue'), sep = 'p') %>%
+    select(-trash) %>%
+    mutate(idvalue = as.numeric(idvalue)) %>%
+    group_by(target_variable, target_experiment,
+             target_ensemble, target_model,
+             target_start_yr, target_end_yr,
+             target_year, target_fx, target_dx,
+             archive_ensemble, archive_year) %>%
+    mutate(min_id_value = min(idvalue)) %>%
+    ungroup %>%
+    filter(idvalue == min_id_value) %>%
+    select(-idvalue, -min_id_value) -> 
+    historical
+  
+  matched_data %>%
+    filter(target_year > 2010) %>%
+    bind_rows(historical) %>%
+    arrange(target_year) ->
+    matched
+  
+  return(matched)
+  
+}
 
 
+###############################################################################
+# Randomly shuffle the deck, this should help with the matching process. 
+# Args 
+#   dt: a data of archive values that will be used in the matching process. 
+# Return: a randomly ordered data frame
+# TODO this will be removed when we have figured out the ensemble situation however it will only have 
+# an effect if there are ties in the matching process, and it is unclear if that is the case yet. 
+shuffle_function <- function(dt){
+  
+  rows <- sample(nrow(dt), replace = FALSE) 
+  dt <-dt[rows, ]
+  return(dt)
+}
 
+###############################################################################
 # match a target data point with corresponding nearest neighboor from an archive data set. 
 # 
 # Args 
@@ -123,10 +180,12 @@ return(out)
 #   archive_data: data frame created by the get_chunk_info containing information from the archive. 
 #   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
 #        neighbor. If tol=0, only the nearest-neighbor is returned
+#
 
 # Return: a data frame of the target data matched with the archive data, this is the information 
 # that will be used to look up and stich the archive values together, this is our "recepie card".
-match_neighborhood <- function(target_data, archive_data, tol = 0.01){
+match_neighborhood <- function(target_data, archive_data, tol = 0.01,
+                               drop_hist_duplicates = TRUE){
   
   # Check the inputs of the functions 
   req_cols <- c("experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx")  
@@ -161,25 +220,17 @@ match_neighborhood <- function(target_data, archive_data, tol = 0.01){
            dist_dx, dist_fx, dist_l2) ->
     out
   
+  
+  if (drop_hist_duplicates){
+    out <- drop_hist_false_duplicates(out)
+  }
+
   # Return the data frame of target values matched with the archive values with the distance. 
-  return(out)
+  return(distinct(out))
   
   
 }
 
-
-# Randomly shuffle the deck, this should help with the matching process. 
-# Args 
-#   dt: a data of archive values that will be used in the matching process. 
-# Return: a randomly ordered data frame
-# TODO this will be removed when we have figured out the ensemble situation however it will only have 
-# an effect if there are ties in the matching process, and it is unclear if that is the case yet. 
-shuffle_function <- function(dt){
-  
-  rows <- sample(nrow(dt), replace = FALSE) 
-  dt <-dt[rows, ]
-  return(dt)
-}
 
 
 

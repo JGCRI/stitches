@@ -330,6 +330,7 @@ Obviously far, far fewer when you require the historical period to match the tar
 So We will be working with `matched_data_identical_hist` (identical history) while figuring out how to write the permutations functions.
 
 
+
 # Turning all permutations of matches stitching recipes into stitched Tgavs
 
 The table with all permutations of stitching recipes will probably have some kind of Id column like `stitch_id`. 
@@ -339,14 +340,15 @@ the stitching to do `split-lapply-do.call(rbind)` on the `stitch_id` to make all
 # Questions and next steps:
 
 - do we really want to be applying the tolerance to history the way we are, or do we only want to match history directly? Code above for both ways
-
+- Looking at how the number of matches break down for each target year in the `matched_data_identical_hist` file, yes we get 48 stitching recipes for Tgav time series, but they could be really similar Tgavs because only 5 of the periods in the future got multiple matches with our selected tolerance. Obviously increasing the selected tolerance will give us more target periods getting multiple matches, but I do think that if we did small neighborhoods around the 3 nearest neighbor matches, we might get more variety of behavior. So kind of a key question to keep in the back of our heads is 'are these actually 48 different realizations, or are they 48 small tweak copies on 3 or 4 realizations?'
+- An important point to make with all of this is that we with very mild constraints (nearest neighbor + 0.01 degC radius neighborhood and allowing different history from the target, which is almost nothing), we start to get more realizations than we could ever actually use. The practical concern is just whether those many realizations are actually distinct _enough_ from each other to be worth running through a downstream model.
 
 Next steps:
 1. evaluation of these tgav's
 2. in parallel translate to python
 3. add in the layer of matching the gridded netcdf data in to construct new monthly T and P netcdfs.
 4. Test those.
-5. Publish???
+5. Publish??? No ML atthis point, just matching on smoothed Tgav, but it would stake our territory and get it out the door sooner if we aimed for this and then developed more after. Also More papers and easier papers to write rather than trying to do it all and documenting in one paper?
 6. Look at matching on more complex things than smoothed Tgav (ML?) and look at layering in and evaluating (ML?) daily data?
 7. Look at adding variables beyond T and P,from ESMs.
 8. Loook at organizing results from impacts models, crop and hydrology models, so that they could be layered in as well. Don't think it would work for stuff like Forest productivity because may be too much memory, unless that's working strictly with derivatives and not actual values. Probably less memory in the rate of change than in the actual time series of values.

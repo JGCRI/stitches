@@ -10,8 +10,10 @@ library(assertthat)
 #   fx_pt: a single value of the target fx value
 #   dx_pt: a single value of the target dx value 
 #   archivedata: a data frame of the archive fx and dx values
+#   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
+#        neighbor. If tol=0, only the nearest-neighbor is returned
 # Return: a data frame with the target data and the corresponding matched archive data. 
-internal_dist <- function(fx_pt, dx_pt, archivedata){
+internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0.01){
 
   # Compute the window size of the archive data to use to update
   # dx values to be windowsize*dx so that it has units of degC
@@ -43,14 +45,26 @@ internal_dist <- function(fx_pt, dx_pt, archivedata){
   # this returns the first minimum run into, which is not how we are going to want to do it, 
   # we will want some way to keep track of the min and combine to have different realizations 
   # or have some random generation. But for now I think that this is probably sufficent. 
-  index <- which.min(dist$dist_l2) 
-  
-  # if there are mulitple matches then an error should be thrown! Why 
-  # is this not happening for the historiccal period? The ensemble members of 
-  # different experiments should be identical to one another! 
-  if(length(index) > 1){
-    stop("more than one identical match found!")
+  #
+  # probably don't actually need the if-statement to treat tol=0 separately; in theory, the 
+  # else condition would return the nearest neighbor for tol=0. But just in case of rounding
+  # issues, keeping it separate for now to be sure we can replicate previous behavior.
+  if (tol == 0) { 
+    index <- which.min(dist$dist_l2) 
+    
+    # if there are mulitple matches then an error should be thrown! Why 
+    # is this not happening for the historiccal period? The ensemble members of 
+    # different experiments should be identical to one another! 
+    if(length(index) > 1){
+      stop("more than one identical match found and you only want the nearest neighbor!")
     }
+  }
+  else {
+    min_dist <- min(dist$dist_l2)
+    dist_radius <- min_dist + tol
+    
+    index <- which(dist$dist_l2 <= dist_radius)
+  }
   
   out <- dist[index, ]
 
@@ -63,9 +77,12 @@ internal_dist <- function(fx_pt, dx_pt, archivedata){
 # Args 
 #   target_data: data frame created by the get_chunk_info containg information from the target time series. 
 #   archive_data: data frame created by the get_chunk_info containing information from the archive. 
+#   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
+#        neighbor. If tol=0, only the nearest-neighbor is returned
+
 # Return: a data frame of the target data matched with the archive data, this is the information 
 # that will be used to look up and stich the archive values together, this is our "recepie card".
-match_nearest_neighbor <- function(target_data, archive_data){
+match_nearest_neighbor <- function(target_data, archive_data, tol = 0.01){
   
 # Check the inputs of the functions 
 req_cols <- c("experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx")  
@@ -77,7 +94,7 @@ assert_that(has_name(which = req_cols, x = target_data))
 archive_data <- shuffle_function(archive_data)
 
 # For every entry in the target data frame find its nearest neighboor from the archive data. 
-mapply(FUN = function(fx, dx){internal_dist(fx_pt = fx, dx_pt = dx, archivedata = archive_data)},
+mapply(FUN = function(fx, dx){internal_dist(fx_pt = fx, dx_pt = dx, archivedata = archive_data, tol=tol)},
         fx = target_data$fx, dx = target_data$dx, SIMPLIFY = FALSE, USE.NAMES = FALSE) %>%  
   # concatenate the results into a sinngle data frame 
   do.call('rbind', args = .) -> 

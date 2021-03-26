@@ -299,10 +299,13 @@ ggplot(data = matched_data05) +
 # Do the permutations of matches
 These are the matches that allow departures from the target data's historical values.
 
-We want all permutations of matches that can cover the full 1850-2100 of the target data. Work on matches with `tol=0.01` to have fewer to work with for function development and testing.
+We want permutations of matches that can cover the full 1850-2100 of the target data. Work on matches with `tol=0.01` to have fewer to work with for function development and testing.
 
-This is a genuinely computationally challenging ask and I think we'll want to rely heavily on packages. That will make the translation from R to Python a little trickier, as we'll have to find a different package with comparable behavior but I think it's the only chance we have of doing it efficiently for any great number of matches. 
+Trying to pre-determine all of the permutations is a genuinely computationally challenging task. I think to the degree that it precludes us trying it for now. If/when we do, we'll have to rely heavily on packages. That will make the translation from R to Python a little trickier, as we'll have to find a different package with comparable behavior but I think it's the only chance we have of doing it efficiently for any great number of matches. 
 
+Instead, for now in R, we will write a function that takes in a set of `matched_data`, a number of desired matches `N`, and an optional argument of which matches have already been used (in case we want to add more matches to a run). Then we'll draw repeated samples of permutations, compare to the already drawn and/or read in permutations, keep only the new ones and repeat until we have N. 
+
+## number potential permutations 
 Let's take a look at how many matches we have for each target year in our `tol=0.01` example:
 ```{r}
 
@@ -314,7 +317,6 @@ kable(num_matches)
 ```
 So already so many permutations even with most target years still only having their nearest neighbor match. 
 
-There is a good chance that a lot of those matches in the historical period are identical data, since we pasted in the same historical values for the different experiments. So it is probably more efficient to force historical to be identical to the target data for now.
 
 We _can_ decrease that some by only using the nearest neighbor match in the historical period.
 ```{r}
@@ -329,7 +331,7 @@ Obviously far, far fewer when you require the historical period to match the tar
 
 So We will be working with `matched_data_identical_hist` (identical history) while figuring out how to write the permutations functions.
 
-
+We'll have the permutation function call this count early on for each set of matched data; it's fast and if the input argument `N` is larger than the potential number of permutations, we'll just have it print out that the max number of potential permutations is X<N and that's what they'll get.
 
 # Turning all permutations of matches stitching recipes into stitched Tgavs
 

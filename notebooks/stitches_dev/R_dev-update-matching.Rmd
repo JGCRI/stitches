@@ -335,7 +335,12 @@ We'll have the permutation function call this count early on for each set of mat
 
 ```{r}
 set.seed(42)
+
+start <- Sys.time()
 recipes <- permute_stitching_recipes(N_matches = 2, matched_data = matched_data_identical_hist)
+end <- Sys.time()
+
+print(end-start)
 
 # take a look
 kable(recipes)
@@ -345,6 +350,29 @@ Each recipe (each stitching_id) has one and only one archive value matched in fo
 
 There is an optional argument to `permute_stitching_recipes` to read in a previous set of recipes and go from there. 
 That code is purely placeholder and currently commented out.
+
+The downside to the permutations code is that it will be slower and slower the more matches we want. Since we aren't doing the full combination of all matches ahead of time and we aren't doing any kind of recursive method, we can't remove a combination from the list. It can still be sampled with equal probability of the others. So if you want all 48 possible matches with this data set, getting that last one sampled and kept will take a while:
+
+```{r}
+set.seed(42)
+
+start1 <- Sys.time()
+recipes <- permute_stitching_recipes(N_matches = 48, matched_data = matched_data_identical_hist)
+end1 <- Sys.time()
+
+```
+
+
+So we can see there's an exponential time difference between producing 2 and producing all possible matches (ie 48 matches takes much more than 24 times as long as 2 matches).
+
+- N_matches = 2: `r end-start` seconds.
+- Time for 2 matches * 24: `r 24*(end-start)` seconds.
+- N_matches = 48 (all): `r end1-start1` seconds.
+
+I haven't done any benchmarking on trying to figure out the time to list out all combinations or to try something recursive. I think maybe we stick with this for now while we're testing and developing, with a smaller number of desired matches for now, and then worry more about the method that's most efficient for generating larger numbers of matches once we're into python. 
+
+Right now, the code as written should be very straightforward to translate to python via relying on base functions and pandas only. A function to try to quickly list all combinations or trying something recursive would be so differnt between R and python that I don't see the point in pursuing these in R.
+
 
 # Turning all permutations of matches stitching recipes into stitched Tgavs
 

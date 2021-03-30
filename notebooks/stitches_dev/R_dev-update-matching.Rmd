@@ -357,17 +357,30 @@ The downside to the permutations code is that it will be slower and slower the m
 set.seed(42)
 
 start1 <- Sys.time()
-recipes <- permute_stitching_recipes(N_matches = 48, matched_data = matched_data_identical_hist)
+recipes_identical_hist <- permute_stitching_recipes(N_matches = 48, matched_data = matched_data_identical_hist)
 end1 <- Sys.time()
 
 ```
 
 
-So we can see there's an exponential time difference between producing 2 and producing all possible matches (ie 48 matches takes much more than 24 times as long as 2 matches).
+So we can see there's an exponential time difference between producing 2 and producing all possible matches (ie 48 matches takes much more than 24 times as long as 2 matches). Which we do expect, it's just good to be aware of.
 
 - N_matches = 2: `r end-start` seconds.
 - Time for 2 matches * 24: `r 24*(end-start)` seconds.
 - N_matches = 48 (all): `r end1-start1` seconds.
+
+When with the set that had matches throughout history (and 13824 potential matches), returning 48 matches is interestingly about the same amount of time, meaning the time to sample and label  48 matches (in this case) is roughly independent of the total number of potential matches. :
+
+```{r}
+set.seed(42)
+
+start <- Sys.time()
+recipes <- permute_stitching_recipes(N_matches = 48, matched_data = matched_data)
+end <- Sys.time()
+
+print(end-start)
+```
+
 
 I haven't done any benchmarking on trying to figure out the time to list out all combinations or to try something recursive. I think maybe we stick with this for now while we're testing and developing, with a smaller number of desired matches for now, and then worry more about the method that's most efficient for generating larger numbers of matches once we're into python. 
 
@@ -376,9 +389,100 @@ Right now, the code as written should be very straightforward to translate to py
 
 # Turning all permutations of matches stitching recipes into stitched Tgavs
 
-The table with all permutations of stitching recipes will probably have some kind of Id column like `stitch_id`. 
-So for each `stitch_id`, the stitching process should be exactly like before, so we probably will only have to update
-the stitching to do `split-lapply-do.call(rbind)` on the `stitch_id` to make all of the new Tgavs.
+Because of how we sampled macheds, for each `stitching_id`, the stitching process should be exactly like before. Right now, we  do `split-lapply-do.call(rbind)` on the `stitching_id` to make all of the new Tgavs instead of updating the stitching function right now. 
+
+```{r}
+# A data frame of all 48 labeled matches with identical history:
+lapply(split(recipes_identical_hist, recipes_identical_hist$stitching_id),
+       function(df){
+         stitch_global_mean(match = df, data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs_identical
+
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         stitch_global_mean(match = df, data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs
+
+# Some comparison data
+tgav_data %>%  
+  filter(model == unique(target_data$model) & experiment == unique(target_data$experiment) & 
+           ensemble == unique(target_data$ensemble)) -> 
+  original_data
+```
+
+And plot:
+
+```{r}
+ggplot(data = new_tgavs_identical, aes(year, value, color = as.factor(stitching_id))) + 
+  geom_line(size = 0.5) + 
+  #facet_wrap(~stitching_id, nrow = 6) +
+  geom_line(data = original_data, aes(year, value), color = "grey", size = 0.4) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data\nHistory constrained to be identical",
+       x = "Year", y = "Deg C")
+
+```
+This seems like far fewer trajectories than we would expect but it's actually behaving exactly how things should: 
+```{r, echo = FALSE}
+get_num_perms(matched_data_identical_hist)[[2]] %>% 
+  filter(n_matches > 1) %>%
+  select(-target_fx, -target_dx) %>%
+  kable()
+```
+From 2021-2029, there are only three curve options and we see all 3. From 2039-2047, there are only 2 curve options and we see each of those. It just looks like far fewer lines than we would expect for 48 because there are just not many choices in many time periods because we used such a small neighborhood to keep things small. 
+
+Similarly for where we haven't constrained history to be identical, it's still only 1-5 matches per window, so we don't see the most differences: all 48 trajectories have to go through one of the very small number of options for each time window.
+```{r}
+ggplot() + 
+  geom_line(data = original_data, aes(year, value), color = "grey") + 
+  geom_line(data = new_tgavs, aes(year, value, color = as.factor(stitching_id))) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C") 
+```
+
+# Larger Neighborhood
+Let's take a look at the results for a 0.1 degC matching neighborhood of each time points nearest neighbor match.
+```{r}
+# Do the matching for a 0.1degC neighborhood
+matched_data <- match_neighborhood(target_data = target_data, archive_data = archive_subset, tol = 0.1)
+
+print(paste('Total potential matches', get_num_perms(matched_data)[[1]]$totalNumPerms))
+
+# Sample the matches
+start1 <- Sys.time()
+recipes <- permute_stitching_recipes(N_matches = 100, matched_data = matched_data)
+end1 <- Sys.time()
+
+print(paste(end1-start1, 'for 100 Tgavs'))
+
+
+# stitch the tgavs:
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         stitch_global_mean(match = df, data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs
+
+# And plot
+ggplot(data = new_tgavs, aes(x=year, y=value, color=as.factor(stitching_id))) + 
+  geom_line(size = 0.5, show.legend = FALSE) + 
+  #facet_wrap(~stitching_id, nrow = 6) +
+  geom_line(data = original_data, aes(year, value), color = "grey", size = 0.4) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data\n0.1degC matching neighborhood",
+       x = "Year", y = "Deg C")
+```
+
+Larger neighborhood = more matches in each time window = more visually distinct realizations. And interestingly, the time to sample 100 matches is not too far off from the time to sample 48.
 
 # Questions and next steps:
 

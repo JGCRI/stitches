@@ -119,7 +119,7 @@ permute_stitching_recipes <- function(N_matches, matched_data, optional=NULL){
     
     # sample one match per target_year for each period with 
     # more than one match:
-    matched_data_identical_hist %>%
+    matched_data %>%
       filter(target_year %in% draw_periods$target_year) %>%
       split(f = list(.$target_variable, .$target_experiment, .$target_ensemble,
                      .$target_model, .$target_year)) -> 
@@ -163,8 +163,7 @@ permute_stitching_recipes <- function(N_matches, matched_data, optional=NULL){
       # in recipes, do nothing
     } else{
       # didn't match any previous recipes, add it in.
-      bind_rows(recipes, sampled_match) %>%
-        distinct() ->
+      bind_rows(recipes, sampled_match) ->
         recipes
     }
     

@@ -86,23 +86,24 @@ permute_stitching_recipes <- function(N_matches, matched_data, optional=NULL){
   
   # Initialize the number of matches to either 0 or the input read from optional:
   if( is.character(optional)){
-    # initialize to the read-in:
-    recipes <- read.csv(optional)
-
-    # message: you requested N_matches
-    # and Have NN new ones, will produce NN-N_matches new ones and then just 
-    # Update N_matches to be NN-N_matches.
-    # TODO need to relate the N_to_make here to N_data_max
-    N_existing <- length(unique(recipes$stitching_id))
     
-    message(paste('You requested', N_matches, 'and already have', N_existing))
-    if (N_matches-N_existing <= 0){
-      message("You have all you need")
-      return(recipes)
-    } else {
-      message(paste("Creating", N_matches-N_existing, "new recipes and adding to those input."))
-      N_to_make <- N_matches-N_existing
-    }
+    # # initialize to the read-in:
+    # recipes <- read.csv(optional)
+    # 
+    # # message: you requested N_matches
+    # # and Have NN new ones, will produce NN-N_matches new ones and then just 
+    # # Update N_matches to be NN-N_matches.
+    # # TODO need to relate the N_to_make here to N_data_max
+    # N_existing <- length(unique(recipes$stitching_id))
+    # 
+    # message(paste('You requested', N_matches, 'and already have', N_existing))
+    # if (N_matches-N_existing <= 0){
+    #   message("You have all you need")
+    #   return(recipes)
+    # } else {
+    #   message(paste("Creating", N_matches-N_existing, "new recipes and adding to those input."))
+    #   N_to_make <- N_matches-N_existing
+    # }
   } else{
     # initialize to empty
     recipes <- data.frame()

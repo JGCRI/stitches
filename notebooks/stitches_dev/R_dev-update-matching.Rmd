@@ -343,6 +343,9 @@ kable(recipes)
 
 Each recipe (each stitching_id) has one and only one archive value matched in for each target value. 
 
+There is an optional argument to `permute_stitching_recipes` to read in a previous set of recipes and go from there. 
+That code is purely placeholder and currently commented out.
+
 # Turning all permutations of matches stitching recipes into stitched Tgavs
 
 The table with all permutations of stitching recipes will probably have some kind of Id column like `stitch_id`. 

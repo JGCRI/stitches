@@ -333,6 +333,16 @@ So We will be working with `matched_data_identical_hist` (identical history) whi
 
 We'll have the permutation function call this count early on for each set of matched data; it's fast and if the input argument `N` is larger than the potential number of permutations, we'll just have it print out that the max number of potential permutations is X<N and that's what they'll get.
 
+```{r}
+set.seed(42)
+recipes <- permute_stitching_recipes(N_matches = 2, matched_data = matched_data_identical_hist)
+
+# take a look
+kable(recipes)
+```
+
+Each recipe (each stitching_id) has one and only one archive value matched in for each target value. 
+
 # Turning all permutations of matches stitching recipes into stitched Tgavs
 
 The table with all permutations of stitching recipes will probably have some kind of Id column like `stitch_id`. 

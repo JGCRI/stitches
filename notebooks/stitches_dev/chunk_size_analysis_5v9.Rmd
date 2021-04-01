@@ -1,0 +1,159 @@
+---
+title: '5 v 9 Chunk Size'
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_notebook: 
+    toc: true
+    toc_float:
+      toc_collapsed: true
+    toc_depth: 4
+    number_sections: true
+    theme: lumen
+---
+
+# Objective
+
+
+How does changing the chunk size effect the matching results? Does chunking, matching, and stitching data based on periods of 5 or 9 years matter? 
+
+
+# Set Up 
+
+```{r, message = FALSE, warning = FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
+# Note this will need to changed to run on your local machine 
+BASE_DIR <- "/Users/dorh012/Documents/2021/stitches/notebooks/stitches_dev"
+
+# Load the functions that we will use! 
+source(file.path(BASE_DIR, "nearest_neighbor_matching.R"))
+source(file.path(BASE_DIR, "stitching_functions.R"))
+
+# Import the archive and target data from the two different periods. 
+archive_data_5 <- read.csv(file.path(BASE_DIR, "inputs", "archive_data_5yrs.csv"), stringsAsFactors = FALSE) %>% 
+  dplyr::filter(!experiment %in% c("ssp534-over", "ssp245"))
+target_data_5 <- read.csv(file.path(BASE_DIR, "inputs", "target_data_5yrs.csv"), stringsAsFactors = FALSE)
+
+archive_data_9 <- read.csv(file.path(BASE_DIR, "inputs", "archive_data_9yrs.csv"), stringsAsFactors = FALSE)  %>% 
+  dplyr::filter(!experiment %in% c("ssp534-over", "ssp245"))
+target_data_9 <- read.csv(file.path(BASE_DIR, "inputs", "target_data_9yrs.csv"), stringsAsFactors = FALSE)
+
+# Import the data to be stiched together. 
+tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+                      stringsAsFactors = FALSE) %>% dplyr::select(-X)
+  
+  #read.csv(file.path(BASE_DIR, "inputs", "tgav_data.csv"), stringsAsFactors = FALSE)
+```
+
+# Compare the inputs 
+
+What is the difference between the fx and dx relationship for the two different chunks? 
+
+```{r}
+ggplot() + 
+  geom_point(data = target_data_5, aes(fx, dx, color = "5 yr chunks")) + 
+  geom_point(data = target_data_9, aes(fx, dx, color = "9 yr chunks")) + 
+  labs(title = "Target Data", subtitle = "comparing 5 and 9 yr chunks", 
+       y = "dx (rate of change per chunk)", x = "fx (median value per chunk)") + 
+  theme_bw()
+```
+
+
+```{r}
+ggplot() + 
+  geom_point(data = archive_data_5, aes(fx, dx, color = "5 yr chunks")) + 
+  geom_point(data = archive_data_9, aes(fx, dx, color = "9 yr chunks")) + 
+  labs(title = "Archive Data", subtitle = "comparing 5 and 9 yr chunks", 
+       y = "dx (rate of change per chunk)", x = "fx (median value per chunk)") + 
+  theme_bw()
+```
+
+
+## Match archive and target data 
+
+
+```{r}
+# Match the target and archive data with one another. 
+match_5 <- match_nearest_neighbor(target_data = target_data_5, archive_data = archive_data_5)
+match_9 <- match_nearest_neighbor(target_data = target_data_9, archive_data = archive_data_9)
+
+match_5$chunk <- "5"
+match_9$chunk <- "9"
+```
+
+
+```{r}
+# Join the data frames together 
+d <- dplyr::bind_rows(match_5, match_9)
+
+# Plot 
+ggplot() + 
+  # Add the data from the 5 yr 
+  geom_point(data = d, aes(archive_fx, archive_dx,  
+                                             color = "matched archive data")) + 
+  geom_point(data = d, aes(target_fx, target_dx,  
+                                             color = "target data"), alpha = 0.4) + 
+  geom_segment(data = d, aes(x = target_fx, y = target_dx, 
+                                               xend = archive_fx, yend = archive_dx), alpha = 0.4) +
+  
+  # Some asthetics 
+  scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue")) +
+  facet_wrap("chunk") +
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk)", 
+       x = "fx (value of median time per chunk)", 
+       title = "Compare target with matched archive values", 
+       subtitle = "comparing 5 and 9 yr chunks" )
+```
+
+```{r}
+pivot_longer(d, cols = c("dist_dx", "dist_fx", "dist_l2"), names_to = "distance", values_to = "value") %>% 
+  ggplot() + 
+  geom_dotplot(aes(value, fill = chunk), alpha = 0.5) + 
+  theme_bw() + 
+  facet_wrap("distance") + 
+  labs(title = "Compare Match Error", x = "distance")
+```
+
+# Match Data 
+
+```{r}
+
+match_nearest_neighbor(target_data = target_data_5, archive_data = archive_data_5) %>% 
+  stitch_global_mean(match = ., data = tgav_data) %>% 
+  mutate(chunk = "5") -> 
+  out5
+
+match_nearest_neighbor(target_data = target_data_9, archive_data = archive_data_9) %>% 
+  stitch_global_mean(match = ., data = tgav_data) %>% 
+  mutate(chunk = "9") -> 
+  out9
+
+
+tgav_data %>%  
+  dplyr::filter(experiment == "ssp245") %>%  
+  dplyr::filter(model == "CanESM5") %>%  
+  dplyr::filter(ensemble == "r1i1p1f1") %>%  
+  dplyr::filter(year >= 2000) ->
+  original_data
+
+dplyr::bind_rows(out5, out9) %>% 
+  dplyr::filter(year >= 2000) %>% 
+  ggplot(aes(year, value, color = chunk)) + 
+  geom_line(data = original_data, aes(year, value, color = "original data")) + 
+  geom_line() + 
+  theme_bw() +
+  labs(title = "Stitched Data", subtitle = "future scenario only", y = "Deg C", x = "Year") + 
+  scale_color_manual(values = c("original data" = "grey", "5" = "red", "9" = "blue"))
+
+```
+
+
+
+
+

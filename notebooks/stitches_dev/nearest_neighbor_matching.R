@@ -111,8 +111,99 @@ shuffle_function <- function(dt){
   return(dt)
 }
 
+###############################################################################
+# A function to remove duplicated matches for a single target trajectory.
+# E.g. if target year 2070 and 2079 both get the same archive point matched
+# in, let that point stay with the target year that had smaller `dist_l2`, 
+# re-match the other target year on the archive minus that duplicated point.
+# Runs recursively so with the re-matched other target year, it will again
+# check the full set of matched data for duplicates, keep the match on the 
+# target year with smallest distance, re-match the other target year that
+# got the duplicate on the archive with the duplicated point removed, and so
+# on. I guess with how we're removing points from the archive iteratively, it
+# could potentially get trapped in an infinite loop bouncing between two different
+# duplicate cases. 
+#
+# Args:
+# matched_data: data frame with results of matching
+# Returns:
+# matched_data: data frame with same structure as raw matched, with duplicate
+# matches replaced. 
 
-
+remove_duplicates <- function(matched_data){
+  
+  # Work with rows where the same archive match gets brought in 
+  matched_data %>%
+    group_by(archive_experiment, archive_variable,
+             archive_model, archive_ensemble,
+             archive_start_yr, archive_end_yr, archive_year,
+             archive_fx, archive_dx) %>%
+    filter(n() > 1) %>%
+    ungroup ->
+    duplicates
+  
+  while(nrow(duplicates) > 0){
+    
+    # within each set of duplicates, 
+    # pull out the one with smallest dist_l2 - 
+    # this is the one that gets to keep the match, and we use
+    # as an index to work on the complement of (in case the same
+    # archive point gets matched for more than 2 target years)
+    duplicates %>%
+      group_by(archive_experiment, archive_variable,
+               archive_model, archive_ensemble,
+               archive_start_yr, archive_end_yr, archive_year,
+               archive_fx, archive_dx) %>%
+      filter(dist_l2 == min(dist_l2)) %>%
+      ungroup ->
+      duplicates_min 
+    
+    # target points of duplicates-duplicates_min need to be 
+    # refit on the archive - matched points
+    duplicates[, grepl('target_', names(duplicates))  ] %>%
+      filter(!(target_year %in% duplicates_min$target_year)) ->
+      points_to_rematch
+    names(points_to_rematch) <- gsub(pattern = 'target_', replacement = '', x = names(points_to_rematch))
+    
+    rm_from_archive <- matched_data[, grepl('archive_', names(matched_data))] 
+    names(rm_from_archive) <- gsub(pattern = 'archive_', replacement = '', x = names(rm_from_archive))
+    
+    archive_subset %>%
+      anti_join(rm_from_archive,
+                by=c("experiment", "variable",
+                     "model", "ensemble", 
+                     "start_yr", "end_yr", "year",
+                     "fx", "dx")) ->
+      new_archive
+    
+    rematched <- match_nearest_neighbor(target_data = points_to_rematch,
+                                        archive_data = new_archive)
+    
+    matched_data %>%
+      filter(!(target_year %in% rematched$target_year)) %>%
+      bind_rows(rematched) %>%
+      arrange(target_year) ->
+      matched_data
+    
+    matched_data  %>%
+      group_by(archive_experiment, archive_variable,
+               archive_model, archive_ensemble,
+               archive_start_yr, archive_end_yr, archive_year,
+               archive_fx, archive_dx) %>%
+      filter(n() > 1) %>%
+      ungroup ->
+      duplicates
+    
+    # cleanup for next loop
+    rm(duplicates_min)
+    rm(points_to_rematch)
+    rm(rm_from_archive)
+    rm(new_archive)
+    rm(rematched)
+    
+  }
+  return(matched_data)
+}
 
 
 

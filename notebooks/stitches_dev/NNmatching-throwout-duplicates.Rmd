@@ -1,0 +1,250 @@
+---
+title: "Nearest-neighbor matching: no repeat matches"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '4'
+    toc_float: yes
+    number_sections: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+# Goal
+
+Rewrite the matching routine so that the point matched to a chunk gets thrown out for the subsequent chunks’ matches…and ideally also for the matches of the same scenario*model ensemble members.
+
+# Set Up 
+```{r, message=FALSE, warning=FALSE}
+# required packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+
+
+# The load the functions we will want to use, these are currently written in R and will be translated into python. 
+source("nearest_neighbor_matching.R") # the function match_nearest_neighbor is defined here
+source("stitching_functions.R")  # the function stitch_global_mean is definend here 
+```
+
+
+Load the inputs. 
+
+```{r}
+# Time series of the raw global mean temperature anomaly, this is the data that is 
+# going to be stitched together. Historical data is pasted into every scenario. No
+# smoothing has been done.
+tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+                      stringsAsFactors = FALSE) %>% dplyr::select(-X)
+
+
+# A chunked smoothed tgav anomaly archive of data. This was tgav_data but several 
+# steps were taken in python to transform it into the "chunked" data and save it 
+# so that we do not have to repeate this process so many times. 
+archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+
+
+# This is chunked smooth tgav anomaly for a single model/experiment/ensemble
+# member, saved for our convenience. If you decide that you want to work with 
+# a different different target data subset you can subset it from the
+# archive_data data frame. This file is SSP245 Realization 1.
+target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
+
+# For plotting
+tgav_data %>%  
+  filter(model == unique(target_data$model) & experiment == unique(target_data$experiment) & 
+           ensemble == unique(target_data$ensemble)) -> 
+  original_data1
+
+# target data 2: ssp245 realization 4
+archive_data %>%
+  filter(experiment == 'ssp245' & ensemble == 'r4i1p1f1') ->
+  target_data2
+```
+
+
+# Subset of archive for testing
+
+
+```{r}
+# data that will for sure have the same value getting matched in multiple times
+archive_data %>% 
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') %>%
+  filter(ensemble == 'r1i1p1f1' | ensemble == 'r2i1p1f1') ->
+  archive_subset
+```
+
+# Current matching
+```{r}
+matched <- match_nearest_neighbor(target_data = target_data, archive_data = archive_subset)
+```
+
+
+We can see duplicates came in because of the limited size of the archive we gave it:
+```{r, echo=FALSE}
+stitch_global_mean(match = matched, data = tgav_data) %>% 
+  mutate(target = "ssp245-realization1-duplicates") -> 
+  out1a
+
+ggplot() + 
+  geom_line(data = original_data1, aes(year, value), color = "grey") + 
+  geom_line(data = out1a, aes(year, value, color = target)) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+
+```
+
+# Proposed change
+As we intended from our choice of archive, this set of matched data has duplicate matches. 
+
+If two target years get the same archive point matched, the archive point stays with the target year with smallest `dist_l2`. The other target year re-matches  the larger `dist_l2` points on a subsetted archive with these duplicate archive points removed.
+
+There's an element of recursion here (via the while loop): we only remove the duplicated match point from the archive when re-matching, we update the matched data with the re-matched points, and we check the entire matched data for duplicates again.
+ 
+```{r}
+# What a 'remove duplicates' helper_function might look like:
+remove_duplicates <- function(matched_data){
+
+  # Work with rows where the same archive match gets brought in 
+  matched_data %>%
+    group_by(archive_experiment, archive_variable,
+             archive_model, archive_ensemble,
+             archive_start_yr, archive_end_yr, archive_year,
+             archive_fx, archive_dx) %>%
+    filter(n() > 1) %>%
+    ungroup ->
+    duplicates
+  
+  while(nrow(duplicates) > 0){
+    
+    # within each set of duplicates, 
+    # pull out the one with smallest dist_l2 - 
+    # this is the one that gets to keep the match, and we use
+    # as an index to work on the complement of (in case the same
+    # archive point gets matched for more than 2 target years)
+    duplicates %>%
+      group_by(archive_experiment, archive_variable,
+               archive_model, archive_ensemble,
+               archive_start_yr, archive_end_yr, archive_year,
+               archive_fx, archive_dx) %>%
+      filter(dist_l2 == min(dist_l2)) %>%
+      ungroup ->
+      duplicates_min 
+    
+    # target points of duplicates-duplicates_min need to be 
+    # refit on the archive - matched points
+    duplicates[, grepl('target_', names(duplicates))  ] %>%
+      filter(!(target_year %in% duplicates_min$target_year)) ->
+      points_to_rematch
+    names(points_to_rematch) <- gsub(pattern = 'target_', replacement = '', x = names(points_to_rematch))
+    
+    rm_from_archive <- matched_data[, grepl('archive_', names(matched_data))] 
+    names(rm_from_archive) <- gsub(pattern = 'archive_', replacement = '', x = names(rm_from_archive))
+    
+    archive_subset %>%
+      anti_join(rm_from_archive,
+                by=c("experiment", "variable",
+                     "model", "ensemble", 
+                     "start_yr", "end_yr", "year",
+                     "fx", "dx")) ->
+      new_archive
+    
+    rematched <- match_nearest_neighbor(target_data = points_to_rematch,
+                                        archive_data = new_archive)
+    
+    matched_data %>%
+      filter(!(target_year %in% rematched$target_year)) %>%
+      bind_rows(rematched) %>%
+      arrange(target_year) ->
+      matched_data
+    
+    matched_data  %>%
+      group_by(archive_experiment, archive_variable,
+               archive_model, archive_ensemble,
+               archive_start_yr, archive_end_yr, archive_year,
+               archive_fx, archive_dx) %>%
+      filter(n() > 1) %>%
+      ungroup ->
+      duplicates
+    
+    # cleanup for next loop
+    rm(duplicates_min)
+    rm(points_to_rematch)
+    rm(rm_from_archive)
+    rm(new_archive)
+    rm(rematched)
+
+  }
+  return(matched_data)
+}
+
+matched_no_dup <- remove_duplicates(matched)
+
+```
+
+
+
+# Compare the Tgav
+
+Did double check that the last two chunks aren't repeats: both archive year 2061 from ssp585 but different realizations and therefore different archive values.
+
+```{r, echo=FALSE}
+stitch_global_mean(match = matched_no_dup, data = tgav_data) %>% 
+  mutate(target = "ssp245-realization1-noduplicates") -> 
+  out1
+
+ggplot() + 
+  geom_line(data = original_data1, aes(year, value), color = "grey") + 
+  geom_line(data = out1, aes(year, value, color = target)) + 
+  geom_line(data = out1a, aes(year, value, color = target)) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+```
+
+
+# Questions:
+
+1. Not quite sure what 'ideally also for the matches of the same scenario*model ensemble members.' means
+2. Historical years - do we have to do anything different? In theory no since we're matching the historical data in our target SSP to the exact same historical data in archive SSPs (that we've just adjusted the metadata on)?
+3. Handling duplicates the way I've done or the alternative option I outlined?
+4. How much is this actually a problem in terms of having a relatively fully populated archive? I get not repeating archive years within any single new ensemble member but beyond that?
+
+Now that we have the subset of the archive we want to work with, we can use it in the nearest neighbor. 
+
+
+# Apply to a less-restricted archive, stitch and plot
+
+```{r}
+archive_data %>% 
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') ->
+  archive_subset
+
+
+match_nearest_neighbor(target_data = target_data, archive_data = archive_subset) %>%
+  remove_duplicates(matched_data = .) %>%
+  stitch_global_mean(match = ., data = tgav_data) %>% 
+  mutate(target = "ssp245-realization1-noduplicates") -> 
+  out1
+
+match_nearest_neighbor(target_data = target_data, archive_data = archive_subset) %>%
+  stitch_global_mean(match = ., data = tgav_data) %>% 
+  mutate(target = "ssp245-realization1-duplicates") -> 
+  out1a
+
+ggplot() + 
+  geom_line(data = original_data1, aes(year, value), color = "grey") + 
+  geom_line(data = out1, aes(year, value, color = target)) + 
+  geom_line(data = out1a, aes(year, value, color = target)) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+
+```
+
+
+

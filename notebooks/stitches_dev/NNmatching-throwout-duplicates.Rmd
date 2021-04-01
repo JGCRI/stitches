@@ -1,5 +1,5 @@
 ---
-title: "Nearest-neighbor matching: no repeat matches"
+title: "Nearest-neighbor matching: no repeat matches within a match to a single target"
 output:
   html_document:
     df_print: paged
@@ -12,7 +12,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 
 # Goal
 
-Rewrite the matching routine so that the point matched to a chunk gets thrown out for the subsequent chunks’ matches…and ideally also for the matches of the same scenario*model ensemble members.
+Rewrite the matching routine so that within a single target trajectory being matched, no two target years get the exact same archive value matched in.
 
 # Set Up 
 ```{r, message=FALSE, warning=FALSE}
@@ -205,15 +205,6 @@ ggplot() +
        x = "Year", y = "Deg C")
 ```
 
-
-# Questions:
-
-1. Not quite sure what 'ideally also for the matches of the same scenario*model ensemble members.' means
-2. Historical years - do we have to do anything different? In theory no since we're matching the historical data in our target SSP to the exact same historical data in archive SSPs (that we've just adjusted the metadata on)?
-3. Handling duplicates the way I've done or the alternative option I outlined?
-4. How much is this actually a problem in terms of having a relatively fully populated archive? I get not repeating archive years within any single new ensemble member but beyond that?
-
-Now that we have the subset of the archive we want to work with, we can use it in the nearest neighbor. 
 
 
 # Apply to a less-restricted archive, stitch and plot

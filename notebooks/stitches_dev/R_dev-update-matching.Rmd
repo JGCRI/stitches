@@ -218,7 +218,7 @@ matched_hist <-  match_neighborhood(target_data = filter(target_data, year < 201
                                     tol = 0)
 matched_fut <-  match_neighborhood(target_data = filter(target_data, year >= 2015),
                                     archive_data = archive_subset,
-                                    tol = 0.01)
+                                    tol = 0.01, drop_hist_duplicates = FALSE)
 bind_rows(matched_hist, matched_fut) %>%
   arrange(target_year) ->
   matched_data_identical_hist

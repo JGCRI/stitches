@@ -126,12 +126,16 @@ return(out)
 # Returns: a data frame of matched data with the same structure as the 
 # input, with false duplicates in the historical period dropped.
 drop_hist_false_duplicates <- function(matched_data){
+  
+  # Deterine the historical cut off year based on the size of the chunks. 
+  cut_off_yr <- 2015 - max(matched_data$target_end_yr-matched_data$target_start_yr)/2
+  
   matched_data %>%
     # Because smoothing with window =9 has occured, 
     # historical is actually 2010 or earlier: the chunks
     # that had purely historical data in them and none 
     # from the future when smoothing.
-    filter(target_year <= 2010) %>%
+    filter(target_year <= cut_off_yr) %>%
     mutate(exp2 = archive_experiment) %>%
     separate(exp2, c('trash', 'idvalue'), sep = 'p') %>%
     select(-trash) %>%

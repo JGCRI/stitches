@@ -1,0 +1,501 @@
+---
+title: "Updating Matching - acs"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '4'
+    toc_float: yes
+    number_sections: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+# Goal
+We want to update so that matching returns not just nearest neighbor matches, but any matches within a specified tolerance `tol` of that match. We take this approach because it allows us to keep a biophysical interpretation: `tol` has units of degrees C, as does our euclidean distance metric `dist_l2` between target and archive `(fx, windowsize*dx)` points. This is one benefit to doing the matching on `windowsize*dx` instead of just `dx`: sensible units that we can use for other things.
+
+The alternative would be to return the K nearest neighbors for some specified K. This is considered undesirable because:
+
+1. K may be arbitrary, whereas we can set `tol` for example to be the interannual variability of the specific ESM.
+2. There's no way to control if that K-th match is actually close at all to the nearest neighbor match. Maybe the 5th nearest neighbor is a full degree away from the nearest neighbor match, who knows?
+
+Note that this does mean we _only_ go in the direction of the nearest neighbor match. That means if there's a 2nd nearest match in a completely different direction and kind of far from the nearest neighbor, it _won't_ get captured in this. That's a potential area for next development (say, find 3 nearest neighbors and then do the `tol` neighborhood about each) but for right now, sticking with just a neighborhood of the nearest neighbor lets us work on developing code for the permutation of all matches and stitching of those permutations into many realizations.
+Extending to do neighborhoods of K nearest neighbors from there should be straightforward.
+
+Additionally note that in terms of setting the tolerance, it may be more of a function of how many realizations you want than anything like ESM interannual variability. A `tol=0.01` degC returns a huge number possible stitching recipes for CanESM from an archive containing only SSP126 and SSP585. The vast majority of those are from the historical period. If you want the historical period in our stitched Tgav to be identical to the historical period in our target Tgav, it's far fewer stitching recipes. 
+
+
+# Set Up 
+```{r, message=FALSE, warning=FALSE}
+# required packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+
+# New required library to do the combinations
+# library(RcppAlgos)
+
+# The load the functions we will want to use, these are currently written in R and will be translated into python. 
+source("nearest_neighbor_matching.R") # the function match_nearest_neighbor is defined here
+source("permuting_matches.R") # the functions for taking matched data and creating stitching recipes are here
+source("stitching_functions.R")  # the function stitch_global_mean is definend here 
+
+```
+
+
+Load the inputs that will be used in the tutorial. 
+
+```{r}
+# Time series of the raw global mean temperature anomaly, this is the data that is 
+# going to be stitched together. Historical data is pasted into every scenario. No
+# smoothing has been done.
+tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+                      stringsAsFactors = FALSE) %>% dplyr::select(-X)
+
+
+# A chunked smoothed tgav anomaly archive of data. This was tgav_data but several 
+# steps were taken in python to transform it into the "chunked" data and save it 
+# so that we do not have to repeate this process so many times. 
+archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+
+
+# This is chunked smooth tgav anomaly for a single model/experiment/ensemble
+# member, saved for our convenience. If you decide that you want to work with 
+# a different different target data subset you can subset it from the
+# archive_data data frame. This file is SSP245 Realization 1.
+target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
+
+```
+
+# Matching 
+
+
+Use the function `match_neighborhood` to match the target and archive data to one another. This function takes each `(fx, windowsize*dx)` point in the target data and returns the nearest-neighbor archive point as well as every archive point in a specified neighborhood of radius `tol` of that nearest neighbor. 
+
+Right now the user will have to manually subset the contents of the archive so that we are not matching to other ESMs or the target scenario.
+
+
+```{r}
+archive_data %>% 
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  # dplyr::filter(experiment != unique(target_data$experiment) &
+  #                 experiment!= 'ssp534-over') ->
+  dplyr::filter(experiment %in% c("ssp126", "ssp585")) -> 
+  archive_subset
+```
+
+Now that we have the subset of the archive we want to work with, we can use it in the nearest neighbor. 
+
+Match the target and archive data! We use the default value of `tol=0.01` degC for these tests, as the l2 distance for the vast majority of nearest-neighbor matches is O(0.01).
+
+Matches will return a rather large data frame, with 21 columns. It will contain information about the target and archive data matched together. Columns that contain information about the distance of the matched pairs are `dist_dx`, `dist_fx`, and `dist_l2`.  `dist_dx` and `dist_fx` reflect the distance between the `window-size*dx` and `fx` components. `dist_l2` contains the euclidean distance, this is the distance that we use to select the nearest neighbor. 
+
+## Tests
+
+Test that the neighborhood function returns the same results as the nearest neighbor function for a neighborhood of radius 0, meaning we can get rid of `match_nearest_neighbor`:
+```{r}
+matched1 <- match_nearest_neighbor(target_data = target_data, archive_data = archive_subset)
+
+matched <- match_neighborhood(target_data = target_data, archive_data = archive_subset, tol = 0,
+                              drop_hist_duplicates = FALSE)
+
+print(paste("New matching with tol=0 agrees with prev nearest neighbor matching:", all(matched1$dist_l2 == matched$dist_l2)))
+
+```
+
+Make sure that the l2 distances returned for each target point are actually close to each other with max distance between any two of the archive points = `2*tol`. (The max distance of `2*tol` would be two points on the edge of the .01degC neighborhood about the nearest neighbor, directly across from each other).
+
+```{r}
+matched <- match_neighborhood(target_data = target_data, archive_data = archive_subset, tol = 0.01,
+                              drop_hist_duplicates = FALSE)
+
+# For each target point, all matched archive points must be close enough:
+
+# split out each target point
+matched_list <- split(matched,
+                      f=list(matched$target_variable, matched$target_experiment,
+                             matched$target_ensemble, matched$target_model,
+                             matched$target_start_yr, matched$target_end_yr,
+                             matched$target_year, matched$target_fx, 
+                             matched$target_dx),
+                      drop = TRUE)
+
+# for each target point, compute the pairwise difference among all `dist_l2` values 
+# and the minimimum l2 distance (which is the nearest neighbor match):
+lapply(matched_list, function(df){
+  pairwise <- as.vector(dist(df$dist_l2))
+  if (length(pairwise) == 0){
+    max_pairwise <- 0
+  } else {
+    max_pairwise <- max(pairwise)
+  }
+ 
+  min_l2 <- min(df$dist_l2)
+  
+  
+  return(df %>% 
+    dplyr::group_by(target_variable, target_experiment,
+                    target_ensemble, target_model,
+                    target_start_yr, target_end_yr,
+                    target_year, target_fx, target_dx) %>%
+    dplyr::summarise(max_pairwise = max_pairwise,
+                     min_l2 = min_l2) %>%
+    ungroup)
+}) %>% do.call(rbind, .) ->
+  x
+
+print(paste("all matched points are withing 2*tol of each other:", max(x$max_pairwise) <= 0.02))
+
+groups <- names(matched)[grepl('target', names(matched))]
+x %>%
+  left_join(select(matched1, target_variable, target_experiment,
+                    target_ensemble, target_model,
+                    target_start_yr, target_end_yr,
+                    target_year, target_fx, target_dx, dist_l2),
+            by = groups) -> 
+  y
+
+print(paste("the nearest neighbor is included in matched points:", all(y$min_l2 == y$dist_l2)))
+```
+
+```{r, echo=FALSE}
+# clean up from tests
+rm(matched)
+rm(matched1)
+rm(matched_list)
+rm(groups)
+rm(x)
+rm(y)
+```
+
+
+# Matching - historical period considerations
+
+Matching to neighborhoods of the nearest-neighbor match for each point of target data comes with a few tricky details in the historical period.
+
+
+First, there's a question of whether all of the neighborhood matches in the historical period are 'True' matches.
+
+
+Second, there's the question of whether we want variations in our stitched data from the actual historical data of the target data.
+
+
+## Historical false duplicates
+Do the basic matching of interest with a neighborhood of 0.01 degC (to keep the number of matches low but more than just nearest neighbor):
+
+```{r}
+matched_data <- match_neighborhood(target_data = target_data, archive_data = archive_subset, tol = 0.01,
+                              drop_hist_duplicates = FALSE)
+head(matched_data)
+```
+
+Note that there are two kinds of matches in the historical period:
+
+1. true near matches, eg target 1850 getting matches from  different realizations and or years.
+2. false duplicates: target 1850 gets 1872 data from realization 13 of SSP126 and SSP585. The metadata of these archive values are different, but the actual data values are identical because we just pasted in the same historical data to every Experiment. 
+
+So we write a helper function to drop false duplicates like these in the historical, while keeping any of the true near matches.
+
+
+```{r}
+matched_data <- match_neighborhood(target_data = target_data, archive_data = archive_subset, tol = 0.01,
+                              drop_hist_duplicates = TRUE)
+```
+
+## History identical to the target data
+The above steps allow for variations in the historical period, away from the nearest-neighbor matches in the historical period. Which, for target data from the actual CMIP experiments, means identical history when nearest neighbor matches are in place. 
+
+If we want to only work with stitched realizations that are identical to the historical period of the target data, we would do:
+
+```{r}
+# TODO: Make this a helper function or an input argument to match_neighborhood
+# instead of coding like this. 
+# Also unsure if 2015 is the cutoff year we would want since the data is smoothed. 
+# So 2015 is a 'future' year but the smoothed values still include some history. 
+
+matched_hist <-  match_neighborhood(target_data = filter(target_data, year < 2015),
+                                    archive_data = archive_subset,
+                                    tol = 0)
+matched_fut <-  match_neighborhood(target_data = filter(target_data, year >= 2015),
+                                    archive_data = archive_subset,
+                                    tol = 0.01, drop_hist_duplicates = FALSE)
+bind_rows(matched_hist, matched_fut) %>%
+  arrange(target_year) ->
+  matched_data_identical_hist
+
+# Note there's no issue of false historical duplicates here because we only kept the nearest neighbor
+# to begin with.
+kable(matched_data_identical_hist)
+```
+
+# Visualize Matches
+## In the space where matching occurs with equal axes
+These are the matches that allow departures from the target data's historical values.
+To visually ensure that we are getting the matches we think we should.
+
+```{r}
+ggplot(data = matched_data) + 
+  # Add the subset of the archive data that was read into the matching process. 
+  geom_point(data = archive_subset, aes(fx, 9*dx, color = "no match"), alpha = 0.4) + 
+  # Add the matched together points and make clear which points are matched with which. 
+  geom_point(aes(archive_fx, 9*archive_dx, color = "matched archive data")) + 
+  geom_point(aes(target_fx, 9*target_dx,  color = "target data"), alpha = 0.4) + 
+  # Add lines between the matched values
+  geom_segment(aes(x = target_fx, y = 9*target_dx, xend = archive_fx, yend =  9*archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  xlim(-2, 7) + ylim(-2, 7)+
+  theme_bw() + 
+  labs(y = "windowsize*dx (degC)", 
+       x = "fx (value of median temperature per chunk, degC)", 
+       title = "Matching between target and archive" )
+```
+
+## visualize matches in the raw data
+These are the matches that allow departures from the target data's historical values.
+As a zoom in to see more detail.
+```{r}
+ggplot(data = matched_data) + 
+  # Add the subset of the archive data that was read into the matching process. 
+  geom_point(data = archive_subset, aes(fx, dx, color = "no match"), alpha = 0.4) + 
+  # Add the matched together points and make clear which points are matched with which. 
+  geom_point(aes(archive_fx, archive_dx, color = "matched archive data")) + 
+  geom_point(aes(target_fx, target_dx,  color = "target data"), alpha = 0.4) + 
+  # Add lines between the matched values
+  geom_segment(aes(x = target_fx, y = target_dx, xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk, degC/year)", 
+       x = "fx (value of median temperature per chunk, degC)", 
+       title = "Matching between target and archive" )
+```
+
+
+### Visualize matching in a larger neighborhood just for fun
+With `tol=0.05` deg C, you can see that we begin to get significantly more matches, especially in the historical period where the archive points are so clustered together anyway.
+
+```{r, echo=FALSE}
+matched_data05 <- match_neighborhood(target_data = target_data, archive_data = archive_subset, tol = 0.05)
+
+ggplot(data = matched_data05) + 
+  # Add the subset of the archive data that was read into the matching process. 
+  geom_point(data = archive_subset, aes(fx, dx, color = "no match"), alpha = 0.4) + 
+  # Add the matched together points and make clear which points are matched with which. 
+  geom_point(aes(archive_fx, archive_dx, color = "matched archive data")) + 
+  geom_point(aes(target_fx, target_dx,  color = "target data"), alpha = 0.4) + 
+  # Add lines between the matched values
+  geom_segment(aes(x = target_fx, y = target_dx, xend = archive_fx, yend =  archive_dx), alpha = 0.4) +
+ scale_color_manual(values = c("matched archive data" = "red", 
+                               "target data" = "blue", "no match" = "grey"))+
+  theme_bw() + 
+  labs(y = "dx (rate of change per chunk, degC/year)", 
+       x = "fx (value of median temperature per chunk, degC)", 
+       title = "Matching between target and archive, neighborhood = 0.05degC" )
+```
+
+
+
+# Do the permutations of matches
+These are the matches that allow departures from the target data's historical values.
+
+We want permutations of matches that can cover the full 1850-2100 of the target data. Work on matches with `tol=0.01` to have fewer to work with for function development and testing.
+
+Trying to pre-determine all of the permutations is a genuinely computationally challenging task. I think to the degree that it precludes us trying it for now. If/when we do, we'll have to rely heavily on packages. That will make the translation from R to Python a little trickier, as we'll have to find a different package with comparable behavior but I think it's the only chance we have of doing it efficiently for any great number of matches. 
+
+Instead, for now in R, we will write a function that takes in a set of `matched_data`, a number of desired matches `N`, and an optional argument of which matches have already been used (in case we want to add more matches to a run). Then we'll draw repeated samples of permutations, compare to the already drawn and/or read in permutations, keep only the new ones and repeat until we have N. 
+
+## number potential permutations 
+Let's take a look at how many matches we have for each target year in our `tol=0.01` example:
+```{r}
+
+num_matches <- get_num_perms(matched_data)
+
+print(paste("There are a total of:", num_matches[[1]], "stitching recipes"))
+
+kable(num_matches)
+```
+So already so many permutations even with most target years still only having their nearest neighbor match. 
+
+
+We _can_ decrease that some by only using the nearest neighbor match in the historical period.
+```{r}
+
+num_matches_identical_hist <- get_num_perms(matched_data_identical_hist)
+
+print(paste("There are a total of:", num_matches_identical_hist[[1]], "stitching recipes"))
+
+kable(num_matches_identical_hist)
+```
+Obviously far, far fewer when you require the historical period to match the target data identically and only allow new matches in the future period.
+
+So We will be working with `matched_data_identical_hist` (identical history) while figuring out how to write the permutations functions.
+
+We'll have the permutation function call this count early on for each set of matched data; it's fast and if the input argument `N` is larger than the potential number of permutations, we'll just have it print out that the max number of potential permutations is X<N and that's what they'll get.
+
+```{r}
+set.seed(42)
+
+start <- Sys.time()
+recipes <- permute_stitching_recipes(N_matches = 2, matched_data = matched_data_identical_hist)
+end <- Sys.time()
+
+print(end-start)
+
+# take a look
+kable(recipes)
+```
+
+Each recipe (each stitching_id) has one and only one archive value matched in for each target value. 
+
+There is an optional argument to `permute_stitching_recipes` to read in a previous set of recipes and go from there. 
+That code is purely placeholder and currently commented out.
+
+The downside to the permutations code is that it will be slower and slower the more matches we want. Since we aren't doing the full combination of all matches ahead of time and we aren't doing any kind of recursive method, we can't remove a combination from the list. It can still be sampled with equal probability of the others. So if you want all 48 possible matches with this data set, getting that last one sampled and kept will take a while:
+
+```{r}
+set.seed(42)
+
+start1 <- Sys.time()
+recipes_identical_hist <- permute_stitching_recipes(N_matches = 48, matched_data = matched_data_identical_hist)
+end1 <- Sys.time()
+
+```
+
+
+So we can see there's an exponential time difference between producing 2 and producing all possible matches (ie 48 matches takes much more than 24 times as long as 2 matches). Which we do expect, it's just good to be aware of.
+
+- N_matches = 2: `r end-start` seconds.
+- Time for 2 matches * 24: `r 24*(end-start)` seconds.
+- N_matches = 48 (all): `r end1-start1` seconds.
+
+When with the set that had matches throughout history (and 13824 potential matches), returning 48 matches is interestingly about the same amount of time, meaning the time to sample and label  48 matches (in this case) is roughly independent of the total number of potential matches. :
+
+```{r}
+set.seed(42)
+
+start <- Sys.time()
+recipes <- permute_stitching_recipes(N_matches = 48, matched_data = matched_data)
+end <- Sys.time()
+
+print(end-start)
+```
+
+
+I haven't done any benchmarking on trying to figure out the time to list out all combinations or to try something recursive. I think maybe we stick with this for now while we're testing and developing, with a smaller number of desired matches for now, and then worry more about the method that's most efficient for generating larger numbers of matches once we're into python. 
+
+Right now, the code as written should be very straightforward to translate to python via relying on base functions and pandas only. A function to try to quickly list all combinations or trying something recursive would be so differnt between R and python that I don't see the point in pursuing these in R.
+
+
+# Turning all permutations of matches stitching recipes into stitched Tgavs
+
+Because of how we sampled macheds, for each `stitching_id`, the stitching process should be exactly like before. Right now, we  do `split-lapply-do.call(rbind)` on the `stitching_id` to make all of the new Tgavs instead of updating the stitching function right now. 
+
+```{r}
+# A data frame of all 48 labeled matches with identical history:
+lapply(split(recipes_identical_hist, recipes_identical_hist$stitching_id),
+       function(df){
+         stitch_global_mean(match = df, data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs_identical
+
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         stitch_global_mean(match = df, data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs
+
+# Some comparison data
+tgav_data %>%  
+  filter(model == unique(target_data$model) & experiment == unique(target_data$experiment) & 
+           ensemble == unique(target_data$ensemble)) -> 
+  original_data
+```
+
+And plot:
+
+```{r}
+ggplot(data = new_tgavs_identical, aes(year, value, color = as.factor(stitching_id))) + 
+  geom_line(size = 0.5) + 
+  #facet_wrap(~stitching_id, nrow = 6) +
+  geom_line(data = original_data, aes(year, value), color = "grey", size = 0.4) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data\nHistory constrained to be identical",
+       x = "Year", y = "Deg C")
+
+```
+This seems like far fewer trajectories than we would expect but it's actually behaving exactly how things should: 
+```{r, echo = FALSE}
+get_num_perms(matched_data_identical_hist)[[2]] %>% 
+  filter(n_matches > 1) %>%
+  select(-target_fx, -target_dx) %>%
+  kable()
+```
+From 2021-2029, there are only three curve options and we see all 3. From 2039-2047, there are only 2 curve options and we see each of those. It just looks like far fewer lines than we would expect for 48 because there are just not many choices in many time periods because we used such a small neighborhood to keep things small. 
+
+Similarly for where we haven't constrained history to be identical, it's still only 1-5 matches per window, so we don't see the most differences: all 48 trajectories have to go through one of the very small number of options for each time window.
+```{r}
+ggplot() + 
+  geom_line(data = original_data, aes(year, value), color = "grey") + 
+  geom_line(data = new_tgavs, aes(year, value, color = as.factor(stitching_id))) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C") 
+```
+
+# Larger Neighborhood
+Let's take a look at the results for a 0.1 degC matching neighborhood of each time points nearest neighbor match.
+```{r}
+# Do the matching for a 0.1degC neighborhood
+matched_data <- match_neighborhood(target_data = target_data, archive_data = archive_subset, tol = 0.1)
+
+print(paste('Total potential matches', get_num_perms(matched_data)[[1]]$totalNumPerms))
+
+# Sample the matches
+start1 <- Sys.time()
+recipes <- permute_stitching_recipes(N_matches = 100, matched_data = matched_data)
+end1 <- Sys.time()
+
+print(paste(end1-start1, 'for 100 Tgavs'))
+
+
+# stitch the tgavs:
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         stitch_global_mean(match = df, data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs
+
+# And plot
+ggplot(data = new_tgavs, aes(x=year, y=value, color=as.factor(stitching_id))) + 
+  geom_line(size = 0.5, show.legend = FALSE) + 
+  #facet_wrap(~stitching_id, nrow = 6) +
+  geom_line(data = original_data, aes(year, value), color = "grey", size = 0.4) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data\n0.1degC matching neighborhood",
+       x = "Year", y = "Deg C")
+```
+
+Larger neighborhood = more matches in each time window = more visually distinct realizations. And interestingly, the time to sample 100 matches is not too far off from the time to sample 48.
+
+# Questions and next steps:
+
+- do we really want to be applying the tolerance to history the way we are, or do we only want to match history directly? Code above for both ways
+- Looking at how the number of matches break down for each target year in the `matched_data_identical_hist` file, yes we get 48 stitching recipes for Tgav time series, but they could be really similar Tgavs because only 5 of the periods in the future got multiple matches with our selected tolerance. Obviously increasing the selected tolerance will give us more target periods getting multiple matches, but I do think that if we did small neighborhoods around the 3 nearest neighbor matches, we might get more variety of behavior. So kind of a key question to keep in the back of our heads is 'are these actually 48 different realizations, or are they 48 small tweak copies on 3 or 4 realizations?'
+- An important point to make with all of this is that we with very mild constraints (nearest neighbor + 0.01 degC radius neighborhood and allowing different history from the target, which is almost nothing), we start to get more realizations than we could ever actually use. The practical concern is just whether those many realizations are actually distinct _enough_ from each other to be worth running through a downstream model.
+
+Next steps:
+1. evaluation of these tgav's
+2. in parallel translate to python
+3. add in the layer of matching the gridded netcdf data in to construct new monthly T and P netcdfs.
+4. Test those.
+5. Publish??? No ML atthis point, just matching on smoothed Tgav, but it would stake our territory and get it out the door sooner if we aimed for this and then developed more after. Also More papers and easier papers to write rather than trying to do it all and documenting in one paper?
+6. Look at matching on more complex things than smoothed Tgav (ML?) and look at layering in and evaluating (ML?) daily data?
+7. Look at adding variables beyond T and P,from ESMs.
+8. Loook at organizing results from impacts models, crop and hydrology models, so that they could be layered in as well. Don't think it would work for stuff like Forest productivity because may be too much memory, unless that's working strictly with derivatives and not actual values. Probably less memory in the rate of change than in the actual time series of values.

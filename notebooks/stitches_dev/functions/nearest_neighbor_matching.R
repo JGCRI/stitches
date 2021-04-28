@@ -163,6 +163,10 @@ shuffle_function <- function(dt){
 
 remove_duplicates <- function(matched_data, archive,  drop_hist_duplicates = TRUE){
   
+  if(length(unique(matched_data$target_year)) < nrow(matched_data)){
+    stop("You have multiple matches to a single target year, you need to call `permute_stitching_recipes` before this function")
+  }
+  
   # Work with rows where the same archive match gets brought in.
   # Get the initial duplicate count for the original data.
   matched_data %>%

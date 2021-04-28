@@ -239,13 +239,13 @@ remove_duplicates <- function(matched_data, tol = 0.01, drop_hist_duplicates = T
 # Args 
 #   target_data: data frame created by the get_chunk_info containg information from the target time series. 
 #   archive_data: data frame created by the get_chunk_info containing information from the archive. 
-#   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
-#        neighbor. If tol=0, only the nearest-neighbor is returned
+#   tol: a tolerance for the neighborhood of matching. defaults to 0 degC about the nearest-
+#        neighbor - in other words, nearest neighbor match is the default behavior.
 # drop_hist_duplicates: boolean, default set to TRUE, will discard historical duplicates from matching process.
 #
 # Return: a data frame of the target data matched with the archive data, this is the information 
 # that will be used to look up and stich the archive values together, this is our "recepie card".
-match_neighborhood <- function(target_data, archive_data, tol = 0.01,
+match_neighborhood <- function(target_data, archive_data, tol = 0,
                                drop_hist_duplicates = TRUE){
   
   # Check the inputs of the functions 

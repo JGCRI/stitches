@@ -293,6 +293,16 @@ ggplot() +
 # Single workflow
 
 
+This is the order we _need_ to call our many functions in.
+
+We can use the `tol` argument in `match_neighborhood` to get a huge number of _potential_ tgav time series. But we then need to do the random draws with `permute_stitching_recipes` so that we have a specified number of stitching recipes (each target year is matched to a single archive year).
+
+From there, those recipes can be put through `remove_duplicates` so that within each stitching recipe, no two target years got matched to the same archive year. Each of those tidied recipes can then be fed used in `stitch_global_means` to create new Tgav time series (unsmoothed)
+
+
+**NOTE**
+The `permute_stitching_recipes` function _does_ have a check so that we keep doing draws until we have the specified number of _unique_ recipes. Right now, `remove_duplicates` doesn't have a check like that because it would be really hard to implement I think. So there's a chance that by running the recipes that come out of `permute_stitching_recipes` through the `remove_duplicates` we could end up with some repeated recipes. I think it's a pretty small chance but it is worth knowing. Right now, I think it falls under 'too much effort to make things elegant' but we will need to keep it in mind as we move to production runs. 
+
 ```{r}
 
 # The archive you're working with
@@ -302,6 +312,9 @@ archive_data %>%
   archive_subset
 
 
+## TODO: This for sure needs to be wrapped into a single function
+## to enforce that everything gets called in the right order.
+#
 # Get all your matches in your neighborhood and convert them to
 # the number of recipes you want:
 match_neighborhood(target_data = target_data,
@@ -310,6 +323,7 @@ match_neighborhood(target_data = target_data,
   # Convert them to a sample of individual Tgav Recipes:
   permute_stitching_recipes(N_matches = 4, matched_data = .) ->
   recipes
+
 
 # stitch the tgavs not allowing duplicates within a single
 # generated Tgav. Specifically,the duplicates will be re-matched on
@@ -320,6 +334,14 @@ lapply(split(recipes, recipes$stitching_id),
          df %>% 
            remove_duplicates(matched_data = ., 
                              archive = archive_subset) %>%
+           # ^ up to here, returns recipes with duplicates 
+           # removed.
+           # TODO: KD will update this to save out csv at this 
+           # stage so that the stitch global mean can be implemented
+           # in python and then layering in the monthly gridded data.
+           # Then we will come back through and translate all the
+           # above matching and duplication cleanup will be translated.
+           # Lets us do some parallel development to make up some speed.
            stitch_global_mean(match = ., data = tgav_data) %>%
            mutate(stitching_id = unique(df$stitching_id))
        }) %>%

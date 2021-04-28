@@ -139,7 +139,8 @@ shuffle_function <- function(dt){
 # A function to remove duplicated matches for a single target trajectory.
 # E.g. if target year 2070 and 2079 both get the same archive point matched
 # in, let that point stay with the target year that had smaller `dist_l2`, 
-# re-match the other target year on the archive minus that duplicated point.
+# re-match the other target year on the archive minus that duplicated point
+# via nearest neighbor.
 # Runs recursively so with the re-matched other target year, it will again
 # check the full set of matched data for duplicates, keep the match on the 
 # target year with smallest distance, re-match the other target year that
@@ -149,15 +150,18 @@ shuffle_function <- function(dt){
 # duplicate cases. 
 #
 # Args:
-# matched_data: data frame with results of matching
-# tol: a tolerance for the neighborhood of matching. defaults to tol=0, only the nearest-neighbor is returned
+# matched_data: A data frame with results of matching for a _single_ tgav recipe. Either because
+#               match_neighborhood was used specifically to return NN or because the multiple 
+#               matches have been permuted into new recipes and then split with this function being
+#               applied to each recipe.
+# archive: The archive data to use for re-matching duplicate points
 # drop_hist_duplicates: boolean, default set to TRUE, will discard historical duplicates from matching process.
 # 
 # Returns:
 # matched_data: data frame with same structure as raw matched, with duplicate
 # matches replaced. 
 
-remove_duplicates <- function(matched_data, tol = 0, drop_hist_duplicates = TRUE){
+remove_duplicates <- function(matched_data, archive,  drop_hist_duplicates = TRUE){
   
   # Work with rows where the same archive match gets brought in.
   # Get the initial duplicate count for the original data.
@@ -196,7 +200,7 @@ remove_duplicates <- function(matched_data, tol = 0, drop_hist_duplicates = TRUE
     rm_from_archive <- matched_data[, grepl('archive_', names(matched_data))] 
     names(rm_from_archive) <- gsub(pattern = 'archive_', replacement = '', x = names(rm_from_archive))
     
-    archive_subset %>%
+    archive %>%
       anti_join(rm_from_archive,
                 by=c("experiment", "variable",
                      "model", "ensemble", 
@@ -205,7 +209,7 @@ remove_duplicates <- function(matched_data, tol = 0, drop_hist_duplicates = TRUE
       new_archive
     
     rematched <- match_neighborhood(target_data = points_to_rematch, archive_data = new_archive, 
-                                    tol = tol, drop_hist_duplicates = FALSE)
+                                    tol = 0, drop_hist_duplicates = FALSE)
     
     matched_data %>%
       filter(!(target_year %in% rematched$target_year)) %>%

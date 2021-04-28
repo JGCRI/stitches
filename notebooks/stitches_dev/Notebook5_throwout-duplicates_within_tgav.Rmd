@@ -1,5 +1,5 @@
 ---
-title: "Nearest-neighbor matching: no repeat matches within a match to a single target"
+title: "No repeat match years within a single matched Tgav recipe to a single target"
 output:
   html_document:
     df_print: paged
@@ -13,7 +13,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 # Goal
 
 
-Rewrite the matching routine so that within a single target trajectory being matched, no two target years get the exact same archive value matched in.
+Rewrite the matching routine so that within a single generated ensemble member, no two target years get the exact same archive value matched in.
 
 # Set Up 
 ```{r, message=FALSE, warning=FALSE}
@@ -68,7 +68,7 @@ archive_data %>%
 
 # Subset of archive for testing
 
-Want to work with an archive that will guarantee we get matches within a single generated ensemble member, so that we can make sure the function for dropping those duplicates behaves as intended.
+Want to work with an archive that will guarantee we get multiple duplicates (diff target years get the same matched archive year) within a single generated ensemble member, so that we can make sure the function for dropping those duplicates behaves as intended.
 
 ```{r}
 # data that will for sure have the same value getting matched in multiple times
@@ -80,8 +80,12 @@ archive_data %>%
 ```
 
 # Current matching
+
+Nearest neighbor 
 ```{r}
-matched <- match_neighborhood(target_data = target_data, archive_data = archive_subset)
+matched <- match_neighborhood(target_data = target_data, 
+                              archive_data = archive_subset,
+                              tol = 0)
 ```
 
 
@@ -103,9 +107,9 @@ ggplot() +
 # Proposed change
 As we intended from our choice of archive, this set of matched data has duplicate matches. 
 
-If two target years get the same archive point matched, the archive point stays with the target year with smallest `dist_l2`. The other target year re-matches  the larger `dist_l2` points on a subsetted archive with these duplicate archive points removed.
+If two target years get the same archive point matched, the archive point stays with the target year with smallest `dist_l2`. The other target year re-matches  the larger `dist_l2` points on a subsetted archive with all of the matched archive points (duplicate matches or not) removed.
 
-There's an element of recursion here (via the while loop): we only remove the duplicated match point from the archive when re-matching, we update the matched data with the re-matched points, and we check the entire matched data for duplicates again.
+There's an element of recursion here (via the while loop): we update the matched data with the re-matched points, and we check the entire matched data for duplicates again.
  
 ```{r}
 matched_no_dup <- remove_duplicates(matched, archive = archive_subset)

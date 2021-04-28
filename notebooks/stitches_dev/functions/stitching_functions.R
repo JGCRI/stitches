@@ -6,10 +6,16 @@ library(assertthat)
 # create a stitched together global mean time series from tgav data that
 # has historical pasted into every scenario, as in the archive
 # Args 
-#   match: the data frame returned by the match function 
+#   match: A single stitching recipe - each target year has been either matched
+#          to the nearest neighor or matched to a neighborhood and then
+#          permuted so that what is input to this function is a single tgav recipe. 
 #   data: the data of the global mean temp that will be stitched together
 # return: a time series of data (year, value, variable)
 stitch_global_mean <- function(match, data){
+  
+  if(length(unique(match$target_year)) < nrow(match)){
+    stop("You have multiple matches to a single target year, you need to call `permute_stitching_recipes` before this function")
+  }
   
   # check the match input make sure that the values are 
   req_target_cols <- paste0("target_", c("variable", "start_yr", "end_yr"))

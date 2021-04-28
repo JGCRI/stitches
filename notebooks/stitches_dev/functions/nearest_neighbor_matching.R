@@ -10,10 +10,9 @@ library(assertthat)
 #   fx_pt: a single value of the target fx value
 #   dx_pt: a single value of the target dx value 
 #   archivedata: a data frame of the archive fx and dx values
-#   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
-#        neighbor. If tol=0, only the nearest-neighbor is returned
+#   tol: a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned
 # Return: a data frame with the target data and the corresponding matched archive data. 
-internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0.01){
+internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0){
 
   # Compute the window size of the archive data to use to update
   # dx values to be windowsize*dx so that it has units of degC
@@ -140,7 +139,8 @@ shuffle_function <- function(dt){
 # E.g. if target year 2070 and 2079 both get the same archive point matched
 # in, let that point stay with the target year that had smaller `dist_l2`, 
 # re-match the other target year on the archive minus that duplicated point
-# via nearest neighbor.
+# via nearest neighbor. This is so that the replacement is the best possible
+# match.
 # Runs recursively so with the re-matched other target year, it will again
 # check the full set of matched data for duplicates, keep the match on the 
 # target year with smallest distance, re-match the other target year that

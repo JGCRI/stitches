@@ -150,17 +150,17 @@ shuffle_function <- function(dt){
 #
 # Args:
 # matched_data: data frame with results of matching
-# tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearestneighbor. 
-#     If tol=0, only the nearest-neighbor is returned
+# tol: a tolerance for the neighborhood of matching. defaults to tol=0, only the nearest-neighbor is returned
 # drop_hist_duplicates: boolean, default set to TRUE, will discard historical duplicates from matching process.
 # 
 # Returns:
 # matched_data: data frame with same structure as raw matched, with duplicate
 # matches replaced. 
 
-remove_duplicates <- function(matched_data, tol = 0.01, drop_hist_duplicates = TRUE){
+remove_duplicates <- function(matched_data, tol = 0, drop_hist_duplicates = TRUE){
   
-  # Work with rows where the same archive match gets brought in 
+  # Work with rows where the same archive match gets brought in.
+  # Get the initial duplicate count for the original data.
   matched_data %>%
     group_by(archive_experiment, archive_variable,
              archive_model, archive_ensemble,
@@ -172,7 +172,7 @@ remove_duplicates <- function(matched_data, tol = 0.01, drop_hist_duplicates = T
   
   while(nrow(duplicates) > 0){
     
-    # within each set of duplicates, 
+    # within each iteration of checking duplicates, 
     # pull out the one with smallest dist_l2 - 
     # this is the one that gets to keep the match, and we use
     # as an index to work on the complement of (in case the same

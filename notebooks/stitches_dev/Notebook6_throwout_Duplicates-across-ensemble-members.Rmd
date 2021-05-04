@@ -12,20 +12,41 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 
 # Goal
 
-- We've developed a function to re-match points within a single ensemble member that has the same archive point matched for multiple target years. `remove_duplicates`
+Avoid envelope collapse in generated realizations, whether they correspond to a single target trajectory or multiple target trajectories. 
 
-- Right now, we do the neighborhood matching, we do the permutation sampling, and then we call `remove_duplicates` and then just stitch together from those resulting recipes.
+- We've developed a function to re-match points within a single generated ensemble member that has the same archive point matched for multiple target years: `remove_duplicates`. Within a single generated realization for a single target trajectory, this looks for any target-years that got the same archive match. If there are any, a subsetted archive for re-matching is created, as the original archive minus all of the matched points (so that new duplicates to other target years don't get introduced on rematching). The year with the smallest distance to a duplicate match keeps it, and the other target years that had that duplicate match get re-matched to their nearest-neighbor on the subsetted archive; iterate until no two target-years in a single trajectory have the same archive match. (Archive Match means the experimentXrealizationXyear - the individual point in the archive.) 
+
+- Prior to this notebook, we do the neighborhood matching, we do the permutation sampling, and then we call `remove_duplicates` and then just stitch together from those resulting recipes.
 
 - the permutation function that gives us our recipes does enforce that each sampled recipe is unique, but by doing things in this order, the results of `remove_duplicates` can actually introduce some non-uniqueness in our set of sampled recipes.
 
-- We can move the call to `remove_duplicates` into the permutation sampling function to help that and we can update the permutation sampling function so that, for a single target trajectory, multiple generated realizations won't all get the same archive match to the same target year (e.g. don't want every 2070 to be the same across generated ensemble members).
+- On this branch, we have moved the call to `remove_duplicates` into the permutation sampling function to fix that.
 
-- Risk: some target years really only have one match, even with a neighborhood matching (especially at higher Tgav values).So by requiring each generated ensemble member to not have the match for some target years (avoiding envelope collapse), you'll have to go to less and less close matches and you will see a degradation in the quality of the generated realizations.
+- Then the main goal is updating the permutation sampling function so that, for a single target trajectory, multiple generated realizations won't all get the same archive match to the same target year (e.g. don't want every 2070 to be the same across generated ensemble members).
+
+- Note that if a target period only has one match in the entire archive (even on a neighborhood), then that's what the constructed ensemble members get. There will be collapse. When working with the full archive and even a modest neighborhood size (0.1degC), this doesn't really happen but just worth noting.
+
 
 - Then we have to figure out what to do for looking not just across generated realizations for a single target, but across generated realizations across multiple targets. 
 
-In other words, if we are creating the nearest neighbor matching for targets of SSP245 realization 1 and realization 4, can't have the situaton where both targets get the same archive value matched to the same target year. So, like before, we can't have the match for realization 1 have the same archive point come in for 2070 and 2079. Now, we want to update so that we also can't have Realization 1 target year 2070 and Realization 4 target year 2070 getting the same archive point as their respective nearest neighbor matches. BUT it would be ok if Realization 1 target year 2070 and Realization 4 target year 2079 got the same archive point matching in as their respective nearest neighbor matches. 
 
+# Notes
+
+## single target
+
+So basically what we are saying is that, when generating multiple ensemble members (by calling `permute_stitching_recipes`), once a (target-year, archive-match) pair has been used in a stitching recipe,it can't be used again. That is, two generated ensembles can't have (2075, realization 1 2070). So it's just a matter of removing that point from the `matched_points` set iteratively as each new ensemble member is constructed. 
+
+But this does then take us from having a huge number of all possible mixes and matches in terms of generated realizations to only being able to generate a much smaller number of ensemble members: the target year with the smallest number of matching archive points dictates the number of realizations that you can generate according to throwing out each (target-year, archive-match) pair once they've been used. So going from like 10^42 possible mixes and matches to just 10 because target year 1989 only had 10 archive points matched in the neighborhood. Every time you do that sampling, those 10 might be different. But you can't have a generated ensemble of more than 10 realizations if each realization has to have a different 1989 value to avoid envelope collapse.
+
+We _can_ define a re-matching condition on a subsetted archive (with existing matches removed) the same way `remove_duplicates` does if we want more than those 10; the issue there is that by definition, those new matches are less good and you are more likely to create unacceptable generated realizations. So for now, not doing it. 
+
+## across targets
+
+Say we want to generate multiple new ensemble members for each of a target trajectory of realization 1 and a target trajectory of realization 4. Because those targets are pretty similar, we risk envelope collapse again. THinking of just one generated ensemble member for each target, we don't want the case of having (target realization 1 year 2070) getting the same archive match as (target realization 4 year 2070), in addition to the fact that we don't want that to happen to multiple generated realizations for any of the targets. It does appear to have the same solution then - remove each (target-year, archive-match) pair as they get used, regardless of which trajectory the target-year came from.
+
+So, we construct generated realizations iteratively. We start with the target that has the most limited number of collapse-free generated ensemble members. Construct those, removing each constructed (target-year, archive-match) as we go. Then move on to the next target with the next smallest number of collapse-free generated ensemble members. Repeat until we're either done or out of collapse-free ensembles to construct. I don't see any other way to do it. 
+
+Note that because we want to enforce this across targets, it's really not parallellizable except across _experiments_. Also in general, with the way the code has been written, it's probably best to call it separately for each experiment of interest being worked with. Just because this whole duplication elimination stuff is not optional and it wouldn't make sense that points used in the construction of a new ssp245 realization couldn't be used in the construction of a new ssp585. 
 
 # Set Up 
 ```{r, message=FALSE, warning=FALSE}
@@ -71,40 +92,48 @@ tgav_data %>%
            ensemble == unique(target_data$ensemble)) -> 
   original_data1
 
+
 # target data 2: ssp245 realization 4
 archive_data %>%
   filter(experiment == 'ssp245' & ensemble == 'r4i1p1f1') ->
   target_data2
+ 
+# for plotting
+tgav_data %>%  
+  filter(model == unique(target_data2$model) & experiment == unique(target_data2$experiment) & 
+           ensemble == unique(target_data2$ensemble)) -> 
+  original_data2
+
 ```
 
 
 # Define the archive for testing
 
-The full archive:
+The full archive minus the two trajectories we are emulating:
 
 ```{r}
-# data that will for sure have the same value getting matched in multiple times
 archive_data %>% 
   dplyr::filter(model == unique(target_data$model)) %>%  
-  dplyr::filter(experiment != 'ssp534-over') ->
-  # dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') %>%
-  # filter(ensemble == 'r1i1p1f1' | ensemble == 'r2i1p1f1') ->
+  dplyr::filter(experiment != 'ssp534-over' |
+                (experiment == 'ssp245' & ensemble == 'r4i1p1f1') |
+                (experiment == 'ssp245' & ensemble == 'r1i1p1f1')) ->
   archive_subset
 ```
 
 
 # Do matching to that archive and sample recipes
 
-With the `remove_duplicates` call that makes sure no matches are repeated within a single generated ensemble member
+With the `remove_duplicates` call now in `permute_stitching_recipes` to enforce that no matches are repeated within a single generated ensemble member and that the recipes put out by `permute_stitching_recipes` are in fact unique.
 
 ```{r}
-matched_data <- match_neighborhood(target_data = target_data,
+matched_data <- match_neighborhood(target_data = bind_rows(target_data, target_data2),
                    archive_data = archive_subset,
                    tol=0.1)
 
+
 matched_data%>%
   # Convert them to a sample of individual Tgav Recipes:
-  permute_stitching_recipes(N_matches = 4, matched_data = .,
+  permute_stitching_recipes(N_matches = 5, matched_data = .,
                             archive = archive_subset) ->
   recipes
 ```
@@ -126,80 +155,44 @@ lapply(split(recipes, recipes$stitching_id),
 
 # Put in one data frame with orig data to plot
 new_tgavs %>%
-  left_join(select(original_data1, -timestep, -grid_type, -file) %>%
+  mutate(tosep = stitching_id) %>%
+  separate(tosep, c('experiment', 'ensemble', 'trash'), sep = "~") %>%
+  select(-trash) %>%
+  left_join(select(bind_rows(original_data1, original_data2), -timestep, -grid_type, -file) %>%
               rename(orig_val = value), 
-            by = c('year', 'variable')) ->
+            by = c('year', 'variable', 'experiment', 'ensemble')) ->
   plotting_tgavs
 
 # Plot
 ggplot() + 
+  facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
   geom_line(data = plotting_tgavs , 
                           aes(year, value, color = as.factor(stitching_id))) +
-  geom_line(data = plotting_tgavs, aes(year, orig_val), color = "grey") + 
+  scale_color_brewer(palette = 'Spectral') +
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.4) + 
   theme_bw() + 
   labs(title = "Comparison of ESM and Stitched Data",
        x = "Year", y = "Deg C")
 ```
 
 
-# Compare the Tgav
 
-Did double check that the last two chunks aren't repeats: both archive year 2061 from ssp585 but different realizations and therefore different archive values.
-
-```{r, echo=FALSE}
-stitch_global_mean(match = matched_no_dup, data = tgav_data) %>% 
-  mutate(target = "ssp245-realization1-noduplicates") -> 
-  out1
-
-ggplot() + 
-  geom_line(data = original_data1, aes(year, value), color = "grey") + 
-  geom_line(data = out1, aes(year, value, color = target)) + 
-  geom_line(data = out1a, aes(year, value, color = target)) + 
-  theme_bw() + 
-  labs(title = "Comparison of ESM and Stitched Data",
-       x = "Year", y = "Deg C")
-```
+# Make sure that what we're seeing around 2000 isn't collapse
 
 
-# Questions:
-
-1. Not quite sure what 'ideally also for the matches of the same scenario*model ensemble members.' means
-2. Historical years - do we have to do anything different? In theory no since we're matching the historical data in our target SSP to the exact same historical data in archive SSPs (that we've just adjusted the metadata on)?
-3. Handling duplicates the way I've done or the alternative option I outlined?
-4. How much is this actually a problem in terms of having a relatively fully populated archive? I get not repeating archive years within any single new ensemble member but beyond that?
-
-Now that we have the subset of the archive we want to work with, we can use it in the nearest neighbor. 
-
-
-# Apply to a less-restricted archive, stitch and plot
 
 ```{r}
-archive_data %>% 
-  dplyr::filter(model == unique(target_data$model)) %>%  
-  dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') ->
-  archive_subset
-
-
-match_nearest_neighbor(target_data = target_data, archive_data = archive_subset) %>%
-  remove_duplicates(matched_data = .) %>%
-  stitch_global_mean(match = ., data = tgav_data) %>% 
-  mutate(target = "ssp245-realization1-noduplicates") -> 
-  out1
-
-match_nearest_neighbor(target_data = target_data, archive_data = archive_subset) %>%
-  stitch_global_mean(match = ., data = tgav_data) %>% 
-  mutate(target = "ssp245-realization1-duplicates") -> 
-  out1a
+plotting_tgavs %>%
+  filter(year >= 1985, year <=2015) -> 
+  plotting_tgavs
 
 ggplot() + 
-  geom_line(data = original_data1, aes(year, value), color = "grey") + 
-  geom_line(data = out1, aes(year, value, color = target)) + 
-  geom_line(data = out1a, aes(year, value, color = target)) + 
+  facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
+  geom_line(data = plotting_tgavs , 
+                          aes(year, value, color = as.factor(stitching_id))) +
+  scale_color_brewer(palette = 'Spectral') +
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.4) + 
   theme_bw() + 
   labs(title = "Comparison of ESM and Stitched Data",
        x = "Year", y = "Deg C")
-
 ```
-
-
-

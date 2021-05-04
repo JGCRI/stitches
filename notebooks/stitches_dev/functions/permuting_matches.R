@@ -53,7 +53,8 @@ get_num_perms <- function(matched_data){
                 summarize(totalNumPerms = prod(n_matches),
                           minNumMatches = min(n_matches)) %>%
                 ungroup,
-              num_matches ))
+              num_matches %>%
+                arrange(target_variable, target_model, target_experiment, target_ensemble)))
 }
 
 
@@ -80,27 +81,22 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
   perm_guide <- num_perms[[2]]
   
   
-  # how many target trajectories are we matching to
-  matched_data %>%
-    select(target_variable, target_experiment, target_ensemble, target_model) %>%
-    distinct %>% 
-    nrow ->
-    num_targets
+  # how many target trajectories are we matching to,
+  # how many collapse-free ensemble members can each
+  # target support, and order them according to that
+  # for construction.
+  num_perms[[1]] %>%
+    arrange(minNumMatches) %>%
+    mutate(target_ordered_id = as.integer(row.names(.))) ->
+    targets
   
   
   # max number of permutations per target without repeating across generated
   # ensemble members
-  num_perms %>%
-    group_by(target_variable, target_experiment, target_ensemble, target_model)
+  N_data_max <- min(num_perms[[1]]$minNumMatches)
   
-  
-  
-  
-  
-  N_to_make <- N_matches
   if (N_matches > N_data_max){
-    message(paste("You have requested more recipes than possible, returning", N_data_max))
-    N_to_make <- N_data_max
+    message(paste("You have requested more recipes than possible for at least one target trajectories, returning what can"))
   }
   
 
@@ -130,77 +126,130 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
     recipes <- data.frame()
   }
   
+  # for each target
+  for(target_id in unique(targets$target_ordered_id)) {
   
-  while(length(unique(recipes$stitching_id)) < N_matches){
+    # target info 
+    targets %>%
+      filter(target_ordered_id == target_id) ->
+      target
     
-    # work with periods with more than one match
+    # initialize a recipes for each target
+    recipes_by_target <- data.frame()
+    
+    # work with periods with more than one match, just for this target
     perm_guide %>% 
-      filter(n_matches > 1) ->
+      filter(target_variable == unique(target$target_variable),
+             target_experiment == unique(target$target_experiment),
+             target_model == unique(target$target_model),
+             target_ensemble == unique(target$target_ensemble),
+             n_matches > 1) ->
       draw_periods
     
-    # sample one match per target_year for each period with 
-    # more than one match:
-    matched_data %>%
-      filter(target_year %in% draw_periods$target_year) %>%
-      split(f = list(.$target_variable, .$target_experiment, .$target_ensemble,
-                     .$target_model, .$target_year)) -> 
-      list_targets
+    while(length(unique(recipes_by_target$stitching_id)) < min(N_matches, target$minNumMatches)){
+      
+      
+      # sample one match per target_year for each period with 
+      # more than one match:
+      matched_data %>%
+        filter(target_year %in% draw_periods$target_year,
+               target_variable == unique(target$target_variable),
+               target_experiment == unique(target$target_experiment),
+               target_model == unique(target$target_model),
+               target_ensemble == unique(target$target_ensemble)) %>%
+        split(f = list(.$target_variable, .$target_experiment, .$target_ensemble,
+                       .$target_model, .$target_year)) -> 
+        list_targets
+      
+      
+      sampled_target <- lapply(list_targets, function(df){
+        return(df[sample(nrow(df), 1), ])
+      }) # end sampling
+      
+      matched_data %>%
+        filter(!(target_year %in% draw_periods$target_year),
+               target_variable == unique(target$target_variable),
+               target_experiment == unique(target$target_experiment),
+               target_model == unique(target$target_model),
+               target_ensemble == unique(target$target_ensemble)) %>%
+        bind_rows(do.call(rbind, sampled_target)) %>%
+        arrange(target_year)  ->
+        sampled_match
+      
+      # Remove duplicate archive matches within this sampled match:
+      # In other words, the same archive match point cannot be paired
+      # to two separate target years:
+      sampled_match %>%
+        remove_duplicates(matched_data = .,
+                          archive = archive) %>%
+        mutate(stitching_id = paste(target$target_experiment,
+                                    target$target_ensemble,
+                                    length(unique(recipes_by_target$stitching_id))+1,
+                                    sep = "~")) ->
+        sampled_match
+      
+      # Make sure you created a full match with no gaps:
+      assert_that(nrow(sampled_match) == 28)
+      assert_that(all(sampled_match$target_year == unique(matched_data$target_year)))
+      
+      # compare the sampled match to the existing matches.
+      # Again, the challenge is seeing if our entire sample has
+      # been included in recipes before, not just a row or two.
+      do.call(rbind,
+              lapply(split(recipes, recipes$stitching_id), function(df){
+                # compare only columns without fx/dx info in case of rounding
+                # issues.
+                all_equal(df %>% select(-stitching_id, -target_fx, -target_dx,
+                                        -archive_fx, -archive_dx, -dist_dx, 
+                                        -dist_fx, -dist_l2), 
+                          sampled_match %>% select(-stitching_id, -target_fx, -target_dx,
+                                                   -archive_fx, -archive_dx, -dist_dx, 
+                                                   -dist_fx, -dist_l2))
+              })) ->
+        comparison
+      
+      if(any(comparison == TRUE)){
+        # if any entries of the comparison are true, then
+        # the sampled_match agreed with one of the matches
+        # in recipes, do nothing
+      } else{
+        # didn't match any previous recipes, add it in.
+        bind_rows(recipes_by_target, sampled_match) ->
+          recipes_by_target
+        
+        # And remove it from the matched points so it
+        # can't be used to construct subsequent realizations.
+        
+        # each (target-year, archive-match) combination must
+        # be removed from matched data for all target_ids
+       sampled_match %>%
+          select(target_year, target_start_yr, target_end_yr,
+                 archive_experiment, archive_variable, archive_model,
+                 archive_ensemble, archive_start_yr, archive_end_yr,
+                 archive_year) ->
+         to_remove
+       
+       matched_data %>%
+         anti_join(to_remove,
+                   by = c("target_start_yr", "target_end_yr", "target_year", 
+                          "archive_experiment", "archive_variable",
+                          "archive_model", "archive_ensemble", "archive_start_yr",
+                          "archive_end_yr", "archive_year")) ->
+         matched_data
+      } # end comparison if-else
+      
+    } # end while loop
     
     
-    sampled_target <- lapply(list_targets, function(df){
-      return(df[sample(nrow(df), 1), ])
-    })
+    # Bind together the recipes for each target trajectory
+    bind_rows(recipes_by_target, recipes) -> 
+      recipes
     
-    matched_data %>%
-      filter(!(target_year %in% draw_periods$target_year)) %>%
-      bind_rows(do.call(rbind, sampled_target)) %>%
-      arrange(target_year)  ->
-      sampled_match
+  } # end for loop over target trajectories
     
-    # Remove duplicate archive matches within this sampled match:
-    # In other words, the same archive match year cannot be paired
-    # to two separate sampled years:
-    sampled_match %>%
-      remove_duplicates(matched_data = .,
-                        archive = archive) %>%
-      mutate(stitching_id = length(unique(recipes$stitching_id))+1) ->
-      sampled_match
-    
-    # Make sure you created a full match with no gaps:
-    assert_that(nrow(sampled_match) == 28)
-    assert_that(all(sampled_match$target_year == unique(matched_data$target_year)))
-    
-    # compare the sampled match to the existing matches.
-    # Again, the challenge is seeing if our entire sample has
-    # been included in recipes before, not just a row or two.
-    do.call(rbind,
-            lapply(split(recipes, recipes$stitching_id), function(df){
-              # compare only columns without fx/dx info in case of rounding
-              # issues.
-              all_equal(df %>% select(-stitching_id, -target_fx, -target_dx,
-                                      -archive_fx, -archive_dx, -dist_dx, 
-                                      -dist_fx, -dist_l2), 
-                        sampled_match %>% select(-stitching_id, -target_fx, -target_dx,
-                                                 -archive_fx, -archive_dx, -dist_dx, 
-                                                 -dist_fx, -dist_l2))
-            })) ->
-      comparison
-    
-    if(any(comparison == TRUE)){
-      # if any entries of the comparison are true, then
-      # the sampled_match agreed with one of the matches
-      # in recipes, do nothing
-    } else{
-      # didn't match any previous recipes, add it in.
-      bind_rows(recipes, sampled_match) ->
-        recipes
-    }
-    
-  }
-  
   return(recipes)
   
-}
+} #end function
 
 
 

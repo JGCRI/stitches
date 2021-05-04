@@ -62,12 +62,14 @@ get_num_perms <- function(matched_data){
 # Args:
 # matched_data: data output from match_neighborhood.
 # N_matches: the number of desired stitching recipes.
+# archive: The archive data to use for re-matching duplicate points
 # optional something: a previous output of this function that contains a 
 # list of already created recipes to avoid re-making.
 # 
 # Returns: something
 
-permute_stitching_recipes <- function(N_matches, matched_data, optional=NULL){
+permute_stitching_recipes <- function(N_matches, matched_data, archive, 
+                                      optional=NULL){
 
   num_perms <- get_num_perms(matched_data)
   
@@ -133,7 +135,15 @@ permute_stitching_recipes <- function(N_matches, matched_data, optional=NULL){
     matched_data %>%
       filter(!(target_year %in% draw_periods$target_year)) %>%
       bind_rows(do.call(rbind, sampled_target)) %>%
-      arrange(target_year) %>%
+      arrange(target_year)  ->
+      sampled_match
+    
+    # Remove duplicate archive matches within this sampled match:
+    # In other words, the same archive match year cannot be paired
+    # to two separate sampled years:
+    sampled_match %>%
+      remove_duplicates(matched_data = .,
+                        archive = archive) %>%
       mutate(stitching_id = length(unique(recipes$stitching_id))+1) ->
       sampled_match
     

@@ -97,7 +97,8 @@ match_neighborhood(target_data = target_data,
                    archive_data = archive_subset,
                    tol=0.1) %>%
   # Convert them to a sample of individual Tgav Recipes:
-  permute_stitching_recipes(N_matches = 4, matched_data = .) ->
+  permute_stitching_recipes(N_matches = 4, matched_data = .,
+                            archive = archive_subset) ->
   recipes
 
 ```

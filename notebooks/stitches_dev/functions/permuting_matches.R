@@ -236,6 +236,22 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
                           "archive_model", "archive_ensemble", "archive_start_yr",
                           "archive_end_yr", "archive_year")) ->
          matched_data
+       
+       # update permutation count info with the
+       # revised matched data
+       num_perms <- get_num_perms(matched_data)
+       
+       perm_guide <- num_perms[[2]]
+       
+       
+       # how many target trajectories are we matching to,
+       # how many collapse-free ensemble members can each
+       # target support, and order them according to that
+       # for construction.
+       num_perms[[1]] %>%
+         arrange(minNumMatches) %>%
+         mutate(target_ordered_id = as.integer(row.names(.))) ->
+         targets
       } # end comparison if-else
       
     } # end while loop

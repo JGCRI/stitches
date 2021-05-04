@@ -44,7 +44,7 @@ We _can_ define a re-matching condition on a subsetted archive (with existing ma
 
 Say we want to generate multiple new ensemble members for each of a target trajectory of realization 1 and a target trajectory of realization 4. Because those targets are pretty similar, we risk envelope collapse again. THinking of just one generated ensemble member for each target, we don't want the case of having (target realization 1 year 2070) getting the same archive match as (target realization 4 year 2070), in addition to the fact that we don't want that to happen to multiple generated realizations for any of the targets. It does appear to have the same solution then - remove each (target-year, archive-match) pair as they get used, regardless of which trajectory the target-year came from.
 
-So, we construct generated realizations iteratively. We start with the target that has the most limited number of collapse-free generated ensemble members. Construct those, removing each constructed (target-year, archive-match) as we go. Then move on to the next target with the next smallest number of collapse-free generated ensemble members. Repeat until we're either done or out of collapse-free ensembles to construct. I don't see any other way to do it. 
+So, we construct generated realizations iteratively. We start with the target that has the most limited number of collapse-free generated ensemble members. Construct those, removing each constructed (target-year, archive-match) as we go. Then move on to the next target with the next smallest number of collapse-free generated ensemble members. Repeat until we're either done or out of collapse-free ensembles to construct. I could see a scenario where we run out of collapse-free ensembles before we run out of targets to match, just depending on archive/sampling/etc/.
 
 Note that because we want to enforce this across targets, it's really not parallellizable except across _experiments_. Also in general, with the way the code has been written, it's probably best to call it separately for each experiment of interest being worked with. Just because this whole duplication elimination stuff is not optional and it wouldn't make sense that points used in the construction of a new ssp245 realization couldn't be used in the construction of a new ssp585. 
 
@@ -130,7 +130,6 @@ matched_data <- match_neighborhood(target_data = bind_rows(target_data, target_d
                    archive_data = archive_subset,
                    tol=0.1)
 
-
 matched_data%>%
   # Convert them to a sample of individual Tgav Recipes:
   permute_stitching_recipes(N_matches = 5, matched_data = .,
@@ -193,6 +192,69 @@ ggplot() +
   scale_color_brewer(palette = 'Spectral') +
   geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.4) + 
   theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+```
+
+
+
+# Construct many more realizations
+
+When matching a target realization of ssp245 realization 4 to a neighborhood of 0.1deg C, one of the target years only had 4 matches. So, it is only possible to sample 4 trajectories without having collapse in that target window so we only construct 4.
+
+With our iterative collapse-free construction (and a neighborhood size of 0.1degc for matching),  these are a maximum sized sample for our two target trajectories. A different seed would select different trajectories but these are the largest number of trajectories we can get without any collapse:
+
+```{r, echo=FALSE, warning=FALSE}
+
+set.seed(400)
+
+start <- Sys.time()
+# Convert them to a sample of individual Tgav Recipes:
+matched_data %>%
+  permute_stitching_recipes(N_matches = 100, matched_data = .,
+                            archive = archive_subset) ->
+  recipes
+end <- Sys.time()
+
+
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         df %>% 
+           stitch_global_mean(match = ., data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs
+
+
+# Put in one data frame with orig data to plot
+new_tgavs %>%
+  mutate(tosep = stitching_id) %>%
+  separate(tosep, c('experiment', 'ensemble', 'trash'), sep = "~") %>%
+  select(-trash) %>%
+  left_join(select(bind_rows(original_data1, original_data2), -timestep, -grid_type, -file) %>%
+              rename(orig_val = value), 
+            by = c('year', 'variable', 'experiment', 'ensemble')) ->
+  plotting_tgavs
+
+# Plot
+ggplot() + 
+  facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
+  geom_line(data = plotting_tgavs , 
+                          aes(year, value, color = stitching_id)) +
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.5) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+
+
+ggplot() + 
+  facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
+  geom_line(data = plotting_tgavs , 
+                          aes(year, value, color = stitching_id)) +
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.5) + 
+  theme_bw() + 
+  coord_cartesian(xlim=c(1985, 2015)) + 
   labs(title = "Comparison of ESM and Stitched Data",
        x = "Year", y = "Deg C")
 ```

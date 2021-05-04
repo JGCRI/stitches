@@ -48,8 +48,12 @@ get_num_perms <- function(matched_data){
     arrange(target_year)->
     num_matches
   
-  return(list(data.frame(totalNumPerms = prod(num_matches$n_matches)),
-              num_matches))
+  return(list(num_matches %>%
+                group_by(target_variable, target_experiment, target_ensemble, target_model) %>%
+                summarize(totalNumPerms = prod(n_matches),
+                          minNumMatches = min(n_matches)) %>%
+                ungroup,
+              num_matches ))
 }
 
 
@@ -73,9 +77,24 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
 
   num_perms <- get_num_perms(matched_data)
   
-  N_data_max <- num_perms[[1]]$totalNumPerms
-  
   perm_guide <- num_perms[[2]]
+  
+  
+  # how many target trajectories are we matching to
+  matched_data %>%
+    select(target_variable, target_experiment, target_ensemble, target_model) %>%
+    distinct %>% 
+    nrow ->
+    num_targets
+  
+  
+  # max number of permutations per target without repeating across generated
+  # ensemble members
+  num_perms %>%
+    group_by(target_variable, target_experiment, target_ensemble, target_model)
+  
+  
+  
   
   
   N_to_make <- N_matches

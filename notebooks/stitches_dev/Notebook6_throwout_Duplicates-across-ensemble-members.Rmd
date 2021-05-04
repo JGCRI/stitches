@@ -1,5 +1,5 @@
 ---
-title: "Handling duplicate matches across multiple target ensembles"
+title: "Handling duplicate matches across multiple realizations"
 output:
   html_document:
     df_print: paged
@@ -78,31 +78,68 @@ archive_data %>%
 ```
 
 
-# Subset of archive for testing
+# Define the archive for testing
+
+The full archive:
 
 ```{r}
 # data that will for sure have the same value getting matched in multiple times
 archive_data %>% 
   dplyr::filter(model == unique(target_data$model)) %>%  
-  dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') %>%
-  filter(ensemble == 'r1i1p1f1' | ensemble == 'r2i1p1f1') ->
+  dplyr::filter(experiment != 'ssp534-over') ->
+  # dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') %>%
+  # filter(ensemble == 'r1i1p1f1' | ensemble == 'r2i1p1f1') ->
   archive_subset
 ```
 
 
 # Do matching to that archive and sample recipes
 
+With the `remove_duplicates` call that makes sure no matches are repeated within a single generated ensemble member
+
 ```{r}
-match_neighborhood(target_data = target_data,
+matched_data <- match_neighborhood(target_data = target_data,
                    archive_data = archive_subset,
-                   tol=0.1) %>%
+                   tol=0.1)
+
+matched_data%>%
   # Convert them to a sample of individual Tgav Recipes:
   permute_stitching_recipes(N_matches = 4, matched_data = .,
                             archive = archive_subset) ->
   recipes
-
 ```
 
+
+## Stitch and plot
+
+```{r}
+
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         df %>% 
+           stitch_global_mean(match = ., data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs
+
+
+# Put in one data frame with orig data to plot
+new_tgavs %>%
+  left_join(select(original_data1, -timestep, -grid_type, -file) %>%
+              rename(orig_val = value), 
+            by = c('year', 'variable')) ->
+  plotting_tgavs
+
+# Plot
+ggplot() + 
+  geom_line(data = plotting_tgavs , 
+                          aes(year, value, color = as.factor(stitching_id))) +
+  geom_line(data = plotting_tgavs, aes(year, orig_val), color = "grey") + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+```
 
 
 # Compare the Tgav

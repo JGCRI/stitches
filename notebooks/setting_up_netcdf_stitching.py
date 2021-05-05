@@ -34,6 +34,11 @@ def get_netcdf_values(i, dl, rp, fl):
     index = int(np.where(fl == file)[0])
     extracted = dl[index]
     dat = extracted.sel(time=slice(start_yr, end_yr)).tas.values.copy()
+
+    # TODO figure out why the date range is so does not include
+    expected_len = len(pd.date_range(start=start_yr+"-01-01", end=end_yr+"-12-31", freq='M'))
+    assert (len(dat) == expected_len), "Not enough data in " + file + "for period " + start_yr + "-" + end_yr
+
     return dat
 
 
@@ -80,13 +85,14 @@ def stitch_gridded(rp, dl, fl):
     start = str(min(rp["target_start_yr"]))
     end = str(max(rp["target_end_yr"]))
 
-    # I assume that there is some issues defining the time element here
-    # it might have been the leap year, or during the historical -> future
-    # scn.
-    times = pd.date_range(start=start, end=end, freq='M')
-    # TODO why does the pd date range return the funky length??
-    times = times[0:2988].copy()
+    # Note that the pd.date_range call need the date/month defined otherwise it will
+    # truncate the year from start of first year to start of end year which is not
+    # what we want. We want the full final year to be included in the times series.
+    times = pd.date_range(start=start+"-01-01", end=end+"-12-31", freq='M')
+    assert (len(out) == len(times)), "Problem with the length of time"
 
+    # Extract the lat and lon information that will be used to structure the
+    # empty netcdf file.
     lat = dl[0].lat.values
     lon = dl[0].lon.values
 

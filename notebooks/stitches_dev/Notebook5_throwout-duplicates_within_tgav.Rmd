@@ -362,9 +362,10 @@ ggplot() +
 ```
 
 
-Generate the gridded archive using code defined above ^^^^
+Generate the recepie for the gridded archive using functions defined in grided_recepie.R that is a essentially a wrapper of the code above ^^^^ + some clean up that is needed (discovered via trial and error). 
 
 ```{r}
 gridded_recipe <- generate_gridded_recepie(target_data = target_data, archive_data = archive_subset, n = 4)
 write.csv(gridded_recipe, file = "recpies_for_python.csv", row.names = FALSE)
 ```
+

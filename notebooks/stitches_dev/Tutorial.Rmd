@@ -164,7 +164,8 @@ You can change the stitched outputs by changing the experiments included in the 
 ```{r}
 # Subset the archive data to exlude a single experiment at a time.
 archive_subset %>% 
-  filter(experiment != "ssp119") %>% 
+  filter(experiment != "ssp119"&
+                  experiment!= 'ssp534-over') %>% 
   # Use that data to match with the target data. 
   match_nearest_neighbor(target_data = target_data, archive_data = .) %>% 
   # Use the matches to stitch the data together.
@@ -173,14 +174,16 @@ archive_subset %>%
   out1
 
 archive_subset %>% 
-  filter(experiment != "ssp126") %>% 
+  filter(experiment != "ssp126"&
+                  experiment!= 'ssp534-over') %>% 
   match_nearest_neighbor(target_data = target_data, archive_data = .) %>% 
   stitch_global_mean(match = ., data = tgav_data) %>% 
   mutate(scn = "scn 2") -> 
   out2
 
 archive_subset %>% 
-  filter(experiment != "ssp370") %>% 
+  filter(experiment != "ssp370"&
+                  experiment!= 'ssp534-over') %>% 
   match_nearest_neighbor(target_data = target_data, archive_data = .) %>% 
   stitch_global_mean(match = ., data = tgav_data) %>% 
   mutate(scn = "scn 3") -> 

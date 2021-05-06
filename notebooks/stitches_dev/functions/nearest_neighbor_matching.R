@@ -10,10 +10,9 @@ library(assertthat)
 #   fx_pt: a single value of the target fx value
 #   dx_pt: a single value of the target dx value 
 #   archivedata: a data frame of the archive fx and dx values
-#   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
-#        neighbor. If tol=0, only the nearest-neighbor is returned
+#   tol: a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned
 # Return: a data frame with the target data and the corresponding matched archive data. 
-internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0.01){
+internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0){
 
   # Compute the window size of the archive data to use to update
   # dx values to be windowsize*dx so that it has units of degC
@@ -72,48 +71,6 @@ internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0.01){
   
 }
 
-###############################################################################
-# match a target data point with corresponding nearest neighboor from an archive data set. 
-# 
-# Args 
-#   target_data: data frame created by the get_chunk_info containg information from the target time series. 
-#   archive_data: data frame created by the get_chunk_info containing information from the archive. 
-#   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
-#        neighbor. If tol=0, only the nearest-neighbor is returned
-
-# Return: a data frame of the target data matched with the archive data, this is the information 
-# that will be used to look up and stich the archive values together, this is our "recepie card".
-match_nearest_neighbor <- function(target_data, archive_data){
-  
-# Check the inputs of the functions 
-req_cols <- c("experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx")  
-assert_that(has_name(which = req_cols, x = archive_data))
-req_cols <- c("start_yr", "end_yr", "fx", "dx")
-assert_that(has_name(which = req_cols, x = target_data))
-
-# shufflle the the archive data 
-archive_data <- shuffle_function(archive_data)
-
-# For every entry in the target data frame find its nearest neighboor from the archive data. 
-mapply(FUN = function(fx, dx){internal_dist(fx_pt = fx, dx_pt = dx, archivedata = archive_data, tol=0)},
-        fx = target_data$fx, dx = target_data$dx, SIMPLIFY = FALSE, USE.NAMES = FALSE) %>%  
-  # concatenate the results into a sinngle data frame 
-  do.call('rbind', args = .) -> 
-  matched
-
-
-# Now add the information about the matches to the target data
-# Make sure it if clear which columns contain  data that comes from the target compared
-# to which ones correspond to the archive information. Right now there are lots of columns
-# that contain duplicate information for now it is probably fine to be moving these things around. 
-names(target_data) <- paste0('target_', names(target_data)) 
-out <- cbind(target_data, matched)
-
-# Return the data frame of target values matched with the archive values with the distance. 
-return(out)
-
-  
-}
 ###############################################################################
 # A helper function to remove false duplicate matches in the historical period. For
 # example, target 1850 gets 1872 data from realization 13 of SSP126 and SSP585.
@@ -176,19 +133,127 @@ shuffle_function <- function(dt){
   return(dt)
 }
 
+
+###############################################################################
+# A function to remove duplicated matches for a single target trajectory.
+# E.g. if target year 2070 and 2079 both get the same archive point matched
+# in, let that point stay with the target year that had smaller `dist_l2`, 
+# re-match the other target year on the archive minus that duplicated point
+# via nearest neighbor. This is so that the replacement is the best possible
+# match.
+# Runs recursively so with the re-matched other target year, it will again
+# check the full set of matched data for duplicates, keep the match on the 
+# target year with smallest distance, re-match the other target year that
+# got the duplicate on the archive with the duplicated point removed, and so
+# on. I guess with how we're removing points from the archive iteratively, it
+# could potentially get trapped in an infinite loop bouncing between two different
+# duplicate cases. 
+#
+# Args:
+# matched_data: A data frame with results of matching for a _single_ tgav recipe. Either because
+#               match_neighborhood was used specifically to return NN or because the multiple 
+#               matches have been permuted into new recipes and then split with this function being
+#               applied to each recipe.
+# archive: The archive data to use for re-matching duplicate points
+# drop_hist_duplicates: boolean, default set to TRUE, will discard historical duplicates from matching process.
+# 
+# Returns:
+# matched_data: data frame with same structure as raw matched, with duplicate
+# matches replaced. 
+
+remove_duplicates <- function(matched_data, archive,  drop_hist_duplicates = TRUE){
+  
+  if(length(unique(matched_data$target_year)) < nrow(matched_data)){
+    stop("You have multiple matches to a single target year, you need to call `permute_stitching_recipes` before this function")
+  }
+  
+  # Work with rows where the same archive match gets brought in.
+  # Get the initial duplicate count for the original data.
+  matched_data %>%
+    group_by(archive_experiment, archive_variable,
+             archive_model, archive_ensemble,
+             archive_start_yr, archive_end_yr, archive_year,
+             archive_fx, archive_dx) %>%
+    filter(n() > 1) %>%
+    ungroup ->
+    duplicates
+  
+  while(nrow(duplicates) > 0){
+    
+    # within each iteration of checking duplicates, 
+    # pull out the one with smallest dist_l2 - 
+    # this is the one that gets to keep the match, and we use
+    # as an index to work on the complement of (in case the same
+    # archive point gets matched for more than 2 target years)
+    duplicates %>%
+      group_by(archive_experiment, archive_variable,
+               archive_model, archive_ensemble,
+               archive_start_yr, archive_end_yr, archive_year,
+               archive_fx, archive_dx) %>%
+      filter(dist_l2 == min(dist_l2)) %>%
+      ungroup ->
+      duplicates_min 
+    
+    # target points of duplicates-duplicates_min need to be 
+    # refit on the archive - matched points
+    duplicates[, grepl('target_', names(duplicates))  ] %>%
+      filter(!(target_year %in% duplicates_min$target_year)) ->
+      points_to_rematch
+    names(points_to_rematch) <- gsub(pattern = 'target_', replacement = '', x = names(points_to_rematch))
+    
+    rm_from_archive <- matched_data[, grepl('archive_', names(matched_data))] 
+    names(rm_from_archive) <- gsub(pattern = 'archive_', replacement = '', x = names(rm_from_archive))
+    
+    archive %>%
+      anti_join(rm_from_archive,
+                by=c("experiment", "variable",
+                     "model", "ensemble", 
+                     "start_yr", "end_yr", "year",
+                     "fx", "dx")) ->
+      new_archive
+    
+    rematched <- match_neighborhood(target_data = points_to_rematch, archive_data = new_archive, 
+                                    tol = 0, drop_hist_duplicates = FALSE)
+    
+    matched_data %>%
+      filter(!(target_year %in% rematched$target_year)) %>%
+      bind_rows(rematched) %>%
+      arrange(target_year) ->
+      matched_data
+    
+    matched_data  %>%
+      group_by(archive_experiment, archive_variable,
+               archive_model, archive_ensemble,
+               archive_start_yr, archive_end_yr, archive_year,
+               archive_fx, archive_dx) %>%
+      filter(n() > 1) %>%
+      ungroup ->
+      duplicates
+    
+    # cleanup for next loop
+    rm(duplicates_min)
+    rm(points_to_rematch)
+    rm(rm_from_archive)
+    rm(new_archive)
+    rm(rematched)
+    
+  }
+  return(matched_data)
+}
+
 ###############################################################################
 # match a target data point with corresponding nearest neighboor from an archive data set. 
 # 
 # Args 
 #   target_data: data frame created by the get_chunk_info containg information from the target time series. 
 #   archive_data: data frame created by the get_chunk_info containing information from the archive. 
-#   tol: a tolerance for the neighborhood of matching. defaults to 0.01 degC about the nearest-
-#        neighbor. If tol=0, only the nearest-neighbor is returned
+#   tol: a tolerance for the neighborhood of matching. defaults to 0 degC about the nearest-
+#        neighbor - in other words, nearest neighbor match is the default behavior.
+# drop_hist_duplicates: boolean, default set to TRUE, will discard historical duplicates from matching process.
 #
-
 # Return: a data frame of the target data matched with the archive data, this is the information 
 # that will be used to look up and stich the archive values together, this is our "recepie card".
-match_neighborhood <- function(target_data, archive_data, tol = 0.01,
+match_neighborhood <- function(target_data, archive_data, tol = 0,
                                drop_hist_duplicates = TRUE){
   
   # Check the inputs of the functions 
@@ -225,16 +290,18 @@ match_neighborhood <- function(target_data, archive_data, tol = 0.01,
     out
   
   
+ # if (drop_hist_duplicates && all(out$archive_year <= 2015)){
+#    out <- drop_hist_false_duplicates(out)
+#  }
   if (drop_hist_duplicates){
-    out <- drop_hist_false_duplicates(out)
-  }
+      out <- drop_hist_false_duplicates(out)
+    }
 
   # Return the data frame of target values matched with the archive values with the distance. 
   return(distinct(out))
   
   
 }
-
 
 
 

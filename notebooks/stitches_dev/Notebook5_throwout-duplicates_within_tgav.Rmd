@@ -1,0 +1,368 @@
+---
+title: "No repeat match years within a single matched Tgav recipe to a single target"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '4'
+    toc_float: yes
+    number_sections: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+# Goal
+
+
+Rewrite the matching routine so that within a single generated ensemble member, no two target years get the exact same archive value matched in.
+
+# Set Up 
+```{r, message=FALSE, warning=FALSE}
+# required packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+
+
+# The load the functions we will want to use, these are currently written in R and will be translated into python. 
+source("functions/nearest_neighbor_matching.R") # the function match_neighborhood is defined here
+source("functions/stitching_functions.R")  # the function stitch_global_mean is definend here 
+source("functions/permuting_matches.R")
+```
+
+
+Load the inputs. 
+
+```{r}
+# Time series of the raw global mean temperature anomaly, this is the data that is 
+# going to be stitched together. Historical data is pasted into every scenario. No
+# smoothing has been done.
+tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+                      stringsAsFactors = FALSE) %>% dplyr::select(-X)
+
+
+# A chunked smoothed tgav anomaly archive of data. This was tgav_data but several 
+# steps were taken in python to transform it into the "chunked" data and save it 
+# so that we do not have to repeate this process so many times. 
+archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+
+
+# This is chunked smooth tgav anomaly for a single model/experiment/ensemble
+# member, saved for our convenience. If you decide that you want to work with 
+# a different different target data subset you can subset it from the
+# archive_data data frame. This file is SSP245 Realization 1.
+target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
+
+# For plotting
+tgav_data %>%  
+  filter(model == unique(target_data$model) & experiment == unique(target_data$experiment) & 
+           ensemble == unique(target_data$ensemble)) -> 
+  original_data1
+
+# target data 2: ssp245 realization 4
+archive_data %>%
+  filter(experiment == 'ssp245' & ensemble == 'r4i1p1f1') ->
+  target_data2
+```
+
+
+# Subset of archive for testing
+
+Want to work with an archive that will guarantee we get multiple duplicates (diff target years get the same matched archive year) within a single generated ensemble member, so that we can make sure the function for dropping those duplicates behaves as intended.
+
+```{r}
+# data that will for sure have the same value getting matched in multiple times
+archive_data %>% 
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') %>%
+  filter(ensemble == 'r1i1p1f1' | ensemble == 'r2i1p1f1') ->
+  archive_subset
+```
+
+# Current matching
+
+Nearest neighbor 
+```{r}
+matched <- match_neighborhood(target_data = target_data, 
+                              archive_data = archive_subset,
+                              tol = 0)
+```
+
+
+We can see duplicates came in because of the limited size of the archive we gave it:
+```{r, echo=FALSE}
+stitch_global_mean(match = matched, data = tgav_data) %>% 
+  mutate(target = "ssp245-realization1-duplicates") -> 
+  out1a
+
+ggplot() + 
+  geom_line(data = original_data1, aes(year, value), color = "grey") + 
+  geom_line(data = out1a, aes(year, value, color = target)) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+
+```
+
+# Proposed change
+As we intended from our choice of archive, this set of matched data has duplicate matches. 
+
+If two target years get the same archive point matched, the archive point stays with the target year with smallest `dist_l2`. The other target year re-matches  the larger `dist_l2` points on a subsetted archive with all of the matched archive points (duplicate matches or not) removed.
+
+There's an element of recursion here (via the while loop): we update the matched data with the re-matched points, and we check the entire matched data for duplicates again.
+ 
+```{r}
+matched_no_dup <- remove_duplicates(matched, archive = archive_subset)
+```
+
+
+
+# Compare the Tgav
+
+Did double check that the last two chunks aren't repeats: both archive year 2061 from ssp585 but different realizations and therefore different archive values.
+
+```{r, echo=FALSE}
+stitch_global_mean(match = matched_no_dup, data = tgav_data) %>% 
+  mutate(target = "ssp245-realization1-noduplicates") -> 
+  out1
+
+ggplot() + 
+  geom_line(data = original_data1, aes(year, value), color = "grey") + 
+  geom_line(data = out1, aes(year, value, color = target)) + 
+  geom_line(data = out1a, aes(year, value, color = target)) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+```
+
+
+
+# Apply to a less-restricted archive, stitch and plot
+
+```{r}
+archive_data %>% 
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') ->
+  archive_subset
+
+# the matched data with this larger archive, nearest neighbor matches only:
+matched_data <- match_neighborhood(target_data = target_data,
+                                   archive_data = archive_subset,
+                                   tol=0)
+
+
+# Go ahead and test with and without removing duplicates 
+matched_data %>%
+  remove_duplicates(matched_data = ., archive = archive_subset) %>%
+  stitch_global_mean(match = ., data = tgav_data) %>% 
+  mutate(target = "ssp245-realization1-noduplicates") -> 
+  out1
+
+matched_data %>%
+  stitch_global_mean(match = ., data = tgav_data) %>% 
+  mutate(target = "ssp245-realization1-duplicates") -> 
+  out1a
+
+ggplot() + 
+  geom_line(data = original_data1, aes(year, value), color = "grey") + 
+  geom_line(data = out1a, aes(year, value, color = target)) +
+  geom_line(data = out1, aes(year, value, color = target)) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+
+```
+
+
+So there were no duplicates in either time series.
+
+
+# Test with generating multiple ensemble members
+
+This will ensure there are no duplicates within each individual ensemble member but will NOT look across ensemble members to make sure there's no duplicates/collapse.That's the next phase.
+
+Again, we use an artifically restricted subset to actually get duplicates within one of our ensemble members
+
+```{r}
+archive_data %>% 
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') %>%
+  filter(ensemble == 'r1i1p1f1' | ensemble == 'r2i1p1f1') ->
+  archive_subset
+```
+
+
+```{r}
+
+# O.1degC neighborhood about each nearest neighbor.
+multiple_matches <- match_neighborhood(target_data = target_data,
+                                       archive_data = archive_subset,
+                                       tol=0.1)
+print(paste('Total potential matches', get_num_perms(multiple_matches)[[1]]$totalNumPerms))
+```
+
+Now we will sample the matches to create a determined number of unique stitching recipes (ie each target year has only one match year)
+
+```{r}
+# Sample the matches. Make it a small number so we can see each individual Tgav
+recipes <- permute_stitching_recipes(N_matches = 4, matched_data = multiple_matches)
+```
+
+Unfortunately, right now I _think_ this work flow has a very specific order of operations required and only some tolerance values are possible for some steps.
+
+`remove_duplicates` is really only intended to operate on a single stitching recipe. In other words, we can't do `multiple_matches %>% remove_duplicates() %>% permute_stitching_recipes()`. We _must_ do `multiple_matches %>% permute_stitching_recipes() %>% split-apply remove_duplicates()`. 
+
+
+
+Stitch these recipes into individual Tgavs:
+
+```{r}
+# stitch the tgavs allowing duplicates within a single
+# generated Tgav:
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         stitch_global_mean(match = df, data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) %>%
+  mutate(target = 'duplicates_allowed') ->
+  new_tgavs
+
+
+
+# stitch the tgavs not allowing duplicates within a single
+# generated Tgav. Specifically,the duplicates will be re-matched on
+# Nearest neighbor criteria with an archive that has all previously
+# matched points removed
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         df %>% 
+           remove_duplicates(matched_data = ., 
+                             archive = archive_subset) %>%
+           stitch_global_mean(match = ., data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) %>%
+  mutate(target = 'no_duplicates_allowed_NNreplace') ->
+  new_tgavs2
+
+
+
+
+# Put both in one data frame to plot
+bind_rows(new_tgavs,
+          new_tgavs2) %>%
+  left_join(select(original_data1, -timestep, -grid_type, -file) %>%
+              rename(orig_val = value), 
+            by = c('year', 'variable')) ->
+  plotting_tgavs
+
+```
+
+
+And plot, faceting by the generated ensemble members so that we can see that duplicates were replaced. Again, this step is not about eliminating duplicates across generated ensemble members. We aren't checking across those at all.:
+```{r}
+ggplot(data = plotting_tgavs) + 
+  geom_line(aes(year, value, color = target)) +
+  facet_wrap(plotting_tgavs$stitching_id, nrow = 2) +
+  geom_line(aes(year, orig_val), color = "grey") + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+
+```
+
+Because we can only robustly remove duplicates in our workflow with `remove_duplicates(tol=0)`, some of the new points matched in for the nearest neighbor aren't great: we get some pretty dramatic jumps between windowsm to the ppoint where saying we have continuity across each window is shakey. Although, again, this is because our archive of potential matches is _so_ restrictive so that we can make sure we actually see at least one generated ensemble member that has duplicate matches within it. 
+
+
+Facet the other way:
+```{r}
+ggplot() + 
+  geom_line(data = plotting_tgavs %>%
+              filter(target == 'no_duplicates_allowed_NNreplace'), 
+                          aes(year, value, color = as.factor(stitching_id))) +
+  geom_line(data = plotting_tgavs, aes(year, orig_val), color = "grey") + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+
+```
+
+
+
+# Single workflow
+
+
+This is the order we _need_ to call our many functions in.
+
+We can use the `tol` argument in `match_neighborhood` to get a huge number of _potential_ tgav time series. But we then need to do the random draws with `permute_stitching_recipes` so that we have a specified number of stitching recipes (each target year is matched to a single archive year).
+
+From there, those recipes can be put through `remove_duplicates` so that within each stitching recipe, no two target years got matched to the same archive year. Each of those tidied recipes can then be fed used in `stitch_global_means` to create new Tgav time series (unsmoothed)
+
+
+**NOTE**
+The `permute_stitching_recipes` function _does_ have a check so that we keep doing draws until we have the specified number of _unique_ recipes. Right now, `remove_duplicates` doesn't have a check like that because it would be really hard to implement I think. So there's a chance that by running the recipes that come out of `permute_stitching_recipes` through the `remove_duplicates` we could end up with some repeated recipes. I think it's a pretty small chance but it is worth knowing. Right now, I think it falls under 'too much effort to make things elegant' but we will need to keep it in mind as we move to production runs. 
+
+```{r}
+
+# The archive you're working with
+archive_data %>% 
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  dplyr::filter(experiment == 'ssp126' | experiment == 'ssp585') ->
+  archive_subset
+
+
+## TODO: This for sure needs to be wrapped into a single function
+## to enforce that everything gets called in the right order.
+#
+# Get all your matches in your neighborhood and convert them to
+# the number of recipes you want:
+match_neighborhood(target_data = target_data,
+                   archive_data = archive_subset,
+                   tol=0.1) %>%
+  # Convert them to a sample of individual Tgav Recipes:
+  permute_stitching_recipes(N_matches = 4, matched_data = .) ->
+  recipes
+
+
+# stitch the tgavs not allowing duplicates within a single
+# generated Tgav. Specifically,the duplicates will be re-matched on
+# Nearest neighbor criteria with an archive that has all previously
+# matched points removed
+lapply(split(recipes, recipes$stitching_id),
+       function(df){
+         df %>% 
+           remove_duplicates(matched_data = ., 
+                             archive = archive_subset) %>%
+           # ^ up to here, returns recipes with duplicates 
+           # removed.
+           # TODO: KD will update this to save out csv at this 
+           # stage so that the stitch global mean can be implemented
+           # in python and then layering in the monthly gridded data.
+           # Then we will come back through and translate all the
+           # above matching and duplication cleanup will be translated.
+           # Lets us do some parallel development to make up some speed.
+           stitch_global_mean(match = ., data = tgav_data) %>%
+           mutate(stitching_id = unique(df$stitching_id))
+       }) %>%
+  do.call(rbind, .) ->
+  new_tgavs
+
+
+# Plot
+ggplot() + 
+  geom_line(data = plotting_tgavs %>%
+              filter(target == 'no_duplicates_allowed_NNreplace'), 
+                          aes(year, value, color = as.factor(stitching_id))) +
+  geom_line(data = plotting_tgavs, aes(year, orig_val), color = "grey") + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+```
+
+
+
+
+
+
+

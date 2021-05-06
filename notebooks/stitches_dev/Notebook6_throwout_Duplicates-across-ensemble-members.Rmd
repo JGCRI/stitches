@@ -217,7 +217,7 @@ With our iterative collapse-free construction (and a neighborhood size of 0.1deg
 
 ```{r, echo=FALSE, warning=FALSE}
 
-set.seed(925)
+set.seed(400)
 
 start <- Sys.time()
 # Convert them to a sample of individual Tgav Recipes:
@@ -248,6 +248,7 @@ new_tgavs %>%
             by = c('year', 'variable', 'experiment', 'ensemble')) ->
   plotting_tgavs
 
+
 # Plot
 ggplot() + 
   facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
@@ -268,4 +269,46 @@ ggplot() +
   coord_cartesian(xlim=c(1985, 2015), ylim = c(-1, 1.25)) + 
   labs(title = "Comparison of ESM and Stitched Data",
        x = "Year", y = "Deg C")
+```
+
+
+## And all generated ensemble members on same axes
+```{r, echo=FALSE}
+ggplot() + 
+  facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
+  geom_line(data = plotting_tgavs , 
+                          aes(year, value, color = stitching_id)) +
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.5) + 
+  theme_bw() + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+
+ggplot() + 
+  geom_line(data = plotting_tgavs , 
+                          aes(year, value, color = stitching_id)) +
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val, group=ensemble), color = "grey", size = 0.5) + 
+  theme_bw() + 
+  coord_cartesian(xlim=c(1985, 2015), ylim = c(-1, 1.25)) + 
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
+```
+
+## validate that there is no collapse 
+
+```{r}
+
+# TODO??? MAYBE add this validation into our function
+plotting_tgavs %>%
+  select(year, value, stitching_id) %>%
+  spread(year, value) ->
+  wide
+
+# Collapse would have occured if any of these trajectories go through the same value
+# in the same year -> if the length of distinct values in any column is less than
+# the number of stitching_id's
+
+counts <- apply(wide, 2, length)
+
+print(paste('Is there any collapse?', any(counts != length(unique(wide$stitching_id)))))
+
 ```

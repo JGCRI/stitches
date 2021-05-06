@@ -63,7 +63,7 @@ def get_data_from_pangeo(fl):
 def stitch_gridded(rp, dl, fl):
     """stitch the gridded data together.
 
-        :param rp:             data frame of the recepies
+        :param rp:             data frame of the recipes
         :param dl:             list of the data files
         :param fl:             list of the data file names
         :return:               xarray data set
@@ -110,30 +110,30 @@ def stitch_gridded(rp, dl, fl):
 
 
 ########################################################################################
-# Load the recepie for the gridded product devloped from the R package.
-recepie = pd.read_csv('./notebooks/stitches_dev/recpies_for_python.csv')
+# Load the recipe for the gridded product developed from the R package.
+recipe = pd.read_csv('./stitches_dev/recipes_for_python.csv')
 
 # Save a copy of the unique file list to minimize the number of files we have to
 # download from pangeo.
-file_list = recepie.file.unique().copy()
+file_list = recipe.file.unique().copy()
 
-# Download all of the files we need for the different recepies. This
+# Download all of the files we need for the different recipes. This
 # may take a bit of time to run and WILL NOT WORK IF CONNECTED TO VPN.
 data_list = get_data_from_pangeo(file_list)
 
-# Select a single recepie, use it to stitch gridded data to create netcdf files.
-x1 = recepie[recepie['stitching_id'] == 1].copy()
+# Select a single recipe, use it to stitch gridded data to create netcdf files.
+x1 = recipe[recipe['stitching_id'] == 1].copy()
 out1 = stitch_gridded(rp=x1, dl=data_list, fl=file_list)
 out1.to_netcdf("stitched1.nc")
 
-x2 = recepie[recepie['stitching_id'] == 2].copy()
+x2 = recipe[recipe['stitching_id'] == 2].copy()
 out2 = stitch_gridded(rp=x2, dl=data_list, fl=file_list)
 out2.to_netcdf("stitched2.nc")
 
-x3 = recepie[recepie['stitching_id'] == 3].copy()
+x3 = recipe[recipe['stitching_id'] == 3].copy()
 out3 = stitch_gridded(rp=x3, dl=data_list, fl=file_list)
 out3.to_netcdf("stitched3.nc")
 
-x4 = recepie[recepie['stitching_id'] == 4].copy()
+x4 = recipe[recipe['stitching_id'] == 4].copy()
 out4 = stitch_gridded(rp=x4, dl=data_list, fl=file_list)
 out4.to_netcdf("stitched4.nc")

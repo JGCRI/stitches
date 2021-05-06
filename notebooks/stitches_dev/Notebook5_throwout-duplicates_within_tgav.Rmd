@@ -28,7 +28,7 @@ library(knitr)
 source("functions/nearest_neighbor_matching.R") # the function match_neighborhood is defined here
 source("functions/stitching_functions.R")  # the function stitch_global_mean is definend here 
 source("functions/permuting_matches.R")
-source("functions/gridded_recepie.R")
+source("functions/gridded_recipe.R")
 ```
 
 
@@ -362,10 +362,10 @@ ggplot() +
 ```
 
 
-Generate the recepie for the gridded archive using functions defined in grided_recepie.R that is a essentially a wrapper of the code above ^^^^ + some clean up that is needed (discovered via trial and error). 
+Generate the recipe for the gridded archive using functions defined in gridded_recipe.R that is a essentially a wrapper of the code above ^^^^ + some clean up that is needed (discovered via trial and error). 
 
 ```{r}
-gridded_recipe <- generate_gridded_recepie(target_data = target_data, archive_data = archive_subset, n = 4)
-write.csv(gridded_recipe, file = "recpies_for_python.csv", row.names = FALSE)
+gridded_recipe <- generate_gridded_recipe(target_data = target_data, archive_data = archive_subset, n = 4)
+write.csv(gridded_recipe, file = "recipes_for_python.csv", row.names = FALSE)
 ```
 

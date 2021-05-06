@@ -61,6 +61,7 @@ library(knitr)
 source("functions/nearest_neighbor_matching.R") # the function match_neighborhood is defined here
 source("functions/stitching_functions.R")  # the function stitch_global_mean is definend here 
 source("functions/permuting_matches.R")
+source("functions/gridded_recipe.R")
 ```
 
 
@@ -125,16 +126,28 @@ archive_data %>%
 
 With the `remove_duplicates` call now in `permute_stitching_recipes` to enforce that no matches are repeated within a single generated ensemble member and that the recipes put out by `permute_stitching_recipes` are in fact unique.
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 matched_data <- match_neighborhood(target_data = bind_rows(target_data, target_data2),
                    archive_data = archive_subset,
                    tol=0.1)
 
+set.seed(400)
 matched_data%>%
   # Convert them to a sample of individual Tgav Recipes:
   permute_stitching_recipes(N_matches = 5, matched_data = .,
                             archive = archive_subset) ->
   recipes
+```
+
+
+
+The following wrapper re-does all of the matching and saves a data frame with stripped down information that can be ingested by python code to layer in the gridded netcdfs. This wrapper does not output enough information for the R function `stitch_global_means`.
+
+```{r}
+set.seed(400)
+gridded_recipes_for_python <- generate_gridded_recipe(target_data = bind_rows(target_data, target_data2), 
+                                    archive_data = archive_subset, n = 4, tol = 0.1)
+write.csv(gridded_recipes_for_python, file = "./gridded_recipes_for_python.csv", row.names = FALSE)
 ```
 
 
@@ -177,8 +190,6 @@ ggplot() +
 
 
 # Make sure that what we're seeing around 2000 isn't collapse
-
-
 
 ```{r}
 plotting_tgavs %>%

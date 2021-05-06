@@ -87,6 +87,10 @@ handle_transition_periods <- function(rp){
 # and target period length, if not update to reflect the target period length. 
 # Otherwise you'll end up with extra years in the stitched data. This is really 
 # only an issue for the final period of target data because sometimes that period is somewhat short. 
+# OR if the normal sized target window gets matched to the final period of data from one
+# of the archive matches. Since the final period is typically pnly one year shorter than the
+# full window target period in this case, we simply repeat the final archive year to get
+# enough matches.
 # Args 
 # rp: a data frame of the recipe
 # Return: a recipe data frame that has target and archive periods of the same length.
@@ -105,20 +109,18 @@ handle_final_period <- function(rp){
       
       out <- rbind(out, rp[row, ])
       
-    } else if (len_target < len_archive) {
+    } else if (len_target < len_archive) { 
       
       # Figure out how much shorter the target period is than the archive period. 
-      diff <- len_archive - len_target
       updated <- rp[row, ]
       updated$archive_end_yr <- updated$archive_end_yr - 1
       
       # Add the updated row to the data frame. 
       out <- rbind(out, updated)
-    } else {
+    } else { 
       # TODO need to revisit, just added an extra year to the archive length but that seems 
       # pretty sus. 
       # Figure out how much longer the target period is than the archive period. 
-      diff <- len_archive - len_target
       updated <- rp[row, ]
       updated$archive_start_yr <- updated$archive_start_yr - 1
       
@@ -134,7 +136,10 @@ handle_final_period <- function(rp){
 
 
 
-# Generate recipe for the stiched gridded product 
+# Generate a specified number of recipes for the stitched gridded product.
+# This is a wrapper function going from a specified target data (can be multiple
+# ensemble members but it should only be for one experiment) and a specified
+# archive to match from all the way through to recipes.
 # (based on the notebook 5 code)
 # Args 
 #   target_data: a data frame of the target data 

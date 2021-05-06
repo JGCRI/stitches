@@ -61,7 +61,7 @@ library(knitr)
 source("functions/nearest_neighbor_matching.R") # the function match_neighborhood is defined here
 source("functions/stitching_functions.R")  # the function stitch_global_mean is definend here 
 source("functions/permuting_matches.R")
-source("functions/gridded_recepie.R")
+source("functions/gridded_recipe.R")
 ```
 
 

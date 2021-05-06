@@ -131,6 +131,7 @@ matched_data <- match_neighborhood(target_data = bind_rows(target_data, target_d
                    archive_data = archive_subset,
                    tol=0.1)
 
+set.seed(400)
 matched_data%>%
   # Convert them to a sample of individual Tgav Recipes:
   permute_stitching_recipes(N_matches = 5, matched_data = .,
@@ -138,21 +139,15 @@ matched_data%>%
   recipes
 ```
 
-```{r}
-matched_data <- match_neighborhood(target_data = bind_rows(target_data, target_data2),
-                   archive_data = archive_subset,
-                   tol=0.1)
 
-matched_data%>%
-  # Convert them to a sample of individual Tgav Recipes:
-  permute_stitching_recipes(N_matches = 5, matched_data = .,
-                            archive = archive_subset) ->
-  recipes
-break
-# TODO 
-recipes <- generate_gridded_recipe(target_data = bind_rows(target_data, target_data2), 
-                                    archive_data = archive_subset, n = 5, tol = 0.1)
-write.csv(recipes, file = "./recpies_for_python.csv", row.names = FALSE)
+
+The following wrapper re-does all of the matching and saves a data frame with stripped down information that can be ingested by python code to layer in the gridded netcdfs. This wrapper does not output enough information for the R function `stitch_global_means`.
+
+```{r}
+set.seed(400)
+gridded_recipes_for_python <- generate_gridded_recipe(target_data = bind_rows(target_data, target_data2), 
+                                    archive_data = archive_subset, n = 4, tol = 0.1)
+write.csv(gridded_recipes_for_python, file = "./gridded_recipes_for_python.csv", row.names = FALSE)
 ```
 
 

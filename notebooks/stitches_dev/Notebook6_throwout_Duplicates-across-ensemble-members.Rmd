@@ -148,12 +148,10 @@ matched_data%>%
   permute_stitching_recipes(N_matches = 5, matched_data = .,
                             archive = archive_subset) ->
   recipes
-
+break
 # TODO 
-# Okay some times the generate_gridded_recepie funtion throws an error related to the neighborhood matching 
-# but it is not consistent. 
-recipes <- generate_gridded_recepie(target_data = bind_rows(target_data, target_data2), 
-                                    archive_data = archive_subset, n = 4)
+recipes <- generate_gridded_recipe(target_data = bind_rows(target_data, target_data2), 
+                                    archive_data = archive_subset, n = 5, tol = 0.1)
 write.csv(recipes, file = "./recpies_for_python.csv", row.names = FALSE)
 ```
 
@@ -197,8 +195,6 @@ ggplot() +
 
 
 # Make sure that what we're seeing around 2000 isn't collapse
-
-
 
 ```{r}
 plotting_tgavs %>%

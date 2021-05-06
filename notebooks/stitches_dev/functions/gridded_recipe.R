@@ -115,7 +115,7 @@ handle_final_period <- function(rp){
       # Add the updated row to the data frame. 
       out <- rbind(out, updated)
     } else {
-      
+      print(row)
       stop("don't know how to handle this problem!")
       
     }
@@ -149,7 +149,9 @@ generate_gridded_recipe <- function(target_data, archive_data, n, tol = 0.1){
                      archive_data = archive_data,
                      tol=tol) %>% 
     # Convert them to a sample of individual Tgav Recipes:
-    permute_stitching_recipes(N_matches = n, matched_data = .) -> 
+    permute_stitching_recipes(N_matches = n,
+                              matched_data = .,
+                              archive = archive_data) -> 
     recipes
   
   recipes %>% 
@@ -157,7 +159,7 @@ generate_gridded_recipe <- function(target_data, archive_data, n, tol = 0.1){
                   archive_model, archive_ensemble, archive_start_yr, archive_end_yr, archive_year, stitching_id) -> 
     unformatted_recipe 
   
-  
+  return(unformatted_recipe)
   # Because of the way that we've removed the historical archive but will want to pull from pangeo 
   # we need to properly treat the historical years.
   unformatted_recipe %>% 

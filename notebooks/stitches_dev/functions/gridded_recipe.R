@@ -101,7 +101,7 @@ handle_final_period <- function(rp){
   # For each row in rp check to see if the length 
   # of the target and the archive years are the same. 
   for(row in 1:nrow(rp)){
-    print(row)
+
     len_target <- rp$target_end_yr[row] - rp$target_start_yr[row]
     len_archive <- rp$archive_end_yr[row] - rp$archive_start_yr[row]
     
@@ -117,6 +117,7 @@ handle_final_period <- function(rp){
       
       # Add the updated row to the data frame. 
       out <- rbind(out, updated)
+      
     } else { 
       # TODO need to revisit, just added an extra year to the archive length but that seems 
       # pretty sus. 
@@ -139,7 +140,9 @@ handle_final_period <- function(rp){
 # Generate a specified number of recipes for the stitched gridded product.
 # This is a wrapper function going from a specified target data (can be multiple
 # ensemble members but it should only be for one experiment) and a specified
-# archive to match from all the way through to recipes.
+# archive to match from all the way through to recipes that can be ingested
+# in python. Note that the recipes output by this wrapper remove a lot of 
+# information that the R functions for stitching global mean need.
 # (based on the notebook 5 code)
 # Args 
 #   target_data: a data frame of the target data 
@@ -194,7 +197,7 @@ generate_gridded_recipe <- function(target_data, archive_data, n, tol = 0.1){
     mutate(archive_experiment = ifelse(archive_end_yr <= 2014, 'historical',
                                        archive_experiment)) -> 
     formatted_recipe 
-  
+
   # Now add the pangeo file information! 
   formatted_recipe %>%  
     left_join(complete_archive,

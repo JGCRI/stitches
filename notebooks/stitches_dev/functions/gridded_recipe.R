@@ -163,33 +163,41 @@ generate_gridded_recipe <- function(target_data, archive_data, n, tol = 0.1){
                                      tol=tol)
   
   # Convert them to a sample of individual Tgav Recipes:
-  permute_stitching_recipes(N_matches = n, matched_data = matched_data, archive = archive_data) %>% 
-    dplyr::select(target_start_yr, target_end_yr, archive_experiment,archive_variable,
-                  archive_model, archive_ensemble, archive_start_yr, archive_end_yr, archive_year, stitching_id) -> 
+  permute_stitching_recipes(N_matches = n,
+                            matched_data = matched_data, 
+                            archive = archive_data) %>% 
+    dplyr::select(target_start_yr, target_end_yr,
+                  archive_experiment, archive_variable,
+                  archive_model, archive_ensemble,
+                  archive_start_yr, archive_end_yr, 
+                  archive_year, stitching_id) -> 
     unformatted_recipe 
   
   
-  # Because of the way that we've removed the historical achive but will want to pull from pangeo 
-  # we need to properly treat the historical years.
+  # Because of the way that we've removed the historical achive but will want 
+  # to pull from pangeo  we need to properly treat the historical years.
   unformatted_recipe %>% 
-    # When a archive period spans the historical and future scenario we need to make sure there is 
-    # it is split up into seprate periods otherwise it will be impossible to pair the chunks with 
-    # the pangeo data.
+    # When a archive period spans the historical and future scenario we need 
+    # to make sure there is it is split up into seprate periods otherwise it 
+    # will be impossible to pair the chunks with  the pangeo data.
     handle_transition_periods %>% 
-    # Make sure that the length of the target and archive periods are the same to prevent 
-    # extra data from being assigned to that period. 
+    # Make sure that the length of the target and archive periods are the  
+    # same to prevent extra data from being assigned to that period. 
     handle_final_period %>% 
-    # Make sure that if there are historical years of data being used assign the experiment name 
-    # to historical. 
-    mutate(archive_experiment = ifelse(archive_end_yr <= 2014, 'historical', archive_experiment)) -> 
+    # Make sure that if there are historical years of data being used assign
+    # the experiment name to historical. 
+    mutate(archive_experiment = ifelse(archive_end_yr <= 2014, 'historical',
+                                       archive_experiment)) -> 
     formatted_recipe 
   
   # Now add the pangeo file information! 
   formatted_recipe %>%  
-    left_join(complete_archive, by = c("archive_experiment" = "experiment", 
-                                       "archive_model" = "model", 
-                                       "archive_ensemble" = "ensemble")) %>% 
-    select(stitching_id, target_start_yr, target_end_yr, archive_start_yr, archive_end_yr, file) -> 
+    left_join(complete_archive,
+              by = c("archive_experiment" = "experiment", 
+                     "archive_model" = "model", 
+                     "archive_ensemble" = "ensemble")) %>% 
+    select(stitching_id, target_start_yr, target_end_yr, 
+           archive_start_yr, archive_end_yr, file) -> 
     gridded_recipes
   
   return(gridded_recipes)

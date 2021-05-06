@@ -206,7 +206,7 @@ With our iterative collapse-free construction (and a neighborhood size of 0.1deg
 
 ```{r, echo=FALSE, warning=FALSE}
 
-set.seed(1390)
+set.seed(925)
 
 start <- Sys.time()
 # Convert them to a sample of individual Tgav Recipes:

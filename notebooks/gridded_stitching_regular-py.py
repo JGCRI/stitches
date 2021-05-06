@@ -115,7 +115,7 @@ def stitch_gridded(rp, dl, fl):
 #############################################################################################
 
 # Read in the recipes!
-recipe = pd.read_csv('./stitches_dev/recpies_for_python.csv')
+recipe = pd.read_csv('./stitches_dev/gridded_recipes_for_python.csv')
 
 # Save a copy of the unique file list to minimize the number of files we have to
 # download from pangeo.

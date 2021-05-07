@@ -275,10 +275,10 @@ ggplot() +
 ## And all generated ensemble members on same axes
 ```{r, echo=FALSE}
 ggplot() + 
-  facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
+  #facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
   geom_line(data = plotting_tgavs , 
                           aes(year, value, color = stitching_id)) +
-  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.5) + 
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val, group=ensemble), color = "grey", size = 0.5) + 
   theme_bw() + 
   labs(title = "Comparison of ESM and Stitched Data",
        x = "Year", y = "Deg C")

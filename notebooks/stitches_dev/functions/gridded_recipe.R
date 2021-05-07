@@ -137,24 +137,17 @@ handle_final_period <- function(rp){
 
 
 
-# Generate a specified number of recipes for the stitched gridded product.
-# This is a wrapper function going from a specified target data (can be multiple
-# ensemble members but it should only be for one experiment) and a specified
-# archive to match from all the way through to recipes that can be ingested
-# in python. Note that the recipes output by this wrapper remove a lot of 
-# information that the R functions for stitching global mean need.
+# Take a data frame of recipes and convert them to information that can be ingested by 
+# python to then stitch together netcdfs.
 # (based on the notebook 5 code)
 # Args 
-#   target_data: a data frame of the target data 
-#   archive_data: the data frame of the archive data to match on
-#   n: int number of permutations based on the neighborhood matching TODO write some test to account for when tol is small 
-#   tol: default set to 0.1, it defines the threshold for the neighborhood matching process
+#   recipes: a data frame of the recipes
 # Return: data frame containing the following columns, stitching_id, target_start_yr, target_end_yr, 
 #     archive_start_yr, archive_end_yr, and file. This is all of the information that will be needed 
 #     by python to stitch the gridded product. 
-generate_gridded_recipe <- function(target_data, archive_data, n, tol = 0.1){
+generate_gridded_recipe <- function(recipes){
   
-  # Load the complete archive. 
+  # Load the complete archive so that we have all the pangeo file names. 
   complete_archive <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
                                stringsAsFactors = FALSE) %>% 
     dplyr::select(-X) %>% 
@@ -163,17 +156,7 @@ generate_gridded_recipe <- function(target_data, archive_data, n, tol = 0.1){
     distinct()
   
   # This code is taken from Notebook 5
-  # ----------------------------------------------------------------
-  # Get all your matches in your neighborhood and convert them to
-  # the number of recipes you want:
-  matched_data <- match_neighborhood(target_data = target_data,
-                                     archive_data = archive_data,
-                                     tol=tol)
-  
-  # Convert them to a sample of individual Tgav Recipes:
-  permute_stitching_recipes(N_matches = n,
-                            matched_data = matched_data, 
-                            archive = archive_data) %>% 
+  recipes %>% 
     dplyr::select(target_start_yr, target_end_yr,
                   archive_experiment, archive_variable,
                   archive_model, archive_ensemble,

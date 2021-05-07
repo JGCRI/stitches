@@ -110,14 +110,16 @@ tgav_data %>%
 
 # Define the archive for testing
 
-The full archive minus the two trajectories we are emulating:
+The full archive, including the two trajectories we are emulating:
 
 ```{r}
 archive_data %>% 
-  dplyr::filter(model == unique(target_data$model)) %>%  
-  dplyr::filter(experiment != 'ssp534-over' |
-                (experiment == 'ssp245' & ensemble == 'r4i1p1f1') |
-                (experiment == 'ssp245' & ensemble == 'r1i1p1f1')) ->
+  # dplyr::filter(model == unique(target_data$model)) %>%  
+  # # Exclude the two target trajectories:
+  # dplyr::filter((experiment != 'ssp245' & ensemble != 'r4i1p1f1'),
+  #               (experiment != 'ssp245' & ensemble != 'r1i1p1f1')) %>% 
+  # Always exclude ssp545-over:
+  dplyr::filter(experiment != 'ssp534-over') ->
   archive_subset
 ```
 
@@ -130,6 +132,7 @@ With the `remove_duplicates` call now in `permute_stitching_recipes` to enforce 
 matched_data <- match_neighborhood(target_data = bind_rows(target_data, target_data2),
                    archive_data = archive_subset,
                    tol=0.1)
+
 
 set.seed(400)
 matched_data%>%

@@ -153,16 +153,8 @@ write.csv(gridded_recipes_for_python, file = "./gridded_recipes_for_python.csv",
 ## Stitch and plot
 
 ```{r}
-
-lapply(split(recipes, recipes$stitching_id),
-       function(df){
-         df %>% 
-           stitch_global_mean(match = ., data = tgav_data) %>%
-           mutate(stitching_id = unique(df$stitching_id))
-       }) %>%
-  do.call(rbind, .) ->
+stitch_global_mean(recipes=recipes, data = tgav_data)  ->
   new_tgavs
-
 
 # Put in one data frame with orig data to plot
 new_tgavs %>%
@@ -218,22 +210,14 @@ With our iterative collapse-free construction (and a neighborhood size of 0.1deg
 
 set.seed(400)
 
-start <- Sys.time()
 # Convert them to a sample of individual Tgav Recipes:
 matched_data %>%
   permute_stitching_recipes(N_matches = 100, matched_data = .,
                             archive = archive_subset) ->
   recipes
-end <- Sys.time()
 
 
-lapply(split(recipes, recipes$stitching_id),
-       function(df){
-         df %>% 
-           stitch_global_mean(match = ., data = tgav_data) %>%
-           mutate(stitching_id = unique(df$stitching_id))
-       }) %>%
-  do.call(rbind, .) ->
+stitch_global_mean(recipes=recipes, data = tgav_data)  ->
   new_tgavs
 
 

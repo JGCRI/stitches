@@ -75,7 +75,14 @@ get_num_perms <- function(matched_data){
 
 permute_stitching_recipes <- function(N_matches, matched_data, archive, 
                                       optional=NULL){
-
+  
+  matched_data %>% 
+    select(target_year) %>%
+    distinct %>%
+    nrow() ->
+    num_target_windows
+  
+  
   num_perms <- get_num_perms(matched_data)
   
   perm_guide <- num_perms[[2]]
@@ -130,7 +137,7 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
   }
   
   # for each target
-  for(target_id in unique(targets$target_ordered_id)) {
+  for(target_id in 1:length(unique(targets$target_ordered_id))) {
   
     # target info 
     targets %>%
@@ -139,18 +146,25 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
     
     # initialize a recipes for each target
     recipes_by_target <- data.frame()
-    
-    # work with periods with more than one match, just for this target
-    perm_guide %>% 
-      filter(target_variable == unique(target$target_variable),
-             target_experiment == unique(target$target_experiment),
-             target_model == unique(target$target_model),
-             target_ensemble == unique(target$target_ensemble),
-             n_matches > 1) ->
-      draw_periods
-    
-    while(length(unique(recipes_by_target$stitching_id)) < min(N_matches, target$minNumMatches)){
-      
+
+
+    while(length(unique(recipes_by_target$stitching_id)) < N_matches & 
+          perm_guide %>% 
+          filter(target_variable == unique(target$target_variable),
+                 target_experiment == unique(target$target_experiment),
+                 target_model == unique(target$target_model),
+                 target_ensemble == unique(target$target_ensemble)) %>%
+          select(target_year) %>%
+          distinct %>%
+          nrow == num_target_windows){
+      # work with periods with more than one match, just for this target
+      perm_guide %>% 
+        filter(target_variable == unique(target$target_variable),
+               target_experiment == unique(target$target_experiment),
+               target_model == unique(target$target_model),
+               target_ensemble == unique(target$target_ensemble),
+               n_matches > 1) ->
+        draw_periods
       
       # sample one match per target_year for each period with 
       # more than one match:
@@ -190,6 +204,8 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
                                     length(unique(recipes_by_target$stitching_id))+1,
                                     sep = "~")) ->
         sampled_match
+      
+      
       
       # Make sure you created a full match with no gaps:
       assert_that(nrow(sampled_match) == 28)
@@ -246,17 +262,8 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
        
        perm_guide <- num_perms[[2]]
        
-       
-       # how many target trajectories are we matching to,
-       # how many collapse-free ensemble members can each
-       # target support, and order them according to that
-       # for construction.
-       num_perms[[1]] %>%
-         arrange(minNumMatches) %>%
-         mutate(target_ordered_id = as.integer(row.names(.))) ->
-         targets
-      } # end comparison if-else
-      
+       } # end comparison if-else
+
     } # end while loop
     
     

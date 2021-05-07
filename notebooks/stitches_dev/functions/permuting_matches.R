@@ -130,7 +130,7 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
   }
   
   # for each target
-  for(target_id in unique(targets$target_ordered_id)) {
+  for(target_id in 1:length(unique(targets$target_ordered_id))) {
   
     # target info 
     targets %>%
@@ -145,10 +145,11 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
       filter(target_variable == unique(target$target_variable),
              target_experiment == unique(target$target_experiment),
              target_model == unique(target$target_model),
-             target_ensemble == unique(target$target_ensemble),
-             n_matches > 1) ->
+             target_ensemble == unique(target$target_ensemble)) ->
       draw_periods
     
+    
+    i <- 0
     while(length(unique(recipes_by_target$stitching_id)) < min(N_matches, target$minNumMatches)){
       
       
@@ -191,6 +192,11 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
                                     sep = "~")) ->
         sampled_match
       
+      
+      i <- i+1
+
+      print(i)
+      print(target)
       # Make sure you created a full match with no gaps:
       assert_that(nrow(sampled_match) == 28)
       assert_that(all(sampled_match$target_year == unique(matched_data$target_year)))
@@ -246,15 +252,6 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
        
        perm_guide <- num_perms[[2]]
        
-       
-       # how many target trajectories are we matching to,
-       # how many collapse-free ensemble members can each
-       # target support, and order them according to that
-       # for construction.
-       num_perms[[1]] %>%
-         arrange(minNumMatches) %>%
-         mutate(target_ordered_id = as.integer(row.names(.))) ->
-         targets
       } # end comparison if-else
       
     } # end while loop

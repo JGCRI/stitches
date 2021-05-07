@@ -16,15 +16,20 @@ This tutorial was designed to show how to use the R functions to match based on 
 
 # Set Up 
 ```{r, message=FALSE, warning=FALSE}
+
+set.seed(1)
 # required packages
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(knitr)
 
-# The load the functions we will want to use, these are currently written in R and will be translated into python. 
-source("nearest_neighbor_matching.R") # the function match_nearest_neighbor is defined here
-source("stitching_functions.R")  # the function stitch_global_mean is definend here 
+# Then load the functions we will want to use, these are currently written in R and will be translated into python. 
+source("functions/nearest_neighbor_matching.R") # the function match_neighborhood is defined here
+source("functions/permuting_matches.R")  # the function permute_stitching_recipe is defined here
+source("functions/stitching_functions.R")  # the function stitch_global_mean is definend here 
+source("functions/gridded_recipe.R") # wrappers for the work flow from matching to output csv needed by python for 
+                                     # layering in gridded data to output as netcdf
 ```
 
 
@@ -50,51 +55,50 @@ archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
 # archive_data data frame. This file is SSP245 Realization 1.
 target_data <- read.csv("inputs/target_data.csv", stringsAsFactors = FALSE)
 
+# target data 2: ssp245 realization 4
+archive_data %>%
+  filter(experiment == 'ssp245' & ensemble == 'r4i1p1f1') ->
+  target_data2
+
 ```
 
 
 # Matching 
 
 
-Use the function `match_nearest_neighbor` to match the target and archive data to one another. Right now the user will have to manually subset the contents of the archive so that we are not matching to other ESMs or the target scenario
+Use the function `match_neighborhood` to match the target and archive data to one another. Right now the user will have to manually subset the contents of the archive so that we are not matching to other ESMs *or* the target scenario.
 
 For the target data of CanESM5 SSP245, this archive consists of all other CanESM5 scenarios except ssp534-over. We've run into some data problems with that scenario and are excluding it for now. Additional filtering, for example to just SSP126 and SSP585, would be done by updating this block of code.
 
 ```{r}
 archive_data %>% 
+  # Only match to the same ESM:
   dplyr::filter(model == unique(target_data$model)) %>%  
-  dplyr::filter(experiment != unique(target_data$experiment) &
-                  experiment!= 'ssp534-over') ->
+  # Don't match to any ensemble members in the target experiment:
+  dplyr::filter(experiment != unique(target_data$experiment) ) %>%
+  # Exclude ssp534-over:
+  dplyr::filter(experiment != 'ssp534-over') ->
   archive_subset
 ```
 
-Now that we have the subset of the archive we want to work with, we can use it in the nearest neighbor. 
+Now that we have the subset of the archive we want to work with, we can use it in the matching with a specified tolerance on neighborhoods. The matching function can also handle matching for multiple targets. 
 
 Match the target and archive data! 
 
 ```{r}
-matched_data <- match_nearest_neighbor(target_data = target_data, archive_data = archive_subset)
+matched_data <- match_neighborhood(target_data = bind_rows(target_data, target_data2),
+                                   archive_data = archive_subset,
+                                   tol = 0.1)
 ```
 
 
-It will return a rather large data frame, with 28 rows and 21 columns. It will contain information about the target and archive data matched together. Columns that contain information about the distance of the matched pairs are `dist_dx`, `dist_fx`, and `dist_l2`.  `dist_dx` and `dist_fx` reflect the distance between the `window-size*dx` and `fx` components. `dist_l2` contains the euclidean distance, this is the distance that we use to select the nearest neighbor. 
+It will return a rather large data frame, with (number targets)X28 rows and 21 columns. It will contain information about the target and archive data matched together. Columns that contain information about the distance of the matched pairs are `dist_dx`, `dist_fx`, and `dist_l2`.  `dist_dx` and `dist_fx` reflect the distance between the `window-size*dx` and `fx` components. `dist_l2` contains the euclidean distance, this is the distance that we use to select the nearest neighbor. 
 
 
 ```{r}
 head(matched_data)
 ```
 
-
-```{r}
-matched_data %>%
-  ggplot() + 
-  geom_density(aes(dist_dx, fill = "dist_dx"), alpha = 0.5) + 
-  geom_density(aes(dist_fx, fill = "dist_fx"), alpha = 0.5) + 
-  geom_density(aes(dist_l2, fill = "dist_l2"), alpha = 0.5) + 
-  theme_bw() + 
-  labs(title = "Compare Distance", 
-       y = "Density", x = "Distance Value")
-```
 
 Visualize the matched points. 
 
@@ -112,54 +116,113 @@ ggplot(data = matched_data) +
   theme_bw() + 
   labs(y = "dx (rate of change per chunk, degC/year)", 
        x = "fx (value of median temperature per chunk, degC)", 
-       title = "Matching betweenn target and archive" )
+       title = "Matching between target and archive" )
+```
+
+# Turn matched points into stitching recipes
+
+The results of our matching are straightforward - a data frame that has every target window and all of the potential matches to each window. This results in many potential stitched Tgav scenarios when all possible permutations are mixed and matched (`totalNumPerms`). To avoid collapse in our generated Tgav time series, however, each target is limited to generate N new Tgav values (N = smallest number of matches of any target_window for each target_ensemble; `minNumMatches`). In other words, if a target has a time window with only two matches, all generated Tgav values will go through one of those two values in that time window, and trajectory collapse will occur.
+
+```{r}
+kable(get_num_perms(matched_data)[[1]])
+
+```
+
+Our function `permute_stitching_recipes` takes a data frame of matched data and does random draws to get recipes for each Tgav. 
+
+If multiple target ensembles are included in `matched_data`, the function draws recipes for the ensemble with the smallest number of collapse-free scenarios upwards. Because these are random draws and target ensembles of the same experiment often have similar values in each window and therefore match to similar archive values, sometimes the 2nd+ target ensemble will get fewer than its potential number of collapse-free generated recipes, depending on the RNG. If you ask for more matches than an ensemble can have, the function will just give you as many recipes as it can. 
+
+The lack of collapse is enforced across all target ensembles fed to `permute_stitching_recipes`. If you don't want _any_ of your generated Tgavs to have collapse, you can just directly feed the matched data into the function. If you don't want any collapse within each set of generated Tgavs for each target realization but don't care about collapse across targets, you can subset `matched_data` by target and apply `permute_stitching_recipes` separately to each piece. 
+
+`permute_stitching_recipes` does not support `matched_data` that contains targets from more than one _experiment_. The function must be called separately for each experiment.
+
+Finally, the function `permute_stitching_recipes` also makes sure that within any individual generated Tgav time series, you don't get a repetition of matches. In other words, target years 1989 and 1998 cannot be matched to the same archive point. If such a duplication occurs, the target year that is closer to the archive point keeps that point. The other target year gets re-matched to the nearest neighbor in a 'new' archive (the initial archive used for matching minus all archive points that have already been matched to a target). 
+
+
+```{r}
+recipes <- permute_stitching_recipes(N_matches = 3, 
+                                     matched_data = matched_data,
+                                     archive = archive_subset)
+
+kable(head(recipes))
 ```
 
 
-# Stitching 
+Finally, the `stitching_id` column of each recipe has information about the target experiment and ensemble it was generated for: `ssp245~r1i1p1f1~4`  is the 4th stitched realization corresponding to target a of ssp245 realization 1.
 
-Subset the raw tgav anomalies to include only the modelXscenarioXensemble of the target data as comparison data for the constructed tgav anomalies. 
+# Stitching and plotting
+
+Subset the raw tgav anomalies to include only the modelXscenarioXensemble of the target data as comparison data for the constructed tgav anomalies. These are our original data we'll want to compare generated ensemble members to.
 
 ```{r}
+# For plotting - ssp245 realization 1
 tgav_data %>%  
   filter(model == unique(target_data$model) & experiment == unique(target_data$experiment) & 
            ensemble == unique(target_data$ensemble)) -> 
-  original_data
-```
+  original_data1
 
+# for plotting - ssp245 realization 4
+tgav_data %>%  
+  filter(model == unique(target_data2$model) & experiment == unique(target_data2$experiment) & 
+           ensemble == unique(target_data2$ensemble)) -> 
+  original_data2
+```
 
 Now that we have a data frame with matched information, use the function `stitch_global_mean` to produce the stiched data. 
 
 
 ```{r}
-out1 <- stitch_global_mean(match = matched_data, data = tgav_data)
-out1$scn <- "stitched 1"
+stitch_global_mean(recipes=recipes, data = tgav_data) ->
+  out1
 ```
 
 
-```{r}
-ggplot(data = out1) + 
-  geom_line(data = original_data, aes(year, value, color = "ESM data")) +
-  geom_line(aes(year, value, color = "stitched data")) + 
+```{r, echo=FALSE}
+# Put in one data frame with orig data to plot
+out1 %>%
+  mutate(tosep = stitching_id) %>%
+  separate(tosep, c('experiment', 'ensemble', 'trash'), sep = "~") %>%
+  select(-trash) %>%
+  left_join(select(bind_rows(original_data1, original_data2), -timestep, -grid_type, -file) %>%
+              rename(orig_val = value), 
+            by = c('year', 'variable', 'experiment', 'ensemble')) ->
+  plotting_tgavs
+
+# Plot
+ggplot() + 
+  facet_wrap(~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble), nrow = 2) +
+  geom_line(data = plotting_tgavs , 
+                          aes(year, value, color = as.factor(stitching_id))) +
+  scale_color_brewer(palette = 'Spectral') +
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.4) + 
   theme_bw() + 
-  labs(x = "Year", y = "Degree C", title = "Comparison of ESM and stitched data")
+  labs(title = "Comparison of ESM and Stitched Data",
+       x = "Year", y = "Deg C")
 ```
 
 
 # Full Pipeline 
 
-If you want to do it all together in a single line this is how it would be done. 
+Reduced set of code calls:
 
 ```{r}
-rslts <- stitch_global_mean(match_nearest_neighbor(target_data, archive_subset), data = tgav_data)
+match_neighborhood(target_data = bind_rows(target_data, target_data2),
+                   archive_data = archive_subset,
+                   tol=0.1) %>%
+  # Convert them to a sample of individual Tgav Recipes:
+  permute_stitching_recipes(N_matches = 5, matched_data = .,
+                            archive = archive_subset)  %>%
+  # And stitch the recipes into tgavs:
+  stitch_global_mean(recipes=., data = tgav_data) ->
+  rslts 
 ```
 
 
 ```{r}
 head(rslts)
 ```
+You can change the stitched outputs by changing the experiments included in the archive (or the tolerance used for matching). 
 
-You can change the stitched outputs by changing the experiments included in the archive. 
 
 ```{r}
 # Subset the archive data to exlude a single experiment at a time.
@@ -167,25 +230,48 @@ archive_subset %>%
   filter(experiment != "ssp119"&
                   experiment!= 'ssp534-over') %>% 
   # Use that data to match with the target data. 
-  match_nearest_neighbor(target_data = target_data, archive_data = .) %>% 
-  # Use the matches to stitch the data together.
-  stitch_global_mean(match = ., data = tgav_data) %>% 
-  mutate(scn = "scn 1") -> 
+  match_neighborhood(target_data = bind_rows(target_data, target_data2),
+                   archive_data = .,
+                   tol=0.1) %>%
+  # Convert them to a sample of individual Tgav Recipes:
+  permute_stitching_recipes(N_matches = 3, matched_data = .,
+                            archive = archive_subset)  %>%
+  # And stitch the recipes into tgavs:
+  stitch_global_mean(recipes=., data = tgav_data) %>%
+  # label so we know which archive it came from
+  mutate(scn = 'scn1') ->
   out1
+
 
 archive_subset %>% 
   filter(experiment != "ssp126"&
                   experiment!= 'ssp534-over') %>% 
-  match_nearest_neighbor(target_data = target_data, archive_data = .) %>% 
-  stitch_global_mean(match = ., data = tgav_data) %>% 
+    # Use that data to match with the target data. 
+  match_neighborhood(target_data = bind_rows(target_data, target_data2),
+                   archive_data = .,
+                   tol=0.1) %>%
+  # Convert them to a sample of individual Tgav Recipes:
+  permute_stitching_recipes(N_matches = 3, matched_data = .,
+                            archive = archive_subset)  %>%
+  # And stitch the recipes into tgavs:
+  stitch_global_mean(recipes=., data = tgav_data) %>%
+  # label so we know which archive it came from
   mutate(scn = "scn 2") -> 
   out2
 
 archive_subset %>% 
   filter(experiment != "ssp370"&
                   experiment!= 'ssp534-over') %>% 
-  match_nearest_neighbor(target_data = target_data, archive_data = .) %>% 
-  stitch_global_mean(match = ., data = tgav_data) %>% 
+   # Use that data to match with the target data. 
+  match_neighborhood(target_data = bind_rows(target_data, target_data2),
+                   archive_data = .,
+                   tol=0.1) %>%
+  # Convert them to a sample of individual Tgav Recipes:
+  permute_stitching_recipes(N_matches = 3, matched_data = .,
+                            archive = archive_subset)  %>%
+  # And stitch the recipes into tgavs:
+  stitch_global_mean(recipes=., data = tgav_data) %>%
+  # label so we know which archive it came from
   mutate(scn = "scn 3") -> 
   out3
 

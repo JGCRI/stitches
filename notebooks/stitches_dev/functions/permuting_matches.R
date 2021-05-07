@@ -90,6 +90,9 @@ permute_stitching_recipes <- function(N_matches, matched_data, archive,
     mutate(target_ordered_id = as.integer(row.names(.))) ->
     targets
   
+  if(length(unique(num_perms[[1]]$target_experiment)) > 1){
+    stop("function permute_stitching_recipes should be applied to separate data frames for each target experiment of interest (multiple target ensemble members for a single target experiment is fine). ")
+  }
   
   # max number of permutations per target without repeating across generated
   # ensemble members

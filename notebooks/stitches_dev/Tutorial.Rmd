@@ -203,7 +203,9 @@ ggplot() +
 
 # Full Pipeline 
 
-Reduced set of code calls:
+## Single pipeline of code 
+
+Reduced set of code calls to go from target and archive data through to new Tgavs:
 
 ```{r}
 match_neighborhood(target_data = bind_rows(target_data, target_data2),
@@ -221,7 +223,13 @@ match_neighborhood(target_data = bind_rows(target_data, target_data2),
 ```{r}
 head(rslts)
 ```
+
+
+## Varying archive and tolerance for matching
+
 You can change the stitched outputs by changing the experiments included in the archive (or the tolerance used for matching). 
+
+All matches on 0.2degC neighborhood, for variety
 
 
 ```{r}
@@ -232,14 +240,14 @@ archive_subset %>%
   # Use that data to match with the target data. 
   match_neighborhood(target_data = bind_rows(target_data, target_data2),
                    archive_data = .,
-                   tol=0.1) %>%
+                   tol=0.2) %>%
   # Convert them to a sample of individual Tgav Recipes:
   permute_stitching_recipes(N_matches = 3, matched_data = .,
                             archive = archive_subset)  %>%
   # And stitch the recipes into tgavs:
   stitch_global_mean(recipes=., data = tgav_data) %>%
   # label so we know which archive it came from
-  mutate(scn = 'scn1') ->
+  mutate(scn = 'archive1') ->
   out1
 
 
@@ -249,14 +257,14 @@ archive_subset %>%
     # Use that data to match with the target data. 
   match_neighborhood(target_data = bind_rows(target_data, target_data2),
                    archive_data = .,
-                   tol=0.1) %>%
+                   tol=0.2) %>%
   # Convert them to a sample of individual Tgav Recipes:
   permute_stitching_recipes(N_matches = 3, matched_data = .,
                             archive = archive_subset)  %>%
   # And stitch the recipes into tgavs:
   stitch_global_mean(recipes=., data = tgav_data) %>%
   # label so we know which archive it came from
-  mutate(scn = "scn 2") -> 
+  mutate(scn = "archive2") -> 
   out2
 
 archive_subset %>% 
@@ -265,14 +273,14 @@ archive_subset %>%
    # Use that data to match with the target data. 
   match_neighborhood(target_data = bind_rows(target_data, target_data2),
                    archive_data = .,
-                   tol=0.1) %>%
+                   tol=0.2) %>%
   # Convert them to a sample of individual Tgav Recipes:
   permute_stitching_recipes(N_matches = 3, matched_data = .,
                             archive = archive_subset)  %>%
   # And stitch the recipes into tgavs:
   stitch_global_mean(recipes=., data = tgav_data) %>%
   # label so we know which archive it came from
-  mutate(scn = "scn 3") -> 
+  mutate(scn = "archive3") -> 
   out3
 
 
@@ -281,9 +289,22 @@ rslts <- rbind(out1, out2, out3)
 
 
 ```{r}
+
+rslts %>%
+  mutate(tosep = stitching_id) %>%
+  separate(tosep, c('experiment', 'ensemble', 'trash'), sep = "~") %>%
+  select(-trash) %>%
+  left_join(select(bind_rows(original_data1, original_data2), -timestep, -grid_type, -file) %>%
+              rename(orig_val = value), 
+            by = c('year', 'variable', 'experiment', 'ensemble')) ->
+  plotting_tgavs
+
+
 ggplot() + 
-  geom_line(data = original_data, aes(year, value), color = "grey") + 
-  geom_line(data = rslts, aes(year, value, color = scn)) + 
+  facet_grid(scn~interaction(plotting_tgavs$experiment, plotting_tgavs$ensemble)) +
+  geom_line(data = plotting_tgavs , 
+                          aes(year, value, color = interaction(scn, stitching_id))) +
+  geom_line(data = plotting_tgavs, aes(x = year, y = orig_val), color = "grey", size = 0.5) + 
   theme_bw() + 
   labs(title = "Comparison of ESM and Stitched Data\nCreated from different archives",
        x = "Year", y = "Deg C")

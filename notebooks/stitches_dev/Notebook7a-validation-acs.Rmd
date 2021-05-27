@@ -42,7 +42,7 @@ source("functions/gridded_recipe.R") # wrappers for the work flow from matching 
                                      # layering in gridded data to output as netcdf
 
 # How many times do we want to draw full generated ensembles:
-Ndraws <- 2
+Ndraws <- 50
 ```
 
 
@@ -124,215 +124,215 @@ archive_data %>%
 ** TODO ** look into NA's getting stitched in but for now, just drop any generated ensemble member that has any NA values; probably related to the order of matching in and discarding archive points since this analysis is pushing the limits of the functions we wrote a bit further than the stress tests we did while writing them. Some might were related to the 2014 as a window year in SSP434 and SSP460 only issue (checked with Kalyn, some of these realizations just don't have future years for these experiments). Improved things a lot but I still have to look into the ones that are left.
 
 ```{r}
-
-for (draw in 1:Ndraws){
-  # The matching to the archive without ssp245 results
-  match_neighborhood(target_data = target_data,
-                     archive_data = archive_subset1,
-                     tol=0.1) %>%
-    # Convert them to a sample of individual Tgav Recipes:
-    permute_stitching_recipes(N_matches = 2000, matched_data = .,
-                              archive = archive_subset1)  %>%
-    # And stitch the recipes into tgavs:
-    stitch_global_mean(recipes=., data = tgav_data) %>%
-    # eliminate any Tgav time series that had NA's stitched in
-    group_by(stitching_id) %>%
-    mutate(drop = any(is.na(value))) %>%  
-    ungroup %>%
-    filter(drop == FALSE) %>%
-    select(-drop) %>% 
-    # add some identifying info
-    mutate(tol = 0.1,
-           archive = 'withoutSSP245') ->
-    rslts_1_0p1
-  
-  # Check for collpase in these results
-    rslts_1_0p1 %>%
-    select(year, value, stitching_id) %>%
-    spread(year, value) ->
-    wide
-  
-    # Collapse would have occured if any of these trajectories go through the same value
-    # in the same year -> if the length of distinct values in any column is less than
-    # the number of stitching_id's
-    counts <- apply(wide, 2, length)
-    
-    print(paste('Archive without ssp245; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-  
-    
-  match_neighborhood(target_data = target_data,
-                     archive_data = archive_subset1,
-                     tol=0.25) %>%
-    # Convert them to a sample of individual Tgav Recipes:
-    permute_stitching_recipes(N_matches = 2000, matched_data = .,
-                              archive = archive_subset1)  %>%
-    # And stitch the recipes into tgavs:
-    stitch_global_mean(recipes=., data = tgav_data) %>%
-     # eliminate any Tgav time series that had NA's stitched in
-    group_by(stitching_id) %>%
-    mutate(drop = any(is.na(value))) %>%  
-    ungroup %>%
-    filter(drop == FALSE) %>%
-    select(-drop) %>% 
-    # add some identifying info
-    mutate(tol = 0.25,
-           archive = 'withoutSSP245') ->
-    rslts_1_0p25
-  
-    # Check for collpase in these results
-    rslts_1_0p25 %>%
-    select(year, value, stitching_id) %>%
-    spread(year, value) ->
-    wide
-  
-    # Collapse would have occured if any of these trajectories go through the same value
-    # in the same year -> if the length of distinct values in any column is less than
-    # the number of stitching_id's
-    counts <- apply(wide, 2, length)
-    
-    print(paste('Archive without ssp245; tol = 0.25: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-    
-  
-  match_neighborhood(target_data = target_data,
-                     archive_data = archive_subset1,
-                     tol=0.5) %>%
-    # Convert them to a sample of individual Tgav Recipes:
-    permute_stitching_recipes(N_matches = 2000, matched_data = .,
-                              archive = archive_subset1)  %>%
-    # And stitch the recipes into tgavs:
-    stitch_global_mean(recipes=., data = tgav_data) %>%
-     # eliminate any Tgav time series that had NA's stitched in
-    group_by(stitching_id) %>%
-    mutate(drop = any(is.na(value))) %>%  
-    ungroup %>%
-    filter(drop == FALSE) %>%
-    select(-drop) %>% 
-    # add some identifying info
-    mutate(tol = 0.5,
-           archive = 'withoutSSP245') ->
-    rslts_1_0p5
-  
-  # Check for collpase in these results
-    rslts_1_0p5 %>%
-    select(year, value, stitching_id) %>%
-    spread(year, value) ->
-    wide
-  
-    # Collapse would have occured if any of these trajectories go through the same value
-    # in the same year -> if the length of distinct values in any column is less than
-    # the number of stitching_id's
-    counts <- apply(wide, 2, length)
-    
-    print(paste('Archive without ssp245; tol = 0.5: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-    
-  
-  # The matching to the archive with ssp245 results
-  match_neighborhood(target_data = target_data,
-                     archive_data = archive_subset2,
-                     tol=0.1) %>%
-    # Convert them to a sample of individual Tgav Recipes:
-    permute_stitching_recipes(N_matches = 2000, matched_data = .,
-                              archive = archive_subset2)  %>%
-    # And stitch the recipes into tgavs:
-    stitch_global_mean(recipes=., data = tgav_data) %>%
-     # eliminate any Tgav time series that had NA's stitched in
-    group_by(stitching_id) %>%
-    mutate(drop = any(is.na(value))) %>%  
-    ungroup %>%
-    filter(drop == FALSE) %>%
-    select(-drop) %>% 
-    # add some identifying info
-    mutate(tol = 0.1,
-           archive = 'withSSP245') ->
-    rslts_2_0p1
-  
-    # Check for collpase in these results
-    rslts_2_0p1 %>%
-    select(year, value, stitching_id) %>%
-    spread(year, value) ->
-    wide
-  
-    # Collapse would have occured if any of these trajectories go through the same value
-    # in the same year -> if the length of distinct values in any column is less than
-    # the number of stitching_id's
-    counts <- apply(wide, 2, length)
-    
-    print(paste('Archive with ssp245; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-    
-  
-  match_neighborhood(target_data = target_data,
-                     archive_data = archive_subset2,
-                     tol=0.25) %>%
-    # Convert them to a sample of individual Tgav Recipes:
-    permute_stitching_recipes(N_matches = 200, matched_data = .,
-                              archive = archive_subset2)  %>%
-    # And stitch the recipes into tgavs:
-    stitch_global_mean(recipes=., data = tgav_data) %>%
-     # eliminate any Tgav time series that had NA's stitched in
-    group_by(stitching_id) %>%
-    mutate(drop = any(is.na(value))) %>%  
-    ungroup %>%
-    filter(drop == FALSE) %>%
-    select(-drop) %>% 
-    # add some identifying info
-    mutate(tol = 0.25,
-           archive = 'withSSP245') ->
-    rslts_2_0p25
-  
-  # Check for collpase in these results
-    rslts_2_0p25 %>%
-    select(year, value, stitching_id) %>%
-    spread(year, value) ->
-    wide
-  
-    # Collapse would have occured if any of these trajectories go through the same value
-    # in the same year -> if the length of distinct values in any column is less than
-    # the number of stitching_id's
-    counts <- apply(wide, 2, length)
-    
-    print(paste('Archive with ssp245; tol = 0.25: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-  
-  
-  match_neighborhood(target_data = target_data,
-                     archive_data = archive_subset2,
-                     tol=0.5) %>%
-    # Convert them to a sample of individual Tgav Recipes:
-    permute_stitching_recipes(N_matches = 200, matched_data = .,
-                              archive = archive_subset2)  %>%
-    # And stitch the recipes into tgavs:
-    stitch_global_mean(recipes=., data = tgav_data) %>%
-     # eliminate any Tgav time series that had NA's stitched in
-    group_by(stitching_id) %>%
-    mutate(drop = any(is.na(value))) %>%  
-    ungroup %>%
-    filter(drop == FALSE) %>%
-    select(-drop) %>% 
-    # add some identifying info
-    mutate(tol = 0.5,
-           archive = 'withSSP245') ->
-    rslts_2_0p5
-  
-  # Check for collpase in these results
-    rslts_2_0p5 %>%
-    select(year, value, stitching_id) %>%
-    spread(year, value) ->
-    wide
-  
-    # Collapse would have occured if any of these trajectories go through the same value
-    # in the same year -> if the length of distinct values in any column is less than
-    # the number of stitching_id's
-    counts <- apply(wide, 2, length)
-    
-    print(paste('Archive with ssp245; tol = 0.5: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-  
-  
-  
-  write.csv(bind_rows(rslts_1_0p1, rslts_1_0p25, rslts_1_0p5,
-                      rslts_2_0p1, rslts_2_0p25, rslts_2_0p5) %>%
-              mutate(draw = draw),
-            paste0('generated_ensembles/generated_ensembles_ssp245_draw', draw, '.csv'), 
-            row.names = FALSE)
-}
+# 
+# for (draw in 1:Ndraws){
+#   # The matching to the archive without ssp245 results
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset1,
+#                      tol=0.1) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
+#                               archive = archive_subset1)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#     # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.1,
+#            archive = 'withoutSSP245') ->
+#     rslts_1_0p1
+#   
+#   # Check for collpase in these results
+#     rslts_1_0p1 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive without ssp245; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#   
+#     
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset1,
+#                      tol=0.25) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
+#                               archive = archive_subset1)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.25,
+#            archive = 'withoutSSP245') ->
+#     rslts_1_0p25
+#   
+#     # Check for collpase in these results
+#     rslts_1_0p25 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive without ssp245; tol = 0.25: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#     
+#   
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset1,
+#                      tol=0.5) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
+#                               archive = archive_subset1)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.5,
+#            archive = 'withoutSSP245') ->
+#     rslts_1_0p5
+#   
+#   # Check for collpase in these results
+#     rslts_1_0p5 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive without ssp245; tol = 0.5: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#     
+#   
+#   # The matching to the archive with ssp245 results
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset2,
+#                      tol=0.1) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
+#                               archive = archive_subset2)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.1,
+#            archive = 'withSSP245') ->
+#     rslts_2_0p1
+#   
+#     # Check for collpase in these results
+#     rslts_2_0p1 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive with ssp245; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#     
+#   
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset2,
+#                      tol=0.25) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 200, matched_data = .,
+#                               archive = archive_subset2)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.25,
+#            archive = 'withSSP245') ->
+#     rslts_2_0p25
+#   
+#   # Check for collpase in these results
+#     rslts_2_0p25 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive with ssp245; tol = 0.25: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#   
+#   
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset2,
+#                      tol=0.5) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 200, matched_data = .,
+#                               archive = archive_subset2)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.5,
+#            archive = 'withSSP245') ->
+#     rslts_2_0p5
+#   
+#   # Check for collpase in these results
+#     rslts_2_0p5 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive with ssp245; tol = 0.5: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#   
+#   
+#   
+#   write.csv(bind_rows(rslts_1_0p1, rslts_1_0p25, rslts_1_0p5,
+#                       rslts_2_0p1, rslts_2_0p25, rslts_2_0p5) %>%
+#               mutate(draw = draw),
+#             paste0('generated_ensembles/generated_ensembles_ssp245_draw', draw, '.csv'), 
+#             row.names = FALSE)
+# }
 
 ```
 
@@ -379,10 +379,15 @@ var_target <- sd(original_data$value)
 var_target_hist <- sd(filter(original_data, year <= 2014)$value)
 var_target_future <- sd(filter(original_data, year > 2014)$value)
   
-for (draw in 1:Ndraws){
-  # Metrics for this draw #################################################################
-  generated_ensemble_draw <- read.csv(paste0('generated_ensembles/generated_ensembles_ssp245_draw', draw, '.csv'), 
-                                      stringsAsFactors = FALSE)
+
+# generated ensemble files
+# read in all generated ensembles.
+files <- list.files(path = 'generated_ensembles', pattern = 'generated_ensembles', full.names = TRUE) 
+
+for (i in 1:length(files)){
+
+    # Metrics for this draw #################################################################
+  generated_ensemble_draw <- read.csv(files[i], stringsAsFactors = FALSE)
   
   # Values of the generated data and then the metrics
   generated_ensemble_draw %>% 
@@ -448,7 +453,7 @@ for (draw in 1:Ndraws){
   
    write.csv(plotting_tbl %>%
               mutate(draw = draw),
-            paste0('generated_ensembles/metrics_ssp245_draw', draw, '.csv'), 
+            paste0('generated_ensembles/metrics_ssp245_draw', i, '.csv'), 
             row.names = FALSE)
 }
 

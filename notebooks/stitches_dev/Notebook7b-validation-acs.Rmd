@@ -1,0 +1,1068 @@
+---
+title: "Validation - model other than CanESM"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '4'
+    toc_float: yes
+    number_sections: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+# Goal
+
+We have a validation scheme and the emulation of CanESM ssp245 validates extremely well. It is time to emulate an ESM with fewer realizations 
+
+```{r, echo=FALSE}
+read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+         stringsAsFactors = FALSE) %>% dplyr::select(-X) %>%
+  select(model, experiment, ensemble) %>%
+  distinct %>%
+  group_by(model, experiment) %>%
+  summarize(N_ensemble_members = n()) %>%
+  ungroup %>%
+  kable
+```
+
+MPI-HR and MPI-LR are the stress cases then. 
+
+Let us select MPI-ESM1-2-LR arbitrarily to evaluate then:
+
+```{r}
+# what we will emulate:
+esm_name <- 'MPI-ESM1-2-LR'
+esm_experiment <- 'ssp245'
+
+
+# How many times do we want to draw full generated ensembles:
+Ndraws <- 1
+```
+
+# Set Up 
+```{r, message=FALSE, warning=FALSE}
+
+set.seed(1)
+# required packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+
+# Then load the functions we will want to use, these are currently written in R and will be translated into python. 
+source("functions/nearest_neighbor_matching.R") # the function match_neighborhood is defined here
+source("functions/permuting_matches.R")  # the function permute_stitching_recipe is defined here
+source("functions/stitching_functions.R")  # the function stitch_global_mean is definend here 
+source("functions/gridded_recipe.R") # wrappers for the work flow from matching to output csv needed by python for 
+                                     # layering in gridded data to output as netcdf
+```
+
+
+Load the inputs that will be used. 
+
+```{r}
+# Time series of the raw global mean temperature anomaly, this is the data that is 
+# going to be stitched together. Historical data is pasted into every scenario. No
+# smoothing has been done.
+tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+                      stringsAsFactors = FALSE) %>% dplyr::select(-X)
+
+
+# A chunked smoothed tgav anomaly archive of data. This was tgav_data but several 
+# steps were taken in python to transform it into the "chunked" data and save it 
+# so that we do not have to repeate this process so many times. 
+archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+
+
+# The target data - all ssp245 realizations (smoothed because it's the target for
+# matching)
+archive_data %>%
+  filter(experiment == esm_experiment) ->
+  target_data
+
+
+# The corresponding unsmoothed original data for validation
+tgav_data %>%  
+  filter(model == unique(target_data$model) & experiment == unique(target_data$experiment))  %>%
+  select(-file, -timestep, -grid_type) -> 
+  original_data
+
+```
+
+
+# Generate the new ensembles
+
+We're actually going to generate multiple different ensembles for a target of ssp245, based on two different archives.
+
+Archive 1 will exclude the ssp245 runs from potential matches.
+
+Archive 2 will include the ssp245 runs - when we get to the point of targeting SSP585 runs, I think we will have to to include those runs in the archive to get at all decent generated Tgavs at the end of the century when temperature is higher. It's still not just regurgitating the target ensembles, it will include mixing and matching from those parts.
+
+We will also do some light exploration of the matching neighborhood size (`tol` argument).
+
+In addition to SSP534-over having enough data issues to fully exclude, _some_ of the realizations for SSP434 and SSP460 just don't have future data at all. We need to go back to pangeo and fix this for sure, but for now, I'll work with the archive I have. Because we don't want to lose too much of the archive now, I will only remove those realizations that don't have all the years of data.
+
+```{r}
+archive_data %>% 
+  # Only match to the same ESM:
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  # Don't match to any ensemble members in the target experiment:
+  dplyr::filter(experiment != unique(target_data$experiment) ) %>%
+  # Exclude ssp534-over:
+  dplyr::filter(experiment != 'ssp534-over') %>%
+  # eliminate any individual realizationXexperiment runs that don't have all the years:
+  group_by(experiment, variable,   model  , ensemble) %>%
+  mutate(nWindows = n()) %>%
+  ungroup %>%
+  filter(nWindows == 28) %>%
+  select(-nWindows) ->
+  archive_subset1 
+
+
+archive_data %>% 
+  # Only match to the same ESM:
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  # Exclude ssp534-over:
+  dplyr::filter(experiment != 'ssp534-over') %>%
+  # eliminate any individual realizationXexperiment runs that don't have all the years:
+  group_by(experiment, variable,   model  , ensemble) %>%
+  mutate(nWindows = n()) %>%
+  ungroup %>%
+  filter(nWindows == 28) %>%
+  select(-nWindows) ->
+  archive_subset2 
+```
+
+** TODO ** look into NA's getting stitched in but for now, just drop any generated ensemble member that has any NA values; probably related to the order of matching in and discarding archive points since this analysis is pushing the limits of the functions we wrote a bit further than the stress tests we did while writing them. Some might were related to the 2014 as a window year in SSP434 and SSP460 only issue (checked with Kalyn, some of these realizations just don't have future years for these experiments). Improved things a lot but I still have to look into the ones that are left.
+
+```{r}
+# 
+# for (draw in 1:Ndraws){
+#   # The matching to the archive without ssp245 results
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset1,
+#                      tol=0.1) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
+#                               archive = archive_subset1)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#     # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.1,
+#            archive = 'withoutSSP245') ->
+#     rslts_1_0p1
+#   
+#   # Check for collpase in these results
+#     rslts_1_0p1 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive without ssp245; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#   
+#     
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset1,
+#                      tol=0.25) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
+#                               archive = archive_subset1)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.25,
+#            archive = 'withoutSSP245') ->
+#     rslts_1_0p25
+#   
+#     # Check for collpase in these results
+#     rslts_1_0p25 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive without ssp245; tol = 0.25: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#     
+#   
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset1,
+#                      tol=0.5) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
+#                               archive = archive_subset1)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.5,
+#            archive = 'withoutSSP245') ->
+#     rslts_1_0p5
+#   
+#   # Check for collpase in these results
+#     rslts_1_0p5 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive without ssp245; tol = 0.5: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#     
+#   
+#   # The matching to the archive with ssp245 results
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset2,
+#                      tol=0.1) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
+#                               archive = archive_subset2)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.1,
+#            archive = 'withSSP245') ->
+#     rslts_2_0p1
+#   
+#     # Check for collpase in these results
+#     rslts_2_0p1 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive with ssp245; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#     
+#   
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset2,
+#                      tol=0.25) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 200, matched_data = .,
+#                               archive = archive_subset2)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.25,
+#            archive = 'withSSP245') ->
+#     rslts_2_0p25
+#   
+#   # Check for collpase in these results
+#     rslts_2_0p25 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive with ssp245; tol = 0.25: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#   
+#   
+#   match_neighborhood(target_data = target_data,
+#                      archive_data = archive_subset2,
+#                      tol=0.5) %>%
+#     # Convert them to a sample of individual Tgav Recipes:
+#     permute_stitching_recipes(N_matches = 200, matched_data = .,
+#                               archive = archive_subset2)  %>%
+#     # And stitch the recipes into tgavs:
+#     stitch_global_mean(recipes=., data = tgav_data) %>%
+#      # eliminate any Tgav time series that had NA's stitched in
+#     group_by(stitching_id) %>%
+#     mutate(drop = any(is.na(value))) %>%  
+#     ungroup %>%
+#     filter(drop == FALSE) %>%
+#     select(-drop) %>% 
+#     # add some identifying info
+#     mutate(tol = 0.5,
+#            archive = 'withSSP245') ->
+#     rslts_2_0p5
+#   
+#   # Check for collpase in these results
+#     rslts_2_0p5 %>%
+#     select(year, value, stitching_id) %>%
+#     spread(year, value) ->
+#     wide
+#   
+#     # Collapse would have occured if any of these trajectories go through the same value
+#     # in the same year -> if the length of distinct values in any column is less than
+#     # the number of stitching_id's
+#     counts <- apply(wide, 2, length)
+#     
+#     print(paste('Archive with ssp245; tol = 0.5: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+#   
+#   
+#   
+#   write.csv(bind_rows(rslts_1_0p1, rslts_1_0p25, rslts_1_0p5,
+#                       rslts_2_0p1, rslts_2_0p25, rslts_2_0p5) %>%
+#               mutate(draw = draw),
+#             paste0('generated_ensembles/generated_ensembles_ssp245_draw', draw, '.csv'), 
+#             row.names = FALSE)
+# }
+
+```
+
+sidenote - took about 10 min for each individual draw of these different generated ensemble.
+
+Within each draw of a generated ensemble, we don't necessarily have a ton of generated ensemble members.
+
+Part of this _is_ because of how we order and prioritize returning stitching recipes from a set of matches. 
+For example, the most restrictive archive for matching, tol=0.1 and no ssp245 results. A couple ensemble members have a window with only one potential matched point in the neighborhood; Those get done first and if say realiation 12 and realization 13 both have the same archive point match for the same window, only one of them gets that point and the other doesn't get any generated ensemble members. This is because we are enforcing the strongest possible restrictions to avoid envelope collapse. If we relaxed those, say by applying the pipeline to each target ensemble member separately, we'd get more matches but there would probably be some collapse acros target ensemble members:
+
+```{r}
+match_neighborhood(target_data = target_data,
+                   archive_data = archive_subset1,
+                   tol=0.1) ->
+  matched
+
+kable(get_num_perms(matched)[[1]] )
+```
+
+Versus a still strict matching neighborhood (tol=0.1) but being able to draw from the ssp245 runs for the matching as well:
+
+```{r}
+match_neighborhood(target_data = target_data,
+                   archive_data = archive_subset2,
+                   tol=0.1) ->
+  matched2
+
+kable(get_num_perms(matched2)[[1]] )
+```
+
+# Validate - ensembles
+
+Comparing the generated ensembles to the training ensemble with error metrics along the lines of Tebaldi et al 2020.
+
+That is, we need the means and variances of both the target ensemble and the generated ensemble. Specifically, mean across time and ensemble members, variance across time and ensemble members.
+
+```{r}
+# values of the target data
+mean_target <- mean(original_data$value)
+mean_target_hist <- mean(filter(original_data, year <= 2014)$value)
+mean_target_future <- mean(filter(original_data, year > 2014)$value)
+  
+var_target <- sd(original_data$value)
+var_target_hist <- sd(filter(original_data, year <= 2014)$value)
+var_target_future <- sd(filter(original_data, year > 2014)$value)
+  
+
+# generated ensemble files
+# read in all generated ensembles.
+files <- list.files(path = 'generated_ensembles', pattern = 'generated_ensembles', full.names = TRUE) 
+
+for (i in 1:length(files)){
+
+    # Metrics for this draw #################################################################
+  generated_ensemble_draw <- read.csv(files[i], stringsAsFactors = FALSE)
+  
+  # Values of the generated data and then the metrics
+  generated_ensemble_draw %>% 
+    group_by(tol, archive, draw) %>%
+    summarize(mean_gen = mean(value), 
+              var_gen = sd(value)) %>%
+    ungroup %>%
+    mutate(time_period = 'hist+future',
+           mean_target = mean_target,
+           var_target = var_target,
+           bias = abs(mean_target - mean_gen),
+           E1 = bias/var_target,
+           E2 = var_gen/var_target) ->
+    metrics
+  
+  
+  generated_ensemble_draw %>% 
+    filter(year <= 2014) %>%
+    group_by(tol, archive, draw) %>%
+    summarize(mean_gen = mean(value), 
+              var_gen = sd(value)) %>%
+    ungroup %>%
+    mutate(time_period = 'hist',
+           mean_target = mean_target_hist,
+           var_target = var_target_hist,
+           bias = abs(mean_target - mean_gen),
+           E1 = bias/var_target,
+           E2 = var_gen/var_target) ->
+    metrics_hist
+  
+  
+  generated_ensemble_draw%>% 
+    filter(year > 2014) %>%
+    group_by(tol, archive, draw) %>%
+    summarize(mean_gen = mean(value), 
+              var_gen = sd(value)) %>%
+    ungroup %>%
+    mutate(time_period = 'future',
+           mean_target = mean_target_future,
+           var_target = var_target_future,
+           bias = abs(mean_target - mean_gen),
+           E1 = bias/var_target,
+           E2 = var_gen/var_target) ->
+    metrics_future
+  
+  
+  generated_ensemble_draw %>%
+    select(stitching_id, tol, archive, draw) %>%
+    distinct %>%
+    group_by(tol, archive, draw) %>%
+    summarise(n_stitched = n()) %>%
+    ungroup ->
+    tmp
+  
+  bind_rows(tmp %>%
+              left_join(metrics, by = c('tol', 'archive', 'draw')),
+            tmp %>%
+              left_join(metrics_hist, by = c('tol', 'archive', 'draw')) ,
+            tmp %>%
+              left_join(metrics_future, by = c('tol', 'archive', 'draw')))  ->
+    plotting_tbl
+  rm(tmp)
+  
+   write.csv(plotting_tbl %>%
+              mutate(draw = draw),
+            paste0('generated_ensembles/metrics_ssp245_draw', i, '.csv'), 
+            row.names = FALSE)
+}
+
+
+```
+
+## Visualize and assess
+
+
+### First draw of collapse free generated ensembles
+```{r, echo = FALSE}
+plotting_tbl <- read.csv(paste0('generated_ensembles/metrics_ssp245_draw1.csv'),  
+                         stringsAsFactors = FALSE)
+
+kable(plotting_tbl)
+
+ggplot(data = plotting_tbl, aes(x = E1, y = E2, color = factor(tol), shape = archive)) +
+  geom_point() +
+  facet_wrap(~time_period, nrow =3) +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 0)
+
+```
+
+In general, all of our emulations have E1 close to 0 and E2 close to 1. As always, the question is sort of 'how close is close enough'. For the E2, 0.97 to 1.03 is probably close enough = our generated variability is only off by 3% or less from the target variability.
+
+For E1, I have a harder time benchmarking the quantities. For NRMS (rms/variance of target data), anything less than 0.5 is excellent, so I'd argue these values are still good. Certainly though, it is true that
+
+1. it's weird that a tolerance of 0.25 results in worse bias than 0.5 when you don't have ssp245 in the archive. That says that you've drawn a better match from within a neighborhood of 0.5degC than 0.25degC. Certainly, that would depend on the random sample of recipes for each Tgav. To what extent that's a factor of the random sample being drawn from all the possible recipes though, I don't know. I suppose I should draw the different genereated ensembles many times and take the average of the metrics across draws. (100 draws would be about 16 hours, although in theory very easy to parallelize....). In terms of use cases, yes, you would do the one draw and run the validation metrics and sort of hope they're good enough. In terms of validating the _method_ and having a better understanding of the role of the neighborhood `tol` hyperparameter though, I do think doing the average across many draws is what we would want in a paper. Parallelize over the 4 cores in my laptop processor and let it run over the weekend and we should be able to get 1000 or so draws of full generated ensembles. (After I debug what's going on with the NAs).
+
+2. Again, because the draw of generated ensemble Tgavs is random, there's no guarantee that for an individual draw, using the archive including the SSP245 points will guarantee better fits. It will certainly create a larger potential space of better fits to draw from. For SSP585, I suspect this will be more of a factor.
+
+
+
+### And the second:
+```{r, echo = FALSE}
+plotting_tbl <- read.csv(paste0('generated_ensembles/metrics_ssp245_draw2.csv'),  
+                         stringsAsFactors = FALSE)
+
+kable(plotting_tbl)
+
+ggplot(data = plotting_tbl, aes(x = E1, y = E2, color = factor(tol), shape = archive)) +
+  geom_point() +
+  facet_wrap(~time_period, nrow =3) +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 0)
+```
+
+
+So we can see, the metrics vary quite a bit based on the draw (not surprisingly). We do get greater error in the E2, but a generated ensemble being off on the variability by 5% still isn't fatal.
+
+### Aggregate metrics
+We want to know the average errors across many draws so that we can get a sense of the error of our _method_ and how that relates to hyperperamters:
+
+```{r}
+# read in metrics for every draw
+files <- list.files(path = 'generated_ensembles', pattern = 'metrics', full.names = TRUE) 
+
+generated_metrics <- list()
+for (i in 1:length(files)){
+  generated_metrics[[i]] <- read.csv(files[i], stringsAsFactors = FALSE)
+}
+generated_metrics <- do.call(rbind, generated_metrics)
+
+generated_metrics %>% 
+  group_by(tol, archive, time_period) %>%
+  summarize(aggregate_E1 = mean(E1),
+            aggregate_E2 = mean(E2)) %>%
+  ungroup %>%
+  mutate(total_draws = length(unique(generated_metrics$draw))) ->
+  aggregate_metrics
+
+kable(aggregate_metrics)
+
+ggplot(data = aggregate_metrics, aes(x = aggregate_E1, y = aggregate_E2, color = factor(tol), shape = archive)) +
+  geom_point() +
+  facet_wrap(~time_period, nrow =3) +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 0)
+```
+
+Likely still not enough draws to make any robust conclusions about how hyperparameters relate to errors for our method.
+
+## Take away
+
+1. I need to figure out why the stitching is putting in NA values. I'm pretty sure it's because this is having 25 ensemble members to target, and it just runs out of collapse free options. But I need to double check and throw in a condition so this doesn't happen. The ensembles that we are getting _are_ collapse-free, it's just that there may be more collapse-free ensemble members than what we're getting. So it's not a fatal/obvious bug, just a refinement of the type I kind of expected to come up as we start using these functions in different ways, since the iterative stop condition is such a pain to write. 
+
+2. Need to do many more draws across many more tolerance values for matching to get a robust understanding of the error in our method and how that relates to our hyperparameters. 
+
+3. Again, a more robust measure will be better, but a 3-5% error on the E2 metric makes me optimistic that our jumps are pretty well behaved. Looking at the sd in our historical period of the target data = .44 degC and future period = .81 degC. These may be useful limits on our tolerance hyperperameter. `tol < min(historical SD, future SD)`. Of course,the Tgavs in our `tol=0.5` runs are being seemingly well behaved even though this upper bound says no. Still worth keeping in mind at least. Target SD over the entire time series is 1.54 degC
+
+
+# Validate - window jumps
+
+Pull off the years that end each window and that start each window; these are going to be years we pay particular attention to. 
+
+```{r}
+window_start_years <- unique(archive_subset1$start_yr)
+window_end_years <- unique(archive_subset1$end_yr)
+```
+
+
+
+We are particularly concerned about the 'jumps' at each of these years being 'wrong'. And the idea is that they would be wrong relative to both the target data and, I think, the generated ensembles in between the jump years. 
+
+So let's work with the jumps themselves for validating. Take the year to year diff within each realization (target or generated ensemble member). We'll look at the diff and abs(diff). We'll visualize the jumps with a scatter view and then get into more quantitative metrics. I spent a while going back and forth between starting from fundamentals like this and tracking down a package that looks at more sophisticated methods. As I started reading through packages, I ended up deciding to stick to fundamentals because they'll translate from R to python better and will provide a more solid understanding of what's going on before we look at anything more sophisticated. 
+
+
+## calculate jumps
+
+```{r}
+# read in all generated ensembles.
+files <- list.files(path = 'generated_ensembles', pattern = 'generated_ensembles', full.names = TRUE) 
+
+generated_tgavs <- list()
+for (i in 1:length(files)){
+  generated_tgavs[[i]] <- read.csv(files[i], stringsAsFactors = FALSE)
+}
+generated_tgavs <- do.call(rbind, generated_tgavs)
+
+
+# make a helper function for calculating all the jumps because you have Nyears-1 jumps and
+# dply functions don't like that. 
+get_jumps <- function(data){
+  data.frame(left_year = data$year[1:(length(data$year)-1)],
+             jump = diff(data$value),
+             abs_jump = abs(diff(data$value))) %>%
+    mutate(variable = unique(data$variable),
+           stitching_id = unique(data$stitching_id),
+            tol = unique(data$tol),
+           archive = unique(data$archive),
+           draw = unique(data$draw),
+           jump_year = if_else(left_year %in% window_end_years, 'window_transition', 'in_window')) ->
+    x
+return(x)
+}
+
+# calculate the yearly jumps
+generated_list <- split(generated_tgavs, 
+                        list(generated_tgavs$tol,
+                        generated_tgavs$archive,
+                        generated_tgavs$draw, 
+                        generated_tgavs$stitching_id),
+                        drop=TRUE)
+
+lapply(generated_list, get_jumps) %>%
+  do.call(rbind, .) ->
+  generated_jumps
+
+target_list <- split(original_data,
+                     list(original_data$model, 
+                          original_data$experiment,
+                          original_data$ensemble),
+                     drop = TRUE)
+
+lapply(target_list, get_jumps) %>% 
+  do.call(rbind, .) ->
+  target_jumps
+
+```
+
+## Visualize jumps
+
+Generated jump year values during window transitions vs all target jump year values:
+```{r}
+ggplot() + 
+  geom_point(target_jumps, mapping = aes(x = left_year, y = jump), alpha = 0.5) +
+  geom_point(filter(generated_jumps,
+                    jump_year == 'window_transition'), mapping = aes(x = left_year, y = jump), alpha = 0.1, color='red') +
+    facet_grid(tol~archive)
+
+
+ggplot() + 
+  geom_point(filter(target_jumps,
+                    jump_year == 'window_transition'), mapping = aes(x = left_year, y = jump), alpha = 0.5) +
+  geom_point(filter(generated_jumps,
+                    jump_year == 'window_transition'), mapping = aes(x = left_year-1, y = jump), alpha = 0.1, color='red' ) +
+    facet_grid(archive~tol) +
+  ggtitle('note the years are staggered just for visual clarity')
+
+```
+
+This suggests that a neighborhood of 0.5 degC is beginning to get too large for acceptable jumps.
+
+The generated jump year values for transition years are far outside the range of target jump values, not just covering them up. If the range was about equal for generated as for target in those window transition years, that would be pretty ideal but maybe being outside the values is ok as long as it's `range(target_data_each_year) + sd(target_data)` 
+
+- historical SD = .44 degC
+
+- future SD = .81 degC
+
+- entire time series sd = 1.54 degC
+
+
+Seems pretty symmetric so let's focus on the absolute value of jumps for now so that I don't have to think about +/-. 
+
+```{r}
+
+# focusing on those transition years, what's the max value of the 
+# target data for each of those years
+filter(target_jumps,
+       jump_year == 'window_transition') %>%
+  group_by(left_year, variable, jump_year) %>%
+  summarize(maxJump = max(abs_jump)) %>%
+  ungroup ->
+  target_max_values
+
+
+ggplot() + 
+  geom_point(filter(target_jumps,
+                    jump_year == 'window_transition'), mapping = aes(x = left_year, y = abs_jump), alpha = 0.5) +
+  geom_point(filter(generated_jumps,
+                    jump_year == 'window_transition'), mapping = aes(x = left_year-1, y = abs_jump), alpha = 0.1, color='red' ) +
+  geom_point(target_max_values, mapping = aes(x=left_year, y = maxJump), color = 'blue', shape = 4, size = 2) +
+  geom_point(target_max_values, mapping = aes(x=left_year, y = maxJump + 0.44), color = 'blue', shape = 4, size = 2) +
+  geom_point(target_max_values, mapping = aes(x=left_year, y = maxJump + 0.81), color = 'blue', shape = 4, size = 2) +
+  geom_point(target_max_values, mapping = aes(x=left_year, y = maxJump + 1.54), color = 'blue', shape = 4, size = 2) +
+    facet_grid(archive~tol) +
+  ggtitle('note the years are staggered just for visual clarity. \n blue X = max target value in that year plus historic, future, total SDs as increase')
+```
+
+
+So they're all within the max target jump size + total SD, and most generated realizations are within the max target_jump size + historical SD (Which is the smallest), except for `tol=0.5`, suggesting our target-data-derived-upper bound on tol of 0.44 might be a decent one.
+
+Let's look relative to the absolute max jump size of any target year plus the various SDs:
+
+```{r}
+
+ggplot() + 
+  geom_point(filter(target_jumps,
+                    jump_year == 'window_transition'), mapping = aes(x = left_year, y = abs_jump), alpha = 0.5) +
+  geom_point(filter(generated_jumps,
+                    jump_year == 'window_transition'), mapping = aes(x = left_year-1, y = abs_jump), alpha = 0.1, color='red' ) +
+  geom_hline(yintercept = max(target_jumps$abs_jump)) +
+  geom_hline(yintercept = max(target_jumps$abs_jump + 0.44)) +
+  geom_hline(yintercept = max(target_jumps$abs_jump + 0.81)) +
+  geom_hline(yintercept = max(target_jumps$abs_jump + 1.54)) +
+  facet_grid(archive~tol) +
+  ggtitle('note the years are staggered just for visual clarity')
+
+```
+Even more robustly within the `target max any year + min(hist SD, future SD)` except for `tol=0.5`
+
+:facepalm: look at the densities dummy
+
+## distributions
+
+What's the appropriate comparison though? 
+
+1. All years target (250 jumps X 25 ensemble members) vs all years generated (250 jumps X 5-50 ensemble members depending on tol+archive X Number draws under consideration)
+2. All years target (250 jumps X 25 ensemble members) vs window transition years generated (28 jumps X 5-50 ensemble members depending on tol+archive X Number draws under consideration)
+3. Window transition years target (28 jumps X 25 ensemble members)vs window transition years generated (28 jumps X 5-50 ensemble members depending on tol+archive X Number draws under consideration)
+
+
+From the perspective of the target data, there's nothing special about those transition years, which basically knocks out 3. I'll plot it for completeness but I definitely don't think it's the right comparison
+
+### Full set of draws for method validation
+
+```{r, fig.width=14, fig.height=8}
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated'), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('All years, full ensemble (target or generated), \nTotal number of draws for generated ensembles ', length(unique(generated_jumps$draw))))
+
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition'), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('All years target ensemble, \nWindow years generated ensemble, \nTotal number of draws for generated ensembles ', length(unique(generated_jumps$draw))))
+
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target')%>% filter(jump_year == 'window_transition'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition'), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('Window years target ensemble, \nWindow years generated ensemble, \nTotal number of draws for generated ensembles ', length(unique(generated_jumps$draw))))
+
+```
+
+- looking at the target density in the second and third figures, you can really see that the jump years are not particularly different from all the years, supporting my thinking that for the target data, you want to look at all years and not just the window transition years (or at least, it doesn't matter which you look at so it might as well be all years because from the perspective of the target data, all the years are the same and theres nothing special about those window transition years).
+
+- It's a bit hard to see in the first figure, but you DO see the width of generated increasing with `tol`, which is expected. 
+
+- In the first figure, you can really see a substantial spread in the `tol=0.5` figures. It's just a question of quantifying more assuredly how much spread is too much <=> either a classical test or deciding some acceptable benchmark on E2. That can tell us ok is 0.25degC good and 0.5degC bad or what? Can it relate to the data-derived `tol` upper bound of `min(target historical SD, target future SD) = 0.44`?
+
+- The second figure suggests that 0.1degC is the max acceptable `tol` ... and even that may be pushing it a bit.... -> this gets to the question again, do we want to be validating just the window transition years in the generated ensembles or every year?
+
+- I don't understand the double peak in the generated all years data. Maybe with enough draws, it will fill out.
+
+### Single draw for use case validation
+
+- for the couple draws we look at, all the findings are qualitatively the same as the above yay.
+
+```{r, fig.width = 14, fig.height = 8}
+focus_draw <- 1
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('All years, full ensemble (target or generated), \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition', draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('All years target ensemble, \nWindow years generated ensemble, \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target')%>% filter(jump_year == 'window_transition'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition', draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('Window years target ensemble, \nWindow years generated ensemble, \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+```
+
+
+```{r, fig.width = 14, fig.height = 8}
+focus_draw <- 2
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('All years, full ensemble (target or generated), \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition', draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('All years target ensemble, \nWindow years generated ensemble, \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target')%>% filter(jump_year == 'window_transition'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition', draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('Window years target ensemble, \nWindow years generated ensemble, \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+```
+
+
+```{r, fig.width = 14, fig.height = 8}
+focus_draw <- 27
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('All years, full ensemble (target or generated), \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition', draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('All years target ensemble, \nWindow years generated ensemble, \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+
+ggplot() +
+  geom_density(target_jumps %>% mutate(id= 'target')%>% filter(jump_year == 'window_transition'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
+  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition', draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
+  facet_grid(archive~tol) +
+  ggtitle(paste('Window years target ensemble, \nWindow years generated ensemble, \nFocusing on a single draw of generated ensemble ', focus_draw))
+
+```
+
+
+## Apply E1, E2 to jumps
+
+Effectively quantifying how similar vs not the above distributions are, since they're all pretty normal looking. I suppose we could do a KS test to support further if needed?
+
+So we will compare all the years of generated data to all the years of target data, and the window transition years of generated data to all the years of target data. Individual draw and aggregate across draws errors
+
+
+### All the years for generated data
+
+Individual draws:
+
+```{r}
+# values of the target data
+mean_target <- mean(target_jumps$jump)
+
+var_target <- sd(target_jumps$jump)
+
+  
+for (drawID in 1:Ndraws){
+  # Metrics for this draw #################################################################
+  generated_jumps %>%
+    filter(draw == drawID) ->
+    generated_ensemble_draw 
+  
+  # Values of the generated data and then the metrics
+  generated_ensemble_draw %>% 
+    group_by(tol, archive, draw) %>%
+    summarize(mean_gen = mean(jump), 
+              var_gen = sd(jump)) %>%
+    ungroup %>%
+    mutate(mean_target = mean_target,
+           var_target = var_target,
+           bias = abs(mean_target - mean_gen),
+           E1 = bias/var_target,
+           E2 = var_gen/var_target) ->
+    metrics
+  
+  
+  
+  generated_ensemble_draw %>%
+    select(stitching_id, tol, archive, draw) %>%
+    distinct %>%
+    group_by(tol, archive, draw) %>%
+    summarise(n_stitched = n()) %>%
+    ungroup  %>%
+    left_join(metrics, by = c('tol', 'archive', 'draw')) ->
+    plotting_tbl
+  
+   write.csv(plotting_tbl %>%
+              mutate(draw = drawID),
+            paste0('generated_ensembles/jump_errors_allyears_ssp245_draw', drawID, '.csv'), 
+            row.names = FALSE)
+}
+
+
+# Plot the first draw's errors:
+plotting_tbl <- read.csv(paste0('generated_ensembles/jump_errors_allyears_ssp245_draw1.csv'),  
+                         stringsAsFactors = FALSE)
+
+kable(plotting_tbl)
+
+ggplot(data = plotting_tbl, aes(x = E1, y = E2, color = factor(tol), shape = archive)) +
+  geom_point() +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 0) + 
+  ggtitle('Error metrics for single Draw 1, comparing all \nyears of generated jumps to all years of target jumps')
+```
+
+- Not surprising that E1/bias is fine -> it should be for jumps. So this confirms that `tol=0.5` is too large a neighborhood for matching, you get jumps that are just too big to be acceptable. Of course, that raises the question of what we'll do for SSP585 but maybe that's where I need to look next instead of just keeping it in the back of my mind and worrying.
+
+
+Aggregated across draws: 
+
+```{r}
+# read in metrics for every draw
+files <- list.files(path = 'generated_ensembles', pattern = 'jump_errors_allyears', full.names = TRUE) 
+
+generated_metrics <- list()
+for (i in 1:length(files)){
+  generated_metrics[[i]] <- read.csv(files[i], stringsAsFactors = FALSE)
+}
+generated_metrics <- do.call(rbind, generated_metrics)
+
+generated_metrics %>% 
+  group_by(tol, archive) %>%
+  summarize(aggregate_E1 = mean(E1),
+            aggregate_E2 = mean(E2)) %>%
+  ungroup %>%
+  mutate(total_draws = length(unique(generated_metrics$draw))) ->
+  aggregate_metrics
+
+kable(aggregate_metrics)
+
+ggplot(data = aggregate_metrics, aes(x = aggregate_E1, y = aggregate_E2, color = factor(tol), shape = archive)) +
+  geom_point() +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 0) + 
+  ggtitle(paste('Aggregate errors (jumps for all years), aggregated across Ndraws ', unique(aggregate_metrics$total_draws) ))
+```
+
+
+
+- When it comes to `tol=0.25`, is missing the sd of the target data by 12.5-16% acceptable, really? Maybe this will go down some as we get more draws going but missing the variance in the annual global average by more than 10% doesn't inspire a lot of confidence in me that we'll do well on gridded monthly data.
+
+### Window transition years for generated data
+
+Individual draw:
+
+```{r}
+# values of the target data
+mean_target <- mean(target_jumps$jump)
+
+var_target <- sd(target_jumps$jump)
+
+  
+for (drawID in 1:Ndraws){
+  # Metrics for this draw #################################################################
+  generated_jumps %>%
+    filter(draw == drawID,
+           jump_year=='window_transition') ->
+    generated_ensemble_draw 
+  
+  # Values of the generated data and then the metrics
+  generated_ensemble_draw %>% 
+    group_by(tol, archive, draw) %>%
+    summarize(mean_gen = mean(jump), 
+              var_gen = sd(jump)) %>%
+    ungroup %>%
+    mutate(mean_target = mean_target,
+           var_target = var_target,
+           bias = abs(mean_target - mean_gen),
+           E1 = bias/var_target,
+           E2 = var_gen/var_target) ->
+    metrics
+  
+  
+  
+  generated_ensemble_draw %>%
+    select(stitching_id, tol, archive, draw) %>%
+    distinct %>%
+    group_by(tol, archive, draw) %>%
+    summarise(n_stitched = n()) %>%
+    ungroup  %>%
+    left_join(metrics, by = c('tol', 'archive', 'draw')) ->
+    plotting_tbl
+  
+   write.csv(plotting_tbl %>%
+              mutate(draw = drawID),
+            paste0('generated_ensembles/jump_errors_transitionyears_ssp245_draw', drawID, '.csv'), 
+            row.names = FALSE)
+}
+
+
+# Plot the first draw's errors:
+plotting_tbl <- read.csv(paste0('generated_ensembles/jump_errors_transitionyears_ssp245_draw1.csv'),  
+                         stringsAsFactors = FALSE)
+
+kable(plotting_tbl)
+
+ggplot(data = plotting_tbl, aes(x = E1, y = E2, color = factor(tol), shape = archive)) +
+  geom_point() +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 0) + 
+  ggtitle('Error metrics for single Draw 1, comparing window transition years of \ngenerated jumps to all years of target jumps')
+```
+
+
+
+Aggregated across draws: 
+
+```{r}
+# read in metrics for every draw
+files <- list.files(path = 'generated_ensembles', pattern = 'jump_errors_transitionyears', full.names = TRUE) 
+
+generated_metrics <- list()
+for (i in 1:length(files)){
+  generated_metrics[[i]] <- read.csv(files[i], stringsAsFactors = FALSE)
+}
+generated_metrics <- do.call(rbind, generated_metrics)
+
+generated_metrics %>% 
+  group_by(tol, archive) %>%
+  summarize(aggregate_E1 = mean(E1),
+            aggregate_E2 = mean(E2)) %>%
+  ungroup %>%
+  mutate(total_draws = length(unique(generated_metrics$draw))) ->
+  aggregate_metrics
+
+kable(aggregate_metrics)
+
+ggplot(data = aggregate_metrics, aes(x = aggregate_E1, y = aggregate_E2, color = factor(tol), shape = archive)) +
+  geom_point() +
+  geom_hline(yintercept = 1) +
+  geom_vline(xintercept = 0) + 
+  ggtitle(paste('Aggregate errors comparing window transition years of \ngenerated jumps to all years of target jumps \naggregated across Ndraws ', unique(aggregate_metrics$total_draws) ))
+```
+
+- Looking at this comparison, none of our tolerances are acceptable. Even a tolerance of 0.1deg is stupidly bad, but we kind of know from our time series that that just isn't true. 
+
+- I'm confident my intuition that the target data should have all years considered, not just the transition windows years, because to the target data, all the years are the same is the way to go
+
+- I also sort of feel like that same intuition is the way to go for generated data as well: It's not just 'are those transitions wrong'; it's 'are they so wrong that they unacceptably change the distribution of the data'? If you can't tell the difference, what does it matter?  But I'm less confident on that assertion.
+
+# Next? 
+
+Need to look at other scenarios and eventually more models. The Tgav analysis for sure seems to be the way to give us hyper parameters but I can't tell yet where the rule of thumb will come from. Or if the best hyperparamters will be the same across scenarios and/or models - want the largest possible `tol` that still gives good emulation in all uses, basically. 
+
+- look at the NA thing; either there's more collapse free ensemble members we could be getting or there's a test I can/should add into the function. Seems to be largely coming in around the 2014-2015 ssp434 ssp460 thing. -> KD and I checked briefly and some of the realizations for these experiments don't have future data at all ; That's been fixed but there's a few NAs getting introduced in matching left. Not fatal, and not surprising I missed it since I didn't use those two scenarios a ton during my development. I'll be tracking it down. 
+
+- parallelize and test locally, then launch on pic to get actual 1000s of draws for validating the method. Should be pretty easy with a dopar over the draw id value, everyone should be working separately and saving things with distinct ids that go with them when the job is dispatched to a node. Can include the metrics on tgav and year to year diffs in the dispatch so that all we have to do is read everything in to aggregate and plot. Also functionalize the errors to speed up
+
+- Look at SSP585 specifically
+
+- maybe something more sophisticated than just comparing distributions of the jumps. Maybe look at the relative frequency of how often a generated jump is outside the range of target jumps. We'd need a large number of draws for that,and it isn't even particularly sophisticated.
+
+# What about monthly, gridded data?
+
+Assuming we are happy with the above style of analysis looking at both the general method behavior (many draws of full generated ensembles) + individual use case behavior (one draw of full generated ensemble).
+
+- Doing the method test on gridded data might be too challenging. 1000s of annual Tgav time series is very different from all the opening and closing of the netcdfs to construct monthly (or daily) gridded time series. We _would_ at least not have to repeat the hyperparameter investigation on the gridded data though, which is one of the reasons the method behavior validation was desirable. I think it's reasonable to say 'we've set the hyperparamters based on validating Tgavs'. Could get maybe 100 draws on the gridded data under just the final set of hyperparameters then. Definitely not enough out of the (total possible permutations choose Nmin collapse free trajectories) solution space but we can cross that bridge when we have a better sense of emulation times after a little bit of optimizing maybe? Have to consider that we'll have to repeat analysis for all RCPS, multiple ESMs. 
+
+- from the gridded perspective, if it was annual data, I think we could look at the metrics on the actual values and on the year to year jump values in each grid cell and have summaries of those grid cell behaviors to know if we're happy or not, basically repeating what we did above and either doing an area weighted average to get global E1, E2 values or just look at the quantiles of the E1, E2 values over grid cells. Should be good enough to cover time and we could look at EOFs and power spectra to maybe cover space (have to think a lot more about that).
+
+- KS test might be good to do by grid cell on the distributions of jumps I suppose, to supplement the temporal analysis.
+
+- I don't know how to think about the monthly factor though. Would just looking at the month to month jumps be enough on the temporal side? And focus on maybe the Dec to Jan jump where we paste? Or the Jan-Dec and then Jan-Dec at a jump? Spatially, I'm not sure. I guess EOFs and power spectra could still be done, but I need to read more about what they really mean for monthly data instead of annual.
+
+

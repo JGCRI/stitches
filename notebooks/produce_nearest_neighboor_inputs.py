@@ -36,6 +36,9 @@ target_data.to_csv("/Users/dorh012/Documents/2021/stitches/notebooks/stitches_de
 smoothed_data_path = "/Users/dorh012/Documents/2021/stitches/stitches/data/created_data/main_smooth_tgav_anomaly_all_pangeo_list_models.dat"
 smoothed_data = pd.read_pickle(smoothed_data_path)
 
+
+
+
 archive_smooth = smoothed_data[smoothed_data["model"] == "CanESM5"].copy()
 data = archive_smooth[["model", "experiment", "ensemble", "year", "variable","value"]].copy()
 group_by = ['model', 'experiment', 'ensemble', 'variable']
@@ -50,21 +53,4 @@ for key, d in data.groupby(group_by):
 
 final = pd.concat(out, ignore_index=True)
 final.to_csv("/Users/dorh012/Documents/2021/stitches/notebooks/stitches_dev/inputs/archive_data.csv", index = False)
-
-# save a csv file version of the global tgav that can be used in the example analysis that is going on in R
-tgav_data_path = "/Users/dorh012/Documents/2021/stitches/stitches/data/created_data/main_tgav_all_pangeo_list_models.dat"
-tgav_data = pd.read_pickle(tgav_data_path)
-tgav_data.columns
-
-# rename the columns of the tgav data so that we can read it into the calculate anomlay function
-# 'activity', 'model', 'experiment', 'ensemble', 'timestep', 'grid_type',
-#         'file', 'year', 'value', 'variable'
-
-# Format the data frame to be used by the calculate_anomaly function
-data = matchup.cleanup_main_tgav("./stitches/data/created_data/main_tgav_all_pangeo_list_models.dat")
-
-# Calculate the temperature anomaly relative to 1995 - 2014 (IPCC reference period).
-t_anomaly = matchup.calculate_anomaly(data).drop('activity', 1)
-t_anomaly.to_csv("/Users/dorh012/Documents/2021/stitches/notebooks/stitches_dev/inputs/tgav_data.csv", index = False)
-
 

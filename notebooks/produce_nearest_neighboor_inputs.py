@@ -14,30 +14,6 @@ import pandas as pd
 smoothed_data_path = "./stitches/data/created_data/main_smooth_tgav_anomaly_all_pangeo_list_models.dat"
 smoothed_data = pd.read_pickle(smoothed_data_path)
 
-# Subset the data so that it contains a single realization of a middle of the road
-# scenario for a model. This is going to be the time series we want to emulate aka
-# our the target_smoothed_tgav_timeseries from (https://gcims.atlassian.net/wiki/spaces/HOME/pages/669220883/stitches+design+document)
-target_smooth = smoothed_data[smoothed_data["model"] == "CanESM5"].copy()
-target_smooth = target_smooth[target_smooth["experiment"] == "ssp245"].copy()
-target_smooth = target_smooth[target_smooth["ensemble"] == "r1i1p1f1"].copy()
-target_smooth = target_smooth[["model", "experiment", "ensemble", "year", "variable", "value"]]
-
-# This is our target data that we will use in the nearest neighbor to match on
-target_data = matchup.get_chunk_info(matchup.chunk_ts(target_smooth, 9))
-target_data.to_csv("/Users/dorh012/Documents/2021/stitches/notebooks/stitches_dev/inputs/target_data.csv", index = False)
-
-# Now calculate the data from the archive, this is what the target data will be
-# matched on. Here we calculate the chunk data from ALL of the CanESM time series,
-# then we can subset what data we want to use in the nearest neighbor matching
-# exploration analysis we will do in R.
-
-# Read in all of the smoothed esm data again, need to make sure that all of data is being based
-# into the archive.
-smoothed_data_path = "/Users/dorh012/Documents/2021/stitches/stitches/data/created_data/main_smooth_tgav_anomaly_all_pangeo_list_models.dat"
-smoothed_data = pd.read_pickle(smoothed_data_path)
-
-
-
 
 archive_smooth = smoothed_data[smoothed_data["model"] == "CanESM5"].copy()
 data = archive_smooth[["model", "experiment", "ensemble", "year", "variable","value"]].copy()

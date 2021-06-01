@@ -91,11 +91,8 @@ stitch_global_mean <- function(recipes, data){
                                  values <- data[rows, ]$value
                                  
                                 
-                                 
-                                 
-                                 
                                  out <- data.frame(year = yr, 
-                                                   value = values[1:length(yr)], # somewhat confused why this is happenging
+                                                   value = values,
                                                    variable = m$archive_variable)
                                  
                                  return(out)

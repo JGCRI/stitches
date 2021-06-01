@@ -105,7 +105,7 @@ Archive 2 will include the ssp245 runs - when we get to the point of targeting S
 
 We will also do some light exploration of the matching neighborhood size (`tol` argument).
 
-In addition to SSP534-over having enough data issues to fully exclude, _some_ of the realizations for SSP434 and SSP460 just don't have future data at all for CanESM5. We need to go back to pangeo and fix this for sure, but for now, I'll work with the archive I have. Because we don't want to lose too much of the archive now, I will only remove those realizations that don't have all the years of data.
+In addition to SSP534-over having enough data issues to fully exclude, _at least some_ of the realizations for SSP434 and SSP460 just don't have future data at all for CanESM5. We need to go back to pangeo and fix this for sure, but for now, I'll work with the archive I have. Because we don't want to lose too much of the archive now, I will only remove those realizations that don't have all the years of data.
 
 ```{r}
 # Archive data not including the target experiment:
@@ -374,13 +374,9 @@ ggplot(data = plotting_tbl, aes(x = E1, y = E2, color = factor(tol), shape = arc
 
 ```
 
-In general, all of our emulations have E1 close to 0 and E2 close to 1. As always, the question is sort of 'how close is close enough'. For the E2, 0.97 to 1.03 is probably close enough = our generated variability is only off by 3% or less from the target variability.
+In general, all of our emulations have E1 close to 0 and E2 close to 1. As always, the question is sort of 'how close is close enough'.
 
-For E1, I have a harder time benchmarking the quantities. For NRMS (rms/variance of target data), anything less than 0.5 is excellent, so I'd argue these values are still good. Certainly though, it is true that
-
-1. it's weird that a tolerance of 0.25 results in worse bias than 0.5 when you don't have ssp245 in the archive. That says that you've drawn a better match from within a neighborhood of 0.5degC than 0.25degC. Certainly, that would depend on the random sample of recipes for each Tgav. To what extent that's a factor of the random sample being drawn from all the possible recipes though, I don't know. I suppose I should draw the different genereated ensembles many times and take the average of the metrics across draws. (100 draws would be about 16 hours, although in theory very easy to parallelize....). In terms of use cases, yes, you would do the one draw and run the validation metrics and sort of hope they're good enough. In terms of validating the _method_ and having a better understanding of the role of the neighborhood `tol` hyperparameter though, I do think doing the average across many draws is what we would want in a paper. Parallelize over the 4 cores in my laptop processor and let it run over the weekend and we should be able to get 1000 or so draws of full generated ensembles. (After I debug what's going on with the NAs).
-
-2. Again, because the draw of generated ensemble Tgavs is random, there's no guarantee that for an individual draw, using the archive including the SSP245 points will guarantee better fits. It will certainly create a larger potential space of better fits to draw from. For SSP585, I suspect this will be more of a factor.
+Again, it's good to remember tgat because the draw of generated ensemble Tgavs is random, there's no guarantee that for an individual draw, using the archive including the SSP245 points will guarantee better fits. It will certainly create a larger potential space of better fits to draw from. For SSP585, I suspect this will be more of a factor.
 
 
 
@@ -398,11 +394,8 @@ ggplot(data = plotting_tbl, aes(x = E1, y = E2, color = factor(tol), shape = arc
   geom_vline(xintercept = 0)
 ```
 
-
-So we can see, the metrics vary quite a bit based on the draw (not surprisingly). We do get greater error in the E2, but a generated ensemble being off on the variability by 5% still isn't fatal.
-
 ### Aggregate metrics
-We want to know the average errors across many draws so that we can get a sense of the error of our _method_ and how that relates to hyperperamters:
+We want to know the average errors across many draws so that we can get a sense of the error of our _method_ and how that relates to hyperperameters:
 
 ```{r}
 # read in metrics for every draw
@@ -432,16 +425,6 @@ ggplot(data = aggregate_metrics, aes(x = aggregate_E1, y = aggregate_E2, color =
   geom_hline(yintercept = 1) +
   geom_vline(xintercept = 0)
 ```
-
-Likely still not enough draws to make any robust conclusions about how hyperparameters relate to errors for our method.
-
-## Take away
-
-1. I need to figure out why the stitching is putting in NA values. I'm pretty sure it's because this is having 25 ensemble members to target, and it just runs out of collapse free options. But I need to double check and throw in a condition so this doesn't happen. The ensembles that we are getting _are_ collapse-free, it's just that there may be more collapse-free ensemble members than what we're getting. So it's not a fatal/obvious bug, just a refinement of the type I kind of expected to come up as we start using these functions in different ways, since the iterative stop condition is such a pain to write. 
-
-2. Need to do many more draws across many more tolerance values for matching to get a robust understanding of the error in our method and how that relates to our hyperparameters. 
-
-3. Again, a more robust measure will be better, but a 3-5% error on the E2 metric makes me optimistic that our jumps are pretty well behaved. Looking at the sd in our historical period of the target data = .44 degC and future period = .81 degC. These may be useful limits on our tolerance hyperperameter. `tol < min(historical SD, future SD)`. Of course,the Tgavs in our `tol=0.5` runs are being seemingly well behaved even though this upper bound says no. Still worth keeping in mind at least. Target SD over the entire time series is 1.54 degC
 
 
 # Validate - window jumps
@@ -518,6 +501,7 @@ lapply(target_list, get_jumps) %>%
 ## Visualize jumps
 
 Generated jump year values during window transitions vs all target jump year values:
+
 ```{r}
 ggplot() + 
   geom_point(target_jumps, mapping = aes(x = left_year, y = jump), alpha = 0.5) +
@@ -536,69 +520,8 @@ ggplot() +
 
 ```
 
-This suggests that a neighborhood of 0.5 degC is beginning to get too large for acceptable jumps.
 
-The generated jump year values for transition years are far outside the range of target jump values, not just covering them up. If the range was about equal for generated as for target in those window transition years, that would be pretty ideal but maybe being outside the values is ok as long as it's `range(target_data_each_year) + sd(target_data)` 
-
-- historical SD = .44 degC
-
-- future SD = .81 degC
-
-- entire time series sd = 1.54 degC
-
-
-Seems pretty symmetric so let's focus on the absolute value of jumps for now so that I don't have to think about +/-. 
-
-```{r}
-
-# focusing on those transition years, what's the max value of the 
-# target data for each of those years
-filter(target_jumps,
-       jump_year == 'window_transition') %>%
-  group_by(left_year, variable, jump_year) %>%
-  summarize(maxJump = max(abs_jump)) %>%
-  ungroup ->
-  target_max_values
-
-
-ggplot() + 
-  geom_point(filter(target_jumps,
-                    jump_year == 'window_transition'), mapping = aes(x = left_year, y = abs_jump), alpha = 0.5) +
-  geom_point(filter(generated_jumps,
-                    jump_year == 'window_transition'), mapping = aes(x = left_year-1, y = abs_jump), alpha = 0.1, color='red' ) +
-  geom_point(target_max_values, mapping = aes(x=left_year, y = maxJump), color = 'blue', shape = 4, size = 2) +
-  geom_point(target_max_values, mapping = aes(x=left_year, y = maxJump + 0.44), color = 'blue', shape = 4, size = 2) +
-  geom_point(target_max_values, mapping = aes(x=left_year, y = maxJump + 0.81), color = 'blue', shape = 4, size = 2) +
-  geom_point(target_max_values, mapping = aes(x=left_year, y = maxJump + 1.54), color = 'blue', shape = 4, size = 2) +
-    facet_grid(archive~tol) +
-  ggtitle('note the years are staggered just for visual clarity. \n blue X = max target value in that year plus historic, future, total SDs as increase')
-```
-
-
-So they're all within the max target jump size + total SD, and most generated realizations are within the max target_jump size + historical SD (Which is the smallest), except for `tol=0.5`, suggesting our target-data-derived-upper bound on tol of 0.44 might be a decent one.
-
-Let's look relative to the absolute max jump size of any target year plus the various SDs:
-
-```{r}
-
-ggplot() + 
-  geom_point(filter(target_jumps,
-                    jump_year == 'window_transition'), mapping = aes(x = left_year, y = abs_jump), alpha = 0.5) +
-  geom_point(filter(generated_jumps,
-                    jump_year == 'window_transition'), mapping = aes(x = left_year-1, y = abs_jump), alpha = 0.1, color='red' ) +
-  geom_hline(yintercept = max(target_jumps$abs_jump)) +
-  geom_hline(yintercept = max(target_jumps$abs_jump + 0.44)) +
-  geom_hline(yintercept = max(target_jumps$abs_jump + 0.81)) +
-  geom_hline(yintercept = max(target_jumps$abs_jump + 1.54)) +
-  facet_grid(archive~tol) +
-  ggtitle('note the years are staggered just for visual clarity')
-
-```
-Even more robustly within the `target max any year + min(hist SD, future SD)` except for `tol=0.5`
-
-:facepalm: look at the densities dummy
-
-## distributions
+# distributions of jumps
 
 What's the appropriate comparison though? 
 
@@ -609,7 +532,7 @@ What's the appropriate comparison though?
 
 From the perspective of the target data, there's nothing special about those transition years, which basically knocks out 3. I'll plot it for completeness but I definitely don't think it's the right comparison
 
-### Full set of draws for method validation
+## Full set of draws for method validation
 
 ```{r, fig.width=14, fig.height=8}
 ggplot() +
@@ -634,17 +557,8 @@ ggplot() +
 
 ```
 
-- looking at the target density in the second and third figures, you can really see that the jump years are not particularly different from all the years, supporting my thinking that for the target data, you want to look at all years and not just the window transition years (or at least, it doesn't matter which you look at so it might as well be all years because from the perspective of the target data, all the years are the same and theres nothing special about those window transition years).
 
-- It's a bit hard to see in the first figure, but you DO see the width of generated increasing with `tol`, which is expected. 
-
-- In the first figure, you can really see a substantial spread in the `tol=0.5` figures. It's just a question of quantifying more assuredly how much spread is too much <=> either a classical test or deciding some acceptable benchmark on E2. That can tell us ok is 0.25degC good and 0.5degC bad or what? Can it relate to the data-derived `tol` upper bound of `min(target historical SD, target future SD) = 0.44`?
-
-- The second figure suggests that 0.1degC is the max acceptable `tol` ... and even that may be pushing it a bit.... -> this gets to the question again, do we want to be validating just the window transition years in the generated ensembles or every year?
-
-- I don't understand the double peak in the generated all years data. Maybe with enough draws, it will fill out.
-
-### Single draw for use case validation
+## Single draw for use case validation
 
 - for the couple draws we look at, all the findings are qualitatively the same as the above yay.
 
@@ -770,8 +684,6 @@ ggplot(data = plotting_tbl, aes(x = E1, y = E2, color = factor(tol), shape = arc
   ggtitle('Error metrics for single Draw 1, comparing all \nyears of generated jumps to all years of target jumps')
 ```
 
-- Not surprising that E1/bias is fine -> it should be for jumps. So this confirms that `tol=0.5` is too large a neighborhood for matching, you get jumps that are just too big to be acceptable. Of course, that raises the question of what we'll do for SSP585 but maybe that's where I need to look next instead of just keeping it in the back of my mind and worrying.
-
 
 Aggregated across draws: 
 
@@ -805,8 +717,6 @@ ggplot(data = aggregate_metrics, aes(x = aggregate_E1, y = aggregate_E2, color =
 ```
 
 
-
-- When it comes to `tol=0.25`, is missing the sd of the target data by 12.5-16% acceptable, really? Maybe this will go down some as we get more draws going but missing the variance in the annual global average by more than 10% doesn't inspire a lot of confidence in me that we'll do well on gridded monthly data.
 
 ### Window transition years for generated data
 
@@ -902,35 +812,4 @@ ggplot(data = aggregate_metrics, aes(x = aggregate_E1, y = aggregate_E2, color =
   geom_vline(xintercept = 0) + 
   ggtitle(paste('Aggregate errors comparing window transition years of \ngenerated jumps to all years of target jumps \naggregated across Ndraws ', unique(aggregate_metrics$total_draws) ))
 ```
-
-- Looking at this comparison, none of our tolerances are acceptable. Even a tolerance of 0.1deg is stupidly bad, but we kind of know from our time series that that just isn't true. 
-
-- I'm confident my intuition that the target data should have all years considered, not just the transition windows years, because to the target data, all the years are the same is the way to go
-
-- I also sort of feel like that same intuition is the way to go for generated data as well: It's not just 'are those transitions wrong'; it's 'are they so wrong that they unacceptably change the distribution of the data'? If you can't tell the difference, what does it matter?  But I'm less confident on that assertion.
-
-# Next? 
-
-Need to look at other scenarios and eventually more models. The Tgav analysis for sure seems to be the way to give us hyper parameters but I can't tell yet where the rule of thumb will come from. Or if the best hyperparamters will be the same across scenarios and/or models - want the largest possible `tol` that still gives good emulation in all uses, basically. 
-
-- look at the NA thing; either there's more collapse free ensemble members we could be getting or there's a test I can/should add into the function. Seems to be largely coming in around the 2014-2015 ssp434 ssp460 thing. -> KD and I checked briefly and some of the realizations for these experiments don't have future data at all ; That's been fixed but there's a few NAs getting introduced in matching left. Not fatal, and not surprising I missed it since I didn't use those two scenarios a ton during my development. I'll be tracking it down. 
-
-- parallelize and test locally, then launch on pic to get actual 1000s of draws for validating the method. Should be pretty easy with a dopar over the draw id value, everyone should be working separately and saving things with distinct ids that go with them when the job is dispatched to a node. Can include the metrics on tgav and year to year diffs in the dispatch so that all we have to do is read everything in to aggregate and plot. Also functionalize the errors to speed up
-
-- Look at SSP585 specifically
-
-- maybe something more sophisticated than just comparing distributions of the jumps. Maybe look at the relative frequency of how often a generated jump is outside the range of target jumps. We'd need a large number of draws for that,and it isn't even particularly sophisticated.
-
-# What about monthly, gridded data?
-
-Assuming we are happy with the above style of analysis looking at both the general method behavior (many draws of full generated ensembles) + individual use case behavior (one draw of full generated ensemble).
-
-- Doing the method test on gridded data might be too challenging. 1000s of annual Tgav time series is very different from all the opening and closing of the netcdfs to construct monthly (or daily) gridded time series. We _would_ at least not have to repeat the hyperparameter investigation on the gridded data though, which is one of the reasons the method behavior validation was desirable. I think it's reasonable to say 'we've set the hyperparamters based on validating Tgavs'. Could get maybe 100 draws on the gridded data under just the final set of hyperparameters then. Definitely not enough out of the (total possible permutations choose Nmin collapse free trajectories) solution space but we can cross that bridge when we have a better sense of emulation times after a little bit of optimizing maybe? Have to consider that we'll have to repeat analysis for all RCPS, multiple ESMs. 
-
-- from the gridded perspective, if it was annual data, I think we could look at the metrics on the actual values and on the year to year jump values in each grid cell and have summaries of those grid cell behaviors to know if we're happy or not, basically repeating what we did above and either doing an area weighted average to get global E1, E2 values or just look at the quantiles of the E1, E2 values over grid cells. Should be good enough to cover time and we could look at EOFs and power spectra to maybe cover space (have to think a lot more about that).
-
-- KS test might be good to do by grid cell on the distributions of jumps I suppose, to supplement the temporal analysis.
-
-- I don't know how to think about the monthly factor though. Would just looking at the month to month jumps be enough on the temporal side? And focus on maybe the Dec to Jan jump where we paste? Or the Jan-Dec and then Jan-Dec at a jump? Spatially, I'm not sure. I guess EOFs and power spectra could still be done, but I need to read more about what they really mean for monthly data instead of annual.
-
 

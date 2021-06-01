@@ -10,12 +10,19 @@ output:
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
+```{r, echo=FALSE}
+# required packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
 # Goal
 
 We have a validation scheme and the emulation of CanESM ssp245 validates extremely well. It is time to emulate an ESM with fewer realizations 
 
 ```{r, echo=FALSE}
-read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv",
          stringsAsFactors = FALSE) %>% dplyr::select(-X) %>%
   select(model, experiment, ensemble) %>%
   distinct %>%
@@ -25,7 +32,9 @@ read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv",
   kable
 ```
 
-MPI-HR and MPI-LR are the stress cases then. 
+** NOTE** some of these ensemble members might currently have some incomplete data and we may have even fewer than the above.
+
+MPI-HR and MPI-LR are the stress cases. 
 
 Let us select MPI-ESM1-2-LR arbitrarily to evaluate then:
 
@@ -34,20 +43,16 @@ Let us select MPI-ESM1-2-LR arbitrarily to evaluate then:
 esm_name <- 'MPI-ESM1-2-LR'
 esm_experiment <- 'ssp245'
 
-
 # How many times do we want to draw full generated ensembles:
-Ndraws <- 1
+Ndraws <- 2
+
+set.seed(1)
 ```
+
+We will only explore `tol=0.1` degC for matching in this notebook (per CT, from the SD of the smoothed Tgav time series. Should check for each ESM, for now just use 0.1 value from CanESM).
 
 # Set Up 
 ```{r, message=FALSE, warning=FALSE}
-
-set.seed(1)
-# required packages
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(knitr)
 
 # Then load the functions we will want to use, these are currently written in R and will be translated into python. 
 source("functions/nearest_neighbor_matching.R") # the function match_neighborhood is defined here
@@ -71,7 +76,7 @@ tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_model
 # A chunked smoothed tgav anomaly archive of data. This was tgav_data but several 
 # steps were taken in python to transform it into the "chunked" data and save it 
 # so that we do not have to repeate this process so many times. 
-archive_data <- read.csv('inputs/archive_data.csv', stringsAsFactors = FALSE)
+archive_data <- read.csv(paste0('inputs/', esm_name, '_archive_data.csv'), stringsAsFactors = FALSE)
 
 
 # The target data - all ssp245 realizations (smoothed because it's the target for
@@ -100,9 +105,10 @@ Archive 2 will include the ssp245 runs - when we get to the point of targeting S
 
 We will also do some light exploration of the matching neighborhood size (`tol` argument).
 
-In addition to SSP534-over having enough data issues to fully exclude, _some_ of the realizations for SSP434 and SSP460 just don't have future data at all. We need to go back to pangeo and fix this for sure, but for now, I'll work with the archive I have. Because we don't want to lose too much of the archive now, I will only remove those realizations that don't have all the years of data.
+In addition to SSP534-over having enough data issues to fully exclude, _some_ of the realizations for SSP434 and SSP460 just don't have future data at all for CanESM5. We need to go back to pangeo and fix this for sure, but for now, I'll work with the archive I have. Because we don't want to lose too much of the archive now, I will only remove those realizations that don't have all the years of data.
 
 ```{r}
+# Archive data not including the target experiment:
 archive_data %>% 
   # Only match to the same ESM:
   dplyr::filter(model == unique(target_data$model)) %>%  
@@ -118,7 +124,17 @@ archive_data %>%
   select(-nWindows) ->
   archive_subset1 
 
+# what does this archive look like:
+archive_subset1 %>% 
+  select(experiment, ensemble) %>%
+  distinct() %>% 
+  group_by(experiment) %>% 
+  summarize(n_complete_ensemble_members = n()) %>%
+  ungroup %>%
+  kable()
 
+
+# Archive data including the target experiment:
 archive_data %>% 
   # Only match to the same ESM:
   dplyr::filter(model == unique(target_data$model)) %>%  
@@ -131,249 +147,115 @@ archive_data %>%
   filter(nWindows == 28) %>%
   select(-nWindows) ->
   archive_subset2 
+
+# what does this archive look like:
+archive_subset2 %>% 
+  select(experiment, ensemble) %>%
+  distinct() %>% 
+  group_by(experiment) %>% 
+  summarize(n_complete_ensemble_members = n()) %>%
+  ungroup %>%
+  kable()
 ```
 
-** TODO ** look into NA's getting stitched in but for now, just drop any generated ensemble member that has any NA values; probably related to the order of matching in and discarding archive points since this analysis is pushing the limits of the functions we wrote a bit further than the stress tests we did while writing them. Some might were related to the 2014 as a window year in SSP434 and SSP460 only issue (checked with Kalyn, some of these realizations just don't have future years for these experiments). Improved things a lot but I still have to look into the ones that are left.
+
 
 ```{r}
-# 
-# for (draw in 1:Ndraws){
-#   # The matching to the archive without ssp245 results
-#   match_neighborhood(target_data = target_data,
-#                      archive_data = archive_subset1,
-#                      tol=0.1) %>%
-#     # Convert them to a sample of individual Tgav Recipes:
-#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
-#                               archive = archive_subset1)  %>%
-#     # And stitch the recipes into tgavs:
-#     stitch_global_mean(recipes=., data = tgav_data) %>%
-#     # eliminate any Tgav time series that had NA's stitched in
-#     group_by(stitching_id) %>%
-#     mutate(drop = any(is.na(value))) %>%  
-#     ungroup %>%
-#     filter(drop == FALSE) %>%
-#     select(-drop) %>% 
-#     # add some identifying info
-#     mutate(tol = 0.1,
-#            archive = 'withoutSSP245') ->
-#     rslts_1_0p1
-#   
-#   # Check for collpase in these results
-#     rslts_1_0p1 %>%
-#     select(year, value, stitching_id) %>%
-#     spread(year, value) ->
-#     wide
-#   
-#     # Collapse would have occured if any of these trajectories go through the same value
-#     # in the same year -> if the length of distinct values in any column is less than
-#     # the number of stitching_id's
-#     counts <- apply(wide, 2, length)
-#     
-#     print(paste('Archive without ssp245; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-#   
-#     
-#   match_neighborhood(target_data = target_data,
-#                      archive_data = archive_subset1,
-#                      tol=0.25) %>%
-#     # Convert them to a sample of individual Tgav Recipes:
-#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
-#                               archive = archive_subset1)  %>%
-#     # And stitch the recipes into tgavs:
-#     stitch_global_mean(recipes=., data = tgav_data) %>%
-#      # eliminate any Tgav time series that had NA's stitched in
-#     group_by(stitching_id) %>%
-#     mutate(drop = any(is.na(value))) %>%  
-#     ungroup %>%
-#     filter(drop == FALSE) %>%
-#     select(-drop) %>% 
-#     # add some identifying info
-#     mutate(tol = 0.25,
-#            archive = 'withoutSSP245') ->
-#     rslts_1_0p25
-#   
-#     # Check for collpase in these results
-#     rslts_1_0p25 %>%
-#     select(year, value, stitching_id) %>%
-#     spread(year, value) ->
-#     wide
-#   
-#     # Collapse would have occured if any of these trajectories go through the same value
-#     # in the same year -> if the length of distinct values in any column is less than
-#     # the number of stitching_id's
-#     counts <- apply(wide, 2, length)
-#     
-#     print(paste('Archive without ssp245; tol = 0.25: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-#     
-#   
-#   match_neighborhood(target_data = target_data,
-#                      archive_data = archive_subset1,
-#                      tol=0.5) %>%
-#     # Convert them to a sample of individual Tgav Recipes:
-#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
-#                               archive = archive_subset1)  %>%
-#     # And stitch the recipes into tgavs:
-#     stitch_global_mean(recipes=., data = tgav_data) %>%
-#      # eliminate any Tgav time series that had NA's stitched in
-#     group_by(stitching_id) %>%
-#     mutate(drop = any(is.na(value))) %>%  
-#     ungroup %>%
-#     filter(drop == FALSE) %>%
-#     select(-drop) %>% 
-#     # add some identifying info
-#     mutate(tol = 0.5,
-#            archive = 'withoutSSP245') ->
-#     rslts_1_0p5
-#   
-#   # Check for collpase in these results
-#     rslts_1_0p5 %>%
-#     select(year, value, stitching_id) %>%
-#     spread(year, value) ->
-#     wide
-#   
-#     # Collapse would have occured if any of these trajectories go through the same value
-#     # in the same year -> if the length of distinct values in any column is less than
-#     # the number of stitching_id's
-#     counts <- apply(wide, 2, length)
-#     
-#     print(paste('Archive without ssp245; tol = 0.5: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-#     
-#   
-#   # The matching to the archive with ssp245 results
-#   match_neighborhood(target_data = target_data,
-#                      archive_data = archive_subset2,
-#                      tol=0.1) %>%
-#     # Convert them to a sample of individual Tgav Recipes:
-#     permute_stitching_recipes(N_matches = 2000, matched_data = .,
-#                               archive = archive_subset2)  %>%
-#     # And stitch the recipes into tgavs:
-#     stitch_global_mean(recipes=., data = tgav_data) %>%
-#      # eliminate any Tgav time series that had NA's stitched in
-#     group_by(stitching_id) %>%
-#     mutate(drop = any(is.na(value))) %>%  
-#     ungroup %>%
-#     filter(drop == FALSE) %>%
-#     select(-drop) %>% 
-#     # add some identifying info
-#     mutate(tol = 0.1,
-#            archive = 'withSSP245') ->
-#     rslts_2_0p1
-#   
-#     # Check for collpase in these results
-#     rslts_2_0p1 %>%
-#     select(year, value, stitching_id) %>%
-#     spread(year, value) ->
-#     wide
-#   
-#     # Collapse would have occured if any of these trajectories go through the same value
-#     # in the same year -> if the length of distinct values in any column is less than
-#     # the number of stitching_id's
-#     counts <- apply(wide, 2, length)
-#     
-#     print(paste('Archive with ssp245; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-#     
-#   
-#   match_neighborhood(target_data = target_data,
-#                      archive_data = archive_subset2,
-#                      tol=0.25) %>%
-#     # Convert them to a sample of individual Tgav Recipes:
-#     permute_stitching_recipes(N_matches = 200, matched_data = .,
-#                               archive = archive_subset2)  %>%
-#     # And stitch the recipes into tgavs:
-#     stitch_global_mean(recipes=., data = tgav_data) %>%
-#      # eliminate any Tgav time series that had NA's stitched in
-#     group_by(stitching_id) %>%
-#     mutate(drop = any(is.na(value))) %>%  
-#     ungroup %>%
-#     filter(drop == FALSE) %>%
-#     select(-drop) %>% 
-#     # add some identifying info
-#     mutate(tol = 0.25,
-#            archive = 'withSSP245') ->
-#     rslts_2_0p25
-#   
-#   # Check for collpase in these results
-#     rslts_2_0p25 %>%
-#     select(year, value, stitching_id) %>%
-#     spread(year, value) ->
-#     wide
-#   
-#     # Collapse would have occured if any of these trajectories go through the same value
-#     # in the same year -> if the length of distinct values in any column is less than
-#     # the number of stitching_id's
-#     counts <- apply(wide, 2, length)
-#     
-#     print(paste('Archive with ssp245; tol = 0.25: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-#   
-#   
-#   match_neighborhood(target_data = target_data,
-#                      archive_data = archive_subset2,
-#                      tol=0.5) %>%
-#     # Convert them to a sample of individual Tgav Recipes:
-#     permute_stitching_recipes(N_matches = 200, matched_data = .,
-#                               archive = archive_subset2)  %>%
-#     # And stitch the recipes into tgavs:
-#     stitch_global_mean(recipes=., data = tgav_data) %>%
-#      # eliminate any Tgav time series that had NA's stitched in
-#     group_by(stitching_id) %>%
-#     mutate(drop = any(is.na(value))) %>%  
-#     ungroup %>%
-#     filter(drop == FALSE) %>%
-#     select(-drop) %>% 
-#     # add some identifying info
-#     mutate(tol = 0.5,
-#            archive = 'withSSP245') ->
-#     rslts_2_0p5
-#   
-#   # Check for collpase in these results
-#     rslts_2_0p5 %>%
-#     select(year, value, stitching_id) %>%
-#     spread(year, value) ->
-#     wide
-#   
-#     # Collapse would have occured if any of these trajectories go through the same value
-#     # in the same year -> if the length of distinct values in any column is less than
-#     # the number of stitching_id's
-#     counts <- apply(wide, 2, length)
-#     
-#     print(paste('Archive with ssp245; tol = 0.5: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
-#   
-#   
-#   
-#   write.csv(bind_rows(rslts_1_0p1, rslts_1_0p25, rslts_1_0p5,
-#                       rslts_2_0p1, rslts_2_0p25, rslts_2_0p5) %>%
-#               mutate(draw = draw),
-#             paste0('generated_ensembles/generated_ensembles_ssp245_draw', draw, '.csv'), 
-#             row.names = FALSE)
-# }
+
+for (draw in 1:Ndraws){
+  
+  # The matching to the archive without ssp245 results
+  match_neighborhood(target_data = target_data,
+                     archive_data = archive_subset1,
+                     tol=0.1) %>%
+    # Convert them to a sample of individual Tgav Recipes:
+    permute_stitching_recipes(N_matches = 2000, matched_data = .,
+                              archive = archive_subset1) ->
+    recipes_1_0p1 
+  
+  # convert these recipes to something that can be ingested by python 
+  # to layer in gridded netcdfs and save
+  gridded_recipes_1_0p1 <- generate_gridded_recipe(recipes_1_0p1)
+  write.csv(gridded_recipes_1_0p1,
+            paste0('generated_ensembles/', esm_name, '/gridded_recipes_for_python_', esm_experiment,'_draw', draw, '_experiment_not_in_matching.csv'),
+            row.names = FALSE)
+  
+  # Proceed to stitch the actual Tgavs for analysis here.
+  recipes_1_0p1 %>%
+    # And stitch the recipes into tgavs:
+    stitch_global_mean(recipes=., data = tgav_data) %>%
+    # add some identifying info
+    mutate(tol = 0.1,
+           archive = paste0('without_', esm_experiment)) ->
+    rslts_1_0p1
+
+  # Check for collpase in these results
+    rslts_1_0p1 %>%
+    select(year, value, stitching_id) %>%
+    spread(year, value) ->
+    wide
+
+    # Collapse would have occured if any of these trajectories go through the same value
+    # in the same year -> if the length of distinct values in any column is less than
+    # the number of stitching_id's
+    counts <- apply(wide, 2, length)
+
+    print(paste('Archive without', esm_experiment,'; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+
+    
+
+  # The matching to the archive with target experiment included results
+  match_neighborhood(target_data = target_data,
+                     archive_data = archive_subset2,
+                     tol=0.1) %>%
+    # Convert them to a sample of individual Tgav Recipes:
+    permute_stitching_recipes(N_matches = 2000, matched_data = .,
+                              archive = archive_subset2) ->
+    recipes_2_0p1
+  
+  # convert these recipes to something that can be ingested by python 
+  # to layer in gridded netcdfs and save
+  gridded_recipes_2_0p1 <- generate_gridded_recipe(recipes_2_0p1)
+  write.csv(gridded_recipes_2_0p1,
+            paste0('generated_ensembles/', esm_name, '/gridded_recipes_for_python_', esm_experiment,'_draw', draw, '_experiment_in_matching.csv'),
+            row.names = FALSE)
+  
+  
+  recipes_2_0p1 %>%
+    # And stitch the recipes into tgavs:
+    stitch_global_mean(recipes=., data = tgav_data) %>%
+    # add some identifying info
+    mutate(tol = 0.1,
+           archive = paste0('with_', esm_experiment)) ->
+    rslts_2_0p1
+
+    # Check for collpase in these results
+    rslts_2_0p1 %>%
+    select(year, value, stitching_id) %>%
+    spread(year, value) ->
+    wide
+
+    # Collapse would have occured if any of these trajectories go through the same value
+    # in the same year -> if the length of distinct values in any column is less than
+    # the number of stitching_id's
+    counts <- apply(wide, 2, length)
+
+    print(paste('Archive with', esm_experiment,'; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
+
+
+    
+    
+    
+  # save it all off  
+  write.csv(bind_rows(rslts_1_0p1, 
+                      rslts_2_0p1) %>%
+              mutate(draw = draw),
+            paste0('generated_ensembles/', esm_name, '/generated_ensembles_', esm_experiment,'_draw', draw, '.csv'),
+            row.names = FALSE)
+}
 
 ```
 
-sidenote - took about 10 min for each individual draw of these different generated ensemble.
-
-Within each draw of a generated ensemble, we don't necessarily have a ton of generated ensemble members.
-
-Part of this _is_ because of how we order and prioritize returning stitching recipes from a set of matches. 
-For example, the most restrictive archive for matching, tol=0.1 and no ssp245 results. A couple ensemble members have a window with only one potential matched point in the neighborhood; Those get done first and if say realiation 12 and realization 13 both have the same archive point match for the same window, only one of them gets that point and the other doesn't get any generated ensemble members. This is because we are enforcing the strongest possible restrictions to avoid envelope collapse. If we relaxed those, say by applying the pipeline to each target ensemble member separately, we'd get more matches but there would probably be some collapse acros target ensemble members:
-
-```{r}
-match_neighborhood(target_data = target_data,
-                   archive_data = archive_subset1,
-                   tol=0.1) ->
-  matched
-
-kable(get_num_perms(matched)[[1]] )
-```
-
-Versus a still strict matching neighborhood (tol=0.1) but being able to draw from the ssp245 runs for the matching as well:
-
-```{r}
-match_neighborhood(target_data = target_data,
-                   archive_data = archive_subset2,
-                   tol=0.1) ->
-  matched2
-
-kable(get_num_perms(matched2)[[1]] )
-```
 
 # Validate - ensembles
 
@@ -394,7 +276,9 @@ var_target_future <- sd(filter(original_data, year > 2014)$value)
 
 # generated ensemble files
 # read in all generated ensembles.
-files <- list.files(path = 'generated_ensembles', pattern = 'generated_ensembles', full.names = TRUE) 
+files <- list.files(path = paste0('generated_ensembles/', esm_name), 
+                    pattern = paste0('generated_ensembles_', esm_experiment), 
+                    full.names = TRUE) 
 
 for (i in 1:length(files)){
 
@@ -465,7 +349,7 @@ for (i in 1:length(files)){
   
    write.csv(plotting_tbl %>%
               mutate(draw = draw),
-            paste0('generated_ensembles/metrics_ssp245_draw', i, '.csv'), 
+           paste0('generated_ensembles/', esm_name ,'/metrics_', esm_experiment,'_draw', i, '.csv'), 
             row.names = FALSE)
 }
 
@@ -477,7 +361,7 @@ for (i in 1:length(files)){
 
 ### First draw of collapse free generated ensembles
 ```{r, echo = FALSE}
-plotting_tbl <- read.csv(paste0('generated_ensembles/metrics_ssp245_draw1.csv'),  
+plotting_tbl <- read.csv(paste0('generated_ensembles/', esm_name ,'/metrics_', esm_experiment, '_draw1.csv'),  
                          stringsAsFactors = FALSE)
 
 kable(plotting_tbl)
@@ -502,7 +386,7 @@ For E1, I have a harder time benchmarking the quantities. For NRMS (rms/variance
 
 ### And the second:
 ```{r, echo = FALSE}
-plotting_tbl <- read.csv(paste0('generated_ensembles/metrics_ssp245_draw2.csv'),  
+plotting_tbl <- read.csv(paste0('generated_ensembles/', esm_name ,'/metrics_', esm_experiment, '_draw2.csv'),  
                          stringsAsFactors = FALSE)
 
 kable(plotting_tbl)
@@ -522,7 +406,9 @@ We want to know the average errors across many draws so that we can get a sense 
 
 ```{r}
 # read in metrics for every draw
-files <- list.files(path = 'generated_ensembles', pattern = 'metrics', full.names = TRUE) 
+files <- list.files(path = paste0('generated_ensembles/', esm_name),
+                    pattern = paste0('metrics_', esm_experiment), 
+                    full.names = TRUE) 
 
 generated_metrics <- list()
 for (i in 1:length(files)){
@@ -578,7 +464,9 @@ So let's work with the jumps themselves for validating. Take the year to year di
 
 ```{r}
 # read in all generated ensembles.
-files <- list.files(path = 'generated_ensembles', pattern = 'generated_ensembles', full.names = TRUE) 
+files <- list.files(path = paste0('generated_ensembles/', esm_name), 
+                    pattern = paste0('generated_ensembles_', esm_experiment),  
+                    full.names = TRUE) 
 
 generated_tgavs <- list()
 for (i in 1:length(files)){
@@ -812,30 +700,6 @@ ggplot() +
 ```
 
 
-```{r, fig.width = 14, fig.height = 8}
-focus_draw <- 27
-
-ggplot() +
-  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
-  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
-  facet_grid(archive~tol) +
-  ggtitle(paste('All years, full ensemble (target or generated), \nFocusing on a single draw of generated ensemble ', focus_draw))
-
-
-ggplot() +
-  geom_density(target_jumps %>% mutate(id= 'target'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
-  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition', draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
-  facet_grid(archive~tol) +
-  ggtitle(paste('All years target ensemble, \nWindow years generated ensemble, \nFocusing on a single draw of generated ensemble ', focus_draw))
-
-
-ggplot() +
-  geom_density(target_jumps %>% mutate(id= 'target')%>% filter(jump_year == 'window_transition'),  mapping = aes(x = jump, fill = id), alpha =0.2) +
-  geom_density(generated_jumps %>% mutate(id = 'generated') %>% filter(jump_year == 'window_transition', draw == focus_draw), mapping = aes(x = jump, fill = id), alpha = 0.2) +
-  facet_grid(archive~tol) +
-  ggtitle(paste('Window years target ensemble, \nWindow years generated ensemble, \nFocusing on a single draw of generated ensemble ', focus_draw))
-
-```
 
 
 ## Apply E1, E2 to jumps
@@ -888,13 +752,13 @@ for (drawID in 1:Ndraws){
   
    write.csv(plotting_tbl %>%
               mutate(draw = drawID),
-            paste0('generated_ensembles/jump_errors_allyears_ssp245_draw', drawID, '.csv'), 
+            paste0('generated_ensembles/', esm_name ,'/jump_errors_allyears_', esm_experiment, '_draw', drawID, '.csv'), 
             row.names = FALSE)
 }
 
 
 # Plot the first draw's errors:
-plotting_tbl <- read.csv(paste0('generated_ensembles/jump_errors_allyears_ssp245_draw1.csv'),  
+plotting_tbl <- read.csv(paste0('generated_ensembles/',esm_name , '/jump_errors_allyears_',esm_experiment,'_draw1.csv'),  
                          stringsAsFactors = FALSE)
 
 kable(plotting_tbl)
@@ -913,7 +777,9 @@ Aggregated across draws:
 
 ```{r}
 # read in metrics for every draw
-files <- list.files(path = 'generated_ensembles', pattern = 'jump_errors_allyears', full.names = TRUE) 
+files <- list.files(path = paste0('generated_ensembles/', esm_name),
+                    pattern = paste0('jump_errors_allyears_', esm_experiment), 
+                    full.names = TRUE) 
 
 generated_metrics <- list()
 for (i in 1:length(files)){
@@ -986,13 +852,13 @@ for (drawID in 1:Ndraws){
   
    write.csv(plotting_tbl %>%
               mutate(draw = drawID),
-            paste0('generated_ensembles/jump_errors_transitionyears_ssp245_draw', drawID, '.csv'), 
+            paste0('generated_ensembles/', esm_name ,'/jump_errors_transitionyears_',esm_experiment,'_draw', drawID, '.csv'), 
             row.names = FALSE)
 }
 
 
 # Plot the first draw's errors:
-plotting_tbl <- read.csv(paste0('generated_ensembles/jump_errors_transitionyears_ssp245_draw1.csv'),  
+plotting_tbl <- read.csv(paste0('generated_ensembles/', esm_name ,'/jump_errors_transitionyears_',esm_experiment,'_draw1.csv'),  
                          stringsAsFactors = FALSE)
 
 kable(plotting_tbl)
@@ -1010,7 +876,9 @@ Aggregated across draws:
 
 ```{r}
 # read in metrics for every draw
-files <- list.files(path = 'generated_ensembles', pattern = 'jump_errors_transitionyears', full.names = TRUE) 
+files <- list.files(path = paste0('generated_ensembles/', esm_name), 
+                    pattern = paste0('jump_errors_transitionyears_',esm_experiment ), 
+                    full.names = TRUE) 
 
 generated_metrics <- list()
 for (i in 1:length(files)){

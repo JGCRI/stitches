@@ -11,7 +11,7 @@ import pandas as pd
 
 
 # Read in all of the smoothed esm data
-smoothed_data_path = "/Users/dorh012/Documents/2021/stitches/stitches/data/created_data/main_smooth_tgav_anomaly_all_pangeo_list_models.dat"
+smoothed_data_path = "./stitches/data/created_data/main_smooth_tgav_anomaly_all_pangeo_list_models.dat"
 smoothed_data = pd.read_pickle(smoothed_data_path)
 
 # Subset the data so that it contains a single realization of a middle of the road

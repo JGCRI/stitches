@@ -44,7 +44,7 @@ esm_name <- 'MPI-ESM1-2-LR'
 esm_experiment <- 'ssp245'
 
 # How many times do we want to draw full generated ensembles:
-Ndraws <- 2
+Ndraws <- 100
 
 set.seed(1)
 ```

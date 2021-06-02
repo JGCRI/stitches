@@ -2,6 +2,15 @@
 # global mean values and stitches together the final product. 
 library(assertthat)
 
+# we actually need two of the helper functions rom this script:
+source("functions/gridded_recipe.R") 
+
+# Sometimes, like when the archive window matched in is the last window
+# of a time series, length(archive_yrs) will be less than length(target_yr).
+# This will introduce an NA in the time series for global avg temperature.
+# We don't want that, so to be consistent, with the recipes that go to
+# python for adding in gridded data, we use the exact same functions here.
+
 ###############################################################################
 # create a stitched together global mean time series from tgav data that
 # has historical pasted into every scenario, as in the archive
@@ -13,7 +22,18 @@ library(assertthat)
 # return: a time series of data (year, value, variable)
 stitch_global_mean <- function(recipes, data){
   
-
+  # call the helper function from gridded_recipe.R to make
+  # sure we aren't trying to match 8 years of archive data
+  # to 9 years of target data or vice versa. 
+  # For example if target window 2084-2092 (9 years)
+  # gets a match of 2093-2100 (8 years), we go ahead
+  # and make it 2084-2092 getting a mat ch of 2092-2100.
+  # For something like target window 2093-2100 (8 years)
+  # getting a match of 2084-2092 (9 years), we go ahead
+  # and just use 2084-2091 data. 
+  recipes %>% 
+    handle_final_period ->
+    recipes
   
   # check the match input make sure that the values are 
   req_target_cols <- paste0("target_", c("variable", "start_yr", "end_yr"))
@@ -70,9 +90,11 @@ stitch_global_mean <- function(recipes, data){
                                  rows <- c(data$year %in% select_yrs & data$ensemble == m$archive_ensemble & data$experiment == m$archive_experiment)
                                  values <- data[rows, ]$value
                                  
+                                
                                  out <- data.frame(year = yr, 
-                                                   value = values[1:length(yr)], # somewhat confused why this is happenging
+                                                   value = values,
                                                    variable = m$archive_variable)
+                                 
                                  return(out)
                                })
            

@@ -17,13 +17,15 @@ Ndraws <- 10
 for (i in 2:2){# 1:length(esm_name_vec)){
   for (j in 1:1){#1:length(esm_experiment_vec)){
     
+    rm(esm_name, esm_experiment)
+    
     # define our target esm name and experiment values
     # as global variables so that the markdown can access
     esm_name <- esm_name_vec[i]
     esm_experiment <- esm_experiment_vec[j]
     
     
-    rmarkdown::render(input = "Notebook8-emulate-validate.Rmd", output_file = paste0(esm_name, "_", esm_experiment, "_tgav_validation_results.html"))
+    rmarkdown::render(input = "Notebook8-emulate-validate.Rmd", output_file = paste0("Notebook8_", esm_name, "_", esm_experiment, "_tgav_validation_results.html"))
   }
 }
 

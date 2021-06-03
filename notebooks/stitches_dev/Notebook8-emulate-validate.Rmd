@@ -174,24 +174,23 @@ archive_subset2 %>%
 ```{r}
 
 for (draw in 1:Ndraws){
-  
+
   # The matching to the archive without ssp245 results
   match_neighborhood(target_data = target_data,
                      archive_data = archive_subset1,
-                     tol=0.1) -> matched_data
-  matched_data %>%
+                     tol=0.1)  %>%
     # Convert them to a sample of individual Tgav Recipes:
     permute_stitching_recipes(N_matches = 2000, matched_data = .,
                               archive = archive_subset1) ->
-    recipes_1_0p1 
-  
-  # convert these recipes to something that can be ingested by python 
+    recipes_1_0p1
+
+  # convert these recipes to something that can be ingested by python
   # to layer in gridded netcdfs and save
   gridded_recipes_1_0p1 <- generate_gridded_recipe(recipes_1_0p1)
   write.csv(gridded_recipes_1_0p1,
             paste0('generated_ensembles/', esm_name, '/gridded_recipes_for_python_', esm_experiment,'_draw', draw, '_experiment_not_in_matching.csv'),
             row.names = FALSE)
-  
+
   # Proceed to stitch the actual Tgavs for analysis here.
   recipes_1_0p1 %>%
     # And stitch the recipes into tgavs:
@@ -214,7 +213,7 @@ for (draw in 1:Ndraws){
 
     print(paste('Archive without', esm_experiment,'; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
 
-    
+
 
   # The matching to the archive with target experiment included results
   match_neighborhood(target_data = target_data,
@@ -224,15 +223,15 @@ for (draw in 1:Ndraws){
     permute_stitching_recipes(N_matches = 2000, matched_data = .,
                               archive = archive_subset2) ->
     recipes_2_0p1
-  
-  # convert these recipes to something that can be ingested by python 
+
+  # convert these recipes to something that can be ingested by python
   # to layer in gridded netcdfs and save
   gridded_recipes_2_0p1 <- generate_gridded_recipe(recipes_2_0p1)
   write.csv(gridded_recipes_2_0p1,
             paste0('generated_ensembles/', esm_name, '/gridded_recipes_for_python_', esm_experiment,'_draw', draw, '_experiment_in_matching.csv'),
             row.names = FALSE)
-  
-  
+
+
   recipes_2_0p1 %>%
     # And stitch the recipes into tgavs:
     stitch_global_mean(recipes=., data = tgav_data) %>%
@@ -255,11 +254,11 @@ for (draw in 1:Ndraws){
     print(paste('Archive with', esm_experiment,'; tol = 0.1: Is there any collapse in the generated ensemble?', any(counts != length(unique(wide$stitching_id)))))
 
 
-    
-    
-    
-  # save it all off  
-  write.csv(bind_rows(rslts_1_0p1, 
+
+
+
+  # save it all off
+  write.csv(bind_rows(rslts_1_0p1,
                       rslts_2_0p1) %>%
               mutate(draw = draw),
             paste0('generated_ensembles/', esm_name, '/generated_ensembles_', esm_experiment,'_draw', draw, '.csv'),
@@ -825,3 +824,276 @@ ggplot(data = aggregate_metrics, aes(x = aggregate_E1, y = aggregate_E2, color =
   ggtitle(paste('Aggregate errors comparing window transition years of \ngenerated jumps to all years of target jumps \naggregated across Ndraws ', unique(aggregate_metrics$total_draws) ))
 ```
 
+
+# ACF
+
+For now, we do a random sample of a generated ensemble member and a target ensemble member to compare the plots of their ACF and partial ACF functions of our Tgav time series (not jumps). For now, we settle on visual inspection to detect if they're similar and if there are any odd 'happenings' every 9 years (the window size) in the generated ACF. 
+
+```{r}
+# List the IDs of all the generated and real ensemble members for sampling
+generated_tgavs %>%
+  filter(archive == paste0('without_', esm_experiment) ) %>%
+  select(stitching_id, tol, archive, draw) %>%
+  distinct  ->
+  gen_ids_wo
+
+generated_tgavs %>%
+  filter(archive == paste0('with_', esm_experiment) ) %>%
+  select(stitching_id, tol, archive, draw) %>%
+  distinct  ->
+  gen_ids_w
+
+original_data %>%
+  select(experiment, ensemble) %>%
+  distinct ->
+  target_ids
+```
+
+## Sample 1
+
+```{r, fig.width=12, fig.height=14}
+# Randomly sample one of the generated Tgavs from the archive without target experiment
+random_gen_id_wo <- gen_ids_wo[sample(nrow(gen_ids_wo), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_wo$stitching_id,
+         tol == random_gen_id_wo$tol,
+         archive == random_gen_id_wo$archive,
+         draw == random_gen_id_wo$draw) ->
+  gen_random_wo
+
+random_gen_id_w <- gen_ids_w[sample(nrow(gen_ids_w), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_w$stitching_id,
+         tol == random_gen_id_w$tol,
+         archive == random_gen_id_w$archive,
+         draw == random_gen_id_w$draw) ->
+  gen_random_w
+
+# Randomly sample one of the target Tgavs
+random_targ_id <- target_ids[sample(nrow(target_ids), 1),]
+original_data %>%
+  filter(experiment == random_targ_id$experiment,
+         ensemble == random_targ_id$ensemble) ->
+  targ_random
+
+
+# Compare ACF and partial ACF plots
+par(mfrow=c(3,2))
+acf(targ_random$value,
+    main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(targ_random$value, type='partial',
+     main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(gen_random_wo$value,
+     main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_wo$value, type='partial',
+    main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_w$value,
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive:', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+acf(gen_random_w$value, type='partial',
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive: ', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+par(mfrow=c(1,1))
+```
+
+
+## Sample 2
+
+```{r, fig.width=12, fig.height=14}
+# Randomly sample one of the generated Tgavs from the archive without target experiment
+random_gen_id_wo <- gen_ids_wo[sample(nrow(gen_ids_wo), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_wo$stitching_id,
+         tol == random_gen_id_wo$tol,
+         archive == random_gen_id_wo$archive,
+         draw == random_gen_id_wo$draw) ->
+  gen_random_wo
+
+random_gen_id_w <- gen_ids_w[sample(nrow(gen_ids_w), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_w$stitching_id,
+         tol == random_gen_id_w$tol,
+         archive == random_gen_id_w$archive,
+         draw == random_gen_id_w$draw) ->
+  gen_random_w
+
+# Randomly sample one of the target Tgavs
+random_targ_id <- target_ids[sample(nrow(target_ids), 1),]
+original_data %>%
+  filter(experiment == random_targ_id$experiment,
+         ensemble == random_targ_id$ensemble) ->
+  targ_random
+
+
+# Compare ACF and partial ACF plots
+par(mfrow=c(3,2))
+acf(targ_random$value,
+    main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(targ_random$value, type='partial',
+     main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(gen_random_wo$value,
+     main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_wo$value, type='partial',
+    main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_w$value,
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive:', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+acf(gen_random_w$value, type='partial',
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive: ', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+par(mfrow=c(1,1))
+```
+
+
+## Sample 3
+
+```{r, fig.width=12, fig.height=14}
+# Randomly sample one of the generated Tgavs from the archive without target experiment
+random_gen_id_wo <- gen_ids_wo[sample(nrow(gen_ids_wo), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_wo$stitching_id,
+         tol == random_gen_id_wo$tol,
+         archive == random_gen_id_wo$archive,
+         draw == random_gen_id_wo$draw) ->
+  gen_random_wo
+
+random_gen_id_w <- gen_ids_w[sample(nrow(gen_ids_w), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_w$stitching_id,
+         tol == random_gen_id_w$tol,
+         archive == random_gen_id_w$archive,
+         draw == random_gen_id_w$draw) ->
+  gen_random_w
+
+# Randomly sample one of the target Tgavs
+random_targ_id <- target_ids[sample(nrow(target_ids), 1),]
+original_data %>%
+  filter(experiment == random_targ_id$experiment,
+         ensemble == random_targ_id$ensemble) ->
+  targ_random
+
+
+# Compare ACF and partial ACF plots
+par(mfrow=c(3,2))
+acf(targ_random$value,
+    main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(targ_random$value, type='partial',
+     main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(gen_random_wo$value,
+     main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_wo$value, type='partial',
+    main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_w$value,
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive:', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+acf(gen_random_w$value, type='partial',
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive: ', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+par(mfrow=c(1,1))
+```
+
+
+## Sample 4
+
+```{r, fig.width=12, fig.height=14}
+# Randomly sample one of the generated Tgavs from the archive without target experiment
+random_gen_id_wo <- gen_ids_wo[sample(nrow(gen_ids_wo), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_wo$stitching_id,
+         tol == random_gen_id_wo$tol,
+         archive == random_gen_id_wo$archive,
+         draw == random_gen_id_wo$draw) ->
+  gen_random_wo
+
+random_gen_id_w <- gen_ids_w[sample(nrow(gen_ids_w), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_w$stitching_id,
+         tol == random_gen_id_w$tol,
+         archive == random_gen_id_w$archive,
+         draw == random_gen_id_w$draw) ->
+  gen_random_w
+
+# Randomly sample one of the target Tgavs
+random_targ_id <- target_ids[sample(nrow(target_ids), 1),]
+original_data %>%
+  filter(experiment == random_targ_id$experiment,
+         ensemble == random_targ_id$ensemble) ->
+  targ_random
+
+
+# Compare ACF and partial ACF plots
+par(mfrow=c(3,2))
+acf(targ_random$value,
+    main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(targ_random$value, type='partial',
+     main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(gen_random_wo$value,
+     main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_wo$value, type='partial',
+    main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_w$value,
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive:', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+acf(gen_random_w$value, type='partial',
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive: ', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+par(mfrow=c(1,1))
+```
+
+
+## Sample 5
+
+```{r, fig.width=12, fig.height=14}
+# Randomly sample one of the generated Tgavs from the archive without target experiment
+random_gen_id_wo <- gen_ids_wo[sample(nrow(gen_ids_wo), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_wo$stitching_id,
+         tol == random_gen_id_wo$tol,
+         archive == random_gen_id_wo$archive,
+         draw == random_gen_id_wo$draw) ->
+  gen_random_wo
+
+random_gen_id_w <- gen_ids_w[sample(nrow(gen_ids_w), 1),]
+generated_tgavs %>%
+  filter(stitching_id == random_gen_id_w$stitching_id,
+         tol == random_gen_id_w$tol,
+         archive == random_gen_id_w$archive,
+         draw == random_gen_id_w$draw) ->
+  gen_random_w
+
+# Randomly sample one of the target Tgavs
+random_targ_id <- target_ids[sample(nrow(target_ids), 1),]
+original_data %>%
+  filter(experiment == random_targ_id$experiment,
+         ensemble == random_targ_id$ensemble) ->
+  targ_random
+
+
+# Compare ACF and partial ACF plots
+par(mfrow=c(3,2))
+acf(targ_random$value,
+    main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(targ_random$value, type='partial',
+     main= paste("Target Ensemble member:", random_targ_id$experiment, random_targ_id$ensemble))
+acf(gen_random_wo$value,
+     main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_wo$value, type='partial',
+    main= paste("Generated:", random_gen_id_wo$stitching_id, '\n',
+                'tol=', random_gen_id_wo$tol, '. archive: ', random_gen_id_wo$archive, '. draw =', random_gen_id_wo$draw))
+acf(gen_random_w$value,
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive:', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+acf(gen_random_w$value, type='partial',
+     main= paste("Generated:", random_gen_id_w$stitching_id, '\n',
+                'tol=', random_gen_id_w$tol, '. archive: ', random_gen_id_w$archive, '. draw =', random_gen_id_w$draw))
+par(mfrow=c(1,1))
+```

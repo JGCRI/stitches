@@ -1,0 +1,3 @@
+"tol","archive","draw","n_stitched","mean_gen","var_gen","mean_target","var_target","bias","E1","E2"
+0.1,"with_ssp370",3,12,0.0247562322366911,0.118593051689439,NA,NA,NA,NA,NA
+0.1,"without_ssp370",3,4,0.0245554855734017,0.12542640665217,NA,NA,NA,NA,NA

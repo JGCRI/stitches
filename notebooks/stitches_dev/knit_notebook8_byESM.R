@@ -7,14 +7,14 @@ esm_name_vec <- c("ACCESS-ESM1-5",
               "MIROC6",
               "MPI-ESM1-2-HR",
               "MPI-ESM1-2-LR",
-              "NorCPM1",
+              # "NorCPM1", # don't have archive data past 2025/raw tgav data past 2029
               "UKESM1-0-LL")
 esm_experiment_vec <- c('ssp245', 'ssp370')
 
 # How many times do we want to draw full generated ense mbles:
 Ndraws <- 10
 
-for (name_ind in 2:length(esm_name_vec)){
+for (name_ind in length(esm_name_vec):length(esm_name_vec)){
   for (exp_ind in 1:length(esm_experiment_vec)){
     
     rm(esm_name, esm_experiment)

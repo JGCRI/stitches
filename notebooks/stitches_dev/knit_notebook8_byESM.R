@@ -11,7 +11,7 @@ esm_name_vec <- c("ACCESS-ESM1-5",
               "UKESM1-0-LL")
 esm_experiment_vec <- c('ssp245', 'ssp370')
 
-# How many times do we want to draw full generated ense mbles:
+# How many times do we want to draw full generated ensembles:
 Ndraws <- 10
 
 for (name_ind in 1:length(esm_name_vec)){

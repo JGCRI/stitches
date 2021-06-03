@@ -87,7 +87,8 @@ archive_data %>%
 
 # The corresponding unsmoothed original data for validation
 tgav_data %>%  
-  filter(model == unique(target_data$model) & experiment == unique(target_data$experiment))  %>%
+  filter(model == unique(target_data$model) & experiment == unique(target_data$experiment)) %>%
+  filter(ensemble %in% unique(target_data$ensemble))  %>%
   select(-file, -timestep, -grid_type) -> 
   original_data
 ```

@@ -22,15 +22,18 @@ library(knitr)
 This notebook can be called with  `knit_notebook8_byESM.R`; it can be called in a loop over ESMs and target experiments, and will knit an analysis html for each.
 
 
-This block of code defaults to not being run. These values must be defined globally in `knit_notebook8_byESM.R`:
+These values must be defined globally in `knit_notebook8_byESM.R` or uncommented and defined here to run this notebook directly:
 
-```{r,echo=FALSE}
+```{r}
 # # what we will emulate:
 # esm_name <- "MPI-ESM1-2-LR"
 # esm_experiment <- 'ssp245'
 # 
 # # How many times do we want to draw full generated ensembles:
 # Ndraws <- 1
+
+print(esm_name)
+print(esm_experiment)
 ```
 
 We will only explore `tol=0.1` degC for matching in this notebook (per CT, from the SD of the smoothed Tgav time series. Should check for each ESM, for now just use 0.1 value from CanESM).
@@ -50,6 +53,7 @@ set.seed(1)
 
 
 Load the inputs that will be used. 
+In addition to SSP534-over having enough data issues to fully exclude, _at least some_ of the realizations for SSP434 and SSP460 just don't have future data at all for CanESM5. And for other models, some realizations have odd windows (Like a 2012-2014 window) and those realizations are excluded as well. We need to go back to pangeo and fix this for sure, but for now, I'll work with the archive I have. Because we don't want to lose too much of the archive now, I will only remove those realizations and not a full experiment for a single bad data point.
 
 ```{r}
 # Time series of the raw global mean temperature anomaly, this is the data that is 
@@ -62,7 +66,16 @@ tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_model
 # A chunked smoothed tgav anomaly archive of data. This was tgav_data but several 
 # steps were taken in python to transform it into the "chunked" data and save it 
 # so that we do not have to repeate this process so many times. 
-archive_data <- read.csv(paste0('inputs/', esm_name, '_archive_data.csv'), stringsAsFactors = FALSE)
+read.csv(paste0('inputs/', esm_name, '_archive_data.csv'), stringsAsFactors = FALSE) %>%
+  # Exclude ssp534-over:
+  dplyr::filter(experiment != 'ssp534-over') %>%
+  # eliminate any individual realizationXexperiment runs that don't have all the years:
+  group_by(experiment, variable,   model  , ensemble) %>%
+  mutate(nWindows = n()) %>%
+  ungroup %>%
+  filter(nWindows == 28) %>%
+  select(-nWindows) ->
+  archive_data
 
 
 # The target data - all ssp245 realizations (smoothed because it's the target for
@@ -95,6 +108,7 @@ read.csv("inputs/pangeo_path_metadata_tas_psl_pr_tmax_tmin.csv",
   select(model, experiment, ensemble)  %>%
   unite("acceptable", c(model, experiment, ensemble), sep="~")->
   acceptable_archive_entries_from_path_metadata
+
 ```
 
 
@@ -108,7 +122,6 @@ Archive 2 will include the ssp245 runs - when we get to the point of targeting S
 
 We will also do some light exploration of the matching neighborhood size (`tol` argument).
 
-In addition to SSP534-over having enough data issues to fully exclude, _at least some_ of the realizations for SSP434 and SSP460 just don't have future data at all for CanESM5. We need to go back to pangeo and fix this for sure, but for now, I'll work with the archive I have. Because we don't want to lose too much of the archive now, I will only remove those realizations that don't have all the years of data.
 
 ```{r}
 # Archive data not including the target experiment:
@@ -117,14 +130,6 @@ archive_data %>%
   dplyr::filter(model == unique(target_data$model)) %>%  
   # Don't match to any ensemble members in the target experiment:
   dplyr::filter(experiment != unique(target_data$experiment) ) %>%
-  # Exclude ssp534-over:
-  dplyr::filter(experiment != 'ssp534-over') %>%
-  # eliminate any individual realizationXexperiment runs that don't have all the years:
-  group_by(experiment, variable,   model  , ensemble) %>%
-  mutate(nWindows = n()) %>%
-  ungroup %>%
-  filter(nWindows == 28) %>%
-  select(-nWindows) %>%
   # Final filter to make sure we only use the experiment*ensemble members with pangeo
   # path metadata for netcdfs for all varaibles of interest
   unite("acceptable", c(model, experiment, ensemble), sep="~", remove=FALSE) %>%
@@ -146,14 +151,6 @@ archive_subset1 %>%
 archive_data %>% 
   # Only match to the same ESM:
   dplyr::filter(model == unique(target_data$model)) %>%  
-  # Exclude ssp534-over:
-  dplyr::filter(experiment != 'ssp534-over') %>%
-  # eliminate any individual realizationXexperiment runs that don't have all the years:
-  group_by(experiment, variable,   model  , ensemble) %>%
-  mutate(nWindows = n()) %>%
-  ungroup %>%
-  filter(nWindows == 28) %>%
-  select(-nWindows) %>%
   # Final filter to make sure we only use the experiment*ensemble members with pangeo
   # path metadata for netcdfs for all varaibles of interest
   unite("acceptable", c(model, experiment, ensemble), sep="~", remove=FALSE) %>%
@@ -180,7 +177,8 @@ for (draw in 1:Ndraws){
   # The matching to the archive without ssp245 results
   match_neighborhood(target_data = target_data,
                      archive_data = archive_subset1,
-                     tol=0.1) %>%
+                     tol=0.1) -> matched_data
+  matched_data %>%
     # Convert them to a sample of individual Tgav Recipes:
     permute_stitching_recipes(N_matches = 2000, matched_data = .,
                               archive = archive_subset1) ->

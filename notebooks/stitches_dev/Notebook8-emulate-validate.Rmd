@@ -358,9 +358,8 @@ for (i in 1:length(files)){
     plotting_tbl
   rm(tmp)
   
-   write.csv(plotting_tbl %>%
-              mutate(draw = draw),
-           paste0('generated_ensembles/', esm_name ,'/metrics_', esm_experiment,'_draw', i, '.csv'), 
+   write.csv(plotting_tbl ,
+           paste0('generated_ensembles/', esm_name ,'/metrics_', esm_experiment,'_draw', unique(plotting_tbl$draw), '.csv'), 
             row.names = FALSE)
 }
 

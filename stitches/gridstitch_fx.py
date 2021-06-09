@@ -3,46 +3,7 @@
 import xarray as xr
 import pandas as pd
 import numpy as np
-
-
-#import stitches.netcdf_fx as nc
-# okay for some reason python is really unhappy when it is defined in
-# in the netcdf fx py script, check in with ACS and CV about why
-# this might be a problem.
-
-#def get_var_names(set):
-#    """ Get the variable name from the file name inormation .
-#
-#        :param set:            a set of the strings describing the file names
-#        :return:               a set off strings containing the cmip variable name
-#    """
-#    out = []
-#    for text in set:
-#        new = text.replace("_file", "")
-#        out.append(new)
-#    return out
-
-
-def get_attr_info(rp, dl, fl, name):
-    """Extract the cmip variable attribute information.
-
-           :param rp:             data frame of the recepies
-           :param dl:             list of the data files
-           :param fl:             list of the data file names
-           :param name:           string of the column containing the variable files to process
-           :return:               dict object containing the cmip variable information
-
-           TODO add a check to make sure that there is only one stitching id being passed into
-           the function.
-       """
-    file = rp[name][0]
-    index = int(np.where(fl == file)[0])
-    extracted = dl[index]
-    v=name.replace("_file", "")
-
-    out=extracted[v].attrs.copy()
-
-    return out
+import stitches.netcdf_fx as nc
 
 
 def get_netcdf_values(i, dl, rp, fl, name):
@@ -96,11 +57,8 @@ def stitch_gridded(rp, dl, fl):
     # files containing cmip data
     file_column_names = rp.filter(regex='file').columns.tolist()
     # for some reason the get var name function is failing
-    #var_names = get_var_names(file_column_names)
-    var_names = []
-    for text in file_column_names:
-        new = text.replace("_file", "")
-        var_names.append(new)
+    var_names = nc.get_var_names(file_column_names)
+
 
     # TODO wrap this in a function?
     gridded_data = []
@@ -110,7 +68,7 @@ def stitch_gridded(rp, dl, fl):
         # Save a copy of the variable attribute information and extract
         # the few years of data of data to create an array with the
         # expected structure.
-        variable_info.append(get_attr_info(rp, dl, fl, name))
+        variable_info.append(nc.get_attr_info(rp, dl, fl, name))
         out = get_netcdf_values(i=0, dl=dl, rp=rp, fl=fl, name=name)
 
         # Now add the

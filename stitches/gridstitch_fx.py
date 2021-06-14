@@ -20,6 +20,9 @@ def get_netcdf_values(i, dl, rp, fl, name):
     assert (sum(rp.columns == name) == 1), "file name not found in rp"
     var = name.replace("_file", "")  # parse out the variable name from the file_column name
 
+    assert (rp.stitching_id.unique().__len__() == 1), "only 1 stitching recepie can be read in at a time"
+
+
     file = rp[name][i]
     start_yr = str(rp["archive_start_yr"][i])
     end_yr = str(rp["archive_end_yr"][i])
@@ -30,7 +33,6 @@ def get_netcdf_values(i, dl, rp, fl, name):
     extracted = dl[index]
     dat = extracted.sel(time=slice(start_yr, end_yr))[var].values.copy()
 
-    # TODO figure out why the date range is so does not include
     expected_len = len(pd.date_range(start=start_yr + "-01-01", end=end_yr + "-12-31", freq='M'))
     assert (len(dat) == expected_len), "Not enough data in " + file + "for period " + start_yr + "-" + end_yr
 
@@ -46,8 +48,8 @@ def stitch_gridded(rp, dl, fl):
         :param fl:             list of the data file names
         :return:               xarray data set
 
-        TODO add a check to make sure that there is only one stitching id being passed into
-        the function.
+        TODO add some capability to determine where to write the files out to
+
     """
 
     rp.reset_index(drop=True, inplace=True)
@@ -71,7 +73,7 @@ def stitch_gridded(rp, dl, fl):
         variable_info.append(nc.get_attr_info(rp, dl, fl, name))
         out = get_netcdf_values(i=0, dl=dl, rp=rp, fl=fl, name=name)
 
-        # Now add the
+        # Now add the other time slices.
         for i in range(1, len(rp)):
             new_vals = get_netcdf_values(i=i, dl=dl, rp=rp, fl=fl, name=name)
             out = np.concatenate((out, new_vals), axis=0)
@@ -99,23 +101,30 @@ def stitch_gridded(rp, dl, fl):
                   lat=lat,
                   lon=lon)
 
-    # Use a for loop to fill a dictionary to hold the
-    # stitched gridded data products.
-    data_dict = {}
+    # Use a for loop to go create and save a netcdf file
+    # for each of the variables.
+    f = []
     for i in range(0, len(var_names)):
+        data_dict = {}
         v = var_names[i]
         d = gridded_data[i]
         a = variable_info[i]
         data_dict[v] = (["time", "lat", 'lon'], d, a)
 
-    # Store all of the information into a xr data set, this is the final
-    # object we will want to return.
-    ds = xr.Dataset(
-        data_vars=data_dict,
-        coords=coords,
-        attrs={'target data': 'Not available until full pipeline in place',
-               'stitching_id': str(rp['stitching_id'].unique()),
-               'recipe': 'need to figure out how to add this '}
-    )
+        # Store all of the information into a xr data set, this is the final
+        # object we will want to return.
+        ds = xr.Dataset(
+            data_vars=data_dict,
+            coords=coords,
+            attrs={'target data': 'Not available until full pipeline in place',
+                   'stitching_id': str(rp['stitching_id'].unique()[0]),
+                   'recipe': str(rp),
+                   'variable':v})
 
-    return ds
+        m = str(rp.source_id.unique()[0])
+        # TODO there should be some way to figure out how way control how to write it out!
+        fname = "./stitched_" + m + '_' + v + '_' + str(rp['stitching_id'].unique()[0]) + '.nc'
+        ds.to_netcdf(fname)
+        f.append(fname)
+
+    return f

@@ -113,12 +113,13 @@ def stitch_gridded(rp, dl, fl):
 
         # Store all of the information into a xr data set, this is the final
         # object we will want to return.
+        r = rp.reset_index(drop=True).to_string()
         ds = xr.Dataset(
             data_vars=data_dict,
             coords=coords,
             attrs={'target data': 'Not available until full pipeline in place',
                    'stitching_id': str(rp['stitching_id'].unique()[0]),
-                   'recipe': str(rp),
+                   'recipe': r,
                    'variable':v})
 
         m = str(rp.source_id.unique()[0])

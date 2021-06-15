@@ -109,7 +109,11 @@ handle_final_period <- function(rp){
       
       out <- rbind(out, rp[row, ])
       
-    } else if (len_target < len_archive) { 
+    } else if (len_target < len_archive) {  #ie, it's the final period of the target data being matched to a non-final period of archive data 
+      
+      # For something like target window 2093-2100 (8 years)
+      # getting a match of 2084-2092 (9 years), we go ahead
+      # and just use 2084-2091 data. 
       
       # Figure out how much shorter the target period is than the archive period. 
       updated <- rp[row, ]
@@ -118,9 +122,12 @@ handle_final_period <- function(rp){
       # Add the updated row to the data frame. 
       out <- rbind(out, updated)
       
-    } else { 
-      # TODO need to revisit, just added an extra year to the archive length but that seems 
-      # pretty sus. 
+    } else if(len_target > len_archive) { # ie, a final period of archive data got matched to a non-final period of target data
+      
+      # For example if target window 2084-2092 (9 years)
+      # gets a match of 2093-2100 (8 years), we go ahead
+      # and make it 2084-2092 getting a mat ch of 2092-2100.
+    
       # Figure out how much longer the target period is than the archive period. 
       updated <- rp[row, ]
       updated$archive_start_yr <- updated$archive_start_yr - 1

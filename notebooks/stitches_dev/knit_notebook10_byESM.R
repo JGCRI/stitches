@@ -14,8 +14,8 @@ esm_experiment_vec <- c('ssp245', 'ssp370')
 # How many times do we want to draw full generated ensembles:
 # Ndraws <- 200
 
-for (name_ind in 2:2){#1:length(esm_name_vec)){
-  for (exp_ind in 1:1){#length(esm_experiment_vec)){
+for (name_ind in 1:length(esm_name_vec)){
+  for (exp_ind in 1:length(esm_experiment_vec)){
     
     rm(esm_name, esm_experiment)
     

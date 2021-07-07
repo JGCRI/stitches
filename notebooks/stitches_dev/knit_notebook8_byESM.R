@@ -9,7 +9,7 @@ esm_name_vec <- c("ACCESS-ESM1-5",
               "MPI-ESM1-2-LR",
               # "NorCPM1", # don't have archive data past 2025/raw tgav data past 2029
               "UKESM1-0-LL")
-esm_experiment_vec <- c('ssp245', 'ssp370')
+esm_experiment_vec <- c('ssp126') #c('ssp245', 'ssp370')
 
 # How many times do we want to draw full generated ensembles:
 Ndraws <- 200

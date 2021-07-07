@@ -1,0 +1,461 @@
+---
+title: "Observed relationship between matching tolerance and size of generated collapse free ensemble by ESM"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '4'
+    toc_float: yes
+    number_sections: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r, echo=FALSE}
+# required packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+# Goal
+
+Summarize the relationship among archive size, matching tolerance, and size generated collapse-free ensemble members for each ESM-scenario combination.
+
+`tol=0.1` is SD of the smoothed Tgav time series for CanESM. In general, we're thinking this is the limit on tolerance for each ESM. We will still sweep beyond that value with the caveat that, depending on the ESM, for some larger values of `tol` sampled, the generated ensemble members might night actually be good and so it doesn't matter how many can be generated.
+
+```{r}
+tolerances <- unique(c(seq(0.01, 0.1, by = 0.005),
+                seq(0.1, 0.2, by = 0.01),
+                0.225, 0.25))
+```
+
+
+
+
+
+# Key instructions for running
+This notebook can be called with  `knit_notebook10_byESM.R`; it can be called in a loop over ESMs and target experiments, and will knit an analysis html for each.
+
+
+These values must be defined globally in `knit_notebook0_byESM.R` or uncommented and defined here to run this notebook directly:
+
+```{r}
+# # what we will emulate:
+# esm_name <- "MPI-ESM1-2-LR"
+# esm_experiment <- 'ssp245'
+# 
+# # How many times do we want to draw full generated ensembles:
+# Ndraws <- 1
+
+print(esm_name)
+print(esm_experiment)
+```
+
+
+
+# Set Up 
+```{r, message=FALSE, warning=FALSE}
+
+# Then load the functions we will want to use, these are currently written in R and will be translated into python. 
+source("functions/nearest_neighbor_matching.R") # the function match_neighborhood is defined here
+source("functions/permuting_matches.R")  # the function permute_stitching_recipe is defined here
+source("functions/stitching_functions.R")  # the function stitch_global_mean is definend here 
+source("functions/gridded_recipe.R") # wrappers for the work flow from matching to output csv needed by python for 
+                                     # layering in gridded data to output as netcdf
+
+set.seed(1)
+```
+
+
+Load the inputs that will be used. 
+In addition to SSP534-over having enough data issues to fully exclude, _at least some_ of the realizations for SSP434 and SSP460 just don't have future data at all for CanESM5. And for other models, some realizations have odd windows (Like a 2012-2014 window) and those realizations are excluded as well. We need to go back to pangeo and fix this for sure, but for now, I'll work with the archive I have. Because we don't want to lose too much of the archive now, I will only remove those realizations and not a full experiment for a single bad data point.
+
+```{r}
+# Time series of the raw global mean temperature anomaly, this is the data that is 
+# going to be stitched together. Historical data is pasted into every scenario. No
+# smoothing has been done.
+tgav_data <- read.csv("inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv", 
+                      stringsAsFactors = FALSE) %>% dplyr::select(-X)
+
+
+# A chunked smoothed tgav anomaly archive of data. This was tgav_data but several 
+# steps were taken in python to transform it into the "chunked" data and save it 
+# so that we do not have to repeate this process so many times. 
+read.csv(paste0('inputs/', esm_name, '_archive_data.csv'), stringsAsFactors = FALSE) %>%
+  # Exclude ssp534-over:
+  dplyr::filter(experiment != 'ssp534-over') %>%
+  # eliminate any individual realizationXexperiment runs that don't have all the years:
+  group_by(experiment, variable,   model  , ensemble) %>%
+  mutate(nWindows = n()) %>%
+  ungroup %>%
+  filter(nWindows == 28) %>%
+  select(-nWindows) ->
+  archive_data
+
+
+# The target data - all ssp245 realizations (smoothed because it's the target for
+# matching)
+archive_data %>%
+  filter(experiment == esm_experiment) ->
+  target_data
+
+
+# The corresponding unsmoothed original data for validation
+tgav_data %>%  
+  filter(model == unique(target_data$model) & experiment == unique(target_data$experiment)) %>%
+  filter(ensemble %in% unique(target_data$ensemble))  %>%
+  select(-file, -timestep, -grid_type) -> 
+  original_data
+```
+
+We also need to prepare the file of path metadata for pangeo. This is a csv file that contains the pangeo paths to different variables of interest. By selecting the paths for `tas`, `psl`, and `pr`, keeping only those experimentXensemble combinations that have defined paths to netcdfs for all three variables, and then using the resulting experiment X ensemble combinations as an additional filter on the archives we use for matching, we make sure that we can then stitch together gridded data for all 3 of these variables no matter what our generated ensembles are. Adding or removing variables of interest is relatively trivial. For now, the path metadata file has information for `tas`, `psl`, `pr`, `tasmin`, and `tasmax`. 
+
+```{r}
+# The main pangeo file of path metadata so that we can filter the archives to include only
+# the experiment*ensemble members with netcdfs for all variables of interest
+read.csv("inputs/pangeo_path_metadata_tas_psl_pr_tmax_tmin.csv", 
+         stringsAsFactors = FALSE,
+         na.strings = c("", " ", "NA")) %>%  
+  rename(model = source_id, experiment = experiment_id, ensemble = member_id) %>%
+  filter(model == unique(target_data$model) )  %>%
+  select(model, experiment, ensemble, table_id, tas_zstore, psl_zstore, pr_zstore) %>%
+  # cut out any rows that don't have paths to netcdfs for all variables:
+  na.omit %>%
+  select(model, experiment, ensemble)  %>%
+  unite("acceptable", c(model, experiment, ensemble), sep="~")->
+  acceptable_archive_entries_from_path_metadata
+
+```
+
+
+# Set up archives
+
+We're actually going to generate multiple different ensembles for a target of ssp245, based on two different archives.
+
+Archive 1 will exclude the ssp245 runs from potential matches.
+
+Archive 2 will include the ssp245 runs - when we get to the point of targeting SSP585 runs, I think we will have to to include those runs in the archive to get at all decent generated Tgavs at the end of the century when temperature is higher. It's still not just regurgitating the target ensembles, it will include mixing and matching from those parts.
+
+We will also do some light exploration of the matching neighborhood size (`tol` argument).
+
+
+```{r}
+# Archive data not including the target experiment:
+archive_data %>% 
+  # Only match to the same ESM:
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  # Don't match to any ensemble members in the target experiment:
+  dplyr::filter(experiment != unique(target_data$experiment) ) %>%
+  # Final filter to make sure we only use the experiment*ensemble members with pangeo
+  # path metadata for netcdfs for all varaibles of interest
+  unite("acceptable", c(model, experiment, ensemble), sep="~", remove=FALSE) %>%
+  filter(acceptable %in% unique(acceptable_archive_entries_from_path_metadata$acceptable)) %>%
+  select(-acceptable) ->
+  archive_subset1 
+
+# what does this archive look like:
+archive_subset1 %>% 
+  select(experiment, ensemble) %>%
+  distinct() %>% 
+  group_by(experiment) %>% 
+  summarize(n_complete_ensemble_members = n()) %>%
+  ungroup %>%
+  kable()
+
+
+# Archive data including the target experiment:
+archive_data %>% 
+  # Only match to the same ESM:
+  dplyr::filter(model == unique(target_data$model)) %>%  
+  # Final filter to make sure we only use the experiment*ensemble members with pangeo
+  # path metadata for netcdfs for all varaibles of interest
+  unite("acceptable", c(model, experiment, ensemble), sep="~", remove=FALSE) %>%
+  filter(acceptable %in% unique(acceptable_archive_entries_from_path_metadata$acceptable)) %>%
+  select(-acceptable) ->
+  archive_subset2 
+
+# what does this archive look like:
+archive_subset2 %>% 
+  select(experiment, ensemble) %>%
+  distinct() %>% 
+  group_by(experiment) %>% 
+  summarize(n_complete_ensemble_members = n()) %>%
+  ungroup %>%
+  kable()
+```
+
+
+# Get the sd of the smoothed target data
+
+This is roughly our max tolerance - we assume that beyond this, the generated ensemble members are no good. Re-smooth the raw target data for each ensemble member (9 year window).
+
+```{r}
+
+rollAvg <-  function(x,n){
+  y <- stats::filter(x,rep(1/n,n), sides=2)
+  ind <- which(is.na(y))
+
+  for(i in 1:length(ind)){
+    left <- max(1,ind[i] - (n-1) /2)
+    right <- min( max(ind), ind[i] + (n-1) /2)
+    y[ind[i]] <- mean(x[left:right])
+  }
+
+  y
+}
+
+# smooth the Tgav for each ensemble member
+list_orig_data <- split(original_data, 
+                        original_data$ensemble)
+
+lapply(list_orig_data, function(ens_mem){
+  return(  ens_mem %>%
+    mutate(smooth_tgav = as.numeric( rollAvg(value,9))))
+  }) %>%
+  do.call(rbind, .) -> 
+  smoothed
+
+smoothed %>%
+  mutate(sd_across_year_and_ens = sd(smooth_tgav)) %>%
+  group_by(ensemble) %>%
+  mutate(sd_across_year_each_ens = sd(smooth_tgav)) %>%
+  ungroup %>%
+  group_by(year) %>%
+  mutate(sd_across_ens_each_year =sd(smooth_tgav) ) %>%
+  ungroup %>%
+  mutate(mean_of_sd_across_ens_each_year = mean(sd_across_ens_each_year),
+         max_of_sd_across_ens_each_year = max(sd_across_ens_each_year),
+         min_of_sd_across_ens_each_year = min(sd_across_ens_each_year)) %>%
+  select(ensemble, model, variable, experiment, year,
+         sd_across_ens_each_year,
+         mean_of_sd_across_ens_each_year,
+         max_of_sd_across_ens_each_year,
+         min_of_sd_across_ens_each_year,
+         sd_across_year_each_ens,
+         sd_across_year_and_ens) %>%
+  distinct->
+  tol_cutoff_info
+
+kable(head(tol_cutoff_info))
+kable(tol_cutoff_info %>%
+        select(model, variable, experiment,
+               min_of_sd_across_ens_each_year,
+               mean_of_sd_across_ens_each_year,
+               max_of_sd_across_ens_each_year) %>%
+        distinct)
+
+rm(smoothed)
+rm(list_orig_data)
+```
+We will include the mean and max value as vertical lines on our plots since the cutoff for tolerances that create 'good' Tgav ensembles is probably in between these values. 
+
+
+# do the matching for a range of tolerances
+
+```{r}
+start <- Sys.time()
+
+generated_ens_size_by_tol <- data.frame()
+for (tol in tolerances){
+
+  # The matching to the archive without ssp245 results
+  match_neighborhood(target_data = target_data,
+                     archive_data = archive_subset1,
+                     tol=tol) ->
+    match1
+  
+  # matches on archive with target experiment values
+  match_neighborhood(target_data = target_data,
+                     archive_data = archive_subset2,
+                     tol=tol) ->
+    match2
+    
+  
+  # tally up the number of matches for each target ensemble member
+  # individually for each tolerance and archive
+  bind_rows(generated_ens_size_by_tol,
+            get_num_perms(match1)[[1]] %>%
+              mutate(tol = tol,
+                     archive = paste0('without_', esm_experiment)),
+            get_num_perms(match2)[[1]] %>%
+              mutate(tol = tol,
+                     archive = paste0('with_', esm_experiment))) -> 
+    generated_ens_size_by_tol
+
+  # do the draws for each tol here, for loop, very slow (only needs
+  # the matches and not the perms tallying)
+
+}
+
+end <- Sys.time()
+
+print(end-start)
+```
+* remember matches aren't slow, but doing the draws is
+
+# Ensemble size for each target ensemble member
+
+If you're only targeting one ensemble member, you only have to worry about the target window with the fewest number of matches. That will determine how many collapse free ensemble members can be generated on any given draw. (obviously across draws, the actual members will differ).
+
+
+Addtitional question is whether we want to actually stitch according to every generated recipe for every tolerance and calculate the error metrics to set a cutoff for where tolerance is bad for each ESM (say, as soon as one of the many errors on Tgav and jumps is more than 10% for the experiment-not-included archive?). Or do we just want to say the upper limit for each ESM is the sd of smoothed tgav. And for the sake of automation, I run things up to the biggest one of those for each ESM (or make it an ESM X experiment dependent input from some table when I do the Rscript to call the automated knitting) but we sort of implicitly know to crop the figures generated to that max tolerance value. In other words, we do one way or another need to give a max acceptable tolerance value for each ESM after which we know the generated runs are no good. Right now I'm calculating that value in each notebook and plotting it as a vertical line to represent that cutoff.
+
+Primarily visualizing:
+```{r, fig.width=8, fig.height = 5}
+ggplot() +
+  geom_point(generated_ens_size_by_tol, mapping=aes(x=tol, y = minNumMatches, color=target_ensemble)) +
+  geom_vline(xintercept = unique(tol_cutoff_info$mean_of_sd_across_ens_each_year), color = 'red', size = 0.2)+
+    geom_vline(xintercept = unique(tol_cutoff_info$max_of_sd_across_ens_each_year), color = 'red', size = 0.2)+
+  facet_wrap(~archive, nrow = 1) +
+  theme_bw()
+
+
+ggplot() +
+  geom_line(generated_ens_size_by_tol, mapping=aes(x=tol, y = minNumMatches, color=target_ensemble)) +
+  geom_vline(xintercept = unique(tol_cutoff_info$mean_of_sd_across_ens_each_year), color = 'red', size = 0.2)+
+    geom_vline(xintercept = unique(tol_cutoff_info$max_of_sd_across_ens_each_year), color = 'red', size = 0.2)+
+  facet_wrap(~archive, nrow = 1) +
+  theme_bw()
+```
+
+```{r}
+ggplot(generated_ens_size_by_tol, aes(x=factor(tol), y = minNumMatches)) +
+  geom_boxplot() +
+  geom_vline(xintercept = unique(tol_cutoff_info$mean_of_sd_across_ens_each_year), color = 'red', size = 0.2)+
+  geom_vline(xintercept = unique(tol_cutoff_info$max_of_sd_across_ens_each_year), color = 'red', size = 0.2)+
+  facet_wrap(~archive, nrow = 1) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+
+```{r, fig.height=11, fig.width = 8}
+ggplot() +
+  geom_point(generated_ens_size_by_tol, mapping=aes(x=tol, y = minNumMatches, color=target_ensemble)) +
+  geom_vline(xintercept = unique(tol_cutoff_info$mean_of_sd_across_ens_each_year), color = 'red', size = 0.2)+
+    geom_vline(xintercept = unique(tol_cutoff_info$max_of_sd_across_ens_each_year), color = 'red', size = 0.2)+
+  facet_grid(target_ensemble~archive) +
+  theme_bw() +
+    theme(legend.position = "none") 
+```
+
+And finally plot for the tolerance value closest to our most generous quality cutoff
+
+```{r}
+
+tol_index <- which.min(abs(tolerances - unique(tol_cutoff_info$max_of_sd_across_ens_each_year)))
+
+generated_ens_size_by_tol %>%
+  filter(tol == tolerances[tol_index]) %>%
+  mutate(ens_label = target_ensemble) %>%
+  mutate(ens_label = substr(ens_label, 1 ,nchar(ens_label) - 6),
+         ens_label = as.numeric(substr(ens_label, 2, nchar(ens_label)))) ->
+  plot_data
+
+ggplot() +
+  geom_histogram(plot_data, mapping = aes(minNumMatches), binwidth = 1)+
+  facet_wrap(~archive, nrow = 1) +
+  ylab('count of ensemble members')+
+  theme_bw()+
+  theme(legend.position = "none") +
+  ggtitle(paste('collapse free generated realizations for each target ens member individually',
+                '\ntol =', tolerances[tol_index], 'degC. Target ensemble members = ', 
+                length(unique(plot_data$target_ensemble))))
+
+
+
+ggplot() +
+  geom_point(plot_data, mapping=aes(x=ens_label, y = minNumMatches, color=target_ensemble)) +
+  facet_wrap(~archive, nrow = 1) +
+  theme_bw()+
+    theme(legend.position = "none") +
+  ggtitle(paste('collapse free generated realizations for each target ens member individually',
+                '\ntol =', tolerances[tol_index], 'degC. Target ensemble members = ', 
+                length(unique(plot_data$target_ensemble))))
+```
+
+
+# average ensemble size for target experiment
+
+Needed because you can have multiple target points matching to a single archive point, and depending on how many other matches each target point has and the order that matches get called in on the draw, you can get different sized collapse free ensembles when targeting all ensemble members in an experiment simultaneously
+
+We only have this generated currently for `tol=0.1`. Right now, we'll read those in. Want feedback on how many tolerances to look at before doing something like 200 draws (which may still not be enough) for each tolerance to get the average generated collapse free ensemble size. Or would it be better to focus on getting everything running on pic with parallelization of the draws and not even bother with something intermediate like 200 locally
+
+
+Distribution of number of collapse-free matches across ensemble members for this experiment and tolerance value:
+```{r}
+generated_ens_size_by_tol %>%
+  filter(tol == 0.1) %>%
+  mutate(ens_label = target_ensemble) %>%
+  mutate(ens_label = substr(ens_label, 1 ,nchar(ens_label) - 6),
+         ens_label = as.numeric(substr(ens_label, 2, nchar(ens_label)))) ->
+  plot_data
+
+ggplot() +
+  geom_histogram(plot_data, mapping = aes(minNumMatches), binwidth = 1)+
+  facet_wrap(~archive, nrow = 1) +
+  ylab('count of ensemble members')+
+  theme_bw()+
+  theme(legend.position = "none") +
+ ggtitle(paste('collapse free generated realizations for each target ens member individually',
+                '\ntol = 0.1',  'degC. Target ensemble members = ', 
+                length(unique(plot_data$target_ensemble))))
+
+
+ggplot() +
+  geom_point(plot_data, mapping=aes(x=ens_label, y = minNumMatches, color=target_ensemble)) +
+  facet_wrap(~archive, nrow = 1) +
+  theme_bw()+
+  theme(legend.position = "none") +
+ ggtitle(paste('collapse free generated realizations for each target ens member individually',
+                '\ntol = 0.1',  'degC. Target ensemble members = ', 
+                length(unique(plot_data$target_ensemble))))
+```
+
+
+
+Read in all 200 draws of matches that we have for `tol=0.1`
+
+in the future, we may have the tolerance info recorded in the file name in addition to it being a column in each data frame like it currently is.
+
+```{r}
+# read in all generated ensembles.
+files <- list.files(path = paste0('generated_ensembles/', esm_name), 
+                    pattern = paste0('generated_ensembles_', esm_experiment),  
+                    full.names = TRUE) 
+
+generated_tgavs <- list()
+for (i in 1:length(files)){
+  generated_tgavs[[i]] <- read.csv(files[i], stringsAsFactors = FALSE)
+}
+generated_tgavs <- do.call(rbind, generated_tgavs)
+
+
+
+# do some summary values
+# the count of generated, collapse free Tgav time series
+# targeting all ensemble members simultaneously, in each draw
+generated_tgavs %>%
+   select(variable, stitching_id, tol, archive, draw) %>%
+  distinct %>%
+  group_by(variable, tol, archive, draw) %>%
+  summarise(number_stitched_CFtgavs = n()) %>%
+  ungroup  %>%
+  group_by(variable, tol, archive) %>%
+  mutate(min_gen_ens_size = min(number_stitched_CFtgavs),
+         mean_gen_ens_size = mean(number_stitched_CFtgavs),
+         max_gen_ens_size = max(number_stitched_CFtgavs)) ->
+  number_tgavs
+
+kable( number_tgavs %>% select(archive, min_gen_ens_size, mean_gen_ens_size, max_gen_ens_size) %>% distinct)
+```
+
+
+# Final Discussion points
+
+1. being rigorous about tol cutoff for paper <-> range of tol values to explore since probably want many draws for each. Think, given the limits on the size of generated collapse-free ensemble for tol=0.1 like we've been doing, worth figuring out the absolute max where Tgav errors start being unacceptable for each ESM X experiment? Although doubling an ensemble size without envelope collapse in a single draw is nothing to sneeze at.
+
+2. how many draws and whether to do locally for 200 or cleanup code and do on pic for 1000+.
+
+3. Including experiment in archive or not: In the case of a non-archive trajectory from hector. On the one hand, you would not have that trajectory in the archive. On the other hand, you would have the entire available archive of all recorded ESM experiments. So that's why I've continued doing both.
+

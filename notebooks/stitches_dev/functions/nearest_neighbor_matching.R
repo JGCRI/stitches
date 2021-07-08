@@ -286,7 +286,8 @@ match_neighborhood <- function(target_data, archive_data, tol = 0,
            target_start_yr, target_end_yr, target_year, target_fx, target_dx,
            archive_experiment, archive_variable, archive_model, archive_ensemble,
            archive_start_yr, archive_end_yr, archive_year, archive_fx, archive_dx,
-           dist_dx, dist_fx, dist_l2) ->
+           dist_dx, dist_fx, dist_l2)  %>%
+    filter(dist_l2 <= tol) ->
     out
   
   

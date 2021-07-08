@@ -60,7 +60,7 @@ internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0){
   }
   else {
     min_dist <- min(dist$dist_l2)
-    dist_radius <- min_dist + tol
+    dist_radius <- tol
     
     index <- which(dist$dist_l2 <= dist_radius)
   }

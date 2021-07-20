@@ -62,7 +62,13 @@ internal_dist <- function(fx_pt, dx_pt, archivedata, tol = 0){
     min_dist <- min(dist$dist_l2)
     dist_radius <- tol
     
-    index <- which(dist$dist_l2 <= dist_radius)
+    index <- which(dist$dist_l2 <= dist_radius) 
+    
+    # if there were no matches within the tolerance, give it
+    # the nearest neighbor:
+    if(length(index) == 0){
+      index <- which.min(dist$dist_l2) 
+    }
   }
   
   out <- dist[index, ]
@@ -286,8 +292,7 @@ match_neighborhood <- function(target_data, archive_data, tol = 0,
            target_start_yr, target_end_yr, target_year, target_fx, target_dx,
            archive_experiment, archive_variable, archive_model, archive_ensemble,
            archive_start_yr, archive_end_yr, archive_year, archive_fx, archive_dx,
-           dist_dx, dist_fx, dist_l2)  %>%
-    filter(dist_l2 <= tol) ->
+           dist_dx, dist_fx, dist_l2)  ->
     out
   
   
@@ -296,7 +301,16 @@ match_neighborhood <- function(target_data, archive_data, tol = 0,
 #  }
   if (drop_hist_duplicates){
       out <- drop_hist_false_duplicates(out)
-    }
+  }
+  
+  # add a message about any rows that got matches outside tolerance
+  if(any(out$dist_l2) > tol){
+  
+    message(paste0('No matches available for following data points within tolerance. Returning nearest neighbor match:\n',
+                   capture.output(out %>% filter(dist_l2 > tol)), collapse='\n'))
+  }
+  
+  
 
   # Return the data frame of target values matched with the archive values with the distance. 
   return(distinct(out))

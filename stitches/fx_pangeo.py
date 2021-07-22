@@ -19,7 +19,6 @@ def fetch_pangeo_table():
 
     return out.df
 
-
 def fetch_nc(zstore):
     """Extract data for a single file.
 
@@ -28,4 +27,7 @@ def fetch_nc(zstore):
     :return:                      an xarray containing cmip6 data downloaded from the pangeo.
     """
     ds = xr.open_zarr(fsspec.get_mapper(zstore))
+    ds.sortby('time')
     return ds
+
+

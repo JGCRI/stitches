@@ -29,7 +29,6 @@ def global_mean(ds):
     other_dims = set(ds.dims) - {'time'}
     return (ds * weight).mean(other_dims)
 
-
 def get_ds_meta(ds):
     """ Get the meta data information from the xarray data set.
 
@@ -37,9 +36,12 @@ def get_ds_meta(ds):
 
     :return:    pandas dataset of MIP information.
     """
+    v = ds.variable_id
 
-    data = [{'variable':ds.variable_id,
+    data = [{'variable':v,
              'experiment':ds.experiment_id,
+             'units':ds[v].attrs['units'],
+            'frequency': ds.attrs["frequency"],
              'ensemble':ds.attrs["parent_variant_label"],
              'model': ds.source_id}]
     df = pd.DataFrame(data)

@@ -50,10 +50,9 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
     # Calculating distance d(target, archive_i) for each point i in the archive.
     # calculating the distance in the dx and fx dimensions separately because
     # now we want to track those in addition to the l2 distance.
-    dist["dist_dx"] = windowsize *  abs(dist["archive_dx"] - dx_pt)
+    dist["dist_dx"] = windowsize * abs(dist["archive_dx"] - dx_pt)
     dist["dist_fx"] = abs(dist['archive_fx'] - fx_pt)
     dist["dist_l2"] = (dist["dist_fx"] ** 2 + dist["archive_dx"] ** 2) ** .5
-
 
     # this returns the first minimum run into, which is not how we are going to want to do it,
     # we will want some way to keep track of the min and combine to have different realizations
@@ -70,18 +69,26 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
         # different experiments should be identical to one another!
         if index.size > 1:
             raise TypeError(f"more than one identical match found and you only want the nearest neighbor!")
+        out = dist.loc[index]
+        out = out.to_frame().transpose()
+
     else:
         min_dist = dist['dist_l2'][np.argmin(dist['dist_l2'])]
         dist_radius = min_dist + tol
         index = np.where(dist["dist_l2"].values <= dist_radius)
+        out = dist.loc[index]
+
+    out["target_fx"] = fx_pt
+    out["target_dx"] = dx_pt
 
     # TODO is there an issue when only the nearest neighboor is being returned? because then it is returned as a series instad of a data frame...
-    out = dist.loc[index]
+
+
+
     return out
 
 
 # Internal fx
-# TODO confirm with ACS that this function can be deleted
 def shuffle_function(dt):
     """ Randomly shuffle the deck, this should help with the matching process.
 
@@ -90,9 +97,10 @@ def shuffle_function(dt):
         :return:               a randomly ordered data frame.
     """
     nrow = dt.shape[0]
-    out = dt.sample(nrow, replace = False)
-    out = out.reset_index(drop = True)
-    return  out
+    out = dt.sample(nrow, replace=False)
+    out = out.reset_index(drop=True)
+    return out
+
 
 # Internal fx
 def drop_hist_false_duplicates(matched_data):
@@ -107,13 +115,15 @@ def drop_hist_false_duplicates(matched_data):
         :return:               a data frame of matched data with the same structure as the input, with false duplicates in the historical period droppe
     """
 
-    # TODO ACS because we now have some of the idealized runs in the archive data I had to make some modifications
-    # TODO to the drop_hist_false_duplicates so that is doesn't operate on idealzed runs which are not
-    # TODO concatenated with the historical ts but may use hisotrical time stamps depending on the modeling group.
-    # Subset the idealized runs.
+    # TODO ACS this fx had to be modified to account for the idealized exps, please review carefuly.
+    # Subset the idealized runs, since these are not concatenated with the historical time series
+    # they can be left alone.
     idealized_exps = ['1pctCO2', 'abrupt-4xCO2', 'abrupt-2xCO2']
-    idealized_matched_data = matched_data[matched_data['archive_experiment'].isin(idealized_exps)].copy()
-    fut_matched_data = matched_data[~matched_data['archive_experiment'].isin(idealized_exps)].copy()
+    idealized_matched_data = matched_data.loc[matched_data['archive_experiment'].isin(idealized_exps)].copy()
+
+    # Now select the non idealized runs, these are the time series that are a combination of the
+    # historical and future time series.
+    fut_matched_data = matched_data.loc[~matched_data['archive_experiment'].isin(idealized_exps)].copy()
 
     # Determine the historical cut off year based on the size of the chunks.
     cut_off_yr = 2015 - max(fut_matched_data["target_end_yr"] - fut_matched_data["target_start_yr"]) / 2
@@ -122,22 +132,47 @@ def drop_hist_false_duplicates(matched_data):
     # historical is actually 2010 or earlier: the chunks
     # that had purely historical data in them and none
     # from the future when smoothing.
-    # TODO ACS please check not sure if this is the behaviour you set up or not
-    sub = fut_matched_data[fut_matched_data["target_year"] <= cut_off_yr].copy()
-    sub["exp2"] = sub["archive_experiment"]
-    sub["idvalue"] = list(map(lambda x: int(x.split("p")[1].replace('-over', '')), sub["exp2"]))
-    historical = sub.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model",
-                 "target_start_yr", "target_end_yr", "target_year", "target_fx", "target_dx", "archive_ensemble", "archive_year"]).agg(
-        min_id= pd.NamedAgg(column = "idvalue", aggfunc=min)).reset_index(drop = False)
+    subset_df = fut_matched_data.loc[fut_matched_data["target_year"] <= cut_off_yr].copy()
+    # parse out information about the ssp experiment id
+    subset_df["idvalue"] = list(
+        map(lambda x: int(x.split("p")[1].replace('-over', '')), subset_df["archive_experiment"]))
+    # group the data frame by the target information, recall that for each target match
+    # there might be more matches with the archive. Here we want to make sure that we do
+    # not want to have multiple matches with experiments from the historical period
+    # from the archive.
+    grouped_dat = subset_df.groupby(["target_variable", "target_experiment", "target_ensemble",
+                                     "target_model", "target_start_yr", "target_end_yr", "target_year",
+                                     "target_fx", "target_dx", "archive_ensemble", "archive_year"])
+    dat = []
+    for name, group in grouped_dat:
+        min_id_value = min(group['idvalue'])
+        dat.append(group.loc[group['idvalue'] == min_id_value])
+    historical = pd.concat(dat)
+    cols_to_keep = ['target_variable', 'target_experiment', 'target_ensemble',
+                    'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
+                    'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
+                    'archive_model', 'archive_ensemble', 'archive_start_yr',
+                    'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
+                    'dist_fx', 'dist_l2']
+    historical = historical[cols_to_keep]
 
-    dat_list = [fut_matched_data[fut_matched_data["target_year"] > 2010], historical, idealized_matched_data]
-    out = pd.concat(dat_list)
-
-    return out
+    # select the future matched data
+    # TODO should it be 2010 or should it be the cut off year?
+    matched = pd.concat([fut_matched_data.loc[fut_matched_data['target_year'] > 2010].copy(),
+                         historical, idealized_matched_data])
+    matched = matched.sort_values('target_year')
+    matched = matched.reset_index()
+    cols_to_keep = ['target_variable', 'target_experiment', 'target_ensemble',
+                    'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
+                    'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
+                    'archive_model', 'archive_ensemble', 'archive_start_yr',
+                    'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
+                    'dist_fx', 'dist_l2']
+    matched = matched[cols_to_keep]
+    return matched
 
 
 def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=True):
-
     # Check the inputs of the functions
     util.check_columns(archive_data, {"experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx"})
     util.check_columns(target_data, {"start_yr", "end_yr", "fx", "dx"})
@@ -146,17 +181,10 @@ def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=Tr
     archive_data = shuffle_function(archive_data)
 
     # For every entry in the target data frame find its nearest neighboor from the archive data.
-    # concatenate the results into a single data frame, note the lam func allows us to use the
-    # mapp apporach to apply the internal_dist function
-    # TODO is there a better way to do this? might consider modifuying the internal_dist function so that
-    # the target fx and dx is added to the output, that way we can avoid having to define the lam_func.
-    def lam_func(fx, dx):
-        o = internal_dist(fx_pt=fx, dx_pt=dx, archivedata=archive_data, tol=tol)
-        o["target_fx"] = fx
-        o["target_dx"] = dx
-        return o
-    matched_list = list(map(lam_func, target_data["fx"], target_data["dx"]))
-    matched = pd.concat(matched_list)
+    # concatenate the results into a single data frame.
+    rslt = map(lambda fx, dx: internal_dist(fx, dx, archivedata=archive_data, tol=tol),
+               target_data["fx"], target_data["dx"])
+    matched = pd.concat(list(rslt))
 
     # Now add the information about the matches to the target data
     # Make sure it if clear which columns contain  data that comes from the target compared
@@ -168,28 +196,17 @@ def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=Tr
     # Make sure it if clear which columns contain  data that comes from the target compared
     # to which ones correspond to the archive information. Right now there are lots of columns
     # that contain duplicate information for now it is probably fine to be moving these things around.
-    out = matched.merge(target_data, how='left', on = ['target_fx', 'target_dx'])
-    out = out[["target_variable", "target_experiment", "target_ensemble", "target_model",
-           "target_start_yr", "target_end_yr", "target_year", "target_fx", "target_dx",
-           "archive_experiment", "archive_variable", "archive_model", "archive_ensemble",
-           "archive_start_yr", "archive_end_yr", "archive_year", "archive_fx", "archive_dx",
-           "dist_dx", "dist_fx", "dist_l2"]]
+    out = matched.merge(target_data, how='left', on=['target_fx', 'target_dx'])
+    cols_to_keep = ["target_variable", "target_experiment", "target_ensemble", "target_model",
+                    "target_start_yr", "target_end_yr", "target_year", "target_fx", "target_dx",
+                    "archive_experiment", "archive_variable", "archive_model", "archive_ensemble",
+                    "archive_start_yr", "archive_end_yr", "archive_year", "archive_fx", "archive_dx",
+                    "dist_dx", "dist_fx", "dist_l2"]
+    out = out[cols_to_keep].drop_duplicates()
 
     if drop_hist_duplicates:
         out = drop_hist_false_duplicates(out)
 
-
-    # Return the data frame of target values matched with the archive values with the distance.
-    out = out[['target_variable', 'target_experiment', 'target_ensemble',
-         'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
-         'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
-         'archive_model', 'archive_ensemble', 'archive_start_yr',
-         'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
-         'dist_fx', 'dist_l2']]
-    return out.drop_duplicates()
-
-
-
-
+    return out
 
 

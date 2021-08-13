@@ -1,6 +1,5 @@
-# This is where the recpie is made based on matching nearest neighboor
-# It is a transaltion of the stitches_dev R work.
-# TODO My guess is that eventually this may be combined with the level 3 module.
+# An example workflow of how to use the stitches package to go from
+# picking out a target to the gridded products all within a single script.
 
 # #############################################################################
 # General setup

@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 
+
 def combine_df(df1, df2):
     """ Join the data frames together.
 
@@ -20,6 +21,7 @@ def combine_df(df1, df2):
 
     return out
 
+
 def list_files(d):
     """ Return the absolute path for all of the files in a single directory.
 
@@ -35,6 +37,7 @@ def list_files(d):
 
     return ofiles
 
+
 def selstr(a, start, stop):
     """ Select elements of a string from an array.
 
@@ -45,7 +48,7 @@ def selstr(a, start, stop):
     :return:    array of strings
     """
 
-    out=[]
+    out = []
     for i in a:
         out.append(i[start:stop])
     return out
@@ -62,18 +65,17 @@ def join_exclude(dat, drop):
 
     # Get the column names that two data frames have
     # in common with one another.
-    in_common = list(set(dat.columns) & set(drop.columns))    # figure out what columns are in common between the two dfs
-    drop["drop"] = 1    # add an indicator column to indicate which rows need to be dropped
-    out = dat.merge(drop, how='inner', on = ['experiment', 'model', 'fx', 'dx', 'variable',
-                                            'ensemble', 'start_yr', 'end_yr', 'year'])   # merge the two df together
+    in_common = list(set(dat.columns) & set(drop.columns))  # figure out what columns are in common between the two dfs
+    drop["drop"] = 1  # add an indicator column to indicate which rows need to be dropped
+    out = dat.merge(drop, how='inner', on=['experiment', 'model', 'fx', 'dx', 'variable',
+                                           'ensemble', 'start_yr', 'end_yr', 'year'])  # merge the two df together
 
-    out = out.loc[out["drop"].isna()]     # remove the entries that need to be dropped
+    out = out.loc[out["drop"].isna()]  # remove the entries that need to be dropped
 
-
-
-    out = out[d.columns]    # select the columns
+    out = out[d.columns]  # select the columns
 
     return out
+
 
 def check_columns(data, names):
     """ Check to see if a data frame has all of the required columns.
@@ -127,8 +129,8 @@ def remove_obs_from_match(md, rm):
     :return:    data frame
     """
     rm = rm[['target_year', 'target_start_yr', 'target_end_yr', 'archive_experiment',
-              'archive_variable', 'archive_model', 'archive_ensemble',
-              'archive_start_yr', 'archive_end_yr']].copy()
+             'archive_variable', 'archive_model', 'archive_ensemble',
+             'archive_start_yr', 'archive_end_yr']].copy()
     rm["remove"] = True
     mergedTable = md.merge(rm, how="left")
     key = mergedTable["remove"].isnull()

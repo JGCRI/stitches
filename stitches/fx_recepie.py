@@ -38,6 +38,14 @@ def get_num_perms(matched_data):
 
 # TODO ACS please review carefuly
 def remove_duplicates(md, archive, drop_hist_duplicates=False):
+    """ A function that makes sure that within a given matched recipe that
+        there each archive point used is unique.
+
+        :param md:          data frame output from match_neighborhood.
+        :param archive:     data frame object consisting of the tas archive.
+        :param drop_hist_duplicates:    boolean True/False to indicate if the drop_hist_duplicates function should be triggered.
+        :return:                       data frame with same structure as raw matched, with duplicate matches replaced.
+    """
     if len(md["target_year"].unique()) < util.nrow(md):
         raise TypeError(f"You have multiple matches to a single target year, this function can only accept a matched "
                         f"data frame of singular matches between target & archive data.")
@@ -126,7 +134,21 @@ def remove_duplicates(md, archive, drop_hist_duplicates=False):
     return matched_data
 
 
+# TODO this function has some ISSUES!
 def permute_stitching_recipes(N_matches, matched_data, archive, optional=None):
+    """  A function to sample from input `matched_data` (the the results
+    of `match_neighborhood(target, archive)` to produce permutations
+    of possible stitching recipes that will match the target data.
+
+        :param N_matches:       int the number of desired stitching recipes.
+        :param matched_data:    data output from match_neighborhood.
+        :param archive:         the archive data to use for re-matching duplicate points
+        :param optional:        a previous output of this function that contains a list of already created recipes
+                                to avoid re-making (this is not implemented).
+
+        :return:                data frame with same structure as raw matched, with duplicate matches replaced.
+    """
+
     # Check inputs
     util.check_columns(matched_data, {'target_variable', 'target_experiment', 'target_ensemble',
                                       'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
@@ -200,8 +222,8 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None):
         perm_rows = util.nrow(
             perm_guide.loc[(perm_guide['target_variable'] == var) & (perm_guide['target_experiment'] == exp) &
                            (perm_guide['target_model'] == mod) & (perm_guide['target_ensemble'] == ens)]
-            .copy()
-            .drop_duplicates())
+                .copy()
+                .drop_duplicates())
 
         if perm_rows == num_target_windows:
             condition2 = True
@@ -338,3 +360,76 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None):
                 'archive_model', 'archive_ensemble', 'archive_start_yr',
                 'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
                 'dist_fx', 'dist_l2', 'stitching_id']]
+
+
+def handle_transition_periods(rp):
+    """ Go through the recipe and when there is a transition period, aka the archive years span both the
+    historical and future scenarios go through and insert in an extra period so that they don't do
+    this over lap any more.
+
+        :param rp:       a data frame of the recipe.
+
+        :return:         a data frame of of the recipe with no over lapping historical/future experiments, this is now ready to join with pangeo information.
+    """
+    util.check_columns(rp, {'target_variable', 'target_experiment', 'target_ensemble',
+                            'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
+                            'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
+                            'archive_model', 'archive_ensemble', 'archive_start_yr',
+                            'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
+                            'dist_fx', 'dist_l2', 'stitching_id'})
+
+    def internal_func(x):
+        # First check to see the archive period spans the historical to future scenariox[]
+        transition_period = 2014 in range(x["archive_start_yr"], x["archive_end_yr"])
+
+        if transition_period:
+            target_yrs = list(range(x['target_start_yr'], x['target_end_yr']))
+            archive_yrs = list(range(x['archive_start_yr'], x['archive_end_yr']))
+            hist_cut_off = 2014  # the final complete year of the historical experiment
+
+            historical_yrs = list(filter(lambda x: x <= hist_cut_off, archive_yrs))
+            future_yrs = list(set(archive_yrs).difference(set(historical_yrs)))
+
+            # This is the information that is constant between the historical and future periods.
+            constant_info = x.loc[x.index.isin({'archive_variable', 'archive_model',
+                                                'archive_ensemble', 'stitching_id'})]
+
+            # Construct the historical period information
+            d = {'target_start_yr': min(target_yrs),
+                 'target_end_yr': target_yrs[len(historical_yrs)],
+                 'archive_experiment': 'historical',
+                 'archive_start_yr': min(historical_yrs),
+                 'archive_end_yr': max(historical_yrs)}
+            ser = pd.Series(data=d, index=['target_start_yr', 'target_end_yr', 'archive_experiment',
+                                           'archive_start_yr', 'archive_end_yr'])
+            historical_period = ser.append(constant_info).to_frame().transpose()
+
+            # Now construct the future period information
+            d = {'target_start_yr': target_yrs[len(historical_yrs)],
+                 'target_end_yr': target_yrs[len(target_yrs) - 1],
+                 'archive_experiment': 'historical',
+                 'archive_start_yr': min(future_yrs),
+                 'archive_end_yr': max(future_yrs)}
+            ser = pd.Series(data=d, index=['target_start_yr', 'target_end_yr', 'archive_experiment',
+                                           'archive_start_yr', 'archive_end_yr'])
+            future_period = ser.append(constant_info).to_frame().transpose()
+
+            # Combine the period information
+            out = pd.concat([historical_period, future_period]).reset_index(drop=True)
+        else:
+            out = x.to_frame().transpose().reset_index(drop=True)
+            out = out[['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
+                       'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
+                       'archive_end_yr']]
+
+        return out
+
+    # Note that data frame returned might not be identical in shape to the
+    # recipe read in because any periods that cover the historical period
+    # will be split into two rows.
+    ser = rp.apply(internal_func, axis=1)
+    out = pd.concat(ser.values.tolist()).reset_index(drop=True)
+    return out
+
+
+#def handle_final_period()

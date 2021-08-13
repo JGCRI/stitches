@@ -10,6 +10,7 @@ import pickle_utils as pickle
 import stitches.fx_match as match
 import stitches.fx_recepie as recipe
 
+
 data=pickle.load("stitches/data/matching_archive.pkl", compression="zip")
 
 target_data = data[data["model"] == 'CanESM5']
@@ -38,11 +39,4 @@ unformatted_recipe = recipe.permute_stitching_recipes(N_matches=1, matched_data=
 
 # The next step is to clean up the recipe so that it can be used to generate the gridded data products.
 
-
-
-
-
-
-
-
-
+test = recipe.handle_transition_periods(unformatted_recipe)

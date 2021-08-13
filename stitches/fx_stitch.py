@@ -59,6 +59,7 @@ def get_netcdf_values(i, dl, rp, fl, name):
     index = int(np.where(fl == file)[0])
     extracted = dl[index].sortby('time')
     v=name.replace("_file", "")
+    # TODO CRV why is this function not working any more???
     dat = extracted.sel(time=slice(start_yr, end_yr))[v].values.copy()
 
     # TODO figure out why the date range is so does not include
@@ -192,9 +193,9 @@ def stitching(out_dir, rp):
         raise TypeError(f'The output directory does not exist.')
 
     # Check inputs.
-    util.check_columns(rp, {'stitching_id', 'target_start_yr', 'target_end_yr',
-                            'archive_start_yr', 'archive_end_yr', 'tas_file',
-                            'activity_id', 'institution_id', 'source_id', 'experiment_id', 'member_id'})
+    util.check_columns(rp, {'target_start_yr', 'target_end_yr', 'archive_experiment',
+                            'archive_variable', 'archive_model', 'archive_ensemble', 'stitching_id',
+                            'archive_start_yr', 'archive_end_yr'})
 
     # Determine which variables will be downloaded.
     vars = find_var_cols(rp)

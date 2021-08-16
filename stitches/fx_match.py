@@ -190,13 +190,17 @@ def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=Tr
     # Make sure it if clear which columns contain  data that comes from the target compared
     # to which ones correspond to the archive information. Right now there are lots of columns
     # that contain duplicate information for now it is probably fine to be moving these things around.
-    target_data.columns = 'target_' + target_data.columns
+    #
+    # Make a copy of the target data to work with and use in creating the output matched data frame,
+    # so that this function doesn't change the column names of one of its arguments.
+    target_data_copied = target_data.copy()
+    target_data_copied.columns = 'target_' + target_data_copied.columns
 
     # Now add the information about the matches to the target data
     # Make sure it if clear which columns contain  data that comes from the target compared
     # to which ones correspond to the archive information. Right now there are lots of columns
     # that contain duplicate information for now it is probably fine to be moving these things around.
-    out = matched.merge(target_data, how='left', on=['target_fx', 'target_dx'])
+    out = matched.merge(target_data_copied, how='left', on=['target_fx', 'target_dx'])
     cols_to_keep = ["target_variable", "target_experiment", "target_ensemble", "target_model",
                     "target_start_yr", "target_end_yr", "target_year", "target_fx", "target_dx",
                     "archive_experiment", "archive_variable", "archive_model", "archive_ensemble",

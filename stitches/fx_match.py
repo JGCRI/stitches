@@ -57,33 +57,13 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
     # this returns the first minimum run into, which is not how we are going to want to do it,
     # we will want some way to keep track of the min and combine to have different realizations
     # or have some random generation. But for now I think that this is probably sufficent.
-    #
-    # probably don't actually need the if-statement to treat tol=0 separately; in theory, the
-    # else condition would return the nearest neighbor for tol=0. But just in case of rounding
-    # issues, keeping it separate for now to be sure we can replicate previous behavior.
-    if tol == 0:
-        index = np.argmin(dist['dist_l2'])
-
-        # if there are multiple matches then an error should be thrown! Why
-        # is this not happening for the historical period? The ensemble members of
-        # different experiments should be identical to one another!
-        if index.size > 1:
-            raise TypeError(f"more than one identical match found and you only want the nearest neighbor!")
-        out = dist.loc[index]
-        out = out.to_frame().transpose()
-
-    else:
-        min_dist = dist['dist_l2'][np.argmin(dist['dist_l2'])]
-        dist_radius = min_dist + tol
-        index = np.where(dist["dist_l2"].values <= dist_radius)
-        out = dist.loc[index]
+    min_dist = dist['dist_l2'][np.argmin(dist['dist_l2'])]
+    dist_radius = min_dist + tol
+    index = np.where(dist["dist_l2"].values <= dist_radius)
+    out = dist.loc[index]
 
     out["target_fx"] = fx_pt
     out["target_dx"] = dx_pt
-
-    # TODO is there an issue when only the nearest neighboor is being returned? because then it is returned as a series instad of a data frame...
-
-
 
     return out
 

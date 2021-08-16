@@ -143,18 +143,41 @@ def remove_obs_from_match(md, rm):
     return out
 
 
-def anti_join(x, y):
+def anti_join(x, y, bycols):
     """ Return a pd.DataFrame of the rows in x that do not appear in Table y.
-    Maintains only the columns of x.
-    Adapted from https://stackoverflow.com/questions/38516664/anti-join-pandas
+    Maintains only the columns of x with their names (but maybe a different
+    order?)
+    Adapted from https://towardsdatascience.com/masteriadsf-246b4c16daaf#74c6
 
         :param x:   pd.DataFrame object
         :param y:   pd.DataFrame object
+        :param bycols:   list-like; columns to do the anti-join on
 
         :return:    pd.DataFrame object
         """
-    # Identify what values are in TableB and not in TableA
-    key_diff = set(x.Key).difference(y.Key)
-    where_diff = x.Key.isin(key_diff)
 
-    return(x[where_diff])
+    #TODO some test to make sure both x and y have all the columns in bycols
+
+
+
+    # select only the entries of x that are not (['_merge'] == 'left_only') in y
+    left_joined = x.merge(y, how = 'left', on=bycols, indicator=True).copy()
+    left_only = left_joined.loc[left_joined['_merge'] == 'left_only'].drop('_merge', axis=1).copy()
+
+    # left_only has all the columns of x and y, with _x, _y appended to any that
+    # had the same names. Want to return left_only with only the columns of x, but
+    # which is bycols + anything _x (I think?)
+    #
+    # first, identify columns that end in _x, subset left_only to just those, and
+    # rename the columns to remove the _x:
+    _x_ending_cols = [col for col in left_only if col.endswith('_x')]
+    left_only_x_ending_cols = left_only[_x_ending_cols].copy()
+    new_names = list(map(lambda z: z.replace('_x', ''),
+                         left_only_x_ending_cols.columns))
+    left_only_x_ending_cols.columns = new_names
+    #
+    # concatenate those with the bycols:
+    out = pd.concat([left_only[bycols], left_only_x_ending_cols],
+                    axis=1)
+
+    return out

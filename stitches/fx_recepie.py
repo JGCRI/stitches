@@ -38,7 +38,7 @@ def get_num_perms(matched_data):
 
 
 # TODO ACS please review carefuly
-def remove_duplicates(md, archive, drop_hist_duplicates=False):
+def remove_duplicates(md, archive):
     """ A function that makes sure that within a single given matched recipe that
         there each archive point used is unique. When two target tgav windows in
         the trajectory match to the same archive window, the target window with
@@ -53,31 +53,33 @@ def remove_duplicates(md, archive, drop_hist_duplicates=False):
                             split with this function being applied to each recipe.
         :param archive:     data frame object consisting of the tas archive to use
                             for re-matching duplicate points.
-        :param drop_hist_duplicates:    boolean True/False to indicate if the drop_hist_duplicates function should be triggered.
         :return:                       data frame with same structure as raw matched, with duplicate matches replaced.
     """
     if len(md["target_year"].unique()) < util.nrow(md):
         raise TypeError(f"You have multiple matches to a single target year, this function can only accept a matched "
                         f"data frame of singular matches between target & archive data.")
 
+    #  Intialize everything that gets updated on each iteration of the while loop:
+    # 1. the data frame of matched_data -> make a copy of the argument md to initialize
+    # 2. the data frame of duplicates is calculated for the first time.
+    matched_data = md.copy()
+
     # Check to see if in the matched data frame if there are any repeated values.
-    md_archive = md[['archive_experiment', 'archive_variable', 'archive_model',
-                     'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
-                     'archive_year', 'archive_fx', 'archive_dx']]
-    duplicates = md.merge(md_archive[md_archive.duplicated()], how="inner")
+    md_archive = matched_data[['archive_experiment', 'archive_variable', 'archive_model',
+                               'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
+                               'archive_year', 'archive_fx', 'archive_dx']]
+    duplicates = matched_data.merge(md_archive[md_archive.duplicated()], how="inner")
 
-    if util.nrow(duplicates) == 0:
-        matched_data = md.copy()
-
-    # If none of the archive points are being used more than once in the
-    # matched ts we can continue on. However we find that that a single archive
-    # point is being used more than once within a ts extra steps will have to be taken.
-    # TODO ACS please take a look, didn't have the data to test this out...
+    # As long as duplicates exist, rematch the target windows with the larger
+    # dist l2 to each archive chunk, add back in, iterate to be safe.
+    # By matching on new_archive = archive - matches that were used in md,
+    # we don't introduce new duplicates when we rematch. So the while loop is
+    # probably over cautious but it does only execute one iteration.
     while util.nrow(duplicates) > 0:
 
         # within each iteration of checking duplicates,
         # pull out the one with smallest dist_l2 -
-        # this is the one that gets to keep the match, and we use
+        # this is the one that gets to keep the archive match, and we use
         # as an index to work on the complement of (in case the same
         # archive point gets matched for more than 2 target years)
         grouped = duplicates.groupby(['archive_experiment', 'archive_variable',
@@ -92,48 +94,55 @@ def remove_duplicates(md, archive, drop_hist_duplicates=False):
             dat.append(group.loc[group['dist_l2'] == min_value])
         duplicates_min = pd.concat(dat)
 
-        # target points of duplicates-duplicates_min need to be
-        # refit on the archive, the  ones that need a new pairing.
+        # target points contained in duplicates-duplicates_min 
+        # are the  ones that need a new archive match.
         filter_col = [col for col in duplicates if col.startswith('target_')]
         points_to_rematch = duplicates[filter_col].loc[(~duplicates['target_year'].isin(duplicates_min['target_year']))]
         new_names = list(map(lambda x: x.replace('target_', ''), points_to_rematch.columns))
         points_to_rematch.columns = new_names
 
-        # Because we know that none of the archive values can be reused in the match discard them
+        # Because we know that none of the archive values can be reused in the match,
+        # discard the ones already used (eg in matched_data)
         # from the updated archive that will be used in the rematching.
-        cols = [col for col in md if col.startswith('archive_')]
-        rm_from_archive = md[cols]
+        cols = [col for col in matched_data if col.startswith('archive_')]
+        rm_from_archive = matched_data[cols]
         new_names = list(map(lambda x: x.replace('archive_', ''), rm_from_archive.columns))
         rm_from_archive.columns = new_names
 
-        # TODO something might be up with this approach to approximate an anti join,
-        # My python take on an anti join, combine two data frames together into a single data
-        # frame that has duplicates of the rows we would like to remove. Then use the drop
-        # duplicates function to discard those rows so now that data frame only contains unique
-        # entries.
-        new_archive = util.anti_join(archive, rm_from_archive)
+        # Use our anti_join utility function to return the rows of archive that are
+        # not in rm_from_archive
+        new_archive = util.anti_join(archive, rm_from_archive,
+                                     bycols=['model', 'experiment', 'variable', 'ensemble',
+                                             'start_yr', 'end_yr', 'year', 'fx', 'dx'])
 
         # Find new matches for the data the target data that is missing the archive pair. Because we
         # are only interested in completing our singular recipe the tol must be 0.
         rematched = match.match_neighborhood(target_data=points_to_rematch, archive_data=new_archive,
-                                             tol=0, drop_hist_duplicates=drop_hist_duplicates)
+                                             tol=0)
 
-        # Add back in the rematched data.
-        matched_data = pd.concat([md.loc[~md['target_year'].isin(rematched['target_year'])],
-                                  rematched])[['target_variable', 'target_experiment', 'target_ensemble',
-                                               'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
-                                               'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
-                                               'archive_model', 'archive_ensemble', 'archive_start_yr',
-                                               'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
-                                               'dist_fx', 'dist_l2']].sort_values('target_year').reset_index()
+        # Now, we update our key data frames for the next iteration of the while loop:
+        # 1. matched_data gets updated to be rematched + (previous matched_data minus the targets
+        # that were rematched).
+        # 2. duplicates gets recreated, checking for duplicates in our updated matched_data.
 
+        # update matched_data:
+        # first, drop the target windows that got rematched from the current matched_data:
+        matched_data_minus_rematched_targ_years = matched_data.loc[
+            ~(matched_data['target_year'].isin(rematched['target_year']))].copy()
+
+        matched_data = pd.concat([matched_data_minus_rematched_targ_years, rematched]) \
+            .sort_values('target_year').reset_index()
+
+
+        # Identify duplicates in the updated matched_datafor the next iteration of the while loop
         md_archive = matched_data[['archive_experiment', 'archive_variable', 'archive_model',
                                    'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
                                    'archive_year', 'archive_fx', 'archive_dx']]
         duplicates = matched_data.merge(md_archive[md_archive.duplicated()], how="inner")
 
-        # Clean up for the next while loop iteratio
-        # del(duplicates_min, points_to_rematch, rm_from_archive, rematched)
+        # Clean up for the next while loop iteration
+        del(duplicates_min, points_to_rematch, rm_from_archive, rematched,
+            matched_data_minus_rematched_targ_years)
 
     return matched_data
 

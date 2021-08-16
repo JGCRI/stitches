@@ -142,3 +142,19 @@ def remove_obs_from_match(md, rm):
                                 'dist_fx', 'dist_l2']]
     return out
 
+
+def anti_join(x, y):
+    """ Return a pd.DataFrame of the rows in x that do not appear in Table y.
+    Maintains only the columns of x.
+    Adapted from https://stackoverflow.com/questions/38516664/anti-join-pandas
+
+        :param x:   pd.DataFrame object
+        :param y:   pd.DataFrame object
+
+        :return:    pd.DataFrame object
+        """
+    # Identify what values are in TableB and not in TableA
+    key_diff = set(x.Key).difference(y.Key)
+    where_diff = x.Key.isin(key_diff)
+
+    return(x[where_diff])

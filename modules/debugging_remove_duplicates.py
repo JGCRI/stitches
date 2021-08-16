@@ -1,9 +1,10 @@
-# debugging remove_duplicates and the permutation function.
+# debugging remove_duplicates.
 
 # using csv versions of files to avoid pickle-utils dependency right now
 
-# This is meant to be executed line by line. Works otherwise, but the print statements
-# make less sense.
+# This is meant to be executed line by line, checking that every step of
+# the remove_duplicates function does what it is supposed to on sample data.
+# Also temporary, easy to remove once confident.
 
 # #############################################################################
 # General setup

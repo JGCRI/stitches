@@ -39,11 +39,20 @@ def get_num_perms(matched_data):
 
 # TODO ACS please review carefuly
 def remove_duplicates(md, archive, drop_hist_duplicates=False):
-    """ A function that makes sure that within a given matched recipe that
-        there each archive point used is unique.
-
-        :param md:          data frame output from match_neighborhood.
-        :param archive:     data frame object consisting of the tas archive.
+    """ A function that makes sure that within a single given matched recipe that
+        there each archive point used is unique. When two target tgav windows in
+        the trajectory match to the same archive window, the target window with
+        smaller Euclidean distance keeps the match, and the other target window
+        gets re-matched with its nearest-neighbor match from a new archive, the
+        previous one with all matched points removed.
+        
+        :param md:          A data frame with results of matching for a single
+                            tgav recipe. Either because match_neighborhood was
+                            used specifically to return NN or because the multiple
+                            matches have been permuted into new recipes and then
+                            split with this function being applied to each recipe.
+        :param archive:     data frame object consisting of the tas archive to use
+                            for re-matching duplicate points.
         :param drop_hist_duplicates:    boolean True/False to indicate if the drop_hist_duplicates function should be triggered.
         :return:                       data frame with same structure as raw matched, with duplicate matches replaced.
     """

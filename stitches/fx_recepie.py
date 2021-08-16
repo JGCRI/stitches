@@ -111,13 +111,7 @@ def remove_duplicates(md, archive, drop_hist_duplicates=False):
         # frame that has duplicates of the rows we would like to remove. Then use the drop
         # duplicates function to discard those rows so now that data frame only contains unique
         # entries.
-        new_archive = pd.concat([archive[['model', 'experiment', 'variable', 'ensemble',
-                                          'start_yr', 'end_yr', 'year', 'fx', 'dx']],
-                                 rm_from_archive[['model', 'experiment', 'variable', 'ensemble',
-                                                  'start_yr', 'end_yr', 'fx', 'dx']]]).drop_duplicates(
-            subset=['model', 'experiment',
-                    'variable', 'ensemble',
-                    'start_yr', 'end_yr'], keep=False)
+        new_archive = util.anti_join(archive, rm_from_archive)
 
         # Find new matches for the data the target data that is missing the archive pair. Because we
         # are only interested in completing our singular recipe the tol must be 0.

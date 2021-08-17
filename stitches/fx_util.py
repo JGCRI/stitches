@@ -180,4 +180,9 @@ def anti_join(x, y, bycols):
     out = pd.concat([left_only[bycols], left_only_x_ending_cols],
                     axis=1)
 
+    # re-order the columns of out so that they are in the same order
+    # as the columns of x
+    cols_of_x_in_order = x.columns.copy()
+    out = out[cols_of_x_in_order].copy()
+
     return out

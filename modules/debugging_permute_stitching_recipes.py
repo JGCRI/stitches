@@ -19,7 +19,7 @@ import stitches.fx_recepie as rp
 pd.set_option('display.max_columns',21)
 
 
-''# #############################################################################
+# #############################################################################
 # working with actual esm data and permute_stitching_recipes
 # #############################################################################
 
@@ -35,7 +35,7 @@ target_data = target_data.reset_index(drop=True)
 
 # Select the data to use as our archive.
 archive_data = data[data['model'] == 'CanESM5'].copy()
-
+archive_data = archive_data.loc[archive_data['year'] <= 2110].copy()
 
 # #############################################################################
 # work out the interior beh
@@ -174,6 +174,7 @@ stitch_ind = 1
 # next several steps of the while loop will create a one to one paring between the
 # target and archive data, then check to make sure that the pairing meets the requirements
 # for what we call a recipe.
+grouped_targets = []
 grouped_targets = matched_data_int.loc[(matched_data_int['target_variable'] == var_name) &
                                        (matched_data_int['target_experiment'] == exp) &
                                        (matched_data_int['target_model'] == mod) &
@@ -185,10 +186,9 @@ grouped_targets = matched_data_int.loc[(matched_data_int['target_variable'] == v
 # Randomly select one of the archive matches to use
 one_one_match = []
 for name, group in grouped_targets:
-    one_one_match.append(group.sample(1, replace=False))
+    one_one_match.append(group.sample(1, replace=False, random_state=stitch_ind))
 one_one_match = pd.concat(one_one_match)
-one_one_match = one_one_match.reset_index()
-
+one_one_match = one_one_match.reset_index(drop=True).copy()
 
 # Before we can accept our candidate recipe, one_one_match,
 # we run it through a lot of tests.
@@ -196,10 +196,11 @@ one_one_match = one_one_match.reset_index()
 # Force one_one_match to meet our first condition,
 # that each archive data point in the recipe must be unique.
 # Then give it a stitching id
+new_recipe = []
 new_recipe = rp.remove_duplicates(one_one_match, archive)
 stitching_id = exp + '~' + ens + '~' + str(stitch_ind)
 new_recipe["stitching_id"] = stitching_id
-new_recipe = new_recipe.drop(['index'], axis = 1).copy()
+new_recipe = new_recipe.reset_index(drop=True).copy()
 
 
 # Compare the new_recipe to the previously drawn recipes across all target
@@ -207,9 +208,12 @@ new_recipe = new_recipe.drop(['index'], axis = 1).copy()
 # There is no collapse within each target ensemble because  we remove the constructed
 # new_recipe from the matched_data at the end of each iteration of the while loop -
 # The sampled points CAN'T be used again for the current target ensemble member
-# for loop iteration.
-# The code below is ensuring there is no collapse across
-# the previously generated trajectories for previous target ensemble members.
+# for loop iteration, or for any other target ensemble members. Meaning we
+# avoid envelope collapse when targeting multiple realizations (you don't have
+# realization 1 and realization 4 2070 getting matched to the same archive point.
+# The code below is checking to make sure that our new_recipe doesn't exist
+# in the saved recipe_collection. This shouldn't be possible with how we update
+# our matched_data_int on every loop, but just to be cautious, we check.
 # Again, the challenge is seeing if our entire sample has
 # been included in recipes before, not just a row or two.
 
@@ -219,8 +223,6 @@ if util.nrow(recipe_collection) != 0:
     # against new_recipe and record True/False
     #
     # Compare the new recipe with the existing collection of all recipes.
-    # We only care about the actual (target_window, archive_window) pairs,
-    # so we can just compare those character columns.
     cols_to_use = ['target_variable', 'target_experiment', 'target_ensemble',
                    'target_model', 'target_start_yr', 'target_end_yr', 'archive_experiment',
                    'archive_variable', 'archive_model', 'archive_ensemble', 'archive_start_yr',
@@ -230,7 +232,7 @@ if util.nrow(recipe_collection) != 0:
     for name, group in grouped_collection:
         df1 = group[cols_to_use].copy().reset_index(drop=True).sort_index(axis=1)
         df2 = new_recipe[cols_to_use].copy().reset_index(drop=True).sort_index(axis=1)
-        comparison.append(all(df1 == df2))
+        comparison.append(df1.equals(df2))
 
         # end for loop
     # end if statement
@@ -267,6 +269,10 @@ if  all(comparison) == False:
     # Now each (target_window, archive_window) combination must
     # be removed from matched data for all target ensemble members,
     # not just the one we are currently operating on.
+    # This ensures that we don't get collapse in the generated
+    # envelope across target ensemble members (e.g you don't
+    # have realization 1 and realization 4 2070 getting matched
+    # to the same archive point).
     # Use an anti-join
     matched_data_int = util.anti_join(matched_data_int, new_recipe.drop(['stitching_id'], axis = 1).copy(),
                                       bycols=["target_year", "target_start_yr", "target_end_yr",
@@ -319,14 +325,446 @@ if  all(comparison) == False:
     stitch_ind += 1
 
     # end if statement
+
+    # In debugging, there's only one being constructed so our condition2 should be false now,
+    # meaning there won't be another iteration of the while loop for this target ensemble member
+    print(condition2)
 # end the while loop for this target ensemble member
-# In debugging, there's only one being constructed so our condition2 should be false now
-print(condition2)
+
 
 # Add the recipes created for this ensemble member to the entire collection
 # of recipes.
 recipe_collection = recipe_collection.append(recipes_col_by_target)
 
+# #############################################################################
+# first iteration of for loop over targets/ second target:s
+# #############################################################################
+target_id = 'A1'
+# subset the target info, the target df contains meta information about the run we
+# and the number of permutations and such.
+target = targets.loc[targets["target_ordered_id"] == target_id].copy()
+print(target)
 
+# initialize a recipes data frame holder for each target, for
+# the while loop to iterate on
+recipes_col_by_target = pd.DataFrame()
+var_name = target['target_variable'].unique()[0]
+exp = target['target_experiment'].unique()[0]
+mod = target['target_model'].unique()[0]
+ens = target['target_ensemble'].unique()[0]
+
+# While the following conditions are met continue to generate new recipes.
+# 1. While we have fewer matches than requested for the target ensemble_member,
+#    keep going.
+# 2. Filter the perm_guide to just the target ensemble member in this loop and
+#    make sure there are at least num_target_windows of time windows: basically
+#    make sure there is at least one remaining archive match to draw from for
+#    each target window in this target ensemble. Note this means the perm_guide
+#    must be updated at the end of every while loop iteration.
+
+# Intialize these conditions so we enter the while loop, then update again at the
+# end of each iteration
+if util.nrow(recipes_col_by_target) == 0:
+    condition1 = True
+elif util.nrow(recipes_col_by_target['stitching_id'].unique()) < N_matches:
+    condition1 = True
+else:
+    condition1 = False
+
+perm_rows = util.nrow(
+    perm_guide.loc[(perm_guide['target_variable'] == var_name) & (perm_guide['target_experiment'] == exp) &
+                   (perm_guide['target_model'] == mod) & (perm_guide['target_ensemble'] == ens)]
+        .copy()
+        .drop_duplicates())
+
+if perm_rows == num_target_windows:
+    condition2 = True
+else:
+    condition2 = False
+
+print(condition1)
+print(condition2)
+print(all([condition1, condition2]))
+
+# And an integer index to initialize the count of stitched
+# trajectories for each target
+stitch_ind = 1
+
+# first iteration of while loop for A1
+
+
+# Group matched data for a single target by the chunks of the target information.
+# Right now a single target chunk may have multiple matches with archive points. The
+# next several steps of the while loop will create a one to one paring between the
+# target and archive data, then check to make sure that the pairing meets the requirements
+# for what we call a recipe.
+grouped_targets = []
+grouped_targets = matched_data_int.loc[(matched_data_int['target_variable'] == var_name) &
+                                       (matched_data_int['target_experiment'] == exp) &
+                                       (matched_data_int['target_model'] == mod) &
+                                       (matched_data_int['target_ensemble'] == ens)].copy().groupby(
+    ['target_variable', 'target_experiment', 'target_ensemble', 'target_model',
+     'target_start_yr', 'target_end_yr'])
+
+# For each target window group,
+# Randomly select one of the archive matches to use
+one_one_match = []
+for name, group in grouped_targets:
+    one_one_match.append(group.sample(1, replace=False, random_state=stitch_ind))
+one_one_match = pd.concat(one_one_match)
+one_one_match = one_one_match.reset_index(drop=True).copy()
+
+# Before we can accept our candidate recipe, one_one_match,
+# we run it through a lot of tests.
+
+# Force one_one_match to meet our first condition,
+# that each archive data point in the recipe must be unique.
+# Then give it a stitching id
+new_recipe = []
+new_recipe = rp.remove_duplicates(one_one_match, archive)
+stitching_id = exp + '~' + ens + '~' + str(stitch_ind)
+new_recipe["stitching_id"] = stitching_id
+new_recipe = new_recipe.reset_index(drop=True).copy()
+
+# Compare the new_recipe to the previously drawn recipes across all target
+# ensembles.
+# There is no collapse within each target ensemble because  we remove the constructed
+# new_recipe from the matched_data at the end of each iteration of the while loop -
+# The sampled points CAN'T be used again for the current target ensemble member
+# for loop iteration, or for any other target ensemble members. Meaning we
+# avoid envelope collapse when targeting multiple realizations (you don't have
+# realization 1 and realization 4 2070 getting matched to the same archive point.
+# The code below is checking to make sure that our new_recipe doesn't exist
+# in the saved recipe_collection. This shouldn't be possible with how we update
+# our matched_data_int on every loop, but just to be cautious, we check.
+# Again, the challenge is seeing if our entire sample has
+# been included in recipes before, not just a row or two.
+
+if util.nrow(recipe_collection) != 0:
+    # If previous recipes exist, we must create a comparison
+    # data frame that checks each existing recipe in recipe_collection
+    # against new_recipe and record True/False
+    #
+    # Compare the new recipe with the existing collection of all recipes.
+    cols_to_use = ['target_variable', 'target_experiment',
+                   'target_model', 'target_start_yr', 'target_end_yr', 'archive_experiment',
+                   'archive_variable', 'archive_model', 'archive_ensemble', 'archive_start_yr',
+                   'archive_end_yr']
+    grouped_collection = recipe_collection.groupby(['stitching_id'])
+    comparison = []
+    for name, group in grouped_collection:
+        df1 = group[cols_to_use].copy().reset_index(drop=True).sort_index(axis=1)
+        df2 = new_recipe[cols_to_use].copy().reset_index(drop=True).sort_index(axis=1)
+        comparison.append(df1.equals(df2))
+
+    # end for loop
+# end if statement
+else:
+    # Otherwise, this is the first recipe we've done at all, so we set comparison manually
+    # so that the next if statement triggers just like it was appending a new recipe to an
+    # existing list.
+    comparison = [False]
+# end else
+
+# If the new_recipe is not unique (aka, any(comparison) == True), then
+# we don't want it and we don't want to do anything else in this iteration of
+# the while loop. We DON'T update the matched_points or conditions, so the
+# while loop is forced to re-run so that another random draw is done to create
+# a new candidate new_recipe.
+# We check for what we want: the new recipe is the first or all(comparsion)==False.
+# In either case, we are safe to keep new_recipe and update all the data frames
+# for the next iteration of the while loop.
+if all(comparison) == False:
+
+    # add new_recipe to the list of recipes for this target ensemble
+    recipes_col_by_target = pd.concat([recipes_col_by_target, new_recipe]).copy()
+
+    # And we remove it from the matched_points_int so the archive
+    # values used in this new_recipe can't be used to construct
+    # subsequent realizations for this target ensemble member.
+    # This updated matched_data_int is used in each iteration
+    # of the while loop. Since we are removing the constructed
+    # new_recipe from the matched_data_int at the end of each
+    # iteration of the while loop, the sample points can't be
+    # randomly drawn again for the next generated trajectory
+    # of the current target ensemble member for loop iteration.
+
+    # Now each (target_window, archive_window) combination must
+    # be removed from matched data for all target ensemble members,
+    # not just the one we are currently operating on.
+    # Use an anti-join
+    matched_data_int = util.anti_join(matched_data_int, new_recipe.drop(['stitching_id'], axis=1).copy(),
+                                      bycols=["target_year", "target_start_yr", "target_end_yr",
+                                              "archive_experiment", "archive_variable", "archive_model",
+                                              "archive_ensemble", "archive_start_yr", "archive_end_yr",
+                                              "archive_year"]).copy()
+
+    # update permutation count info with the revised matched data so
+    # the while loop behaves - this makes sure that every target window
+    # in the perm_guide actually has at least one matched archive point
+    # available for draws .
+    # That way, we don't try to construct a trajectory with fewer years
+    # than the targets.
+    num_perms = rp.get_num_perms(matched_data_int)
+    perm_guide = num_perms[1]
+
+    # Use the updated perm_guide to update
+    # the while loop conditions:
+
+    # Condition 1:
+    # If we haven't reached the N_matches goal for this target ensemble
+    if util.nrow(recipes_col_by_target) == 0:
+        condition1 = True
+    elif util.nrow(recipes_col_by_target['stitching_id'].unique()) < N_matches:
+        condition1 = True
+    else:
+        condition1 = False
+    # end Condition 1
+
+    # Condition 2:
+    # make sure each target window in the updated perm guide has at least one archive match available
+    # to draw on the next iteration.
+    perm_rows = util.nrow(
+        perm_guide.loc[
+            (perm_guide['target_variable'] == var_name) & (perm_guide['target_experiment'] == exp) &
+            (perm_guide['target_model'] == mod) & (perm_guide['target_ensemble'] == ens)]
+            .copy()
+            .drop_duplicates())
+
+    if perm_rows == num_target_windows:
+        condition2 = True
+    else:
+        condition2 = False
+    # end updating condition 2
+
+    # Add to the stitch_ind, to update the count of stitched
+    # trajectories for each target ensemble member.
+    stitch_ind += 1
+
+    # end if statement
+
+    # In debugging, for realization 1, there's more than one generated time series possible. So we
+    # check our conditions
+    print([condition1, condition2])
+
+# ##########
+# Another iteration of the while loop for this target ensemble member
+# ##########
+# Group matched data for a single target by the chunks of the target information.
+# Right now a single target chunk may have multiple matches with archive points. The
+# next several steps of the while loop will create a one to one paring between the
+# target and archive data, then check to make sure that the pairing meets the requirements
+# for what we call a recipe.
+grouped_targets = []
+grouped_targets = matched_data_int.loc[(matched_data_int['target_variable'] == var_name) &
+                                       (matched_data_int['target_experiment'] == exp) &
+                                       (matched_data_int['target_model'] == mod) &
+                                       (matched_data_int['target_ensemble'] == ens)].copy().groupby(
+    ['target_variable', 'target_experiment', 'target_ensemble', 'target_model',
+     'target_start_yr', 'target_end_yr'])
+
+# For each target window group,
+# Randomly select one of the archive matches to use
+one_one_match = []
+for name, group in grouped_targets:
+    one_one_match.append(group.sample(1, replace=False, random_state=stitch_ind))
+one_one_match = pd.concat(one_one_match)
+one_one_match = one_one_match.reset_index(drop=True).copy()
+
+# Before we can accept our candidate recipe, one_one_match,
+# we run it through a lot of tests.
+
+# Force one_one_match to meet our first condition,
+# that each archive data point in the recipe must be unique.
+# Then give it a stitching id
+new_recipe = []
+new_recipe = rp.remove_duplicates(one_one_match, archive)
+stitching_id = exp + '~' + ens + '~' + str(stitch_ind)
+new_recipe["stitching_id"] = stitching_id
+new_recipe = new_recipe.reset_index(drop=True).copy()
+
+# Compare the new_recipe to the previously drawn recipes across all target
+# ensembles.
+# There is no collapse within each target ensemble because  we remove the constructed
+# new_recipe from the matched_data at the end of each iteration of the while loop -
+# The sampled points CAN'T be used again for the current target ensemble member
+# for loop iteration, or for any other target ensemble members. Meaning we
+# avoid envelope collapse when targeting multiple realizations (you don't have
+# realization 1 and realization 4 2070 getting matched to the same archive point.
+# The code below is checking to make sure that our new_recipe doesn't exist
+# in the saved recipe_collection. This shouldn't be possible with how we update
+# our matched_data_int on every loop, but just to be cautious, we check.
+# Again, the challenge is seeing if our entire sample has
+# been included in recipes before, not just a row or two.
+
+if util.nrow(recipe_collection) != 0:
+    # If previous recipes exist, we must create a comparison
+    # data frame that checks each existing recipe in recipe_collection
+    # against new_recipe and record True/False
+    #
+    # Compare the new recipe with the existing collection of all recipes.
+    cols_to_use = ['target_variable', 'target_experiment',
+                   'target_model', 'target_start_yr', 'target_end_yr', 'archive_experiment',
+                   'archive_variable', 'archive_model', 'archive_ensemble', 'archive_start_yr',
+                   'archive_end_yr']
+    grouped_collection = recipe_collection.groupby(['stitching_id'])
+    comparison = []
+    for name, group in grouped_collection:
+        df1 = group[cols_to_use].copy().reset_index(drop=True).sort_index(axis=1)
+        df2 = new_recipe[cols_to_use].copy().reset_index(drop=True).sort_index(axis=1)
+        comparison.append(df1.equals(df2))
+
+    # end for loop
+# end if statement
+else:
+    # Otherwise, this is the first recipe we've done at all, so we set comparison manually
+    # so that the next if statement triggers just like it was appending a new recipe to an
+    # existing list.
+    comparison = [False]
+# end else
+
+# If the new_recipe is not unique (aka, any(comparison) == True), then
+# we don't want it and we don't want to do anything else in this iteration of
+# the while loop. We DON'T update the matched_points or conditions, so the
+# while loop is forced to re-run so that another random draw is done to create
+# a new candidate new_recipe.
+# We check for what we want: the new recipe is the first or all(comparsion)==False.
+# In either case, we are safe to keep new_recipe and update all the data frames
+# for the next iteration of the while loop.
+if all(comparison) == False:
+
+    # add new_recipe to the list of recipes for this target ensemble
+    recipes_col_by_target = pd.concat([recipes_col_by_target, new_recipe]).copy()
+
+    # And we remove it from the matched_points_int so the archive
+    # values used in this new_recipe can't be used to construct
+    # subsequent realizations for this target ensemble member.
+    # This updated matched_data_int is used in each iteration
+    # of the while loop. Since we are removing the constructed
+    # new_recipe from the matched_data_int at the end of each
+    # iteration of the while loop, the sample points can't be
+    # randomly drawn again for the next generated trajectory
+    # of the current target ensemble member for loop iteration.
+
+    # Now each (target_window, archive_window) combination must
+    # be removed from matched data for all target ensemble members,
+    # not just the one we are currently operating on.
+    # Use an anti-join
+    matched_data_int = util.anti_join(matched_data_int, new_recipe.drop(['stitching_id'], axis=1).copy(),
+                                      bycols=["target_year", "target_start_yr", "target_end_yr",
+                                              "archive_experiment", "archive_variable", "archive_model",
+                                              "archive_ensemble", "archive_start_yr", "archive_end_yr",
+                                              "archive_year"]).copy()
+
+    # update permutation count info with the revised matched data so
+    # the while loop behaves - this makes sure that every target window
+    # in the perm_guide actually has at least one matched archive point
+    # available for draws .
+    # That way, we don't try to construct a trajectory with fewer years
+    # than the targets.
+    num_perms = rp.get_num_perms(matched_data_int)
+    perm_guide = num_perms[1]
+
+    # Use the updated perm_guide to update
+    # the while loop conditions:
+
+    # Condition 1:
+    # If we haven't reached the N_matches goal for this target ensemble
+    if util.nrow(recipes_col_by_target) == 0:
+        condition1 = True
+    elif util.nrow(recipes_col_by_target['stitching_id'].unique()) < N_matches:
+        condition1 = True
+    else:
+        condition1 = False
+    # end Condition 1
+
+    # Condition 2:
+    # make sure each target window in the updated perm guide has at least one archive match available
+    # to draw on the next iteration.
+    perm_rows = util.nrow(
+        perm_guide.loc[
+            (perm_guide['target_variable'] == var_name) & (perm_guide['target_experiment'] == exp) &
+            (perm_guide['target_model'] == mod) & (perm_guide['target_ensemble'] == ens)]
+            .copy()
+            .drop_duplicates())
+
+    if perm_rows == num_target_windows:
+        condition2 = True
+    else:
+        condition2 = False
+    # end updating condition 2
+
+    # Add to the stitch_ind, to update the count of stitched
+    # trajectories for each target ensemble member.
+    stitch_ind += 1
+
+    # end if statement
+
+    # In debugging, for realization 1, This second generated trajectory should be the end,
+    # and some of our conditions should be false now so the while loop stops.
+    print([condition1, condition2])
+
+
+# end the while loop for this target ensemble member
+
+
+# Add the recipes created for this ensemble member to the entire collection
+# of recipes.
+recipe_collection = recipe_collection.append(recipes_col_by_target)
+
+# where the for-loop ends
+
+recipes = recipe_collection.reset_index(drop=True).copy()
+del(recipe_collection, recipes_col_by_target, new_recipe, one_one_match,
+    stitch_ind, condition2, condition1, perm_guide, matched_data_int, comparison,
+    target, targets, target_id)
+# #############################################################################
+# Compare this recipe collection to the one put out by the function - should
+# be identical
+# #############################################################################
+x = rp.permute_stitching_recipes(N_matches = 2, matched_data=matched_data, archive=archive_data, testing=True)
+
+x.equals(recipes)
+
+
+# #############################################################################
+# So it works as expected for N_matches=2. Go ahead and run with larger N_matches
+# just to see if we get reasonably structured stuff.
+# #############################################################################
+
+matched_data = match.match_neighborhood(target_data, archive_data, tol=0.1)
+archive = archive_data.copy()
+
+
+x2 = rp.permute_stitching_recipes(N_matches = 5, matched_data=matched_data, archive=archive_data, testing=True)
+
+print(x2.head())
+
+# shape looks pretty good, let's check that we have as many realizations and rows as we need
+print(len(x2['stitching_id'].unique()))
+# 10 realizations generated as they should be, make sure we have 28*10 rows
+print(util.nrow(x2))
+
+# Manually verifying there's no collapse is a lot easier with stitched annual tgav data from
+# these recipes but lets see what we have
+# subset to just the columns we really need
+# no collapse should mean every target_fx, archive_fx pair of values is unique - different archive
+# experiment/ensemble/year points will have different archive_fx values.
+
+# if every target_fx, archive_fx pair is unique, their sum is probably unique too, so let's
+# just sum those two columns and see how many unique values there are
+x2['sum'] = x2['target_fx'] + x2['archive_fx'] + x2['target_dx'] + x2['archive_dx']
+print(len(x2['sum'].unique()))
+
+# 279. SO there's one shared point :-|   Let's find it
+
+x3 = x2[x2.duplicated(subset=['sum'], keep = 'first')]
+x4 = x2[x2.duplicated(subset=['sum'], keep = 'last')]
+
+print(x3.append(x4))
+# Different archive experiments + it's a chunk spanning years 2012-2014, which it shouldn't.
+# So in an archive set up without chunks like that, we'd be fine. (It's not caught by the
+# drop_historical_false_duplicates argument in the call to  matching because the cutoff year
+# calculation uses the largest window size/2 = 2010.
 
 

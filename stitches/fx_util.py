@@ -47,13 +47,16 @@ def selstr(a, start, stop):
 
     :return:    array of strings
     """
+    if type(a) not in [str]:
+        raise TypeError(f"a: must be a single string")
 
     out = []
-    for i in a:
-        out.append(i[start:stop])
+    for i in range(start, stop):
+        out.append(a[i])
+    out = "".join(out)
     return out
 
-
+# TODO add some unit test?
 def join_exclude(dat, drop):
     """ Drop some rows from a data frame.
 
@@ -62,17 +65,17 @@ def join_exclude(dat, drop):
 
     :return:    pd data frame that is subset.
     """
+    dat = dat.copy()
+    drop = drop.copy()
 
     # Get the column names that two data frames have
     # in common with one another.
     in_common = list(set(dat.columns) & set(drop.columns))  # figure out what columns are in common between the two dfs
     drop["drop"] = 1  # add an indicator column to indicate which rows need to be dropped
-    out = dat.merge(drop, how='inner', on=['experiment', 'model', 'fx', 'dx', 'variable',
-                                           'ensemble', 'start_yr', 'end_yr', 'year'])  # merge the two df together
+    out = dat.merge(drop, how='left', on=in_common)
 
     out = out.loc[out["drop"].isna()]  # remove the entries that need to be dropped
-
-    out = out[d.columns]  # select the columns
+    out = out[dat.columns]  # select the columns
 
     return out
 

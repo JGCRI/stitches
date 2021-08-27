@@ -6,7 +6,7 @@ import stitches.fx_match as match
 # import pickle_utils as pickle
 
 
-# Internal
+
 def get_num_perms(matched_data):
     """ A function to give you the number of potential permutations from a
     matched set of data. Ie Taking in the the results of `match_neighborhood(target, archive)`.
@@ -605,8 +605,7 @@ def handle_final_period(rp):
 
     return out
 
-
- def generate_gridded_recipe(messy_recipe, res='mon'):
+def generate_gridded_recipe(messy_recipe, res='mon'):
      """ Using a messy recipe create the messy recipe that can be used in the
          stitching process. TODO I think that when the permuate recipe function
          is fixed, I thinkn that funciton should be nested into here so that this function

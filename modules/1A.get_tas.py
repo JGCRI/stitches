@@ -7,7 +7,9 @@ import stitches.fx_pangeo as pangeo
 import stitches.fx_data as data
 import stitches.fx_util as util
 import os
+import pkg_resources
 import pandas as pd
+
 
 
 def get_global_tas(path):
@@ -42,7 +44,7 @@ def get_global_tas(path):
         # Format the CMIP meta data & global means, then combine into a single data frame.
         meta = data.get_ds_meta(d)
         t = annual_mean["time"].dt.strftime("%Y%m%d").values
-        year = list(map(lambda x: util.selstr(x, start = 0, stop = 4), t))
+        year = list(map(lambda x: util.selstr(x, start=0, stop=4), t))
 
         val = annual_mean["tas"].values
         d = {'year': year, 'value': val}
@@ -141,7 +143,6 @@ def paste_historical_data(input_data):
     return d
 
 
-
 # 1. Get tas data & calculate global mean temp
 # Get the pangeo table of contents.
 df = pangeo.fetch_pangeo_table()
@@ -156,11 +157,9 @@ df = df.loc[(df["experiment_id"].isin(xps)) &  # experiments of interest
             (df["variable_id"] == "tas") &  # select temperature data
             (df['member_id'].str.contains('p1'))]  # select only the members of the p1 physics group
 
-
 # For each of the CMIP6 files to calculate the global mean temperature and write the
 # results to the temporary directory.
 list(map(get_global_tas, df.zstore.values))
-
 
 # 2. Clean Up & Quality Control
 
@@ -234,7 +233,6 @@ non_hist_ensemble = (exp_en_mod[exp_en_mod["experiment"] != "historical"][["mode
 # the future results have have historical results.
 to_keep = non_hist_ensemble.merge(hist_ensemble, how="inner", on=["ensemble", "model"])
 
-
 # Update the raw data table to only include the model / ensembles members that have both a
 # historical and non historical ensemble realization.
 clean_d3 = clean_d2.merge(to_keep, how="inner")
@@ -269,41 +267,38 @@ data = paste_historical_data(data_anomaly)
 data = data.sort_values(by=['variable', 'experiment', 'ensemble', 'model', 'year'])
 data = data[["variable", "experiment", "ensemble", "model", "year", "value"]].reset_index(drop=True)
 
-# TODO we need to figure out how to add the zstore file column to the data frame!
-# this set up does not really work in attempt to try and add the zstore column
-# with the correct historical path ends up duplicating entries.
-if False:
-    # Add the z store values to the data frame.
-    # Get the pangeo table of contents & assert that the data frame exists and contains information.
-    df = pangeo.fetch_pangeo_table()
-    if len(df) <= 0:
-        raise Exception('Unable to connect to pangeo, make sure to disconnect from VP')
-    # Format the pangeo data frame so that it reflects the contents of data.
-    pangeo_df = df[["source_id", "experiment_id", "member_id", "variable_id", "zstore"]].drop_duplicates()
-    pangeo_df = pangeo_df.rename(columns={"source_id": "model", "experiment_id": "experiment",
+# Add the z store values to the data frame.
+# Get the pangeo table of contents & assert that the data frame exists and contains information.
+df = pangeo.fetch_pangeo_table()
+if len(df) <= 0:
+    raise Exception('Unable to connect to pangeo, make sure to disconnect from VP')
+
+# Format the pangeo data frame so that it reflects the contents of data.
+pangeo_df = df[["source_id", "experiment_id", "member_id", "variable_id", "zstore"]].drop_duplicates()
+pangeo_df = pangeo_df.rename(columns={"source_id": "model", "experiment_id": "experiment",
                                           "member_id": "ensemble", "variable_id": "variable"})
 
-    # Add the zstore file information to the data frame via a left join.
-    data = data.merge(pangeo_df, on=['variable', 'experiment', 'ensemble', 'model'], how="inner")
+# Add the zstore file information to the data frame via a left join.
+data = data.merge(pangeo_df, on=['variable', 'experiment', 'ensemble', 'model'], how="inner")
 
-    # Modify the zstore path names to replace the future scn string with historical.
-    # TODO replace this for loop it is pretty slow
-    new_zstore = []
-    for i in data.index:
-        # Select the row from the data frame.
-        row = data.loc[i]
+# Modify the zstore path names to replace the future scn string with historical.
+# TODO replace this for loop it is pretty slow
+new_zstore = []
+for i in data.index:
+    # Select the row from the data frame.
+    row = data.loc[i]
 
-        # Check to see if the zstore needs to be changed based on if it is a future experiment.
-        fut_exps = set(['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460', 'ssp534-over', 'ssp585'])
-        change = row["experiment"] in fut_exps
-        if change:
-            new = row["zstore"].replace(row["experiment"], "historical")
-        else:
-            new = row["zstore"]
+    # Check to see if the zstore needs to be changed based on if it is a future experiment.
+    fut_exps = set(['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460', 'ssp534-over', 'ssp585'])
+    change = row["experiment"] in fut_exps
+    if change:
+        new = row["zstore"].replace(row["experiment"], "historical")
+    else:
+        new = row["zstore"]
 
-        new_zstore.append(new)
+    new_zstore.append(new)
 
-    data["zstore"] = new_zstore
+data["zstore"] = new_zstore
 
 #############################################################################################
 # 4. Save
@@ -312,4 +307,8 @@ if False:
 # tas data chunks. Note that this file has to be compressed so will need to read in
 # using pickle_utils.load()
 
-pickle.dump(data, "stitches/data/tas_values.pkl", compression="zip")
+for name, group in data.groupby(['model']):
+    path = pkg_resources.resource_filename('stitches', 'data/' + name + '_tas.csv')
+    group.to_csv(path, index=False)
+
+

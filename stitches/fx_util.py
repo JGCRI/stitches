@@ -23,7 +23,9 @@ def combine_df(df1, df2):
 
 
 def list_files(d):
-    """ Return the absolute path for all of the files in a single directory.
+    """ Return the absolute path for all of the files in a single directory with the exccpetion of
+    .DS_Store files.
+
 
     :param d:   str name of a directory.
 
@@ -33,8 +35,8 @@ def list_files(d):
     ofiles = []
     for i in range(0, len(files)):
         f = files[i]
-        ofiles.append(d + '/' + f)
-
+        if not (".DS_Store" in f):
+            ofiles.append(d + '/' + f)
     return ofiles
 
 

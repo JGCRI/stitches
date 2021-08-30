@@ -274,6 +274,11 @@ def make_tas_archive():
     # Add the z store values to the data frame.
     # Get the pangeo table of contents & assert that the data frame exists and contains information.
     df = pangeo.fetch_pangeo_table()
+    df = df.loc[(df["table_id"] == "Amon") &  # monthly data
+                (df["grid_label"] == "gn") &  # we are only interested in the results returned in the native
+                (df["variable_id"] == "tas") &  # select temperature data
+                (df['member_id'].str.contains('p1'))].copy()  # select only the members of the p1 physics group
+
     if len(df) <= 0:
         raise Exception('Unable to connect to pangeo, make sure to disconnect from VP')
 
@@ -309,8 +314,10 @@ def make_tas_archive():
     # using pickle_utils.load()
 
     files = []
+    tas_data_dir = pkg_resources.resource_filename('stitches', 'data/tas-data')
+    os.mkdir(tas_data_dir)
     for name, group in data.groupby(['model']):
-        path = pkg_resources.resource_filename('stitches', 'data/' + name + '_tas.csv')
+        path = tas_data_dir + '/' + name + '_tas.csv'
         files.append(path)
         group.to_csv(path, index=False)
 

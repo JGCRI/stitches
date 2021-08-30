@@ -66,7 +66,7 @@ def chunk_ts(df, n):
   """
 
     # Check inputs
-    df = df.drop_duplicates().reset_index()
+    df = df.drop_duplicates().reset_index(drop=True).copy()
     util.check_columns(df, {'year', 'variable', 'value'})
     if not (len(df["variable"].unique()) == 1):
         raise TypeError(f'Multiple variables discovered in "{df}"')

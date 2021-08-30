@@ -170,15 +170,7 @@ def make_tas_archive():
     # Find all of the files and read in the data, store as a single data frame.
     # TODO CRV is there a way to make this path relative even though it may not
     # exist in the exported package?
-    path = pkg_resources.resource_filename('stitches', 'data/temp-data')
-    files_to_process = util.list_files(path)
-
-    raw_data = []
-    for f in files_to_process:
-        d = pd.read_pickle(f)
-        raw_data.append(d)
-    # Convert into a single data frame.
-    raw_data = pd.concat(raw_data)
+    raw_data = util.load_data_files('data/temp-data')
 
     # Note that the first three steps only apply to the historical & ssp experiments,
     # the idealized experiments do not need to go through these steps.

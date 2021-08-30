@@ -1,6 +1,7 @@
 # Define helper functions used through out the package.
 import os
 import numpy as np
+import pkg_resources
 import pandas as pd
 
 
@@ -191,3 +192,31 @@ def anti_join(x, y, bycols):
     out = out[cols_of_x_in_order].copy()
 
     return out
+
+
+def load_data_files(subdir):
+    """ Read in a list of data frames.
+
+        :param subdir:   pd.DataFrame str for a sub directory that exsists
+
+        :return:    pd.DataFrame object
+    """
+    # Make sure the sub directory exists.
+    path = pkg_resources.resource_filename('stitches', subdir)
+    if not os.path.isdir(path):
+        raise TypeError(f"subdir does not exist")
+
+    # Find all of the files.
+    files_to_process = list_files(path)
+    raw_data = []
+
+    # Read in the data & concatenate into a single data frame.
+    for f in files_to_process:
+        if ".csv" in f:
+            d = pd.read_csv(f)
+        else:
+            d = pd.read_pickle(f)
+        raw_data.append(d)
+    raw_data = pd.concat(raw_data)
+
+    return raw_data

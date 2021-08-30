@@ -21,15 +21,7 @@ def make_matching_archive(smoothing_window=9, chunk_window=9):
     :return:               str location of the matching archive file.
     """
     # Start by loading all of the tas files.
-    path = pkg_resources.resource_filename('stitches', 'data/tas-data')
-    files_to_process = util.list_files(path)
-
-    raw_data = []
-    for f in files_to_process:
-        d = pd.read_csv(f)
-        raw_data.append(d)
-    # Convert into a single data frame.
-    raw_data = pd.concat(raw_data)
+    raw_data = util.load_data_files('data/tas-data')
 
     # Smooth the anomalies, get the running mean of each time series.
     smoothed_data = prep.calculate_rolling_mean(raw_data, smoothing_window)

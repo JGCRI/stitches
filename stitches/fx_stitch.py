@@ -51,20 +51,30 @@ def get_netcdf_values(i, dl, rp, fl, name):
     """
 
     file = rp[name][i]
-    start_yr = str(rp["archive_start_yr"][i])
-    end_yr = str(rp["archive_end_yr"][i])
+    start_yr = rp["archive_start_yr"][i]
+    end_yr = rp["archive_end_yr"][i]
 
     # Figure out which index level we are on and then get the
     # xarray from the list.
     index = int(np.where(fl == file)[0])
     extracted = dl[index].sortby('time')
-    v=name.replace("_file", "")
-    # TODO CRV why is this function not working any more???
-    dat = extracted.sel(time=slice(start_yr, end_yr))[v].values.copy()
+    v = name.replace("_file", "")
+
+    # Have to have special time handeler, consider functionalizinng this.
+    times = extracted.indexes['time']
+    if type(times) is xr.coding.cftimeindex.CFTimeIndex:
+        yrs = extracted.indexes['time'].year # pull out the year information from the time index
+        # TODO CVR should we use something other than range? why doesn't it include the end year without
+        # doing the plus 1?
+        flags = list(map(lambda x: x in range(start_yr, end_yr+1), yrs))
+        to_keep = times[flags]
+    else:
+        raise TypeError(f"unsupported time type")
+    dat = extracted.sel(time=to_keep)[v].values.copy()
 
     # TODO figure out why the date range is so does not include
-    expected_len = len(pd.date_range(start=start_yr+"-01-01", end=end_yr+"-12-31", freq='M'))
-    assert (len(dat) == expected_len), "Not enough data in " + file + "for period " + start_yr + "-" + end_yr
+    expected_len = len(pd.date_range(start=str(start_yr)+"-01-01", end=str(end_yr)+"-12-31", freq='M'))
+    assert (len(dat) == expected_len), "Not enough data in " + file + "for period " + str(start_yr) + "-" + str(end_yr)
 
     return dat
 
@@ -117,12 +127,12 @@ def internal_stitch(rp, dl, fl):
     """
 
     rp.reset_index(drop=True, inplace=True)
-    vars=find_var_cols(rp)
+    variables = find_var_cols(rp)
     out = []
 
     # For each of the of the variables stitch the
     # data together.
-    for v in vars:
+    for v in variables:
 
         # Get the information about the variable that is going to be stitched together.
         col = v + '_file'
@@ -173,7 +183,7 @@ def internal_stitch(rp, dl, fl):
 
         out.append(rslt)
 
-    out_dict = dict(zip(vars, out))
+    out_dict = dict(zip(variables, out))
 
     return out_dict
 
@@ -189,7 +199,7 @@ def stitching(out_dir, rp):
     """
 
     flag = os.path.isdir(out_dir)
-    if flag == False:
+    if not flag:
         raise TypeError(f'The output directory does not exist.')
 
     # Check inputs.
@@ -198,29 +208,40 @@ def stitching(out_dir, rp):
                             'archive_start_yr', 'archive_end_yr'})
 
     # Determine which variables will be downloaded.
-    vars = find_var_cols(rp)
-    if not (len(vars) >= 1):
+    variables = find_var_cols(rp)
+    if not (len(variables) >= 1):
         raise TypeError(f'No variables were found to be processed.')
 
     # Determine which files need to be downloaded from pangeo.
     file_list = find_zfiles(rp)
 
+    # Make sure that all of the files are available to download from pangeo.
+    # Note that this might be excessively cautious but this is an issue we have run into in
+    # the past.
+    avail = pangeo.fetch_pangeo_table()
+    flag = all(item in list(avail['zstore']) for item in list(file_list))
+    if not flag:
+        raise TypeError(f'Trying to request a zstore file that does not exist')
+
     # Download all of the data from pangeo.
-    # TODO figure out how to optmize this, run time increases with the # of files trying to fetch
-    # TODO This will not work with VPN do we need to add some sort of check?
-    map_dl = map(pangeo.fetch_nc, file_list)
-    data_list = list(map_dl)
+    data_list = list(map(pangeo.fetch_nc, file_list))
 
-    # Do the stitching!
-    rslt = internal_stitch(rp, data_list, file_list)
+    # For each of the stitching recipes go through and stitch a recipe.
+    for single_id in rp['stitching_id'].unique():
 
-    # Print the files out at netcdf files
-    f = []
-    for i in rslt.keys():
-        ds = rslt[i]
-        fname = "./stitched_" + ds[i].attrs['model'] + '_' + ds[i].attrs['variable'] + '_' + ds[i].attrs['stitching_id'] + '.nc'
-        ds.to_netcdf(fname)
-        f.append(fname)
+        # Do the stitching!
+        # ** this can be a slow step and prone to errors
+        single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
+        rslt = internal_stitch(single_rp, data_list, file_list)
+
+        # Print the files out at netcdf files
+        f = []
+        for i in rslt.keys():
+            ds = rslt[i]
+            fname = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' +
+                      ds[i].attrs['variable'] + '_' + single_id + '.nc')
+            ds.to_netcdf(fname)
+            f.append(fname)
 
     return f
 

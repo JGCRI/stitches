@@ -38,11 +38,9 @@ recipe.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'arc
                   'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
                   'archive_end_yr', 'tas_file']
 
-# This should be line of code to run to get the final results
-# TODO this function should be renamed, because it is the gridded stitching and we will be ading
-# TODO the gmst stitching.
-outputs = stitches.stitching('.', recipe)
-
+# Get the gridded stitching & the global mean stitched products!
+outputs = stitches.gridded_stitching('.', recipe)
+outputs = stitches.gmat_stitching(recipe)
 
 
 

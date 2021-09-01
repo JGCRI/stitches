@@ -39,7 +39,6 @@ def get_num_perms(matched_data):
     return out
 
 
-# TODO ACS please review carefuly
 def remove_duplicates(md, archive):
     """ A function that makes sure that within a single given matched recipe that
         there each archive point used is unique. When two target tgav windows in
@@ -148,7 +147,6 @@ def remove_duplicates(md, archive):
     return matched_data
 
 
-# TODO this function has some ISSUES!
 def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, testing=False):
     """  A function to sample from input `matched_data` (the the results
     of `match_neighborhood(target, archive, tol)` to produce permutations
@@ -475,8 +473,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
                 'archive_model', 'archive_ensemble', 'archive_start_yr',
                 'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
                 'dist_fx', 'dist_l2', 'stitching_id']]
-
-
 
 
 def handle_transition_periods(rp):

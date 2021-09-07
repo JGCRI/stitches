@@ -1,12 +1,14 @@
 # Define the collection of helper functions that are used to generate the different
 # permutations of the recipes & re-format for stitching.
 import pandas as pd
+import pkg_resources
 import stitches.fx_util as util
 import stitches.fx_match as match
+
+
 # import pickle_utils as pickle
 
 
-# Internal
 def get_num_perms(matched_data):
     """ A function to give you the number of potential permutations from a
     matched set of data. Ie Taking in the the results of `match_neighborhood(target, archive)`.
@@ -37,7 +39,6 @@ def get_num_perms(matched_data):
     return out
 
 
-# TODO ACS please review carefuly
 def remove_duplicates(md, archive):
     """ A function that makes sure that within a single given matched recipe that
         there each archive point used is unique. When two target tgav windows in
@@ -133,7 +134,6 @@ def remove_duplicates(md, archive):
         matched_data = pd.concat([matched_data_minus_rematched_targ_years, rematched]) \
             .sort_values('target_year').reset_index(drop=True)
 
-
         # Identify duplicates in the updated matched_datafor the next iteration of the while loop
         md_archive = matched_data[['archive_experiment', 'archive_variable', 'archive_model',
                                    'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
@@ -141,13 +141,12 @@ def remove_duplicates(md, archive):
         duplicates = matched_data.merge(md_archive[md_archive.duplicated()], how="inner")
 
         # Clean up for the next while loop iteration
-        del(duplicates_min, points_to_rematch, rm_from_archive, rematched,
-            matched_data_minus_rematched_targ_years)
+        del (duplicates_min, points_to_rematch, rm_from_archive, rematched,
+             matched_data_minus_rematched_targ_years)
 
     return matched_data
 
 
-# TODO this function has some ISSUES!
 def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, testing=False):
     """  A function to sample from input `matched_data` (the the results
     of `match_neighborhood(target, archive, tol)` to produce permutations
@@ -197,12 +196,10 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
     # make a copy of the data to work with to be sure we don't touch original argument
     matched_data_int = matched_data.drop_duplicates().copy()
 
-
     # identifying how many target windows are in a trajectory we want to
     # create so that we know we have created a full trajectory with no
     # missing widnows; basically a reference for us to us in checks.
     num_target_windows = util.nrow(matched_data_int["target_year"].unique())
-
 
     # Initialize perm_guide for iteration through the while loop.
     # the permutation guide is one of the factors that the while loop
@@ -244,14 +241,12 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
     else:
         recipe_collection = pd.DataFrame()
 
-
     # Loop over each target ensemble member, creating N_matches generated
     # realizations via a while loop before moving to the next target.
     for target_id in targets['target_ordered_id'].unique():
         # subset the target info, the target df contains meta information about the run we
         # and the number of permutations and such.
         target = targets.loc[targets["target_ordered_id"] == target_id].copy()
-
 
         # initialize a recipes data frame holder for each target, for
         # the while loop to iterate on
@@ -322,7 +317,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
             one_one_match = pd.concat(one_one_match)
             one_one_match = one_one_match.reset_index(drop=True).copy()
 
-
             # Before we can accept our candidate recipe, one_one_match,
             # we run it through a lot of tests.
 
@@ -335,7 +329,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
             stitching_id = exp + '~' + ens + '~' + str(stitch_ind)
             new_recipe["stitching_id"] = stitching_id
             new_recipe = new_recipe.reset_index(drop=True).copy()
-
 
             # Make sure the new recipe isn't missing any years:
             if ~new_recipe.shape[0] == num_target_windows:
@@ -444,7 +437,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
                     condition1 = False
                 # end updating Condition 1
 
-
                 # Condition 2:
                 # make sure each target window in the updated perm guide has at least one archive match available
                 # to draw on the next iteration.
@@ -460,7 +452,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
                 else:
                     condition2 = False
                 # end updating condition 2
-
 
                 # Add to the stitch_ind, to update the count of stitched
                 # trajectories for each target ensemble member.
@@ -482,7 +473,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
                 'archive_model', 'archive_ensemble', 'archive_start_yr',
                 'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
                 'dist_fx', 'dist_l2', 'stitching_id']]
-# end permute_stitching_recipes function
 
 
 def handle_transition_periods(rp):
@@ -502,12 +492,14 @@ def handle_transition_periods(rp):
                             'dist_fx', 'dist_l2', 'stitching_id'})
 
     def internal_func(x):
-        # First check to see the archive period spans the historical to future scenariox[]
-        transition_period = 2014 in range(x["archive_start_yr"], x["archive_end_yr"])
+        # First check to see the archive period spans the historical to future scenario
+        # TODO why does range do 1 to x-1? when we want it to return 1 to x? is there
+        # a better way to do this than by adding 1 onto the end?
+        transition_period = 2014 in range(x["archive_start_yr"], x["archive_end_yr"] + 1)
 
         if transition_period:
-            target_yrs = list(range(x['target_start_yr'], x['target_end_yr']))
-            archive_yrs = list(range(x['archive_start_yr'], x['archive_end_yr']))
+            target_yrs = list(range(x['target_start_yr'], x['target_end_yr']+1))
+            archive_yrs = list(range(x['archive_start_yr'], x['archive_end_yr']+1))
             hist_cut_off = 2014  # the final complete year of the historical experiment
 
             historical_yrs = list(filter(lambda x: x <= hist_cut_off, archive_yrs))
@@ -519,7 +511,7 @@ def handle_transition_periods(rp):
 
             # Construct the historical period information
             d = {'target_start_yr': min(target_yrs),
-                 'target_end_yr': target_yrs[len(historical_yrs)],
+                 'target_end_yr': target_yrs[len(historical_yrs)-1],
                  'archive_experiment': 'historical',
                  'archive_start_yr': min(historical_yrs),
                  'archive_end_yr': max(historical_yrs)}
@@ -527,15 +519,28 @@ def handle_transition_periods(rp):
                                            'archive_start_yr', 'archive_end_yr'])
             historical_period = ser.append(constant_info).to_frame().transpose()
 
+
+            # Check to make sure the lenths of time are correct
+            targ_len = historical_period['target_end_yr'].values - historical_period['target_start_yr'].values
+            arch_len = historical_period['archive_end_yr'].values - historical_period['archive_start_yr'].values
+            if targ_len != arch_len:
+                raise TypeError(f"probelm with the length of the historical archive & target yrs")
+
             # Now construct the future period information
             d = {'target_start_yr': target_yrs[len(historical_yrs)],
                  'target_end_yr': target_yrs[len(target_yrs) - 1],
-                 'archive_experiment': 'historical',
+                 'archive_experiment': x['archive_experiment'],
                  'archive_start_yr': min(future_yrs),
                  'archive_end_yr': max(future_yrs)}
             ser = pd.Series(data=d, index=['target_start_yr', 'target_end_yr', 'archive_experiment',
                                            'archive_start_yr', 'archive_end_yr'])
             future_period = ser.append(constant_info).to_frame().transpose()
+            # Check to make sure the lenths of time are correct
+            targ_len = future_period['target_end_yr'].values - future_period['target_start_yr'].values
+            arch_len = future_period['archive_end_yr'].values - future_period['archive_start_yr'].values
+            if not targ_len == arch_len:
+                raise TypeError(f"probelm with the length of the historical archive & target yrs")
+
 
             # Combine the period information
             out = pd.concat([historical_period, future_period]).reset_index(drop=True)
@@ -569,6 +574,7 @@ def handle_final_period(rp):
 
         :return:         a recipe data frame that has target and archive periods of the same length.
     """
+
     # Define an internal function that checks row by row if we are working
     # with the final period & if that is a problem, if so handle it.
     def internal_func(x):
@@ -588,14 +594,14 @@ def handle_final_period(rp):
             out = out[['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
                        'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
                        'archive_end_yr']]
-            out['archive_end_yr'] =  out['archive_end_yr'] - 1
+            out['archive_end_yr'] = out['archive_end_yr'] - 1
         else:
             # TODO need to may need to revisit, just added an extra year to the archive length but that seems somewhat pretty sus.
             # Figure out how much shorter the target period is than the archive period.
             out = x.to_frame().transpose().reset_index(drop=True)
             out = out[['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
-           'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
-           'archive_end_yr']]
+                       'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
+                       'archive_end_yr']]
             out['archive_start_yr'] = out['archive_start_yr'] - 1
 
         return out
@@ -606,71 +612,53 @@ def handle_final_period(rp):
     return out
 
 
-# def generate_gridded_recipe(messy_recipe, res='mon'):
-#     """ Using a messy recipe create the messy recipe that can be used in the
-#         stitching process. TODO I think that when the permuate recipe function
-#         is fixed, I thinkn that funciton should be nested into here so that this function
-#         takes in a matched df & generates the recpies.
-#
-#
-#         :param messy_recipe:       a data frame generated by the permuate_recpies
-#         :param res:                string mon or day
-#
-#         :return:                   a recipe data frame
-#     """
-#     # Check inputs
-#     util.check_columns(messy_recipe, {'target_variable', 'target_experiment', 'target_ensemble',
-#                                       'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
-#                                       'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
-#                                       'archive_model', 'archive_ensemble', 'archive_start_yr',
-#                                       'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
-#                                       'dist_fx', 'dist_l2', 'stitching_id'})
-#     if res in ['mon', 'day'] == False:
-#         # TODO figure out a better way to handle the tas resolution matching, will also need
-#         # to figure out how to translate this to non tas variables as well.
-#         raise TypeError(f"generate_gridded_recipe: does not recognize the res input")
-#
-#     # Clean up the recipe
-#     dat = handle_transition_periods(messy_recipe)
-#     dat = handle_final_period(dat)
-#
-#     # Make sure that if there are historical years of data being used assign
-#     # the experiment name to historical.
-#     dat.loc[dat['archive_end_yr'] <= 2014, "archive_experiment"] = "historical"
-#
-#     # Now that we have the formatted recipe add the pangeo tas information!!
-#     # TODO remove the dependency on pickles
-#     # TODO make sure that that file path is stable
-#     pangeo_table = pickle.load("stitches/data/pangeo_table.pkl", compression="zip")
-#     if res == 'mon':
-#         table = 'Amon'
-#     else:
-#         table = 'day'
-#     tas_meta_info = pangeo_table.loc[(pangeo_table['variable'] == 'tas') &
-#                      (pangeo_table['res'] == table)]
-#     tas_meta_info = tas_meta_info[['model', 'experiment', 'ensemble', 'variable', 'zstore']]
-#     tas_meta_info = tas_meta_info.rename(columns={"model": "archive_model",
-#                                               "experiment":"archive_experiment",
-#                                               "ensemble":"archive_ensemble",
-#                                               "variable":"archive_variable"})
-#
-#     out = dat.merge(tas_meta_info, how="inner")
-#     return out
+def generate_gridded_recipe(messy_recipe, res='mon'):
+    """ Using a messy recipe create the messy recipe that can be used in the
+         stitching process. TODO I think that when the permuate recipe function
+         is fixed, I thinkn that funciton should be nested into here so that this function
+         takes in a matched df & generates the recpies.
 
 
+         :param messy_recipe:       a data frame generated by the permuate_recpies
+         :param res:                string mon or day
 
+         :return:                   a recipe data frame
+     """
+    # Check inputs
+    util.check_columns(messy_recipe, {'target_variable', 'target_experiment', 'target_ensemble',
+                                      'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
+                                      'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
+                                      'archive_model', 'archive_ensemble', 'archive_start_yr',
+                                      'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
+                                      'dist_fx', 'dist_l2', 'stitching_id'})
+    if res not in ['mon', 'day']:
+        # TODO figure out a better way to handle the tas resolution matching, will also need
+        # to figure out how to translate this to non tas variables as well.
+        raise TypeError(f"generate_gridded_recipe: does not recognize the res input")
 
+    # Clean up the recipe
+    dat = handle_transition_periods(messy_recipe)
+    dat = handle_final_period(dat)
 
+    # Make sure that if there are historical years of data being used assign
+    # the experiment name to historical.
+    dat.loc[dat['archive_end_yr'] <= 2014, "archive_experiment"] = "historical"
 
+    # Now that we have the formatted recipe add the pangeo tas information!!
+    ptable_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
+    pangeo_table = pd.read_csv(ptable_path)
 
+    if res == 'mon':
+        table = 'Amon'
+    else:
+        table = 'day'
+    tas_meta_info = pangeo_table.loc[(pangeo_table['variable'] == 'tas') &
+                                     (pangeo_table['domain'] == table)]
+    tas_meta_info = tas_meta_info[['model', 'experiment', 'ensemble', 'variable', 'zstore']]
+    tas_meta_info = tas_meta_info.rename(columns={"model": "archive_model",
+                                                  "experiment": "archive_experiment",
+                                                  "ensemble": "archive_ensemble",
+                                                  "variable": "archive_variable"})
 
-
-
-
-
-
-
-
-
-
-
+    out = dat.merge(tas_meta_info, how="inner")
+    return out

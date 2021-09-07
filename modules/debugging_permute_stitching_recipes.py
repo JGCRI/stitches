@@ -11,12 +11,13 @@
 # #############################################################################
 # Import packages
 import pandas as pd
-import numpy as np
+import pkg_resources
 import stitches.fx_util as util
 import stitches.fx_match as match
 import stitches.fx_recepie as rp
 
-pd.set_option('display.max_columns',21)
+
+pd.set_option('display.max_columns', 21)
 
 
 # #############################################################################
@@ -24,17 +25,20 @@ pd.set_option('display.max_columns',21)
 # #############################################################################
 
 # Here we load the archive.
-data = pd.read_csv("stitches/data/matching_archive.csv").drop(['index'], axis=1).copy()
+#data = pd.read_csv("stitches/data/matching_archive.csv").drop(['index'], axis=1).copy()
+# Load the archive data we want to match on.
+archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
+data = pd.read_csv(archive_path)
 
 
 # Select the some data to use as the target data
-target_data = data[data["model"] == 'CanESM5'].copy()
+target_data = data[data["model"] == 'BCC-CSM2-MR'].copy()
 target_data = target_data[target_data["experiment"] == 'ssp245']
 target_data = target_data[target_data["ensemble"].isin(['r1i1p1f1', 'r4i1p1f1'])]
 target_data = target_data.reset_index(drop=True)
 
 # Select the data to use as our archive.
-archive_data = data[data['model'] == 'CanESM5'].copy()
+archive_data = data[data['model'] == 'BCC-CSM2-MR'].copy()
 archive_data = archive_data.loc[archive_data['year'] <= 2110].copy()
 
 # #############################################################################

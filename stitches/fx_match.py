@@ -154,6 +154,10 @@ def drop_hist_false_duplicates(matched_data):
 
 def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=True):
     # Check the inputs of the functions
+    if util.nrow(target_data) <= 0:
+        raise TypeError(f"target_data is an empty data frame")
+    if util.nrow(archive_data) <= 0:
+        raise TypeError(f"archive_data is an empty data frame")
     util.check_columns(archive_data, {"experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx"})
     util.check_columns(target_data, {"start_yr", "end_yr", "fx", "dx"})
 

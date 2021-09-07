@@ -1,6 +1,7 @@
 # Define helper functions used through out the package.
 import os
 import numpy as np
+import pkg_resources
 import pandas as pd
 
 
@@ -23,7 +24,9 @@ def combine_df(df1, df2):
 
 
 def list_files(d):
-    """ Return the absolute path for all of the files in a single directory.
+    """ Return the absolute path for all of the files in a single directory with the exccpetion of
+    .DS_Store files.
+
 
     :param d:   str name of a directory.
 
@@ -33,8 +36,8 @@ def list_files(d):
     ofiles = []
     for i in range(0, len(files)):
         f = files[i]
-        ofiles.append(d + '/' + f)
-
+        if not (".DS_Store" in f):
+            ofiles.append(d + '/' + f)
     return ofiles
 
 
@@ -47,13 +50,16 @@ def selstr(a, start, stop):
 
     :return:    array of strings
     """
+    if type(a) not in [str]:
+        raise TypeError(f"a: must be a single string")
 
     out = []
-    for i in a:
-        out.append(i[start:stop])
+    for i in range(start, stop):
+        out.append(a[i])
+    out = "".join(out)
     return out
 
-
+# TODO add some unit test?
 def join_exclude(dat, drop):
     """ Drop some rows from a data frame.
 
@@ -62,17 +68,17 @@ def join_exclude(dat, drop):
 
     :return:    pd data frame that is subset.
     """
+    dat = dat.copy()
+    drop = drop.copy()
 
     # Get the column names that two data frames have
     # in common with one another.
     in_common = list(set(dat.columns) & set(drop.columns))  # figure out what columns are in common between the two dfs
     drop["drop"] = 1  # add an indicator column to indicate which rows need to be dropped
-    out = dat.merge(drop, how='inner', on=['experiment', 'model', 'fx', 'dx', 'variable',
-                                           'ensemble', 'start_yr', 'end_yr', 'year'])  # merge the two df together
+    out = dat.merge(drop, how='left', on=in_common)
 
     out = out.loc[out["drop"].isna()]  # remove the entries that need to be dropped
-
-    out = out[d.columns]  # select the columns
+    out = out[dat.columns]  # select the columns
 
     return out
 
@@ -186,3 +192,31 @@ def anti_join(x, y, bycols):
     out = out[cols_of_x_in_order].copy()
 
     return out
+
+
+def load_data_files(subdir):
+    """ Read in a list of data frames.
+
+        :param subdir:   pd.DataFrame str for a sub directory that exsists
+
+        :return:    pd.DataFrame object
+    """
+    # Make sure the sub directory exists.
+    path = pkg_resources.resource_filename('stitches', subdir)
+    if not os.path.isdir(path):
+        raise TypeError(f"subdir does not exist")
+
+    # Find all of the files.
+    files_to_process = list_files(path)
+    raw_data = []
+
+    # Read in the data & concatenate into a single data frame.
+    for f in files_to_process:
+        if ".csv" in f:
+            d = pd.read_csv(f)
+        else:
+            d = pd.read_pickle(f)
+        raw_data.append(d)
+    raw_data = pd.concat(raw_data)
+
+    return raw_data

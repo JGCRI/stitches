@@ -52,12 +52,14 @@ def calculate_rolling_mean(data, size):
     return rslt
 
 
-def chunk_ts(df, n):
+def chunk_ts(df, n, base_chunk=0):
     """Format a data frame into an array of data frames containing data for n-sized years of successive data.
   :param df:     data frame of climate data to chunk into different periods
   :type df:     pandas DataFrame
   :param n:    the size of the windows to chunk into separate periods
   :type n:    int
+  :param base_chunk: a helper argument for creating all of the staggered chunks, defatuls to 0 (original behavior)
+  :type base_chunk: int
   :return:    pandas DataFrame identical to df with the addition of a chunk column
   # TODO hmmm do we want this function to also work on ESM data? If so do we need to change this function??
   # TODO does it need to be for only one variable?
@@ -70,6 +72,12 @@ def chunk_ts(df, n):
     util.check_columns(df, {'year', 'variable', 'value'})
     if not (len(df["variable"].unique()) == 1):
         raise TypeError(f'Multiple variables discovered in "{df}"')
+
+    # do the offset for the staggered windows
+    if (base_chunk > n):
+        raise TypeError(f'base_chunk cannot be larger than n')
+    df = df[base_chunk:].copy()
+
 
     # TODO How do we want to handle when the length of the time series cannot be split up into even chunks?
     # Add a column of data that categorizes the data into the different periods, right now we allow for

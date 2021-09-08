@@ -22,18 +22,16 @@ def get_global_tas(path):
 
     # Make the name of the output file that will only be created if the output
     # does not already exists.
-    # TODO CVR is there a way to make this with a pkg resources call? Important note
-    # TODO the temp dir should not be exported with the package & not all users will
-    # TODO will be generating an archive from scratch most of the users will be using
-    # TODO the archive internal to package data.
-    temp_dir = "stitches/data/temp-data"
+    temp_dir = pkg_resources.resource_filename('stitches', 'data/temp-data')
+
     if os.path.isdir(temp_dir) == False:
         os.mkdir(temp_dir)
 
-    ofile = temp_dir + "/" + path.replace("/", "_") + "temp.dat"
-    flag = os.path.isfile(ofile)
-    if flag is False:
+    tag = path.replace("/", "_")
+    file_name = tag.replace("gs:__", "") + "temp.csv"
+    ofile = temp_dir + "/" + file_name
 
+    if os.path.isfile(ofile) == False:
         # Download the CMIP data & calculate the weighted annual global mean .
         d = pangeo.fetch_nc(path)
         global_mean = data.global_mean(d)
@@ -50,10 +48,11 @@ def get_global_tas(path):
         out = util.combine_df(meta, df)
 
         # Write the output
-        out.to_pickle(ofile)
+        out.to_csv(ofile, index=False)
         return ofile
     else:
         return ofile
+
 
 
 def calculate_anomaly(data, startYr=1995, endYr=2014):
@@ -140,6 +139,7 @@ def paste_historical_data(input_data):
 
     return d
 
+
 def make_tas_archive():
     """"
     #  The function that creates the archive
@@ -163,14 +163,13 @@ def make_tas_archive():
 
     # For each of the CMIP6 files to calculate the global mean temperature and write the
     # results to the temporary directory.
-    xx = list(map(get_global_tas, df.zstore.values))
+    files = list(map(get_global_tas, df.zstore.values))
 
     # Clean Up & Quality Control
     #
     # Find all of the files and read in the data, store as a single data frame.
-    # TODO CRV is there a way to make this path relative even though it may not
-    # exist in the exported package?
-    raw_data = util.load_data_files('data/temp-data')
+    raw_data = pd.concat(list(map(pd.read_csv, files)))
+
 
     # Note that the first three steps only apply to the historical & ssp experiments,
     # the idealized experiments do not need to go through these steps.

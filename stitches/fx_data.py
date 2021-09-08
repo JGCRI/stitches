@@ -42,7 +42,7 @@ def get_ds_meta(ds):
              'experiment':ds.experiment_id,
              'units':ds[v].attrs['units'],
             'frequency': ds.attrs["frequency"],
-             'ensemble':ds.attrs["parent_variant_label"],
+             'ensemble':ds.attrs["variant_label"],
              'model': ds.source_id}]
     df = pd.DataFrame(data)
 

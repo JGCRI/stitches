@@ -113,43 +113,51 @@ def drop_hist_false_duplicates(matched_data):
     # that had purely historical data in them and none
     # from the future when smoothing.
     subset_df = fut_matched_data.loc[fut_matched_data["target_year"] <= cut_off_yr].copy()
-    # parse out information about the ssp experiment id
-    subset_df["idvalue"] = list(
-        map(lambda x: int(x.split("p")[1].replace('-over', '')), subset_df["archive_experiment"]))
-    # group the data frame by the target information, recall that for each target match
-    # there might be more matches with the archive. Here we want to make sure that we do
-    # not want to have multiple matches with experiments from the historical period
-    # from the archive.
-    grouped_dat = subset_df.groupby(["target_variable", "target_experiment", "target_ensemble",
-                                     "target_model", "target_start_yr", "target_end_yr", "target_year",
-                                     "target_fx", "target_dx", "archive_ensemble", "archive_year"])
-    dat = []
-    for name, group in grouped_dat:
-        min_id_value = min(group['idvalue'])
-        dat.append(group.loc[group['idvalue'] == min_id_value])
-    historical = pd.concat(dat)
-    cols_to_keep = ['target_variable', 'target_experiment', 'target_ensemble',
-                    'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
-                    'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
-                    'archive_model', 'archive_ensemble', 'archive_start_yr',
-                    'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
-                    'dist_fx', 'dist_l2']
-    historical = historical[cols_to_keep]
 
-    # select the future matched data
-    # TODO should it be 2010 or should it be the cut off year?
-    matched = pd.concat([fut_matched_data.loc[fut_matched_data['target_year'] > 2010].copy(),
-                         historical, idealized_matched_data])
-    matched = matched.sort_values('target_year')
-    matched = matched.reset_index()
-    cols_to_keep = ['target_variable', 'target_experiment', 'target_ensemble',
-                    'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
-                    'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
-                    'archive_model', 'archive_ensemble', 'archive_start_yr',
-                    'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
-                    'dist_fx', 'dist_l2']
-    matched = matched[cols_to_keep]
-    return matched
+    # Only operate if there are any historic years to deal with:
+    if (util.nrow(subset_df) > 0):
+        # parse out information about the ssp experiment id
+        subset_df["idvalue"] = list(
+            map(lambda x: int(x.split("p")[1].replace('-over', '')), subset_df["archive_experiment"]))
+        # group the data frame by the target information, recall that for each target match
+        # there might be more matches with the archive. Here we want to make sure that we do
+        # not want to have multiple matches with experiments from the historical period
+        # from the archive.
+        grouped_dat = subset_df.groupby(["target_variable", "target_experiment", "target_ensemble",
+                                         "target_model", "target_start_yr", "target_end_yr", "target_year",
+                                         "target_fx", "target_dx", "archive_ensemble", "archive_year"])
+        dat = []
+        for name, group in grouped_dat:
+            min_id_value = min(group['idvalue'])
+            dat.append(group.loc[group['idvalue'] == min_id_value])
+        historical = pd.concat(dat)
+        cols_to_keep = ['target_variable', 'target_experiment', 'target_ensemble',
+                        'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
+                        'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
+                        'archive_model', 'archive_ensemble', 'archive_start_yr',
+                        'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
+                        'dist_fx', 'dist_l2']
+        historical = historical[cols_to_keep]
+
+        # select the future matched data
+        # TODO should it be 2010 or should it be the cut off year?
+        matched = pd.concat([fut_matched_data.loc[fut_matched_data['target_year'] > 2010].copy(),
+                             historical, idealized_matched_data])
+        matched = matched.sort_values('target_year')
+        matched = matched.reset_index()
+        cols_to_keep = ['target_variable', 'target_experiment', 'target_ensemble',
+                        'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
+                        'target_fx', 'target_dx', 'archive_experiment', 'archive_variable',
+                        'archive_model', 'archive_ensemble', 'archive_start_yr',
+                        'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
+                        'dist_fx', 'dist_l2']
+        matched = matched[cols_to_keep]
+        return matched
+    else:
+        return matched_data
+
+
+
 
 
 def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=True):

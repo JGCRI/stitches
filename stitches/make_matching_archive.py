@@ -23,6 +23,7 @@ def make_matching_archive(smoothing_window=9, chunk_window=9, add_staggered=Fals
     """
     # Start by loading all of the tas files.
     raw_data = util.load_data_files('data/tas-data')
+    raw_data = raw_data[raw_data['year'] <= 2100].copy()
 
     # Smooth the anomalies, get the running mean of each time series.
     # Each year in the original time series is retained, and the running mean
@@ -79,7 +80,7 @@ def make_matching_archive(smoothing_window=9, chunk_window=9, add_staggered=Fals
                     print(mod + '  ' + exp + '  ' + ens + '  has fewer than chunk_window=' +
                           str(chunk_window) + ' years in its time series. Skipping')
                 else:
-                    dd = prep.chunk_ts(df=dat, n=chunk_window)
+                    dd = prep.chunk_ts(df=dat, n=chunk_window, base_chunk=offset)
                     rslt = prep.get_chunk_info(dd)
                     out.append(rslt)
                 # end if-else

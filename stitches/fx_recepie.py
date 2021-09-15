@@ -325,7 +325,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
             # Then give it a stitching id
             new_recipe = []
             new_recipe = remove_duplicates(one_one_match, archive)
-            new_recipe = remove_duplicates(one_one_match, archive)
             stitching_id = exp + '~' + ens + '~' + str(stitch_ind)
             new_recipe["stitching_id"] = stitching_id
             new_recipe = new_recipe.reset_index(drop=True).copy()

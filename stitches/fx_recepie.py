@@ -492,9 +492,10 @@ def handle_transition_periods(rp):
 
     def internal_func(x):
         # First check to see the archive period spans the historical to future scenario
-        # TODO why does range do 1 to x-1? when we want it to return 1 to x? is there
-        # a better way to do this than by adding 1 onto the end?
-        transition_period = 2014 in range(x["archive_start_yr"], x["archive_end_yr"] + 1)
+        transition_period = (
+                (2014 in range(x["archive_start_yr"], x["archive_end_yr"] + 1)) &
+                (2015 in range(x["archive_start_yr"], x["archive_end_yr"] + 1))
+        )
 
         if transition_period:
             target_yrs = list(range(x['target_start_yr'], x['target_end_yr']+1))

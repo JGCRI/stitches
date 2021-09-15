@@ -62,7 +62,9 @@ def get_netcdf_values(i, dl, rp, fl, name):
 
     # Have to have special time handeler, consider functionalizinng this.
     times = extracted.indexes['time']
-    if type(times) is xr.coding.cftimeindex.CFTimeIndex:
+
+
+    if type(times) in [xr.coding.cftimeindex.CFTimeIndex, pd.core.indexes.datetimes.DatetimeIndex]:
         yrs = extracted.indexes['time'].year # pull out the year information from the time index
         # TODO CVR should we use something other than range? why doesn't it include the end year without
         # doing the plus 1?

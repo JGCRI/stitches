@@ -15,7 +15,7 @@ import pandas as pd
 import stitches as stitches
 import pkg_resources
 
-pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_columns', None)
 
 OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
 
@@ -61,7 +61,7 @@ full_archive_data = pd.read_csv(full_archive_path)
 full_target_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 full_target_data = pd.read_csv(full_target_path)
 
-esms = ['ACCESS-CM2']
+
 # for each of the esms in the experiment, subset to what we want
 # to work with and run the experiment.
 for esm in esms:
@@ -92,7 +92,6 @@ for esm in esms:
         unformatted_recipe_245 = stitches.permute_stitching_recipes(N_matches=10000,
                                                                     matched_data=match_245_df,
                                                                     archive=archive_data)
-        unformatted_recipe_245.to_csv('unform_rp.csv')
 
         unformatted_recipe_370 = stitches.permute_stitching_recipes(N_matches=10000,
                                                                     matched_data=match_370_df,
@@ -103,12 +102,15 @@ for esm in esms:
         recipe_245.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
                               'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
                               'archive_end_yr', 'tas_file']
-        recipe_245.to_csv('form_rp.csv')
+        recipe_245.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
+                     'gridded_recipes_' + esm + '_target245' + '.csv'))
 
         recipe_370 = stitches.generate_gridded_recipe(unformatted_recipe_370)
         recipe_370.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
                               'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
                               'archive_end_yr', 'tas_file']
+        recipe_370.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
+                           'gridded_recipes_' + esm + '_target370' + '.csv'))
 
         # stitch the GSAT values and save as csv
         gsat_245 = stitches.gmat_stitching(recipe_245)

@@ -103,14 +103,14 @@ for esm in esms:
                               'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
                               'archive_end_yr', 'tas_file']
         recipe_245.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
-                     'gridded_recipes_' + esm + '_target245' + '.csv'))
+                     'gridded_recipes_' + esm + '_target245' + '.csv'), index=False)
 
         recipe_370 = stitches.generate_gridded_recipe(unformatted_recipe_370)
         recipe_370.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
                               'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
                               'archive_end_yr', 'tas_file']
         recipe_370.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
-                           'gridded_recipes_' + esm + '_target370' + '.csv'))
+                           'gridded_recipes_' + esm + '_target370' + '.csv'), index=False)
 
         # stitch the GSAT values and save as csv
         gsat_245 = stitches.gmat_stitching(recipe_245)
@@ -118,14 +118,14 @@ for esm in esms:
             ds = gsat_245[gsat_245['stitching_id'] == id].copy()
             fname = (OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
                      'stitched_' + esm + '_GSAT_' + id + '.csv')
-            ds.to_csv(fname)
+            ds.to_csv(fname, index=False)
 
         gsat_370 = stitches.gmat_stitching(recipe_370)
         for id in gsat_370.stitching_id.unique():
             ds = gsat_370[gsat_370['stitching_id'] == id].copy()
             fname = (OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
                      'stitched_' + esm + '_GSAT_' + id + '.csv')
-            ds.to_csv(fname)
+            ds.to_csv(fname, index=False)
 
         # form and output the global gridded stitched products
         outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'), recipe_245)

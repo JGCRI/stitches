@@ -237,6 +237,7 @@ def gridded_stitching(out_dir, rp):
         f = []
         for i in rslt.keys():
             ds = rslt[i]
+            ds = ds.sortby('time').copy()
             fname = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' +
                       ds[i].attrs['variable'] + '_' + single_id + '.nc')
             ds.to_netcdf(fname)
@@ -331,6 +332,9 @@ def gmat_stitching(rp):
 
     # Format the list of data frames into a single data frame.
     final_output = pd.concat(out)
+    final_output = final_output.reset_index(drop=True).copy()
+    final_output = final_output.sort_values(['stitching_id', 'year']).copy()
+    final_output = final_output.reset_index(drop=True).copy()
     return final_output
 
 

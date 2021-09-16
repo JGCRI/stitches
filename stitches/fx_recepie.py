@@ -661,4 +661,7 @@ def generate_gridded_recipe(messy_recipe, res='mon'):
                                                   "variable": "archive_variable"})
 
     out = dat.merge(tas_meta_info, how="inner")
+    out=out.reset_index(drop=True).copy()
+    out = out.sort_values(['stitching_id', 'target_start_yr', 'target_end_yr']).copy()
+    out=out.reset_index(drop=True).copy()
     return out

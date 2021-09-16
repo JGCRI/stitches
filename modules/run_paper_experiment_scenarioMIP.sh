@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #SBATCH --partition=slurm
-#SBATCH —-A IHESD
-#SBATCH --nodes=1
-#SBATCH --time=64:01:00
+#SBATCH -n 1
+#SBATCH -t 64
+#SBATCH -A IHESD
 
 
 # README -----------------------------------------------------------------------

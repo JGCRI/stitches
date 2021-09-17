@@ -91,11 +91,11 @@ for esm in esms:
         # Make N_matches very large just so the full collapse free ensemble is generated
         unformatted_recipe_245 = stitches.permute_stitching_recipes(N_matches=10000,
                                                                     matched_data=match_245_df,
-                                                                    archive=archive_data)
+                                                                    archive=archive_data, testing=True)
 
         unformatted_recipe_370 = stitches.permute_stitching_recipes(N_matches=10000,
                                                                     matched_data=match_370_df,
-                                                                    archive=archive_data)
+                                                                    archive=archive_data,testing=True)
 
         # Clean up the recipe so that it can be used to generate the gridded data products.
         recipe_245 = stitches.generate_gridded_recipe(unformatted_recipe_245)

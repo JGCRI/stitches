@@ -24,7 +24,7 @@ OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
 # Experiment  setup
 # #############################################################################
 # experiment parameters
-tolerance = 0.08
+tolerance = 0.075
 Ndraws = 1
 
 # pangeo table of ESMs for reference

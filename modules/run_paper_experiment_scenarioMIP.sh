@@ -19,9 +19,6 @@
 # purge other modules because anaconda could conflict with other loaded Python versions
 module purge
 
-# preset permissions so I don't have to go back in and update the permissions after
-# the files get written
-umask u=rwx,g=rwx,o=rwx
 
 # load the parent version of Python 
 module load python/miniconda3.8 

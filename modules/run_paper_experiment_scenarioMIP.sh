@@ -31,3 +31,6 @@ conda activate /people/snyd535/miniconda3/envs/pangeo
 
 # run the python script you built 
 python /pic/projects/GCAM/stitches_pic/stitches_repo/stitches/modules/paper_experiment_scenarioMIP.py
+
+# update permissions of the outputs
+chmod -R 777 /pic/projects/GCAM/stitches_pic/paper1_outputs/*

@@ -228,6 +228,8 @@ def gridded_stitching(out_dir, rp):
     # For each of the stitching recipes go through and stitch a recipe.
     for single_id in rp['stitching_id'].unique():
 
+        print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() +" " + rp.archive_variable.unique() +" " + single_id))
+
         # Do the stitching!
         # ** this can be a slow step and prone to errors
         single_rp = rp.loc[rp['stitching_id'] == single_id].copy()

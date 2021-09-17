@@ -228,24 +228,33 @@ def gridded_stitching(out_dir, rp):
     # For each of the stitching recipes go through and stitch a recipe.
     for single_id in rp['stitching_id'].unique():
 
-        print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() +" " + rp.archive_variable.unique() +" " + single_id))
+        try:
+            print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id))
 
-        # Do the stitching!
-        # ** this can be a slow step and prone to errors
-        single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
-        rslt = internal_stitch(single_rp, data_list, file_list)
+            # Do the stitching!
+            # ** this can be a slow step and prone to errors
+            single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
+            rslt = internal_stitch(single_rp, data_list, file_list)
 
-        # Print the files out at netcdf files
-        f = []
-        for i in rslt.keys():
-            ds = rslt[i]
-            ds = ds.sortby('time').copy()
-            fname = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' +
-                      ds[i].attrs['variable'] + '_' + single_id + '.nc')
-            ds.to_netcdf(fname)
-            f.append(fname)
+            # Print the files out at netcdf files
+            f = []
+            for i in rslt.keys():
+                ds = rslt[i]
+                ds = ds.sortby('time').copy()
+                fname = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' +
+                         ds[i].attrs['variable'] + '_' + single_id + '.nc')
+                ds.to_netcdf(fname)
+                f.append(fname)
+            # end For loop over rslt keys
+        #end try
+
+        except:
+            print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Probably random pic error.'))
+        # end except
+     # end for loop over single_id
 
     return f
+# end gridded stitching function
 
 
 def gmat_internal_stitch(row, data):

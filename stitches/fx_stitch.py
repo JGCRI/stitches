@@ -236,6 +236,10 @@ def gridded_stitching(out_dir, rp):
 
     # For each of the stitching recipes go through and stitch a recipe.
     for single_id in rp['stitching_id'].unique():
+        # initialize f to be empty just to be safe now that we've added a
+        # try...except approach. It's technically possible the first id
+        # tried will fail and the function will try to return a non-existent f.
+        f = []
 
         try:
             print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id))

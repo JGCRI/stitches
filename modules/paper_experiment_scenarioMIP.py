@@ -38,14 +38,7 @@ pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.uni
 pangeo_585_esms.sort()
 
 
-# esms = pangeo_126_esms
-esms =  ['BCC-CSM2-MR',
-         'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
-         'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
-         'GISS-E2-1-G', 'HadGEM3-GC31-LL', 'HadGEM3-GC31-MM', 'IITM-ESM',
-         'MCM-UA-1-0', 'MIROC-ES2L', 'MIROC6', 'MPI-ESM1-2-HR',
-         'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
-         'TaiESM1', 'UKESM1-0-LL']
+esms = pangeo_126_esms[2:,]
       # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
       #  'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
       #  'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
@@ -120,19 +113,24 @@ for esm in esms:
                            'gridded_recipes_' + esm + '_target370' + '.csv'), index=False)
 
         # stitch the GSAT values and save as csv
-        gsat_245 = stitches.gmat_stitching(recipe_245)
-        for id in gsat_245.stitching_id.unique():
-            ds = gsat_245[gsat_245['stitching_id'] == id].copy()
-            fname = (OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
-                     'stitched_' + esm + '_GSAT_' + id + '.csv')
-            ds.to_csv(fname, index=False)
+        try:
+            gsat_245 = stitches.gmat_stitching(recipe_245)
+            for id in gsat_245.stitching_id.unique():
+                ds = gsat_245[gsat_245['stitching_id'] == id].copy()
+                fname = (OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
+                         'stitched_' + esm + '_GSAT_' + id + '.csv')
+                ds.to_csv(fname, index=False)
 
-        gsat_370 = stitches.gmat_stitching(recipe_370)
-        for id in gsat_370.stitching_id.unique():
-            ds = gsat_370[gsat_370['stitching_id'] == id].copy()
-            fname = (OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
-                     'stitched_' + esm + '_GSAT_' + id + '.csv')
-            ds.to_csv(fname, index=False)
+            gsat_370 = stitches.gmat_stitching(recipe_370)
+            for id in gsat_370.stitching_id.unique():
+                ds = gsat_370[gsat_370['stitching_id'] == id].copy()
+                fname = (OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP/' +
+                         'stitched_' + esm + '_GSAT_' + id + '.csv')
+                ds.to_csv(fname, index=False)
+        #end try
+        except:
+            print(("Some issue stitching GMAT for " + esm +". Skipping and moving on"))
+
 
         # form and output the global gridded stitched products
         outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'), recipe_245)

@@ -272,6 +272,13 @@ def gmat_internal_stitch(row, data):
                              (data["year"].isin(select_years)) &
                              (data["ensemble"] == row["archive_ensemble"])]
 
+    # some models stop at 2099 instead of 2100 - so there is a mismatch
+    # between len(years) and selected data but not a fatal one.
+    # Write a very specific if statement to catch this & just chop the extra year
+    # off the end of selected_data.
+    if ((len(years) == (util.nrow(selected_data) - 1)) & (max(years) == 2099) ):
+        selected_data = selected_data.iloc[0:len(years), ].copy()
+
     if len(years) != util.nrow(selected_data):
         raise TypeError(f"Trouble with selecting the tas data.")
 

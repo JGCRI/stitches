@@ -161,6 +161,15 @@ def internal_stitch(rp, dl, fl):
             raise TypeError(f"unsupported frequency")
 
         times = pd.date_range(start=start + "-01-01", end=end + "-12-31", freq=freq)
+
+        # Again, some ESMs stop in 2099 instead of 2100 - so wejust drop the
+        # last year of gridded_data when that is the case.
+        #TODO this will need something extra/different for daily data; maybe just
+        # a simple len(times)==len(gridded_data)-12 : len(times) == len(gridded_data)-(nDaysInYear)
+        # with correct parentheses would do it
+        if ((max(rp["target_end_yr"]) == 2099) & (len(times) == (len(gridded_data) - 12)) ):
+            gridded_data = gridded_data[0:len(times), 0:, 0: ].copy()
+
         assert (len(gridded_data) == len(times)), "Problem with the length of time"
 
         # Extract the lat and lon information that will be used to structure the

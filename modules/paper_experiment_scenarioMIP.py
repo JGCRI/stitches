@@ -38,7 +38,7 @@ pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.uni
 pangeo_585_esms.sort()
 
 
-esms = pangeo_126_esms[3:,]
+esms = pangeo_126_esms[5:,]
       # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
       #  'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
       #  'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
@@ -133,8 +133,13 @@ for esm in esms:
 
 
         # form and output the global gridded stitched products
-        outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'), recipe_245)
-        outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'), recipe_370)
+        try:
+            outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'), recipe_245)
+            outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'), recipe_370)
+        except:
+            print(("Some issue stitching gridded for " + esm + ". Skipping and moving on"))
+
+
 
         # end for loop over draws
     # end for loop over ESMs

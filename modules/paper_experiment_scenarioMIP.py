@@ -83,28 +83,28 @@ for esm in esms:
     # in 2014. Our recipe permutation only works when every target realization
     # has the same time series (and the same discretization of the time series).
     # So we generally drop those realizations from the target dataframe.
-   if not target_245.empty:
-       grped_245 = target_245.groupby(['experiment', 'variable', 'ensemble', 'model'])
-       for name, group in grped_245:
-           df1 = group.copy()
-           # if it isn't a complete time series (defined as going to 2099 or 2100),
-           # remove it from the target data frame:
-           if max(df1.end_yr) < 2099:
-               target_245 = target_245.loc[(target_245['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(drop=True)
-               del (df1)
-        del (grped_245)
+    if not target_245.empty:
+        grped_245 = target_245.groupby(['experiment', 'variable', 'ensemble', 'model'])
+        for name, group in grped_245:
+            df1 = group.copy()
+            # if it isn't a complete time series (defined as going to 2099 or 2100),
+            # remove it from the target data frame:
+            if max(df1.end_yr) < 2099:
+                target_245 = target_245.loc[(target_245['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(drop=True)
+            del (df1)
 
-       if not target_370.empty:
-           grped_370 = target_370.groupby(['experiment', 'variable', 'ensemble', 'model'])
-           for name, group in grped_370:
-               df1 = group.copy()
-               # if it isn't a complete time series (defined as going to 2099 or 2100),
-               # remove it from the target data frame:
-               if max(df1.end_yr) < 2099:
-                   target_370 = target_370.loc[(target_370['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
-                       drop=True)
-                del(df1)
-           del(grped_370)
+        del (grped_245)
+    if not target_370.empty:
+        grped_370 = target_370.groupby(['experiment', 'variable', 'ensemble', 'model'])
+        for name, group in grped_370:
+            df1 = group.copy()
+            # if it isn't a complete time series (defined as going to 2099 or 2100),
+            # remove it from the target data frame:
+            if max(df1.end_yr) < 2099:
+                target_370 = target_370.loc[(target_370['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
+                    drop=True)
+            del(df1)
+        del(grped_370)
 
 
 

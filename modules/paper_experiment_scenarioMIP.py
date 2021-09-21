@@ -38,7 +38,7 @@ pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.uni
 pangeo_585_esms.sort()
 
 
-esms = pangeo_126_esms[12:,]
+esms = pangeo_126_esms[15:,]
       # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
       #  'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
       #  'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
@@ -46,6 +46,7 @@ esms = pangeo_126_esms[12:,]
       #  'MCM-UA-1-0', 'MIROC-ES2L', 'MIROC6', 'MPI-ESM1-2-HR',
       #  'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
       #  'TaiESM1', 'UKESM1-0-LL']
+      # Skipping AWI and HadGEM LL so far - weird issues to dig into more.
 
 
 # #############################################################################

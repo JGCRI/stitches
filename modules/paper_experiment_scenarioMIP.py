@@ -38,7 +38,7 @@ pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.uni
 pangeo_585_esms.sort()
 
 
-esms = pangeo_126_esms[15:,]
+esms = pangeo_126_esms[14:,]
       # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
       #  'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
       #  'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
@@ -78,6 +78,35 @@ for esm in esms:
 
     target_370 = full_target_data[(full_target_data['model'] == esm) &
                                   (full_target_data['experiment'] == 'ssp370')].copy()
+
+    # Some models (HadGEM3-GC31-LL for example), have realizations that stop
+    # in 2014. Our recipe permutation only works when every target realization
+    # has the same time series (and the same discretization of the time series).
+    # So we generally drop those realizations from the target dataframe.
+   if not target_245.empty:
+       grped_245 = target_245.groupby(['experiment', 'variable', 'ensemble', 'model'])
+       for name, group in grped_245:
+           df1 = group.copy()
+           # if it isn't a complete time series (defined as going to 2099 or 2100),
+           # remove it from the target data frame:
+           if max(df1.end_yr) < 2099:
+               target_245 = target_245.loc[(target_245['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(drop=True)
+               del (df1)
+        del (grped_245)
+
+       if not target_370.empty:
+           grped_370 = target_370.groupby(['experiment', 'variable', 'ensemble', 'model'])
+           for name, group in grped_370:
+               df1 = group.copy()
+               # if it isn't a complete time series (defined as going to 2099 or 2100),
+               # remove it from the target data frame:
+               if max(df1.end_yr) < 2099:
+                   target_370 = target_370.loc[(target_370['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
+                       drop=True)
+                del(df1)
+           del(grped_370)
+
+
 
     # Use the match_neighborhood function to generate all of the matches between the target and
     # archive data points.

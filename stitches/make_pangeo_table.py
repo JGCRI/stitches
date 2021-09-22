@@ -17,12 +17,11 @@ def make_pangeo_table():
     # Start by loading all of the tas files.
     tas_exp_model = (util.load_data_files('data/tas-data')[["experiment", "ensemble", "model"]]
                      .drop_duplicates()
-                     .reset_index(drop=True)
-                     )
+                     .reset_index(drop=True))
+
 
     # For the future experiments make sure we add in the historical experiment info.
-    # TODO what happened to the ssp4 scenario???
-    fut_exps = ['ssp126', 'ssp245', 'ssp370', 'ssp585', 'ssp534-over']
+    fut_exps = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460', 'ssp585', 'ssp534-over', 'ssp585']
     hist_info = tas_exp_model.loc[tas_exp_model["experiment"].isin(fut_exps)].copy()[['model', 'ensemble']]
     hist_info["experiment"] = "historical"
     hist_info = hist_info.drop_duplicates()
@@ -31,7 +30,7 @@ def make_pangeo_table():
 
     # Get the complete data table from pangeo
     dat = pangeo.fetch_pangeo_table()
-    pangeo_table = (dat.loc[dat['grid_label'] == "gn"][["source_id", "experiment_id", "member_id", "variable_id",
+    pangeo_table = (dat.loc[(dat['grid_label'] == "gn") & (dat['activity_id'] == "ScenarioMIP")][["source_id", "experiment_id", "member_id", "variable_id",
                                                         "zstore", "table_id"]].copy())
     pangeo_table = pangeo_table.rename(columns={"source_id": "model", "experiment_id": "experiment",
                                                 "member_id": "ensemble", "variable_id": "variable",

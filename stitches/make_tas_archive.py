@@ -120,7 +120,7 @@ def paste_historical_data(input_data):
     historical_data = input_data[input_data["experiment"] == "historical"].copy()
 
     # Create a subset of the future data
-    fut_exps = ['ssp126', 'ssp245', 'ssp370', 'ssp585', 'ssp534-over', 'ssp119', 'ssp434', 'ssp460']
+    fut_exps = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460', 'ssp585', 'ssp534-over', 'ssp585']
     future_data = input_data[input_data["experiment"].isin(fut_exps)]
     future_scns = set(future_data["experiment"].unique())
 
@@ -289,7 +289,8 @@ def make_tas_archive():
         row = data.loc[i]
 
         # Check to see if the zstore needs to be changed based on if it is a future experiment.
-        fut_exps = set(['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460', 'ssp534-over', 'ssp585'])
+        fut_exps = set(['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460',
+                         'ssp585', 'ssp534-over', 'ssp585'])
         change = row["experiment"] in fut_exps
         if change:
             new = row["zstore"].replace(row["experiment"], "historical")

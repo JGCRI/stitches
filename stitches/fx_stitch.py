@@ -247,7 +247,7 @@ def gridded_stitching(out_dir, rp):
             # Do the stitching!
             # ** this can be a slow step and prone to errors
             single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
-            rslt = internal_stitch(single_rp, data_list, file_list)
+            rslt = internal_stitch(rp=single_rp, dl=data_list, fl=file_list)
 
             # Print the files out at netcdf files
             f = []

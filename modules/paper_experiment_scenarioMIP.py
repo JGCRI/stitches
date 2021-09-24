@@ -46,9 +46,8 @@ esms = pangeo_126_esms[14:,]
       #  'MCM-UA-1-0', 'MIROC-ES2L', 'MIROC6', 'MPI-ESM1-2-HR',
       #  'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
       #  'TaiESM1', 'UKESM1-0-LL']
-      # Skipping AWI and HadGEM LL so far - weird issues to dig into more.
 
-
+esms = ['MIROC6']
 # #############################################################################
 # The experiment
 # #############################################################################
@@ -105,7 +104,6 @@ for esm in esms:
                     drop=True)
             del(df1)
         del(grped_370)
-
 
 
     # Use the match_neighborhood function to generate all of the matches between the target and
@@ -188,15 +186,35 @@ for esm in esms:
             print(("Some issue stitching GMAT for " + esm +". Skipping and moving on"))
 
 
-        # form and output the global gridded stitched products
+        # form and output the global gridded stitched products.
+        # stitches.gridded_stitching will work on a recipe data frame that contains
+        # many stitching recipes just fine. However, one step stitches.gridded_stitching
+        # takes is to download all needed netcdfs for all stitching_ids in the recipe
+        # data frame at once. When there are hundreds of stitching_ids (e.g. MIROC6),
+        # the step for downloading from pangeo hits a time and/or memory wall.
+        # To get around this for now, we simply loop over stitching_ids before
+        # calling stitches.gridded_stitching so that the function gets applied to
+        # each id individually, limiting the number of netcdfs that must be
+        # downloaded from pangeo at any one time
+        #
         try:
             if not target_245.empty:
-                outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'), recipe_245)
+                for single_id in recipe_245['stitching_id'].unique():
+                    single_rp = recipe_245.loc[recipe_245['stitching_id'] == single_id].copy()
+                    outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'),
+                                                         single_rp)
+                    del (single_rp)
+                    del(outputs)
             else:
                 print('No target ssp245 data for ' + esm + '. Gridded stitching skipped')
 
             if not target_370.empty:
-                outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'), recipe_370)
+                for single_id in recipe_370['stitching_id'].unique():
+                    single_rp = recipe_370.loc[recipe_370['stitching_id'] == single_id].copy()
+                    outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_scenarioMIP'),
+                                                         single_rp)
+                    del (single_rp)
+                    del(outputs)
             else:
                 print('No target ssp370 data for ' + esm + '. Gridded stitching skipped')
 

@@ -38,7 +38,7 @@ pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.uni
 pangeo_585_esms.sort()
 
 
-esms = pangeo_126_esms[14:,]
+esms = pangeo_126_esms
       # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
       #  'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
       #  'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
@@ -47,13 +47,12 @@ esms = pangeo_126_esms[14:,]
       #  'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
       #  'TaiESM1', 'UKESM1-0-LL']
 
-esms = ['MIROC6']
 # #############################################################################
 # The experiment
 # #############################################################################
 
 # Load the full archive of all staggered windows, which we will be matching on
-full_archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive_staggered.csv')
+full_archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 full_archive_data = pd.read_csv(full_archive_path)
 
 # Load the original archive without staggered windows, which we will draw

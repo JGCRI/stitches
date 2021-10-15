@@ -50,8 +50,8 @@ def make_matching_archive(smoothing_window=9, chunk_window=9, add_staggered=Fals
             mod = dat.model.unique()[0]
             exp = dat.experiment.unique()[0]
             ens = dat.ensemble.unique()[0]
-            print(mod + '  ' + exp + '  ' +  ens + '  has fewer than chunk_window=' +
-                  str(chunk_window) +  ' years in its time series. Skipping')
+            print(mod + '  ' + exp + '  ' + ens + '  has fewer than chunk_window=' +
+                  str(chunk_window) + ' years in its time series. Skipping')
         else:
             dd = prep.chunk_ts(df=dat, n=chunk_window)
             rslt = prep.get_chunk_info(dd)

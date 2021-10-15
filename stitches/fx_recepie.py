@@ -6,9 +6,6 @@ import stitches.fx_util as util
 import stitches.fx_match as match
 
 
-# import pickle_utils as pickle
-
-
 def get_num_perms(matched_data):
     """ A function to give you the number of potential permutations from a
     matched set of data. Ie Taking in the the results of `match_neighborhood(target, archive)`.
@@ -661,7 +658,93 @@ def generate_gridded_recipe(messy_recipe, res='mon'):
                                                   "variable": "archive_variable"})
 
     out = dat.merge(tas_meta_info, how="inner")
-    out=out.reset_index(drop=True).copy()
+    out = out.reset_index(drop=True).copy()
     out = out.sort_values(['stitching_id', 'target_start_yr', 'target_end_yr']).copy()
-    out=out.reset_index(drop=True).copy()
+    out = out.reset_index(drop=True).copy()
     return out
+
+
+def make_recipe(target_data, archive_data, N_matches, res="mon", tol=0.1, non_tas_variables=None):
+    """ Generate a stitching recipe.
+
+         :param target_data:       a pandas data frame of climate information to emulate.
+         :param archive_data:      a pandas data frame of temperature data to use as the archive to match on.
+         :param N_matches:         a int to the maximum number of matches per target data
+         :param res:               str of mon or day to indicate the resolution of the stitched data
+         :param tol:               float value indicating the tolerance to use in the matching process, default set to 0.1
+         :param non_tas_variables: a list of variables other than tas to stitch together, when using the default set to None only tas will be stitched together.
+
+         :return:                   pandas data frame of a formatted recpie
+     """
+
+    # Check the inputs
+    util.check_columns(target_data, set(['experiment', 'variable', 'ensemble', 'model', 'start_yr',
+                                         'end_yr', 'year', 'fx', 'dx']))
+    util.check_columns(archive_data, set(['experiment', 'variable', 'ensemble', 'model', 'start_yr',
+                                          'end_yr', 'year', 'fx', 'dx']))
+    if not type(N_matches) is int:
+        raise TypeError(f"N_matches: must be an integer")
+    if not type(tol) is float:
+        raise TypeError(f"tol: must be a float")
+    #if not type(non_tas_variables) in [None, list]:
+    #    raise TypeError(f"non_tas_variables: must be None or a list")
+
+
+    # If there are non tas variables to be stitched subset the archive to limit
+    # the coverage to only the entries with the complete coverage.
+    if type(non_tas_variables) == list:
+        if res not in ['mon', 'day']:
+            raise TypeError(f"does not recognize the res input")
+        if 'tas' in non_tas_variables:
+            raise TypeError(f"non_tas_variables: cannot contain tas")
+
+        pt_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
+        pangeo_table = pd.read_csv(pt_path)
+
+        var_list = pangeo_table["variable"].unique()
+        if not set(non_tas_variables) <= set(var_list):
+            raise TypeError(f"1 or more of the variables are not found in pangeo table.")
+
+        # Subset the pangeo table so that it contains the resolution & variables of data of interest.
+        non_tas_variables.append('tas')
+        pt_subset = pangeo_table.loc[(pangeo_table["domain"].str.contains(res) &
+                                      pangeo_table["variable"].isin(non_tas_variables) &
+                                      ~pangeo_table["zstore"].str.contains("AerChemMIP"))].copy()
+
+        # Format the variable column to the "file" so that we can
+        pt_subset["variable"] = pt_subset["variable"] + "_file"
+        wide_df = pt_subset.pivot(index=["model", "ensemble", "experiment"], columns="variable", values="zstore")
+        wide_df.reset_index(inplace=True)
+        wide_df.columns.name = None
+        wide_df = wide_df.dropna()
+
+        # Select the archive entries for the model, ensemble, experiment to keep, there are the entries
+        # that also have complete coverage for the variables listed in the non tas variable list.
+        to_keep = wide_df.loc[:, wide_df.columns.isin(["model", "ensemble", "experiment"])].drop_duplicates()
+        archive_data = archive_data.merge(to_keep, on=["model", "ensemble", "experiment"], how="inner").copy()
+
+    # Match the archive & target data together.
+    match_df = match.match_neighborhood(target_data, archive_data, tol=tol)
+
+    # So the permute stitiching recipe works it works when N matches is set to 1 see blow for an
+    # example where the function fails to return 2 matches per target.
+    unformatted_recipe = permute_stitching_recipes(N_matches=N_matches, matched_data=match_df, archive=archive_data)
+
+    # Format the recipe into the dataframe that can be used by the stitching functions.
+    recipe = generate_gridded_recipe(unformatted_recipe, res=res)
+    recipe.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
+                      'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
+                      'archive_end_yr', 'tas_file']
+
+    # If there are non tas variables add the non tas variables to the formatted recpie.
+    if type(non_tas_variables) == list:
+
+        to_join = wide_df.loc[:, ~wide_df.columns.isin(["model", "ensemble", "experiment"])]
+        out = pd.merge(recipe, to_join, on='tas_file')
+
+    else:
+        out = recipe.copy()
+
+    return out
+
+

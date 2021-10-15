@@ -63,7 +63,6 @@ def get_netcdf_values(i, dl, rp, fl, name):
     # Have to have special time handeler, consider functionalizinng this.
     times = extracted.indexes['time']
 
-
     if type(times) in [xr.coding.cftimeindex.CFTimeIndex, pd.core.indexes.datetimes.DatetimeIndex]:
         yrs = extracted.indexes['time'].year # pull out the year information from the time index
         # TODO CVR should we use something other than range? why doesn't it include the end year without
@@ -75,7 +74,13 @@ def get_netcdf_values(i, dl, rp, fl, name):
     dat = extracted.sel(time=to_keep)[v].values.copy()
 
     # TODO figure out why the date range is so does not include
-    expected_len = len(pd.date_range(start=str(start_yr)+"-01-01", end=str(end_yr)+"-12-31", freq='M'))
+    if times.freq == 'D':
+        expected_times = pd.date_range(start=str(start_yr)+"-01-01", end=str(end_yr)+"-12-31", freq='D')
+        if times.calendar == 'noleap':
+            expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
+    else:
+        expected_len = len(pd.date_range(start=str(start_yr)+"-01-01", end=str(end_yr)+"-12-31", freq='M'))
+
     assert (len(dat) == expected_len), "Not enough data in " + file + "for period " + str(start_yr) + "-" + str(end_yr)
 
     return dat
@@ -97,6 +102,8 @@ def get_var_info(rp, dl, fl, name):
     extracted = dl[index]
 
     attrs = data.get_ds_meta(extracted)
+    attrs["calendar"] = extracted.indexes['time'].calendar
+
     return attrs
 
 
@@ -151,12 +158,13 @@ def internal_stitch(rp, dl, fl):
         # Note that the pd.date_range call need the date/month defined otherwise it will
         # truncate the year from start of first year to start of end year which is not
         # what we want. We want the full final year to be included in the times series.
-        # TODO need to add ability to control the temporal resolution of the target data.
         start = str(min(rp["target_start_yr"]))
         end = str(max(rp["target_end_yr"]))
 
         if var_info["frequency"][0].lower() == "mon":
             freq = "M"
+        elif var_info["frequency"][0].lower() == "day":
+            freq = "D"
         else:
             raise TypeError(f"unsupported frequency")
 
@@ -167,8 +175,11 @@ def internal_stitch(rp, dl, fl):
         #TODO this will need something extra/different for daily data; maybe just
         # a simple len(times)==len(gridded_data)-12 : len(times) == len(gridded_data)-(nDaysInYear)
         # with correct parentheses would do it
-        if ((max(rp["target_end_yr"]) == 2099) & (len(times) == (len(gridded_data) - 12)) ):
-            gridded_data = gridded_data[0:len(times), 0:, 0: ].copy()
+        if ((max(rp["target_end_yr"]) == 2099) & (len(times) == (len(gridded_data) - 12))):
+            gridded_data = gridded_data[0:len(times), 0:, 0:].copy()
+
+        if var_info["calendar"][0].lower() == "noleap":
+            times = times[~((times.month == 2) & (times.day == 29))]
 
         assert (len(gridded_data) == len(times)), "Problem with the length of time"
 
@@ -247,7 +258,7 @@ def gridded_stitching(out_dir, rp):
             # Do the stitching!
             # ** this can be a slow step and prone to errors
             single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
-            rslt = internal_stitch(single_rp, data_list, file_list)
+            rslt = internal_stitch(rp=single_rp, dl=data_list, fl=file_list)
 
             # Print the files out at netcdf files
             f = []
@@ -262,7 +273,7 @@ def gridded_stitching(out_dir, rp):
         #end try
 
         except:
-            print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Probably random pic error.'))
+            print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Error thrown within gridded_stitching fxn.'))
         # end except
      # end for loop over single_id
 

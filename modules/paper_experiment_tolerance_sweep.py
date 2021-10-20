@@ -31,17 +31,17 @@ import pkg_resources
 import os
 from  pathlib import Path
 
-pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_columns', None)
 
-OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
-# OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
+# OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
+OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
 
 # #############################################################################
 # Experiment  setup
 # #############################################################################
 # experiment parameters
-tolerances = np.round(np.arange(0.03, 0.225, 0.005), 3)
-Ndraws = 200
+tolerances = np.round(np.arange(0.01, 0.225, 0.005), 3)
+Ndraws = 100
 error_threshold = 0.1
 
 # pangeo table of ESMs for reference

@@ -386,6 +386,7 @@ def match_draw_stitch_evalTgav(target_df, archive_df, toler, num_draws, ERR_OUTP
                 compared_ds['stitching_id'] = id
 
                 fname = (ERR_OUTPUT_DIR + 'all_metrics_' + esm_name + '_' + id + '.csv')
+                print(fname)
                 compared_ds.to_csv(fname, index=False)
 
                 del (ds)

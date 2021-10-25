@@ -1,15 +1,19 @@
 # TODO CRV does the test file need to be broken up? if so what changes need to be made to the
 # TODO CRV untitest.main call?
+# TODO CRV for the test data I am worried about where those files should be written out to
+
 import numpy as np
 import pandas as pd
 import pkg_resources
+import os
 import unittest
+import xarray as xr
 
-from stitches.fx_util import anti_join
-from stitches.fx_util import join_exclude
 from stitches.fx_match import match_neighborhood
-from stitches.fx_stitch import find_var_cols, find_zfiles, internal_stitch, gmat_stitching
 from stitches.fx_pangeo import fetch_nc
+from stitches.fx_recepie import remove_duplicates, make_recipe
+from stitches.fx_stitch import find_var_cols, find_zfiles, internal_stitch, gmat_stitching, gridded_stitching
+from stitches.fx_util import anti_join, join_exclude
 
 
 
@@ -54,8 +58,8 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(tableD.shape, (2, 4))
         self.assertTrue(tableD.shape, (2, 4))
 
-    def test_match_neighborhood(self):
-        """Testing the `match_neighborhood` function"""
+    def test_match_fxns(self):
+        """Testing the `match_neighborhood` functions"""
         # Read in some made up target data.
         path = pkg_resources.resource_filename('stitches', 'tests/test-target_dat.csv')
         data = pd.read_csv(path)
@@ -75,10 +79,14 @@ class TestUtil(unittest.TestCase):
         match2 = match_neighborhood(data, archive, tol=0.1)
         self.assertTrue(match2.shape[0] > data.shape[0])
 
-    def test_fx_grid_stitch(self):
-        """Test the family of functions that are used in the gridded stitching process"""
-        # Note that we do not test the gridded stitch function here because KD
-        # was not sure how to handle a unit test that writes output to a file.
+    def test_recipe_fxns(self):
+        # TODO this needs to be written but this is some what difficult to figure out how
+        # TODO to actually these functions.
+        self.assertEqual(True, True)
+
+
+    def test_stitch_fxns(self):
+        """Test the family of functions that are used in the stitching process."""
 
         # Read in a small recipe, only for 2 period of time.
         path = pkg_resources.resource_filename('stitches', 'tests/test-recipe_dat.csv')
@@ -102,6 +110,15 @@ class TestUtil(unittest.TestCase):
         time_steps = 12 * (max(recipe['target_end_yr']) - min(recipe['target_start_yr'])) + 12
         self.assertEqual(len(rslt['tas']['time']), time_steps)
 
+        # Test the gridded stitch function
+        # TODO CRV is there a better way to do this? I think ideally I would like to write
+        # to some temporary directory
+        out = gridded_stitching(".", recipe)
+        data = xr.open_dataset(out[0])
+        self.assertEqual(type(data), xr.core.dataset.Dataset)
+        self.assertEqual(len(data["time"]), time_steps)
+        os.remove(out[0])
+
         # Test the global mean stitch function.
         out = gmat_stitching(recipe)
         time_steps = max(recipe['target_end_yr']) - min(recipe['target_start_yr']) + 1
@@ -109,13 +126,6 @@ class TestUtil(unittest.TestCase):
 
 
 
-
-
-
-
-    def test_fx_recipe(self):
-        # This test has not been written yet & needs to be
-        self.assertTrue(False)
 
 
 

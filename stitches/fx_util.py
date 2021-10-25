@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pkg_resources
 import pandas as pd
+import re
 
 
 def combine_df(df1, df2):

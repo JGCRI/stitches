@@ -10,7 +10,6 @@ def make_pangeo_table():
     """"
     The function that makes a copy of the files that are available on pangeo that have corresponding files
     in the the matching archive, this will be used in the stitching process.
-
     :return:          Nothing, write a file out to package data.
     """
     # Using the information about what experiment/ensemble/models
@@ -47,5 +46,3 @@ def make_pangeo_table():
 
     # Return
     return None
-
-

@@ -73,13 +73,23 @@ def get_netcdf_values(i, dl, rp, fl, name):
         raise TypeError(f"unsupported time type")
     dat = extracted.sel(time=to_keep)[v].values.copy()
 
-    # TODO figure out why the date range is so does not include
-    if times.freq == 'D':
-        expected_times = pd.date_range(start=str(start_yr)+"-01-01", end=str(end_yr)+"-12-31", freq='D')
-        if times.calendar == 'noleap':
-            expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
-    else:
-        expected_len = len(pd.date_range(start=str(start_yr)+"-01-01", end=str(end_yr)+"-12-31", freq='M'))
+
+    if 'freq' in times.columns:
+        if ((times.freq == 'D') | (times.freq == 'day')):
+            expected_times = pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='D')
+            if times.calendar == 'noleap':
+                expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
+        else:
+            expected_len = len(pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='M'))
+
+    if 'frequency' in times.columns:
+        if ((times.frequency == 'D') | (times.frequency == 'day')):
+            expected_times = pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='D')
+            if times.calendar == 'noleap':
+                expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
+        else:
+            expected_len = len(pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='M'))
+
 
     assert (len(dat) == expected_len), "Not enough data in " + file + "for period " + str(start_yr) + "-" + str(end_yr)
 

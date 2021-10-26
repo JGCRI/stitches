@@ -252,29 +252,31 @@ def gridded_stitching(out_dir, rp):
         # tried will fail and the function will try to return a non-existent f.
         f = []
 
-        try:
-            print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id))
+        # try:
+        print((
+                          'Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id))
 
-            # Do the stitching!
-            # ** this can be a slow step and prone to errors
-            single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
-            rslt = internal_stitch(rp=single_rp, dl=data_list, fl=file_list)
+        # Do the stitching!
+        # ** this can be a slow step and prone to errors
+        single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
+        rslt = internal_stitch(rp=single_rp, dl=data_list, fl=file_list)
 
-            # Print the files out at netcdf files
-            f = []
-            for i in rslt.keys():
-                ds = rslt[i]
-                ds = ds.sortby('time').copy()
-                fname = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' +
-                         ds[i].attrs['variable'] + '_' + single_id + '.nc')
-                ds.to_netcdf(fname)
-                f.append(fname)
-            # end For loop over rslt keys
+        # Print the files out at netcdf files
+        f = []
+        for i in rslt.keys():
+            ds = rslt[i]
+            ds = ds.sortby('time').copy()
+            fname = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' +
+                     ds[i].attrs['variable'] + '_' + single_id + '.nc')
+            ds.to_netcdf(fname)
+            f.append(fname)
+        # end For loop over rslt keys
+
         #end try
 
-        except:
-            print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Error thrown within gridded_stitching fxn.'))
-        # end except
+        # except:
+        #     print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Error thrown within gridded_stitching fxn.'))
+        # # end except
      # end for loop over single_id
 
     return f

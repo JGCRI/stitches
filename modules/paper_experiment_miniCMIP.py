@@ -21,10 +21,10 @@ import pkg_resources
 import os
 from  pathlib import Path
 
-# pd.set_option('display.max_columns', None)
+pd.set_option('display.max_columns', None)
 
-# OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
-OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
+OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
+#OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
 
 # #############################################################################
 # Experiment  setup
@@ -266,7 +266,7 @@ def four_errors(gen_data, orig_data):
 
 # for each of the esms in the experiment, subset to what we want
 # to work with and run the experiment.
-for esm in esms:
+for esm in esms[0:1]:
     print(esm)
 
     # subset the archive and the targets to this ESM
@@ -287,11 +287,11 @@ for esm in esms:
 
         # and pull corresponding original/raw data for later comparison
         orig_245 = get_orig_data(target_245).copy()
-        get_orig_netcdfs(target_df=target_245,
-                         res='mon',
-                         non_tas_vars=['pr', 'psl'],
-                         pt=pangeo_data,
-                         DIR=(OUTPUT_DIR + "/" + esm + "/high_freq"))
+        # get_orig_netcdfs(target_df=target_245,
+        #                  res='mon',
+        #                  non_tas_vars=['pr', 'psl'],
+        #                  pt=pangeo_data,
+        #                  DIR=(OUTPUT_DIR + "/" + esm + "/high_freq"))
 
 
     if not target_370.empty:
@@ -300,11 +300,11 @@ for esm in esms:
 
         # and pull corresponding original/raw data for later comparison
         orig_370 = get_orig_data(target_370).copy()
-        get_orig_netcdfs(target_df=target_370,
-                         res='mon',
-                         non_tas_vars=['pr', 'psl'],
-                         pt=pangeo_data,
-                         DIR=(OUTPUT_DIR + "/" + esm + "/high_freq"))
+        # get_orig_netcdfs(target_df=target_370,
+        #                  res='mon',
+        #                  non_tas_vars=['pr', 'psl'],
+        #                  pt=pangeo_data,
+        #                  DIR=(OUTPUT_DIR + "/" + esm + "/high_freq"))
 
 
 
@@ -312,21 +312,21 @@ for esm in esms:
     for tolerance in tolerances:
         rp_245 = stitches.make_recipe(target_data=target_245,
                                       archive_data=archive_w_all,
-                                      N_matches=20000,
+                                      N_matches=1,
                                       res="mon",
                                       tol=tolerance,
                                       non_tas_variables=["pr", "psl"])
         rp_245.to_csv((OUTPUT_DIR + "/" + esm + "/high_freq/recipes_for_target_" + esm + '_ssp245.csv'), index=False)
         out_245 = stitches.gridded_stitching((OUTPUT_DIR + "/" + esm + "/high_freq"), rp_245)
 
-        rp_370 = stitches.make_recipe(target_data=target_370,
-                                      archive_data=archive_w_all,
-                                      N_matches=20000,
-                                      res="mon",
-                                      tol=tolerance,
-                                      non_tas_variables=["pr", "psl"])
-        rp_370.to_csv((OUTPUT_DIR + "/" + esm + "/high_freq/recipes_for_target_" + esm +'_ssp370.csv' ), index=False)
-        out_370 = stitches.gridded_stitching((OUTPUT_DIR + "/" + esm + "/high_freq"), rp_370)
+        # rp_370 = stitches.make_recipe(target_data=target_370,
+        #                               archive_data=archive_w_all,
+        #                               N_matches=20000,
+        #                               res="mon",
+        #                               tol=tolerance,
+        #                               non_tas_variables=["pr", "psl"])
+        # rp_370.to_csv((OUTPUT_DIR + "/" + esm + "/high_freq/recipes_for_target_" + esm +'_ssp370.csv' ), index=False)
+        # out_370 = stitches.gridded_stitching((OUTPUT_DIR + "/" + esm + "/high_freq"), rp_370)
 
 
 

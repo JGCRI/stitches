@@ -313,14 +313,18 @@ for esm in esms:
         rp_245 = stitches.make_recipe(target_data=target_245,
                                       archive_data=archive_w_all,
                                       N_matches=20000,
-                                      res="mon", tol=tolerance)
+                                      res="mon",
+                                      tol=tolerance,
+                                      non_tas_variables=["pr", "psl"])
         rp_245.to_csv((OUTPUT_DIR + "/" + esm + "/high_freq/recipes_for_target_" + esm + '_ssp245.csv'), index=False)
         out_245 = stitches.gridded_stitching((OUTPUT_DIR + "/" + esm + "/high_freq"), rp_245)
 
         rp_370 = stitches.make_recipe(target_data=target_370,
                                       archive_data=archive_w_all,
                                       N_matches=20000,
-                                      res="mon", tol=tolerance)
+                                      res="mon",
+                                      tol=tolerance,
+                                      non_tas_variables=["pr", "psl"])
         rp_370.to_csv((OUTPUT_DIR + "/" + esm + "/high_freq/recipes_for_target_" + esm +'_ssp370.csv' ), index=False)
         out_370 = stitches.gridded_stitching((OUTPUT_DIR + "/" + esm + "/high_freq"), rp_370)
 

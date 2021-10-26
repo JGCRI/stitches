@@ -65,7 +65,8 @@ def get_netcdf_values(i, dl, rp, fl, name):
 
     if type(times) in [xr.coding.cftimeindex.CFTimeIndex, pd.core.indexes.datetimes.DatetimeIndex]:
         yrs = extracted.indexes['time'].year # pull out the year information from the time index
-
+        # TODO CVR should we use something other than range? why doesn't it include the end year without
+        # doing the plus 1?
         flags = list(map(lambda x: x in range(start_yr, end_yr+1), yrs))
         to_keep = times[flags]
     else:
@@ -73,12 +74,22 @@ def get_netcdf_values(i, dl, rp, fl, name):
     dat = extracted.sel(time=to_keep)[v].values.copy()
 
 
-    if times.freq == 'D':
-        expected_times = pd.date_range(start=str(start_yr)+"-01-01", end=str(end_yr)+"-12-31", freq='D')
-        if times.calendar == 'noleap':
-            expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
-    else:
-        expected_len = len(pd.date_range(start=str(start_yr)+"-01-01", end=str(end_yr)+"-12-31", freq='M'))
+    if 'freq' in times.columns:
+        if ((times.freq == 'D') | (times.freq == 'day')):
+            expected_times = pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='D')
+            if times.calendar == 'noleap':
+                expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
+        else:
+            expected_len = len(pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='M'))
+
+    if 'frequency' in times.columns:
+        if ((times.frequency == 'D') | (times.frequency == 'day')):
+            expected_times = pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='D')
+            if times.calendar == 'noleap':
+                expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
+        else:
+            expected_len = len(pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='M'))
+
 
     assert (len(dat) == expected_len), "Not enough data in " + file + "for period " + str(start_yr) + "-" + str(end_yr)
 

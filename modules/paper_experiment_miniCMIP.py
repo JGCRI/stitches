@@ -21,10 +21,10 @@ import pkg_resources
 import os
 from  pathlib import Path
 
-pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_columns', None)
 
-OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
-# OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
+# OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
+OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
 
 # #############################################################################
 # Experiment  setup

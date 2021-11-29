@@ -169,6 +169,7 @@ def make_tas_archive():
     #
     # Find all of the files and read in the data, store as a single data frame.
     raw_data = pd.concat(list(map(pd.read_csv, files)))
+    return(raw_data)
 
 
     # Note that the first three steps only apply to the historical & ssp experiments,
@@ -206,8 +207,8 @@ def make_tas_archive():
     start_yr = fut_info[fut_info["min"] > 2015].copy()
     to_remove = start_yr[["model", "experiment", "ensemble"]]
 
-    # Make sure the future scenario runs until 2050 otherwise drop it.
-    end_yr = fut_info[fut_info["max"] < 2050].copy()
+    # Make sure the future scenario runs until 2098 otherwise drop it.
+    end_yr = fut_info[fut_info["max"] < 2098].copy()
     to_remove = to_remove.append(end_yr[["model", "experiment", "ensemble"]])
     clean_d2 = util.join_exclude(clean_d1, to_remove)
 

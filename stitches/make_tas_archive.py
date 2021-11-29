@@ -169,7 +169,6 @@ def make_tas_archive():
     #
     # Find all of the files and read in the data, store as a single data frame.
     raw_data = pd.concat(list(map(pd.read_csv, files)))
-    return(raw_data)
 
 
     # Note that the first three steps only apply to the historical & ssp experiments,

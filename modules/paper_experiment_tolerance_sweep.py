@@ -31,16 +31,16 @@ import pkg_resources
 import os
 from  pathlib import Path
 
-# pd.set_option('display.max_columns', None)
+pd.set_option('display.max_columns', None)
 
-# OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
-OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
+OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
+# OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/paper1_outputs'
 
 # #############################################################################
 # Experiment  setup
 # #############################################################################
 # experiment parameters
-tolerances = np.round(np.arange(0.01, 0.225, 0.005), 3)
+tolerances = np.round(np.arange(0.05, 0.225, 0.005), 3)
 Ndraws = 2
 error_threshold = 0.1
 
@@ -63,10 +63,8 @@ pangeo_good_ensembles = pangeo_good_ensembles.reset_index(drop=True).copy()
 
 # won't use idealized runs
 pangeo_good_ensembles = pangeo_good_ensembles[~((pangeo_good_ensembles['experiment'] == '1pctCO2') |
-                                                (pangeo_good_ensembles['experiment'] == 'abrupt-4xCO2')) ].reset_index(drop=True).copy()
-
-esms = pangeo_good_ensembles.model.unique().copy()
-
+                                                (pangeo_good_ensembles['experiment'] == 'abrupt-4xCO2')|
+                                                (pangeo_good_ensembles['experiment'] == 'ssp534-over')) ].reset_index(drop=True).copy()
 
 # #############################################################################
 # Load full archive and target data
@@ -84,6 +82,15 @@ full_archive_data= full_archive_data[i1.isin(i2)].copy()
 del(i1)
 del(i2)
 
+
+# get list of ESMs that are both pangeo good ensembles and in archive
+df1 = full_archive_data[['model', 'experiment', 'ensemble']].drop_duplicates()
+d = pd.merge(df1, pangeo_good_ensembles.drop_duplicates(), how = 'inner')
+esms = d.model.unique().copy()
+del(df1)
+del(d)
+
+
 # Load the original archive without staggered windows, which we will draw
 # the target trajectories from for matching
 full_target_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
@@ -97,6 +104,16 @@ full_target_data = full_target_data[i1.isin(i2)].copy()
 del(i1)
 del(i2)
 del(keys)
+
+
+# Make sure no 2012-2014 windows got through
+# TODO won't work with staggering??
+full_target_data['window_size'] = full_target_data['end_yr'] - full_target_data['start_yr']
+full_target_data = full_target_data[full_target_data['window_size'] >=7].drop(columns=['window_size']).copy()
+
+full_archive_data['window_size'] = full_archive_data['end_yr'] - full_archive_data['start_yr']
+full_archive_data = full_archive_data[full_archive_data['window_size'] >=7].drop(columns=['window_size']).copy()
+
 
 # #############################################################################
 # Some helper functions
@@ -334,7 +351,7 @@ def match_draw_stitch_evalTgav(target_df, archive_df, toler, num_draws, ERR_OUTP
         else:
             archive_id = 'wo_target'
 
-
+        compared = []
         for draw in range(0, num_draws):
             # Do the random draw of recipes
             if reproducible:
@@ -363,37 +380,31 @@ def match_draw_stitch_evalTgav(target_df, archive_df, toler, num_draws, ERR_OUTP
             recipe['tolerance'] = toler
             recipe['draw'] = draw
             recipe['archive'] = archive_id
-            # recipe.to_csv((OUTPUT_DIR + '/' + esm_name + '/experiment_CMIP6/' +
-            #                'gridded_recipes_' + esm_name + '_target_' + scn_name +
-            #                '_tol' + str(toler) +
-            #                '_draw' + str(draw) +
-            #                '_archive_' + archive_id + '.csv'), index=False)
+            recipe.to_csv((ERR_OUTPUT_DIR + '/' + esm_name + '/gridded_recipes_' + esm_name + '_target_' + scn_name +
+                           '_tol' + str(toler) +
+                           '_draw' + str(draw) +
+                           '_archive_' + archive_id + '.csv'), index=False)
             del (unformatted_recipe)
 
             # stitch the GSAT values and save as csv
             gsat = stitches.gmat_stitching(recipe)
+            gen_ens_size = len(gsat.stitching_id.unique())
+            gsat = gsat.rename(columns={'stitching_id': 'ensemble'}).copy()
             gsat['tolerance'] = toler
             gsat['draw'] = draw
             gsat['archive'] = archive_id
             gsat['experiment'] = scn_name
             gsat['model'] = esm_name
-            for id in gsat.stitching_id.unique():
-                ds = gsat[gsat['stitching_id'] == id].copy()
 
-                # errors vs orig data
-                ds = ds.rename(columns={"stitching_id": "ensemble"}).copy()
-                compared_ds = four_errors(gen_data=ds, orig_data=orig_df)
-                compared_ds['stitching_id'] = id
-
-                fname = (ERR_OUTPUT_DIR + 'all_metrics_' + esm_name + '_' + id + '.csv')
-                print(fname)
-                compared_ds.to_csv(fname, index=False)
-
-                del (ds)
-                del (compared_ds)
-
+            compared_ds = four_errors(gen_data=gsat, orig_data=orig_df)
+            compared_ds['gen_ens_size'] = gen_ens_size
+            compared.append(compared_ds)
             del (gsat)
 
+        compared = pd.concat(compared).reset_index(drop=True).copy()
+        fname = (ERR_OUTPUT_DIR + esm_name + '/all_metrics_' +  esm_name + '_target_' + scn_name + '_tol' + str(toler) + '_alldraws_archive_' + archive_id + '.csv')
+        print(fname)
+        compared.to_csv(fname, index=False)
 
     else:
         recipe = []
@@ -402,14 +413,15 @@ def match_draw_stitch_evalTgav(target_df, archive_df, toler, num_draws, ERR_OUTP
     return(recipe)
 
 
-
 # #############################################################################
 # The experiment
 # #############################################################################
+# issues with AWI, CESM2, hadgem mm, 'IITM-ESM', MPI-ESM-1-2-HAM,
+# noresm lm for tol=0.055 (0.05 seems to work?)
 
 # for each of the esms in the experiment, subset to what we want
 # to work with and run the experiment.
-for esm in esms[0:1]:
+for esm in esms[17:20]:
     print(esm)
 
     # subset the archive and the targets to this ESM
@@ -445,82 +457,73 @@ for esm in esms[0:1]:
 
 
     # loop over tolerances:
-    for tolerance in tolerances[0:1]:
+    for tolerance in tolerances[10:11]:
 
         rp_245_w = match_draw_stitch_evalTgav(target_245, archive_w_all,
                                               toler=tolerance, num_draws=Ndraws,
-                                              ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/alL_draws/'),
+                                              ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/all_draws/'),
                                               reproducible=False)
-        rp_245_wo = match_draw_stitch_evalTgav(target_245, archive_wo245,
-                                               toler=tolerance, num_draws=Ndraws,
-                                               ERR_OUTPUT_DIR=(OUTPUT_DIR + '/tolerance_sweeps/alL_draws/'),
-                                               reproducible=False)
+        # rp_245_wo = match_draw_stitch_evalTgav(target_245, archive_wo245,
+        #                                        toler=tolerance, num_draws=Ndraws,
+        #                                        ERR_OUTPUT_DIR=(OUTPUT_DIR + '/tolerance_sweeps/all_draws/'),
+        #                                        reproducible=False)
         rp_370_w = match_draw_stitch_evalTgav(target_370, archive_w_all,
                                               toler=tolerance, num_draws=Ndraws,
-                                              ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/alL_draws/'),
+                                              ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/all_draws/'),
                                               reproducible=False)
-        rp_370_wo = match_draw_stitch_evalTgav(target_370, archive_wo370,
-                                               toler=tolerance, num_draws=Ndraws,
-                                               ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/alL_draws/'),
-                                               reproducible=False)
+        # rp_370_wo = match_draw_stitch_evalTgav(target_370, archive_wo370,
+        #                                        toler=tolerance, num_draws=Ndraws,
+        #                                        ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/all_draws/'),
+        #                                        reproducible=False)
 
         rp_245_scenMIP = match_draw_stitch_evalTgav(target_245, archive_scenMIP,
                                                     toler=tolerance, num_draws=Ndraws,
-                                                    ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/alL_draws/'),
+                                                    ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/all_draws/'),
                                                     reproducible=False)
 
         rp_370_scenMIP = match_draw_stitch_evalTgav(target_370, archive_scenMIP,
                                                     toler=tolerance, num_draws=Ndraws,
-                                                    ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/alL_draws/'),
+                                                    ERR_OUTPUT_DIR=(OUTPUT_DIR +'/tolerance_sweeps/all_draws/'),
                                                     reproducible=False)
 
-
+    # End for loop over tolerances
     #########################################################
 
-        # Read in all generated GSAT files and format so error metrics can
-        # be calculated.
-        compared_data = []
-        entries = Path((OUTPUT_DIR + '/tolerance_sweeps/all_draws/'))
-        for entry in entries.iterdir():
-            if (('all_metrics' in entry.name) & (esm in entry.name)):
-                data = pd.read_csv((OUTPUT_DIR  + '/tolerance_sweeps/all_draws/') + entry.name)
-                compared_data.append(data)
-                del (data)
+    # Read in all generated GSAT files and format so error metrics can
+    # be calculated.
+    compared_data = []
+    entries = Path((OUTPUT_DIR + '/tolerance_sweeps/all_draws/' + esm + '/'))
+    for entry in entries.iterdir():
+        if (('all_metrics' in entry.name) & (esm in entry.name) ):
+            print(entry.name)
+            data = pd.read_csv((OUTPUT_DIR  + '/tolerance_sweeps/all_draws/'+ esm + '/') + entry.name)
+            compared_data.append(data)
+            del (data)
 
-        if len(compared_data) > 0:
-            compared_data = pd.concat(compared_data).reset_index(drop=True).copy()
+    if len(compared_data) > 0:
+        compared_data = pd.concat(compared_data).reset_index(drop=True).copy()
 
-            # average over draws
-            aggregate_metrics = []
-            for name, group in compared_data.groupby(['model', 'variable', 'experiment', 'tolerance', 'archive']):
-                ds = group.copy()
-                ds1 = ds[['model', 'variable', 'experiment', 'tolerance', 'archive']].drop_duplicates().copy()
-                ds1['aggregate_E1_tgav'] = np.mean(ds.E1_tgav.values)
-                ds1['aggregate_E2_tgav'] = np.mean(ds.E2_tgav.values)
-                ds1['aggregate_E1_jump'] = np.mean(ds.E1_jump.values)
-                ds1['aggregate_E2_jump'] = np.mean(ds.E2_jump.values)
-                ds1['max_metric'] = np.max([ds1.aggregate_E1_tgav.values,
-                                            abs(1 - ds1.aggregate_E2_tgav.values),
-                                            ds1.aggregate_E1_jump.values,
-                                            abs(1 - ds1.aggregate_E2_jump.values)])
-                aggregate_metrics.append(ds1)
-                del (ds)
-                del (ds1)
-            aggregate_metrics = pd.concat(aggregate_metrics).reset_index(drop=True).copy()
-            aggregate_metrics.to_csv((OUTPUT_DIR + '/tolerance_sweeps/aggregate_metrics_' + esm + '.csv'), index=False)
+        # average over draws
+        aggregate_metrics = []
+        for name, group in compared_data.groupby(['model', 'variable', 'experiment', 'tolerance', 'archive']):
+            ds = group.copy()
+            ds1 = ds[['model', 'variable', 'experiment', 'tolerance', 'archive']].drop_duplicates().copy()
+            ds1['aggregate_E1_tgav'] = np.mean(ds.E1_tgav.values)
+            ds1['aggregate_E2_tgav'] = np.mean(ds.E2_tgav.values)
+            ds1['aggregate_E1_jump'] = np.mean(ds.E1_jump.values)
+            ds1['aggregate_E2_jump'] = np.mean(ds.E2_jump.values)
+            ds1['max_metric'] = np.max([ds1.aggregate_E1_tgav.values,
+                                        abs(1 - ds1.aggregate_E2_tgav.values),
+                                        ds1.aggregate_E1_jump.values,
+                                        abs(1 - ds1.aggregate_E2_jump.values)])
+            ds1['min_gen_ens_size'] = np.min(ds.gen_ens_size)
+            ds1['mean_gen_ens_size'] = np.mean(ds.gen_ens_size)
+            ds1['max_gen_ens_size'] = np.max(ds.gen_ens_size)
+            aggregate_metrics.append(ds1)
+            del (ds)
+            del (ds1)
+        aggregate_metrics = pd.concat(aggregate_metrics).reset_index(drop=True).copy()
+        aggregate_metrics.to_csv((OUTPUT_DIR + '/tolerance_sweeps/aggregate_metrics_' + esm + '.csv'), index=False)
 
-            # filter to the largest tolerance that keeps max_metric<error_threshold
-            # for each model, variable, experiment, archive.
-            max_tol = []
-            for name, group in aggregate_metrics.groupby(['model', 'variable', 'experiment', 'archive']):
-                ds = group.copy()
-                ds = ds[ds["max_metric"] < error_threshold].copy()
-                ds = ds[ds['tolerance'] == ds.tolerance.max()].copy()
-                ds = ds.rename(columns={"tolerance": "max_tol"}).copy()
-                ds = ds[['model', 'variable', 'experiment', 'archive', 'max_tol']].copy()
-                max_tol.append(ds)
-                del (ds)
-            max_tol = pd.concat(max_tol).reset_index(drop=True).copy()
-            max_tol.to_csv((OUTPUT_DIR + '/tolerance_sweeps/max_tol_0p1_' + esm + '.csv'), index=False)
 
 # end for loop over ESMs

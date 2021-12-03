@@ -2,4 +2,7 @@ include README.md
 include LICENSE
 include DISCLAIMER
 include notebooks/*.*
-include stitches/data/ava.png
+include stitches/data/matching_archive.csv
+include stitches/data/matching_archive_staggered.csv
+include stitches/data/pangeo_table.csv
+include stitches/data/tas-data/*.csv

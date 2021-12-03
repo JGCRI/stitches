@@ -11,10 +11,14 @@
 # Tgavs, and gridded data sets of monthly + daily for ??? variables.
 # Start with tas, pr, psl - must subset archive up front to only include
 # ensemble members that have all of these files available.
-# look at CanESM, MIROC6 and ACCESS
+# look at CanESM5, MIROC6 and ACCESS-ESM1-5
 
 ## TODO functionalize at least some part of the analysis or at least use a for-loop
 ## over the different SSP targets so that the code isn't so long and repetitive
+# making a table of avail runs X planned archives and for looping over that would
+# trim things down (see approach for max tol runs). And rewrite the tolerance
+# iteration to be a while loop, comparing current to prev instead of calculating
+# and saving it all? Update writes and reads to be subdir so things are tidier
 
 # would be better to functionalize this script with ESM, tol and Ndraws as arguments
 # and then have the .sh just call the function and dispatch to diff nodes for each run I guess.
@@ -39,8 +43,8 @@ OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
 # Experiment  setup
 # #############################################################################
 # experiment parameters
-tolerances = np.arange(0.05, 0.3, 0.005)
-Ndraws = 2
+tolerances = np.round(np.arange(0.07, 0.225, 0.005), 3)
+Ndraws = 10
 error_threshold = 0.1
 
 # pangeo table of ESMs for reference
@@ -64,7 +68,7 @@ pangeo_good_ensembles = pangeo_good_ensembles.reset_index(drop=True).copy()
 pangeo_good_ensembles = pangeo_good_ensembles[~((pangeo_good_ensembles['experiment'] == '1pctCO2') |
                                                 (pangeo_good_ensembles['experiment'] == 'abrupt-4xCO2')) ].reset_index(drop=True).copy()
 
-esms = ['ACCESS-CM2', 'CanESM5', 'MIROC6']
+esms = ['ACCESS-ESM1-5', 'CanESM5', 'MIROC6']
 # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
 #        'BCC-ESM1', 'CESM2', 'CESM2-FV2', 'CESM2-WACCM', 'CMCC-CM2-HR4',
 #        'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'HadGEM3-GC31-LL',
@@ -79,7 +83,7 @@ esms = ['ACCESS-CM2', 'CanESM5', 'MIROC6']
 # #############################################################################
 
 # Load the full archive of all staggered windows, which we will be matching on
-full_archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive_staggered.csv')
+full_archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 full_archive_data = pd.read_csv(full_archive_path)
 
 # Keep only the entries that appeared in pangeo_good_ensembles:
@@ -107,6 +111,125 @@ del(keys)
 # #############################################################################
 # Some helper functions
 # #############################################################################
+def prep_target_data(target_df):
+    if not target_df.empty:
+        grped = target_df.groupby(['experiment', 'variable', 'ensemble', 'model'])
+        for name, group in grped:
+            df1 = group.copy()
+            # if it isn't a complete time series (defined as going to 2099 or 2100),
+            # remove it from the target data frame:
+            if max(df1.end_yr) < 2099:
+                target_df = target_df.loc[(target_df['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
+                    drop=True)
+            del (df1)
+        del (grped)
+
+        target_df = target_df.reset_index(drop=True).copy()
+        return(target_df)
+
+
+def get_orig_data(target_df):
+    if not target_df.empty:
+        esm_name = target_df.model.unique()[0]
+        scn_name = target_df.experiment.unique()[0]
+
+        full_rawtarget_path = pkg_resources.resource_filename('stitches', ('data/tas-data/' + esm_name + '_tas.csv'))
+        full_rawtarget_data = pd.read_csv(full_rawtarget_path)
+
+        orig_data = full_rawtarget_data[(full_rawtarget_data['experiment'] == scn_name)].copy()
+        keys = ['experiment', 'ensemble', 'model']
+        i1 = orig_data.set_index(keys).index
+        i2 = target_df.set_index(keys).index
+        orig_data = orig_data[i1.isin(i2)].copy()
+        del (i1)
+        del (i2)
+        del (keys)
+        del (full_rawtarget_data)
+        del (full_rawtarget_path)
+
+        orig_data = orig_data.reset_index(drop=True).copy()
+        return (orig_data)
+
+
+def match_draw_stitchTgav(target_df, archive_df, toler, num_draws, TGAV_OUTPUT_DIR, reproducible):
+
+    esm_name = archive_df.model.unique()[0]
+
+    if not target_df.empty:
+        # Use the match_neighborhood function to generate all of the matches between the target and
+        # archive data points.
+        match_df = stitches.match_neighborhood(target_df, archive_df, tol=toler)
+
+
+        if target_df.experiment.unique() in archive_df.experiment.unique():
+            archive_id = 'w_target'
+        else:
+            archive_id = 'wo_target'
+
+        scn_name = target_df.experiment.unique()[0]
+
+
+        for draw in range(0, num_draws):
+            # Do the random draw of recipes
+            if reproducible:
+                unformatted_recipe = stitches.permute_stitching_recipes(N_matches=10000,
+                                                                        matched_data=match_df,
+                                                                        archive=archive_df,
+                                                                        testing=True)
+            else:
+                unformatted_recipe = stitches.permute_stitching_recipes(N_matches=10000,
+                                                                        matched_data=match_df,
+                                                                        archive=archive_df,
+                                                                        testing=False)
+
+
+            new_ids = ('tol' + str(toler) + '~draw' + str(draw) + '~' + archive_id + '~'+
+                       unformatted_recipe['stitching_id'].astype(str)).copy()
+            unformatted_recipe = unformatted_recipe.drop(columns=['stitching_id']).copy()
+            unformatted_recipe['stitching_id'] = new_ids
+            del (new_ids)
+
+            # format the recipe
+            recipe = stitches.generate_gridded_recipe(unformatted_recipe)
+            recipe.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
+                              'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
+                              'archive_end_yr', 'tas_file']
+            recipe['tolerance'] = toler
+            recipe['draw'] = draw
+            recipe['archive'] = archive_id
+            recipe.to_csv((OUTPUT_DIR + '/' + esm_name + '/experiment_CMIP6/' +
+                           'gridded_recipes_' + esm_name + '_target_' + scn_name +
+                           '_tol' + str(toler) +
+                           '_draw' + str(draw) +
+                           '_archive_' + archive_id + '.csv'), index=False)
+            del (unformatted_recipe)
+
+            # stitch the GSAT values and save as csv
+            try:
+
+                gsat = stitches.gmat_stitching(recipe)
+                gsat['tolerance'] = toler
+                gsat['draw'] = draw
+                gsat['archive'] = archive_id
+                for id in gsat.stitching_id.unique():
+                    ds = gsat[gsat['stitching_id'] == id].copy()
+                    fname = (TGAV_OUTPUT_DIR +
+                             'stitched_' + esm_name + '_GSAT_' + id + '.csv')
+                    ds.to_csv(fname, index=False)
+                    del (ds)
+
+                del (gsat)
+
+            except:
+                print(("Some issue stitching GMAT for " + esm_name + ". Skipping and moving on"))
+
+    else:
+        recipe = []
+        print('Some missing target data for ' + esm_name + '. Analysis will be skipped')
+
+    return(recipe)
+
+
 def get_jumps(tgav_df):
     tgav_jump = []
     for name, group in tgav_df.groupby(['variable', 'experiment', 'ensemble', 'model']):
@@ -116,6 +239,7 @@ def get_jumps(tgav_df):
         tgav_jump.append(ds)
         del (ds)
     tgav_jump = pd.concat(tgav_jump)
+    tgav_jump = tgav_jump.drop(columns=['value']).copy()
     tgav_jump = tgav_jump.drop_duplicates().reset_index(drop=True).copy()
     return(tgav_jump)
 
@@ -138,8 +262,8 @@ def four_errors(gen_data, orig_data):
     for name, group in orig_data_jump.groupby(['model', 'variable', 'experiment']):
         ds = group.copy()
         ds1 = ds[['model', 'variable', 'experiment']].drop_duplicates().copy()
-        ds1['mean_orig_jump'] = np.mean(ds.value.values)
-        ds1['sd_orig_jump'] = np.std(ds.value.values)
+        ds1['mean_orig_jump'] = np.mean(ds.jump.values)
+        ds1['sd_orig_jump'] = np.std(ds.jump.values)
         orig_stats_jump.append(ds1)
         del (ds)
         del (ds1)
@@ -163,8 +287,8 @@ def four_errors(gen_data, orig_data):
     for name, group in gen_data_jump.groupby(['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']):
         ds = group.copy()
         ds1 = ds[['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']].drop_duplicates().copy()
-        ds1['mean_gen_jump'] = np.mean(ds.value.values)
-        ds1['sd_gen_jump'] = np.std(ds.value.values)
+        ds1['mean_gen_jump'] = np.mean(ds.jump.values)
+        ds1['sd_gen_jump'] = np.std(ds.jump.values)
         gen_stats_jump.append(ds1)
         del (ds)
         del (ds1)
@@ -226,271 +350,44 @@ for esm in esms:
                                   (full_target_data['experiment'] == 'ssp370')].copy()
 
 
-    # Some models (HadGEM3-GC31-LL for example), have realizations that stop
-    # in 2014. Our recipe permutation only works when every target realization
-    # has the same time series (and the same discretization of the time series).
-    # So we generally drop those realizations from the target dataframe.
+    # Clean up target data and pull corresponding original/raw data
     if not target_245.empty:
-        grped_245 = target_245.groupby(['experiment', 'variable', 'ensemble', 'model'])
-        for name, group in grped_245:
-            df1 = group.copy()
-            # if it isn't a complete time series (defined as going to 2099 or 2100),
-            # remove it from the target data frame:
-            if max(df1.end_yr) < 2099:
-                target_245 = target_245.loc[(target_245['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(drop=True)
-            del (df1)
-        del (grped_245)
+        # clean up
+        target_245 = prep_target_data(target_245).copy()
+
+        # and pull corresponding original/raw data for later comparison
+        orig_245 = get_orig_data(target_245).copy()
+
 
     if not target_370.empty:
-        grped_370 = target_370.groupby(['experiment', 'variable', 'ensemble', 'model'])
-        for name, group in grped_370:
-            df1 = group.copy()
-            # if it isn't a complete time series (defined as going to 2099 or 2100),
-            # remove it from the target data frame:
-            if max(df1.end_yr) < 2099:
-                target_370 = target_370.loc[(target_370['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
-                    drop=True)
-            del(df1)
-        del(grped_370)
+        # clean up
+        target_370 = prep_target_data(target_370).copy()
 
-    target_245 = target_245.reset_index(drop=True).copy()
-    target_370 = target_370.reset_index(drop=True).copy()
+        # and pull corresponding original/raw data for later comparison
+        orig_370 = get_orig_data(target_370).copy()
 
-
-    # Load in the raw, unsmoothed/unchunked target data.
-    full_rawtarget_path = pkg_resources.resource_filename('stitches', ('data/tas-data/' + esm + '_tas.csv'))
-    full_rawtarget_data = pd.read_csv(full_rawtarget_path)
-
-    orig_245 = full_rawtarget_data[(full_rawtarget_data['experiment'] == 'ssp245')].copy()
-    keys = ['experiment', 'ensemble', 'model']
-    i1 = orig_245.set_index(keys).index
-    i2 = target_245.set_index(keys).index
-    orig_245 = orig_245[i1.isin(i2)].copy()
-    del (i1)
-    del (i2)
-    del (keys)
-    orig_245 = orig_245.reset_index(drop=True).copy()
-
-
-    orig_370 = full_rawtarget_data[(full_rawtarget_data['experiment'] == 'ssp370')].copy()
-    keys = ['experiment', 'ensemble', 'model']
-    i1 = orig_370.set_index(keys).index
-    i2 = target_370.set_index(keys).index
-    orig_370 = orig_370[i1.isin(i2)].copy()
-    orig_370 = orig_370.reset_index(drop=True).copy()
-    del (i1)
-    del (i2)
-    del (keys)
-    del(full_rawtarget_data)
-    del(full_rawtarget_path)
 
 
     # loop over tolerances:
     for tolerance in tolerances:
-        print(tolerance)
 
-        # Use the match_neighborhood function to generate all of the matches between the target and
-        # archive data points.
-        if not target_245.empty:
-            match_245_w = stitches.match_neighborhood(target_245, archive_w_all, tol=tolerance)
+        rp_245_w = match_draw_stitchTgav(target_245, archive_w_all,
+                                         toler=tolerance, num_draws=Ndraws,
+                                         TGAV_OUTPUT_DIR=(OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/tolerance-generated-tgavs/' ),
+                                         reproducible=False)
+        rp_245_wo = match_draw_stitchTgav(target_245, archive_wo245,
+                                         toler=tolerance, num_draws=Ndraws,
+                                         TGAV_OUTPUT_DIR=(OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/tolerance-generated-tgavs/' ),
+                                         reproducible=False)
+        rp_370_w = match_draw_stitchTgav(target_370, archive_w_all,
+                                         toler=tolerance, num_draws=Ndraws,
+                                         TGAV_OUTPUT_DIR=(OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/tolerance-generated-tgavs/' ),
+                                         reproducible=False)
+        rp_370_wo = match_draw_stitchTgav(target_370, archive_wo370,
+                                         toler=tolerance, num_draws=Ndraws,
+                                         TGAV_OUTPUT_DIR=(OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/tolerance-generated-tgavs/' ),
+                                         reproducible=False)
 
-            match_245_wo = stitches.match_neighborhood(target_245, archive_wo245, tol=tolerance)
-
-        else:
-            print('No target ssp245 data for ' + esm + '. Analysis will be skipped')
-
-        if not target_370.empty:
-            match_370_w = stitches.match_neighborhood(target_370, archive_w_all, tol=tolerance)
-
-            match_370_wo = stitches.match_neighborhood(target_370, archive_wo370, tol=tolerance)
-
-        else:
-            print('No target ssp370 data for ' + esm + '. Analysis will be skipped')
-
-        # loop over draws for the tolerance
-        for draw in range(0, Ndraws):
-            # use the permute_stitching_recipes function to do the draws.
-            # Make N_matches very large just so the full collapse free ensemble is generated
-            if not target_245.empty:
-                unformatted_recipe_245_w = stitches.permute_stitching_recipes(N_matches=10000,
-                                                                              matched_data=match_245_w,
-                                                                              archive=archive_w_all, testing=False)
-                new_ids = ('tol' + str(tolerance) + '~draw' + str(draw) + '~archive_w~' +
-                           unformatted_recipe_245_w['stitching_id'].astype(str)).copy()
-                unformatted_recipe_245_w = unformatted_recipe_245_w.drop(columns=['stitching_id']).copy()
-                unformatted_recipe_245_w['stitching_id'] = new_ids
-                del (new_ids)
-
-
-                unformatted_recipe_245_wo = stitches.permute_stitching_recipes(N_matches=10000,
-                                                                               matched_data=match_245_wo,
-                                                                               archive=archive_wo245, testing=False)
-                new_ids = ('tol' + str(tolerance) + '~draw' + str(draw) + '~archive_wo~' +
-                           unformatted_recipe_245_wo['stitching_id'].astype(str)).copy()
-                unformatted_recipe_245_wo = unformatted_recipe_245_wo.drop(columns=['stitching_id']).copy()
-                unformatted_recipe_245_wo['stitching_id'] = new_ids
-                del (new_ids)
-
-
-            else:
-                print('No target ssp245 data for ' + esm + '. Matching skipped')
-
-            if not target_370.empty:
-                unformatted_recipe_370_w = stitches.permute_stitching_recipes(N_matches=10000,
-                                                                              matched_data=match_370_w,
-                                                                              archive=archive_w_all, testing=False)
-                new_ids = ('tol' + str(tolerance) + '~draw' + str(draw) + '~archive_w~' +
-                           unformatted_recipe_370_w['stitching_id'].astype(str)).copy()
-                unformatted_recipe_370_w = unformatted_recipe_370_w.drop(columns=['stitching_id']).copy()
-                unformatted_recipe_370_w['stitching_id'] = new_ids
-                del (new_ids)
-
-
-                unformatted_recipe_370_wo = stitches.permute_stitching_recipes(N_matches=10000,
-                                                                               matched_data=match_370_wo,
-                                                                               archive=archive_wo370, testing=False)
-                new_ids  = ( 'tol' + str(tolerance) + '~draw' + str(draw) + '~archive_wo~' +
-                             unformatted_recipe_370_wo['stitching_id'].astype(str) ).copy()
-                unformatted_recipe_370_wo = unformatted_recipe_370_wo.drop(columns = ['stitching_id']).copy()
-                unformatted_recipe_370_wo['stitching_id'] = new_ids
-                del(new_ids)
-
-
-            else:
-                print('No target ssp370 data for ' + esm + '. Matching skipped')
-
-            # Clean up the recipe so that it can be used to generate the gridded data products.
-            if not target_245.empty:
-                recipe_245_w = stitches.generate_gridded_recipe(unformatted_recipe_245_w)
-                recipe_245_w.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
-                                        'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
-                                        'archive_end_yr', 'tas_file']
-                recipe_245_w['tolerance'] = tolerance
-                recipe_245_w['draw'] = draw
-                recipe_245_w['archive'] = 'w_target'
-                recipe_245_w.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                                     'gridded_recipes_' + esm + '_target245_tol' + str(tolerance) +
-                                     '_draw' + str(draw) + '_archive_w_target.csv'), index=False)
-                del(unformatted_recipe_245_w)
-
-                recipe_245_wo = stitches.generate_gridded_recipe(unformatted_recipe_245_wo)
-                recipe_245_wo.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
-                                         'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
-                                         'archive_end_yr', 'tas_file']
-                recipe_245_wo['tolerance'] = tolerance
-                recipe_245_wo['draw'] = draw
-                recipe_245_wo['archive'] = 'wo_target'
-                recipe_245_wo.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                                     'gridded_recipes_' + esm + '_target245_tol' + str(tolerance) +
-                                     '_draw' + str(draw) + '_archive_wo_target.csv'), index=False)
-                del (unformatted_recipe_245_wo)
-
-
-            else:
-                print('No target ssp245 data for ' + esm + '. Recipe formatting skipped')
-
-            if not target_370.empty:
-                recipe_370_w = stitches.generate_gridded_recipe(unformatted_recipe_370_w)
-                recipe_370_w.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
-                                        'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
-                                        'archive_end_yr', 'tas_file']
-                recipe_370_w['tolerance'] = tolerance
-                recipe_370_w['draw'] = draw
-                recipe_370_w['archive'] = 'w_target'
-                recipe_370_w.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                                     'gridded_recipes_' + esm + '_target370_tol' + str(tolerance) +
-                                     '_draw' + str(draw) + '_archive_w_target.csv'), index=False)
-                del (unformatted_recipe_370_w)
-
-
-                recipe_370_wo = stitches.generate_gridded_recipe(unformatted_recipe_370_wo)
-                recipe_370_wo.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
-                                         'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
-                                         'archive_end_yr', 'tas_file']
-                recipe_370_wo['tolerance'] = tolerance
-                recipe_370_wo['draw'] = draw
-                recipe_370_wo['archive'] = 'wo_target'
-                recipe_370_wo.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                                      'gridded_recipes_' + esm + '_target370_tol' + str(tolerance) +
-                                      '_draw' + str(draw) + '_archive_wo_target.csv'), index=False)
-                del (unformatted_recipe_370_wo)
-
-            else:
-                print('No target ssp370 data for ' + esm + '. Recipe formatting skipped')
-
-            # stitch the GSAT values and save as csv
-            try:
-                if not target_245.empty:
-                    gsat_245_w = stitches.gmat_stitching(recipe_245_w)
-                    gsat_245_w['tolerance'] = tolerance
-                    gsat_245_w['draw'] = draw
-                    gsat_245_w['archive'] = 'w_target'
-                    del(recipe_245_w)
-
-                    for id in gsat_245_w.stitching_id.unique():
-                        ds = gsat_245_w[gsat_245_w['stitching_id'] == id].copy()
-                        fname = (OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                                 'stitched_' + esm + '_GSAT_' + id + '.csv')
-                        ds.to_csv(fname, index=False)
-                        del(ds)
-                    del(gsat_245_w)
-
-                    gsat_245_wo = stitches.gmat_stitching(recipe_245_wo)
-                    gsat_245_wo['tolerance'] = tolerance
-                    gsat_245_wo['draw'] = draw
-                    gsat_245_wo['archive'] = 'wo_target'
-                    del (recipe_245_wo)
-
-                    for id in gsat_245_wo.stitching_id.unique():
-                        ds = gsat_245_wo[gsat_245_wo['stitching_id'] == id].copy()
-                        fname = (OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                                 'stitched_' + esm + '_GSAT_' + id + '.csv')
-                        ds.to_csv(fname, index=False)
-                        del (ds)
-                    del(gsat_245_wo)
-
-                else:
-                    print('No target ssp245 data for ' + esm + '. GSAT stitching skipped')
-
-
-                if not target_370.empty:
-                    gsat_370_w = stitches.gmat_stitching(recipe_370_w)
-                    gsat_370_w['tolerance'] = tolerance
-                    gsat_370_w['draw'] = draw
-                    gsat_370_w['archive'] = 'w_target'
-                    del(recipe_370_w)
-
-                    for id in gsat_370_w.stitching_id.unique():
-                        ds = gsat_370_w[gsat_370_w['stitching_id'] == id].copy()
-                        fname = (OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                                 'stitched_' + esm + '_GSAT_' + id + '.csv')
-                        ds.to_csv(fname, index=False)
-                        del(ds)
-                    del(gsat_370_w)
-
-
-                    gsat_370_wo = stitches.gmat_stitching(recipe_370_wo)
-                    gsat_370_wo['tolerance'] = tolerance
-                    gsat_370_wo['draw'] = draw
-                    gsat_370_wo['archive'] = 'wo_target'
-                    del(recipe_370_wo)
-
-                    for id in gsat_370_wo.stitching_id.unique():
-                        ds = gsat_370_wo[gsat_370_wo['stitching_id'] == id].copy()
-                        fname = (OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                                 'stitched_' + esm + '_GSAT_' + id + '.csv')
-                        ds.to_csv(fname, index=False)
-                        del (ds)
-                    del(gsat_370_wo)
-
-                else:
-                    print('No target ssp370 data for ' + esm + '. GSAT stitching skipped')
-
-            # end try
-            except:
-                print(("Some issue stitching GMAT for " + esm + ". Skipping and moving on"))
-        # end for loop over draws
-    # end for loop over tolerances
 
     #########################################################
     # Now we've generated all the GSAT files we're going to for each target.
@@ -510,10 +407,10 @@ for esm in esms:
         # Read in all generated GSAT files and format so error metrics can
         # be calculated.
         gen = []
-        entries = Path((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/'))
+        entries = Path((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/tolerance-generated-tgavs/'))
         for entry in entries.iterdir():
             if (('stitched' in entry.name) & ('GSAT' in entry.name)):
-                data = pd.read_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/') + entry.name)
+                data = pd.read_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/tolerance-generated-tgavs/') + entry.name)
                 data['model'] = esm
 
                 if ('ssp245' in entry.name):
@@ -531,27 +428,27 @@ for esm in esms:
         compared_data.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/all_metrics.csv'), index=False)
 
         # average over draws
-        metrics_avg_over_draws = []
+        aggregate_metrics = []
         for name, group in compared_data.groupby(['model', 'variable', 'experiment', 'tolerance', 'archive']):
             ds = group.copy()
             ds1 = ds[['model', 'variable', 'experiment', 'tolerance', 'archive']].drop_duplicates().copy()
-            ds1['mean_E1_tgav'] = np.mean(ds.E1_tgav.values)
-            ds1['mean_E2_tgav'] = np.mean(ds.E2_tgav.values)
-            ds1['mean_E1_jump'] = np.mean(ds.E1_jump.values)
-            ds1['mean_E2_jump'] = np.mean(ds.E2_jump.values)
-            ds1['max_metric'] = np.max([ds1.mean_E1_tgav.values,
-                                        abs(1 - ds1.mean_E2_tgav.values),
-                                        ds1.mean_E1_jump.values,
-                                        abs(1 - ds1.mean_E2_jump.values)])
-            metrics_avg_over_draws.append(ds1)
+            ds1['aggregate_E1_tgav'] = np.mean(ds.E1_tgav.values)
+            ds1['aggregate_E2_tgav'] = np.mean(ds.E2_tgav.values)
+            ds1['aggregate_E1_jump'] = np.mean(ds.E1_jump.values)
+            ds1['aggregate_E2_jump'] = np.mean(ds.E2_jump.values)
+            ds1['max_metric'] = np.max([ds1.aggregrate_E1_tgav.values,
+                                        abs(1 - ds1.aggregate_E2_tgav.values),
+                                        ds1.aggregate_E1_jump.values,
+                                        abs(1 - ds1.aggregate_E2_jump.values)])
+            aggregate_metrics.append(ds1)
             del (ds)
             del (ds1)
-        metrics_avg_over_draws = pd.concat(metrics_avg_over_draws).reset_index(drop=True).copy()
+        aggregate_metrics = pd.concat(aggregate_metrics).reset_index(drop=True).copy()
 
         # filter to the largest tolerance that keeps max_metric<error_threshold
         # for each model, variable, experiment, archive.
         max_tol = []
-        for name, group in metrics_avg_over_draws.groupby(['model', 'variable', 'experiment', 'archive']):
+        for name, group in aggregate_metrics.groupby(['model', 'variable', 'experiment', 'archive']):
             ds = group.copy()
             ds = ds[ds["max_metric"] < error_threshold].copy()
             ds = ds[ds['tolerance'] == ds.tolerance.max()].copy()
@@ -591,7 +488,7 @@ for esm in esms:
             unformatted_recipe = stitches.permute_stitching_recipes(N_matches=10000,
                                                                     matched_data=match_df,
                                                                     archive=archive, testing=True)
-            new_ids = ('MAXTOLRUN ~tol' + str(tolerance) + '~archive_' + arch_id + '~' +
+            new_ids = ('~tol' + str(tolerance) + '~archive_' + arch_id + '~' +
                        unformatted_recipe['stitching_id'].astype(str)).copy()
             unformatted_recipe = unformatted_recipe.drop(columns=['stitching_id']).copy()
             unformatted_recipe['stitching_id'] = new_ids
@@ -601,8 +498,8 @@ for esm in esms:
             recipe.columns = ['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
                               'archive_model', 'archive_ensemble', 'stitching_id', 'archive_start_yr',
                               'archive_end_yr', 'tas_file']
-            recipe.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                               'MAXTOLRUN_gridded_recipes_' + esm + '_target'+
+            recipe.to_csv((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/max-tol-runs/' +
+                               'gridded_recipes_' + esm + '_target'+
                            targ_id +'_archive_' + arch_id +'.csv'), index=False)
 
 
@@ -611,17 +508,17 @@ for esm in esms:
             gsat['archive'] = arch_id
             for id in gsat.stitching_id.unique():
                 ds = gsat[gsat['stitching_id'] == id].copy()
-                fname = (OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/' +
-                         'MAXTOLRUN_stitched_' + esm + '_GSAT_' + id + '.csv')
+                fname = (OUTPUT_DIR + '/' + esm + '/experiment_CMIP6/max-tol-runs/' +
+                         'stitched_' + esm + '_GSAT_' + id + '.csv')
                 ds.to_csv(fname, index=False)
 
 
-                for single_id in recipe['stitching_id'].unique():
-                    single_rp = recipe.loc[recipe['stitching_id'] == single_id].copy()
-                    outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6'),
-                                                         single_rp)
-                    del (single_rp)
-                    del(outputs)
+                # for single_id in recipe['stitching_id'].unique():
+                #     single_rp = recipe.loc[recipe['stitching_id'] == single_id].copy()
+                #     outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm + '/experiment_CMIP6'),
+                #                                          single_rp)
+                #     del (single_rp)
+                #     del(outputs)
 
 
 

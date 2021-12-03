@@ -41,20 +41,20 @@ OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
 # #############################################################################
 # experiment parameters
 tolerances = np.round(np.arange(0.05, 0.225, 0.005), 3)
-Ndraws = 2
+Ndraws =20
 error_threshold = 0.1
 
 # pangeo table of ESMs for reference
 pangeo_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
 pangeo_data = pd.read_csv(pangeo_path)
 pangeo_data = pangeo_data[((pangeo_data['variable'] == 'tas') | (pangeo_data['variable'] == 'pr') | (pangeo_data['variable'] == 'psl'))
-                          & ((pangeo_data['domain'] == 'Amon') | (pangeo_data['domain'] == 'day')) ].copy()
+                          & ((pangeo_data['domain'] == 'Amon') ) ].copy()
 
 # Keep only the runs that have data for all vars X all timesteps:
 pangeo_good_ensembles =[]
 for name, group in pangeo_data.groupby(['model', 'experiment', 'ensemble']):
     df = group.drop_duplicates().copy()
-    if len(df) == 6:
+    if len(df) == 3:
         pangeo_good_ensembles.append(df)
     del(df)
 pangeo_good_ensembles = pd.concat(pangeo_good_ensembles)
@@ -113,6 +113,7 @@ full_target_data = full_target_data[full_target_data['window_size'] >=7].drop(co
 
 full_archive_data['window_size'] = full_archive_data['end_yr'] - full_archive_data['start_yr']
 full_archive_data = full_archive_data[full_archive_data['window_size'] >=7].drop(columns=['window_size']).copy()
+
 
 
 # #############################################################################
@@ -418,10 +419,11 @@ def match_draw_stitch_evalTgav(target_df, archive_df, toler, num_draws, ERR_OUTP
 # #############################################################################
 # issues with AWI, CESM2, hadgem mm, 'IITM-ESM', MPI-ESM-1-2-HAM,
 # noresm lm for tol=0.055 (0.05 seems to work?)
-
+#esms = esms[[0, 2, 4, 5, 6, 7, 8,  11, 13, 14, 15, 17, 18, 19]].copy()
+esms = esms[[0,1, 2, 3,4, 5,  7, 8, 9,10, 11, 12, 13,  15, 16, 17, 18, 19, 20,  22, 23,24,25,26,27, 28, 29]].copy()
 # for each of the esms in the experiment, subset to what we want
 # to work with and run the experiment.
-for esm in esms[17:20]:
+for esm in esms:
     print(esm)
 
     # subset the archive and the targets to this ESM
@@ -457,7 +459,7 @@ for esm in esms[17:20]:
 
 
     # loop over tolerances:
-    for tolerance in tolerances[10:11]:
+    for tolerance in tolerances:
 
         rp_245_w = match_draw_stitch_evalTgav(target_245, archive_w_all,
                                               toler=tolerance, num_draws=Ndraws,

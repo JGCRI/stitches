@@ -378,37 +378,3 @@ def gmat_stitching(rp):
     final_output = final_output.reset_index(drop=True).copy()
     return final_output
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

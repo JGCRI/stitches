@@ -51,7 +51,7 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
     # calculating the distance in the dx and fx dimensions separately because
     # now we want to track those in addition to the l2 distance.
     dist["dist_dx"] = windowsize * abs(dist["archive_dx"] - dx_pt)
-    dist["dist_fx"] = abs(dist['archive_fx'] - fx_pt)
+    dist["dist_fx"] = abs(dist['archive_fx'] - fx_pt)git
     dist["dist_l2"] = (dist["dist_fx"] ** 2 + dist["dist_dx"] ** 2) ** .5
 
     # this returns the first minimum run into, which is not how we are going to want to do it,

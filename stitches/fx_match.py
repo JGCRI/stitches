@@ -9,7 +9,7 @@ import pandas as pd
 def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
     """ This function calculates the euclidean distance between the target values (fx and dx)
     and the archive values contained in the data frame. It will be used to help select which
-    of the archive values best matches the target values. To ensure a consisten unit across
+    of the archive values best matches the target values. To ensure a consistent unit across
     all dimensions of the space, dx is updated to be windowsize*dx so that it has units of
     degC. This results in a distance metric (Euclidean/l2) in units of degC.
     Could _very_ easily make that choice of unit consistency optional via arg and if-statement.
@@ -52,7 +52,7 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
     # now we want to track those in addition to the l2 distance.
     dist["dist_dx"] = windowsize * abs(dist["archive_dx"] - dx_pt)
     dist["dist_fx"] = abs(dist['archive_fx'] - fx_pt)
-    dist["dist_l2"] = (dist["dist_fx"] ** 2 + dist["archive_dx"] ** 2) ** .5
+    dist["dist_l2"] = (dist["dist_fx"] ** 2 + dist["dist_dx"] ** 2) ** .5
 
     # this returns the first minimum run into, which is not how we are going to want to do it,
     # we will want some way to keep track of the min and combine to have different realizations
@@ -67,7 +67,6 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
 
     return out
 
-
 # Internal fx
 def shuffle_function(dt):
     """ Randomly shuffle the deck, this should help with the matching process.
@@ -80,7 +79,6 @@ def shuffle_function(dt):
     out = dt.sample(nrow, replace=False)
     out = out.reset_index(drop=True)
     return out
-
 
 # Internal fx
 def drop_hist_false_duplicates(matched_data):
@@ -155,10 +153,6 @@ def drop_hist_false_duplicates(matched_data):
         return matched
     else:
         return matched_data
-
-
-
-
 
 def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=True):
     # Check the inputs of the functions

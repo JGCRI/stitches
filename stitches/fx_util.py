@@ -60,7 +60,6 @@ def selstr(a, start, stop):
     out = "".join(out)
     return out
 
-# TODO add some unit test?
 def join_exclude(dat, drop):
     """ Drop some rows from a data frame.
 
@@ -94,6 +93,9 @@ def check_columns(data, names):
     """
 
     col_names = set(data.columns)
+    if not(type(names) == set):
+        raise TypeError(f'names must be a set.')
+
     if not (names.issubset(col_names)):
         raise TypeError(f'Missing columns from "{data}".')
 
@@ -126,7 +128,7 @@ def anti_join(df1, df2):
     out = mergedTable.loc[key]
     return out[df1.columns]
 
-
+# Would we want to move this?? to a different fx file?
 def remove_obs_from_match(md, rm):
     """ Return an updated matched data frame.
 
@@ -215,8 +217,10 @@ def load_data_files(subdir):
     for f in files_to_process:
         if ".csv" in f:
             d = pd.read_csv(f)
-        else:
+        elif "pkl" in f:
             d = pd.read_pickle(f)
+        else:
+            None
         raw_data.append(d)
     raw_data = pd.concat(raw_data)
 

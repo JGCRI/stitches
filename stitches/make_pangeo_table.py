@@ -46,3 +46,17 @@ def make_pangeo_table():
 
     # Return
     return None
+
+def make_pangeo_comparison():
+    """"
+    The function that makes a copy of the entire pangeo archive. This will be used in
+    testing to check to see if there has been an update to the pangeo archive, if there
+    is then may suggest updating the internal package data.
+    :return:          Nothing, write a file out to package data.
+    """
+
+    dat = pangeo.fetch_pangeo_table()
+    out_file = pkg_resources.resource_filename('stitches', 'data') + '/pangeo_comparison_table.csv'
+    dat.to_csv(out_file, index=False)
+    # Return
+    return None

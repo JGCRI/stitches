@@ -12,15 +12,14 @@ def make_pangeo_table():
     in the the matching archive, this will be used in the stitching process.
     :return:          Nothing, write a file out to package data.
     """
-    # Using the information about what experiment/ensemble/models
-    # Start by loading all of the tas files.
-    tas_exp_model = (util.load_data_files('data/tas-data')[["experiment", "ensemble", "model"]]
+    # Using the information about what experiment/ensemble/models that are avaiable for matching.
+    archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
+    tas_exp_model = (pd.read_csv(archive_path)[["experiment", "ensemble", "model"]]
                      .drop_duplicates()
                      .reset_index(drop=True)
                      )
 
     # For the future experiments make sure we add in the historical experiment info.
-    # TODO what happened to the ssp4 scenario???
     fut_exps = ['ssp126', 'ssp245', 'ssp370', 'ssp585', 'ssp534-over']
     hist_info = tas_exp_model.loc[tas_exp_model["experiment"].isin(fut_exps)].copy()[['model', 'ensemble']]
     hist_info["experiment"] = "historical"

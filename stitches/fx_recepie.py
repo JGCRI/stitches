@@ -657,10 +657,16 @@ def generate_gridded_recipe(messy_recipe, res='mon'):
                                                   "ensemble": "archive_ensemble",
                                                   "variable": "archive_variable"})
 
-    out = dat.merge(tas_meta_info, how="inner")
+    out = dat.merge(tas_meta_info, how="inner", on=['archive_model', 'archive_experiment',
+                                                      'archive_ensemble', 'archive_variable'])
     out = out.reset_index(drop=True).copy()
     out = out.sort_values(['stitching_id', 'target_start_yr', 'target_end_yr']).copy()
     out = out.reset_index(drop=True).copy()
+
+    # Make sure that no information has been lost, if that is the case raise an error.
+    if util.nrow(out) != util.nrow(dat):
+        raise TypeError(f"Problem in generate_gridded_recipe, loosing data in recipe!")
+
     return out
 
 

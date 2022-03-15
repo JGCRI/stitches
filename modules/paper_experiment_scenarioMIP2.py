@@ -39,7 +39,11 @@ pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.uni
 pangeo_585_esms.sort()
 
 
-esms = pangeo_126_esms
+esms = ['ACCESS-CM2', 'ACCESS-ESM1-5', 'BCC-CSM2-MR','CAMS-CSM1-0', 'CAS-ESM2-0',
+        'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5','FGOALS-g3', 'FIO-ESM-2-0',
+        'GISS-E2-1-G', 'HadGEM3-GC31-LL', 'MCM-UA-1-0', 'MIROC-ES2L', 'MIROC6',
+        'MPI-ESM1-2-HR', 'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
+        'TaiESM1', 'UKESM1-0-LL']
       # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
       #  'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
       #  'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
@@ -63,11 +67,11 @@ full_target_data = pd.read_csv(full_target_path)
 
 
 # cap the target ensemble members to only the first 5 (if 5+ exist)
-ensemble_keep = ['r1i1p1f1',
-                 'r2i1p1f1',
-                 'r3i1p1f1',
-                 'r4i1p1f1',
-                 'r5i1p1f1']
+#ensemble_keep = ['r1i1p1f1',
+#                 'r2i1p1f1',
+#                 'r3i1p1f1',
+#                 'r4i1p1f1',
+#                 'r5i1p1f1']
 
 
 # for each of the esms in the experiment, subset to what we want
@@ -83,9 +87,16 @@ for esm in esms:
 
         target_245 = full_target_data[(full_target_data['model'] == esm) &
                                       (full_target_data['experiment'] == 'ssp245')].copy()
+
+        # Not all models start the ensemble count at 1, select 5 ensemble realizations to
+        # look at if there are more than 5.
+        if len(ensemble_list) > 5:
+            ensemble_list = target_245["ensemble"].unique()
+            ensemble_keep = ensemble_list[range(0, 5)]
+        else:
+            ensemble_keep = ensemble_list
+
         target_245 = target_245[target_245['ensemble'].isin(ensemble_keep)].copy()
-
-
         target_370 = full_target_data[(full_target_data['model'] == esm) &
                                       (full_target_data['experiment'] == 'ssp370')].copy()
         target_370 = target_370[target_370['ensemble'].isin(ensemble_keep)].copy()
@@ -208,29 +219,29 @@ for esm in esms:
             # each id individually, limiting the number of netcdfs that must be
             # downloaded from pangeo at any one time
             #
-            try:
-                if not target_245.empty:
-                    for single_id in recipe_245['stitching_id'].unique():
-                        single_rp = recipe_245.loc[recipe_245['stitching_id'] == single_id].copy()
-                        outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm ),
-                                                             single_rp)
-                        del (single_rp)
-                        del (outputs)
-                else:
-                    print('No target ssp245 data for ' + esm + '. Gridded stitching skipped')
+            # try:
+            #     if not target_245.empty:
+            #         for single_id in recipe_245['stitching_id'].unique():
+            #             single_rp = recipe_245.loc[recipe_245['stitching_id'] == single_id].copy()
+            #             outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm ),
+            #                                                  single_rp)
+            #             del (single_rp)
+            #             del (outputs)
+            #     else:
+            #         print('No target ssp245 data for ' + esm + '. Gridded stitching skipped')
+            #
+            #     if not target_370.empty:
+            #         for single_id in recipe_370['stitching_id'].unique():
+            #             single_rp = recipe_370.loc[recipe_370['stitching_id'] == single_id].copy()
+            #             outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm ),
+            #                                                  single_rp)
+            #             del (single_rp)
+            #             del (outputs)
+            #     else:
+            #         print('No target ssp370 data for ' + esm + '. Gridded stitching skipped')
 
-                if not target_370.empty:
-                    for single_id in recipe_370['stitching_id'].unique():
-                        single_rp = recipe_370.loc[recipe_370['stitching_id'] == single_id].copy()
-                        outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm ),
-                                                             single_rp)
-                        del (single_rp)
-                        del (outputs)
-                else:
-                    print('No target ssp370 data for ' + esm + '. Gridded stitching skipped')
-
-            except:
-                print(("Some issue stitching gridded for " + esm + ". Skipping and moving on"))
+            #except:
+             #   print(("Some issue stitching gridded for " + esm + ". Skipping and moving on"))
 
         # end for loop over draws
 

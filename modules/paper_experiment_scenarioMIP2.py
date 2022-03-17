@@ -16,10 +16,10 @@ import pandas as pd
 import stitches as stitches
 import pkg_resources
 
-# pd.set_option('display.max_columns', None)
+pd.set_option('display.max_columns', None)
 
-# OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
-OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/new_scenarioMIP_experiments'
+OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
+# OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/new_scenarioMIP_experiments'
 
 # #############################################################################
 # Experiment  setup
@@ -39,22 +39,150 @@ pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.uni
 pangeo_585_esms.sort()
 
 
+# #############################################################################
+# Helper functions
+# #############################################################################
+def prep_target_data(target_df):
+    if not target_df.empty:
+        grped = target_df.groupby(['experiment', 'variable', 'ensemble', 'model'])
+        for name, group in grped:
+            df1 = group.copy()
+            # if it isn't a complete time series (defined as going to 2099 or 2100),
+            # remove it from the target data frame:
+            if max(df1.end_yr) < 2099:
+                target_df = target_df.loc[(target_df['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
+                    drop=True)
+            del (df1)
+        del (grped)
+
+        target_df = target_df.reset_index(drop=True).copy()
+        return(target_df)
+
+def get_orig_data(target_df):
+    if not target_df.empty:
+        esm_name = target_df.model.unique()[0]
+        scn_name = target_df.experiment.unique()[0]
+
+        full_rawtarget_path = pkg_resources.resource_filename('stitches', ('data/tas-data/' + esm_name + '_tas.csv'))
+        full_rawtarget_data = pd.read_csv(full_rawtarget_path)
+
+        orig_data = full_rawtarget_data[(full_rawtarget_data['experiment'] == scn_name)].copy()
+        keys = ['experiment', 'ensemble', 'model']
+        i1 = orig_data.set_index(keys).index
+        i2 = target_df.set_index(keys).index
+        orig_data = orig_data[i1.isin(i2)].copy()
+        del (i1)
+        del (i2)
+        del (keys)
+        del (full_rawtarget_data)
+        del (full_rawtarget_path)
+
+        orig_data = orig_data.reset_index(drop=True).copy()
+        return (orig_data)
+
+def get_jumps(tgav_df):
+    tgav_jump = []
+    for name, group in tgav_df.groupby(['variable', 'experiment', 'ensemble', 'model']):
+        ds = group.copy()
+        ds['jump'] = ds.value.diff().copy()
+        ds = ds.dropna().copy()
+        tgav_jump.append(ds)
+        del (ds)
+    tgav_jump = pd.concat(tgav_jump)
+    tgav_jump = tgav_jump.drop(columns=['value']).copy()
+    tgav_jump = tgav_jump.drop_duplicates().reset_index(drop=True).copy()
+    return(tgav_jump)
+
+def four_errors(gen_data, orig_data):
+    gen_data_jump = get_jumps(gen_data)
+    orig_data_jump = get_jumps(orig_data)
+
+    orig_stats = []
+    for name, group in orig_data.groupby(['model', 'variable', 'experiment']):
+        ds = group.copy()
+        ds1 = ds[['model', 'variable', 'experiment']].drop_duplicates().copy()
+        ds1['mean_orig_tgav'] = np.mean(ds.value.values)
+        ds1['sd_orig_tgav'] = np.std(ds.value.values)
+        orig_stats.append(ds1)
+        del (ds)
+        del (ds1)
+    orig_stats = pd.concat(orig_stats).reset_index(drop=True).copy()
+
+    orig_stats_jump = []
+    for name, group in orig_data_jump.groupby(['model', 'variable', 'experiment']):
+        ds = group.copy()
+        ds1 = ds[['model', 'variable', 'experiment']].drop_duplicates().copy()
+        ds1['mean_orig_jump'] = np.mean(ds.jump.values)
+        ds1['sd_orig_jump'] = np.std(ds.jump.values)
+        orig_stats_jump.append(ds1)
+        del (ds)
+        del (ds1)
+    orig_stats_jump = pd.concat(orig_stats_jump).reset_index(drop=True).copy()
+
+    orig_stats = orig_stats.merge(orig_stats_jump, how='left', on=['model', 'variable', 'experiment']).copy()
+    del (orig_stats_jump)
+
+    gen_stats = []
+    for name, group in gen_data.groupby(['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']):
+        ds = group.copy()
+        ds1 = ds[['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']].drop_duplicates().copy()
+        ds1['mean_gen_tgav'] = np.mean(ds.value.values)
+        ds1['sd_gen_tgav'] = np.std(ds.value.values)
+        gen_stats.append(ds1)
+        del (ds)
+        del (ds1)
+    gen_stats = pd.concat(gen_stats).reset_index(drop=True).copy()
+
+    gen_stats_jump = []
+    for name, group in gen_data_jump.groupby(['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']):
+        ds = group.copy()
+        ds1 = ds[['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']].drop_duplicates().copy()
+        ds1['mean_gen_jump'] = np.mean(ds.jump.values)
+        ds1['sd_gen_jump'] = np.std(ds.jump.values)
+        gen_stats_jump.append(ds1)
+        del (ds)
+        del (ds1)
+    gen_stats_jump = pd.concat(gen_stats_jump).reset_index(drop=True).copy()
+
+    gen_stats = gen_stats.merge(gen_stats_jump, how='left',
+                                on=['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']).copy()
+    del (gen_stats_jump)
+
+    compare = gen_stats.merge(orig_stats, how='left', on=['model', 'variable', 'experiment']).copy()
+    del (gen_stats)
+    del (orig_stats)
+
+    compare['E1_tgav'] = abs(compare.mean_orig_tgav - compare.mean_gen_tgav) / compare.sd_orig_tgav
+    compare['E2_tgav'] = compare.sd_gen_tgav / compare.sd_orig_tgav
+
+    compare['E1_jump'] = abs(compare.mean_orig_jump - compare.mean_gen_jump) / compare.sd_orig_jump
+    compare['E2_jump'] = compare.sd_gen_jump / compare.sd_orig_jump
+
+    compare = compare[['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive',
+                       'E1_tgav', 'E2_tgav', 'E1_jump', 'E2_jump']].copy()
+
+    four_values = []
+    for name, group in compare.groupby(['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']):
+        ds = group.copy()
+        ds['max_metric'] = np.max(
+            [ds.E1_tgav.values, abs(1 - ds.E2_tgav.values), ds.E1_jump.values, abs(1 - ds.E2_jump.values)])
+        four_values.append(ds)
+        del (ds)
+    four_values = pd.concat(four_values).reset_index(drop=True).copy()
+    del (compare)
+
+    return(four_values)
+
+# #############################################################################
+# The experiment
+# #############################################################################
+
 esms = ['ACCESS-CM2', 'ACCESS-ESM1-5', 'BCC-CSM2-MR','CAMS-CSM1-0', 'CAS-ESM2-0',
         'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5','FGOALS-g3', 'FIO-ESM-2-0',
         'GISS-E2-1-G', 'HadGEM3-GC31-LL', 'MCM-UA-1-0', 'MIROC-ES2L', 'MIROC6',
         'MPI-ESM1-2-HR', 'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
         'TaiESM1', 'UKESM1-0-LL']
-      # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
-      #  'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
-      #  'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
-      #  'GISS-E2-1-G', 'HadGEM3-GC31-LL', 'HadGEM3-GC31-MM', 'IITM-ESM',
-      #  'MCM-UA-1-0', 'MIROC-ES2L', 'MIROC6', 'MPI-ESM1-2-HR',
-      #  'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
-      #  'TaiESM1', 'UKESM1-0-LL']
 
-# #############################################################################
-# The experiment
-# #############################################################################
 
 # Load the full archive of all staggered windows, which we will be matching on
 full_archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
@@ -65,15 +193,7 @@ full_archive_data = pd.read_csv(full_archive_path)
 full_target_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 full_target_data = pd.read_csv(full_target_path)
 
-
-# cap the target ensemble members to only the first 5 (if 5+ exist)
-#ensemble_keep = ['r1i1p1f1',
-#                 'r2i1p1f1',
-#                 'r3i1p1f1',
-#                 'r4i1p1f1',
-#                 'r5i1p1f1']
-
-
+esms=['MIROC6']
 # for each of the esms in the experiment, subset to what we want
 # to work with and run the experiment.
 for esm in esms:
@@ -85,56 +205,91 @@ for esm in esms:
                                          ((full_archive_data['experiment'] == 'ssp126') |
                                           (full_archive_data['experiment'] == 'ssp585'))].copy()
 
+        # Initial subset of target data to experiments:
         target_245 = full_target_data[(full_target_data['model'] == esm) &
                                       (full_target_data['experiment'] == 'ssp245')].copy()
-
-        # Not all models start the ensemble count at 1, select 5 ensemble realizations to
-        # look at if there are more than 5.
-        if len(ensemble_list) > 5:
-            ensemble_list = target_245["ensemble"].unique()
-            ensemble_keep = ensemble_list[range(0, 5)]
-        else:
-            ensemble_keep = ensemble_list
-
-        target_245 = target_245[target_245['ensemble'].isin(ensemble_keep)].copy()
+        # target SSP370 realizations:
         target_370 = full_target_data[(full_target_data['model'] == esm) &
                                       (full_target_data['experiment'] == 'ssp370')].copy()
-        target_370 = target_370[target_370['ensemble'].isin(ensemble_keep)].copy()
 
-        # Some models (HadGEM3-GC31-LL for example), have realizations that stop
-        # in 2014. Our recipe permutation only works when every target realization
-        # has the same time series (and the same discretization of the time series).
-        # So we generally drop those realizations from the target dataframe.
+        # Clean up target data
         if not target_245.empty:
-            grped_245 = target_245.groupby(['experiment', 'variable', 'ensemble', 'model'])
-            for name, group in grped_245:
-                df1 = group.copy()
-                # if it isn't a complete time series (defined as going to 2099 or 2100),
-                # remove it from the target data frame:
-                if max(df1.end_yr) < 2099:
-                    target_245 = target_245.loc[
-                        (target_245['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(drop=True)
-                del (df1)
+            # clean up
+            target_245 = prep_target_data(target_245).copy()
 
-            del (grped_245)
         if not target_370.empty:
-            grped_370 = target_370.groupby(['experiment', 'variable', 'ensemble', 'model'])
-            for name, group in grped_370:
-                df1 = group.copy()
-                # if it isn't a complete time series (defined as going to 2099 or 2100),
-                # remove it from the target data frame:
-                if max(df1.end_yr) < 2099:
-                    target_370 = target_370.loc[
-                        (target_370['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
-                        drop=True)
-                del (df1)
-            del (grped_370)
+            # clean up
+            target_370 = prep_target_data(target_370).copy()
+
+        # Not all models start the ensemble count at 1,
+        # And not all experiments of a given model report the
+        # same realizations.
+        # select 5 ensemble realizations to
+        # look at if there are more than 5.
+        f = lambda x: x.ensemble[:x.idx]
+
+        ensemble_list = pd.DataFrame({'ensemble':target_245["ensemble"].unique()})
+        ensemble_list['idx'] = ensemble_list['ensemble'].str.index('i')
+        ensemble_list['ensemble_id'] = ensemble_list.apply(f, axis=1)
+        ensemble_list['ensemble_id'] =ensemble_list['ensemble_id'].str[1:].astype(int)
+        ensemble_list = ensemble_list.sort_values('ensemble_id').copy()
+        if len(ensemble_list) > 5:
+            ensemble_keep = ensemble_list.iloc[0:5].ensemble
+        else:
+            ensemble_keep = ensemble_list.ensemble
+
+        target_245 = target_245[target_245['ensemble'].isin(ensemble_keep)].copy()
+        del(ensemble_keep)
+        del(ensemble_list)
+
+        ensemble_list = pd.DataFrame({'ensemble': target_370["ensemble"].unique()})
+        ensemble_list['idx'] = ensemble_list['ensemble'].str.index('i')
+        ensemble_list['ensemble_id'] = ensemble_list.apply(f, axis=1)
+        ensemble_list['ensemble_id'] = ensemble_list['ensemble_id'].str[1:].astype(int)
+        ensemble_list = ensemble_list.sort_values('ensemble_id').copy()
+        if len(ensemble_list) > 5:
+            ensemble_keep = ensemble_list.iloc[0:5].ensemble
+        else:
+            ensemble_keep = ensemble_list.ensemble
+
+        target_370 = target_370[target_370['ensemble'].isin(ensemble_keep)].copy()
+        del (ensemble_keep)
+        del (ensemble_list)
+        del(f)
+
+        # Pull corresponding original data for these target runs.
+        orig_245  = get_orig_data(target_245)
+        orig_370 = get_orig_data(target_370)
+        orig_245.append(orig_370).to_csv((OUTPUT_DIR + '/' + esm + '/' +
+                                   'comparison_data_' + esm + '.csv'), index=False)
+
 
         # Use the match_neighborhood function to generate all of the matches between the target and
         # archive data points.
         if not target_245.empty:
             match_245_df = stitches.match_neighborhood(target_245, archive_data,
                                                        tol=tolerance)
+
+            # dat = match_245_df.drop_duplicates().copy()
+            # dat_count = dat.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model",
+            #                          "target_start_yr", "target_end_yr", "target_year", "target_fx",
+            #                          "target_dx"]).size().reset_index(name='n_matches')
+            # dat_count = dat_count.sort_values(["target_year"])
+            #
+            # dat_min = dat_count.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model"])[
+            #     'n_matches'].min().reset_index(name='minNumMatches')
+            # dat_prod = dat_count.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model"])[
+            #     'n_matches'].prod().reset_index(name='totalNumPerms')
+            # dat_count_merge = dat_min.merge(dat_prod)
+            #
+            # out = [dat_count_merge, dat_count]
+            #
+            # x = out[1].copy()
+            # y = x[x['n_matches'] <= 7].copy() # 7 from out[0]
+            # match_245_df.merge(y, how='inner')[['target_ensemble', 'target_year',
+            #                                     'archive_experiment', 'archive_ensemble', 'archive_year',
+            #                                     'dist_l2', 'n_matches']].drop_duplicates().to_csv((OUTPUT_DIR +'/matchcheck.csv'))
+
         else:
             print('No target ssp245 data for ' + esm + '. Analysis will be skipped')
 
@@ -208,40 +363,9 @@ for esm in esms:
             except:
                 print(("Some issue stitching GMAT for " + esm + ". Skipping and moving on"))
 
-            # form and output the global gridded stitched products.
-            # stitches.gridded_stitching will work on a recipe data frame that contains
-            # many stitching recipes just fine. However, one step stitches.gridded_stitching
-            # takes is to download all needed netcdfs for all stitching_ids in the recipe
-            # data frame at once. When there are hundreds of stitching_ids (e.g. MIROC6),
-            # the step for downloading from pangeo hits a time and/or memory wall.
-            # To get around this for now, we simply loop over stitching_ids before
-            # calling stitches.gridded_stitching so that the function gets applied to
-            # each id individually, limiting the number of netcdfs that must be
-            # downloaded from pangeo at any one time
-            #
-            # try:
-            #     if not target_245.empty:
-            #         for single_id in recipe_245['stitching_id'].unique():
-            #             single_rp = recipe_245.loc[recipe_245['stitching_id'] == single_id].copy()
-            #             outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm ),
-            #                                                  single_rp)
-            #             del (single_rp)
-            #             del (outputs)
-            #     else:
-            #         print('No target ssp245 data for ' + esm + '. Gridded stitching skipped')
-            #
-            #     if not target_370.empty:
-            #         for single_id in recipe_370['stitching_id'].unique():
-            #             single_rp = recipe_370.loc[recipe_370['stitching_id'] == single_id].copy()
-            #             outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm ),
-            #                                                  single_rp)
-            #             del (single_rp)
-            #             del (outputs)
-            #     else:
-            #         print('No target ssp370 data for ' + esm + '. Gridded stitching skipped')
 
-            #except:
-             #   print(("Some issue stitching gridded for " + esm + ". Skipping and moving on"))
+
+
 
         # end for loop over draws
 

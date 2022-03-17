@@ -16,10 +16,10 @@ import pandas as pd
 import stitches as stitches
 import pkg_resources
 
-pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_columns', None)
 
-OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
-# OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/new_scenarioMIP_experiments'
+# OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
+OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/new_scenarioMIP_experiments'
 
 # #############################################################################
 # Experiment  setup
@@ -69,99 +69,6 @@ def get_orig_data(target_df):
         orig_data = orig_data.reset_index(drop=True).copy()
         return (orig_data)
 
-def get_jumps(tgav_df):
-    tgav_jump = []
-    for name, group in tgav_df.groupby(['variable', 'experiment', 'ensemble', 'model']):
-        ds = group.copy()
-        ds['jump'] = ds.value.diff().copy()
-        ds = ds.dropna().copy()
-        tgav_jump.append(ds)
-        del (ds)
-    tgav_jump = pd.concat(tgav_jump)
-    tgav_jump = tgav_jump.drop(columns=['value']).copy()
-    tgav_jump = tgav_jump.drop_duplicates().reset_index(drop=True).copy()
-    return(tgav_jump)
-
-def four_errors(gen_data, orig_data):
-    gen_data_jump = get_jumps(gen_data)
-    orig_data_jump = get_jumps(orig_data)
-
-    orig_stats = []
-    for name, group in orig_data.groupby(['model', 'variable', 'experiment']):
-        ds = group.copy()
-        ds1 = ds[['model', 'variable', 'experiment']].drop_duplicates().copy()
-        ds1['mean_orig_tgav'] = np.mean(ds.value.values)
-        ds1['sd_orig_tgav'] = np.std(ds.value.values)
-        orig_stats.append(ds1)
-        del (ds)
-        del (ds1)
-    orig_stats = pd.concat(orig_stats).reset_index(drop=True).copy()
-
-    orig_stats_jump = []
-    for name, group in orig_data_jump.groupby(['model', 'variable', 'experiment']):
-        ds = group.copy()
-        ds1 = ds[['model', 'variable', 'experiment']].drop_duplicates().copy()
-        ds1['mean_orig_jump'] = np.mean(ds.jump.values)
-        ds1['sd_orig_jump'] = np.std(ds.jump.values)
-        orig_stats_jump.append(ds1)
-        del (ds)
-        del (ds1)
-    orig_stats_jump = pd.concat(orig_stats_jump).reset_index(drop=True).copy()
-
-    orig_stats = orig_stats.merge(orig_stats_jump, how='left', on=['model', 'variable', 'experiment']).copy()
-    del (orig_stats_jump)
-
-    gen_stats = []
-    for name, group in gen_data.groupby(['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']):
-        ds = group.copy()
-        ds1 = ds[['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']].drop_duplicates().copy()
-        ds1['mean_gen_tgav'] = np.mean(ds.value.values)
-        ds1['sd_gen_tgav'] = np.std(ds.value.values)
-        gen_stats.append(ds1)
-        del (ds)
-        del (ds1)
-    gen_stats = pd.concat(gen_stats).reset_index(drop=True).copy()
-
-    gen_stats_jump = []
-    for name, group in gen_data_jump.groupby(['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']):
-        ds = group.copy()
-        ds1 = ds[['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']].drop_duplicates().copy()
-        ds1['mean_gen_jump'] = np.mean(ds.jump.values)
-        ds1['sd_gen_jump'] = np.std(ds.jump.values)
-        gen_stats_jump.append(ds1)
-        del (ds)
-        del (ds1)
-    gen_stats_jump = pd.concat(gen_stats_jump).reset_index(drop=True).copy()
-
-    gen_stats = gen_stats.merge(gen_stats_jump, how='left',
-                                on=['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']).copy()
-    del (gen_stats_jump)
-
-    compare = gen_stats.merge(orig_stats, how='left', on=['model', 'variable', 'experiment']).copy()
-    del (gen_stats)
-    del (orig_stats)
-
-    compare['E1_tgav'] = abs(compare.mean_orig_tgav - compare.mean_gen_tgav) / compare.sd_orig_tgav
-    compare['E2_tgav'] = compare.sd_gen_tgav / compare.sd_orig_tgav
-
-    compare['E1_jump'] = abs(compare.mean_orig_jump - compare.mean_gen_jump) / compare.sd_orig_jump
-    compare['E2_jump'] = compare.sd_gen_jump / compare.sd_orig_jump
-
-    compare = compare[['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive',
-                       'E1_tgav', 'E2_tgav', 'E1_jump', 'E2_jump']].copy()
-
-    four_values = []
-    for name, group in compare.groupby(['model', 'variable', 'experiment', 'tolerance', 'draw', 'archive']):
-        ds = group.copy()
-        ds['max_metric'] = np.max(
-            [ds.E1_tgav.values, abs(1 - ds.E2_tgav.values), ds.E1_jump.values, abs(1 - ds.E2_jump.values)])
-        four_values.append(ds)
-        del (ds)
-    four_values = pd.concat(four_values).reset_index(drop=True).copy()
-    del (compare)
-
-    return(four_values)
-
 # #############################################################################
 # The experiment
 # #############################################################################
@@ -181,7 +88,6 @@ full_archive_data = pd.read_csv(full_archive_path)
 # the target trajectories from for matching
 full_target_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 full_target_data = pd.read_csv(full_target_path)
-
 
 # for each of the esms in the experiment, subset to what we want
 # to work with and run the experiment.
@@ -217,38 +123,54 @@ for esm in esms:
         # look at if there are more than 5.
         f = lambda x: x.ensemble[:x.idx]
 
-        ensemble_list = pd.DataFrame({'ensemble':target_245["ensemble"].unique()})
-        ensemble_list['idx'] = ensemble_list['ensemble'].str.index('i')
-        ensemble_list['ensemble_id'] = ensemble_list.apply(f, axis=1)
-        ensemble_list['ensemble_id'] =ensemble_list['ensemble_id'].str[1:].astype(int)
-        ensemble_list = ensemble_list.sort_values('ensemble_id').copy()
-        if len(ensemble_list) > 5:
-            ensemble_keep = ensemble_list.iloc[0:5].ensemble
+        if not target_245.empty:
+            ensemble_list = pd.DataFrame({'ensemble': target_245["ensemble"].unique()})
+            ensemble_list['idx'] = ensemble_list['ensemble'].str.index('i')
+            ensemble_list['ensemble_id'] = ensemble_list.apply(f, axis=1)
+            ensemble_list['ensemble_id'] = ensemble_list['ensemble_id'].str[1:].astype(int)
+            ensemble_list = ensemble_list.sort_values('ensemble_id').copy()
+            if len(ensemble_list) > 5:
+                ensemble_keep = ensemble_list.iloc[0:5].ensemble
+            else:
+                ensemble_keep = ensemble_list.ensemble
+
+            target_245 = target_245[target_245['ensemble'].isin(ensemble_keep)].copy()
+            del (ensemble_keep)
+            del (ensemble_list)
         else:
-            ensemble_keep = ensemble_list.ensemble
+            print('No target ssp245 data for ' + esm + '. Analysis will be skipped')
 
-        target_245 = target_245[target_245['ensemble'].isin(ensemble_keep)].copy()
-        del(ensemble_keep)
-        del(ensemble_list)
+        if not target_370.empty:
+            ensemble_list = pd.DataFrame({'ensemble': target_370["ensemble"].unique()})
+            ensemble_list['idx'] = ensemble_list['ensemble'].str.index('i')
+            ensemble_list['ensemble_id'] = ensemble_list.apply(f, axis=1)
+            ensemble_list['ensemble_id'] = ensemble_list['ensemble_id'].str[1:].astype(int)
+            ensemble_list = ensemble_list.sort_values('ensemble_id').copy()
+            if len(ensemble_list) > 5:
+                ensemble_keep = ensemble_list.iloc[0:5].ensemble
+            else:
+                ensemble_keep = ensemble_list.ensemble
 
-        ensemble_list = pd.DataFrame({'ensemble': target_370["ensemble"].unique()})
-        ensemble_list['idx'] = ensemble_list['ensemble'].str.index('i')
-        ensemble_list['ensemble_id'] = ensemble_list.apply(f, axis=1)
-        ensemble_list['ensemble_id'] = ensemble_list['ensemble_id'].str[1:].astype(int)
-        ensemble_list = ensemble_list.sort_values('ensemble_id').copy()
-        if len(ensemble_list) > 5:
-            ensemble_keep = ensemble_list.iloc[0:5].ensemble
+            target_370 = target_370[target_370['ensemble'].isin(ensemble_keep)].copy()
+            del (ensemble_keep)
+            del (ensemble_list)
+
         else:
-            ensemble_keep = ensemble_list.ensemble
+            print('No target ssp370 data for ' + esm + '. Analysis will be skipped')
 
-        target_370 = target_370[target_370['ensemble'].isin(ensemble_keep)].copy()
-        del (ensemble_keep)
-        del (ensemble_list)
         del(f)
 
         # Pull corresponding original data for these target runs.
-        orig_245  = get_orig_data(target_245)
-        orig_370 = get_orig_data(target_370)
+        if not target_245.empty:
+            orig_245  = get_orig_data(target_245)
+        else:
+            orig_245=[]
+
+        if not target_370.empty:
+            orig_370 = get_orig_data(target_370)
+        else:
+            orig_370=[]
+
         orig_245.append(orig_370).to_csv((OUTPUT_DIR + '/' + esm + '/' +
                                    'comparison_data_' + esm + '.csv'), index=False)
 
@@ -341,11 +263,3 @@ for esm in esms:
         print(esm + ' failed. investigate offline')
 
 # end for loop over ESMs
-
-# rp1 = pd.read_csv((OUTPUT_DIR + '/MIROC6/gridded_recipes_MIROC6_target2451.csv'))
-# rp2 = pd.read_csv((OUTPUT_DIR + '/MIROC6/gridded_recipes_MIROC6_target245.csv'))
-# pd.merge(rp1, rp2, how = 'outer')
-
-# rp1 = pd.read_csv((OUTPUT_DIR + '/MRI-ESM2-0/gridded_recipes_MRI-ESM2-0_target3701.csv'))
-# rp2 = pd.read_csv((OUTPUT_DIR + '/MRI-ESM2-0/gridded_recipes_MRI-ESM2-0_target370.csv'))
-# pd.merge(rp1, rp2, how = 'outer')

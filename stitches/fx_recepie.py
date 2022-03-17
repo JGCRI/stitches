@@ -308,7 +308,7 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
             one_one_match = []
             for name, group in grouped_targets:
                 if testing:
-                    one_one_match.append(group.sample(1, replace=False, random_state=stitch_ind))
+                    one_one_match.append(group.sample(1, replace=False, random_state=1))
                 else:
                     one_one_match.append(group.sample(1, replace=False))
             one_one_match = pd.concat(one_one_match)

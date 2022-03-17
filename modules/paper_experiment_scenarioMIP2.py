@@ -28,17 +28,6 @@ OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/created_data')
 tolerance = 0.075
 Ndraws = 1
 
-# pangeo table of ESMs for reference
-pangeo_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
-pangeo_data = pd.read_csv(pangeo_path)
-pangeo_data = pangeo_data[(pangeo_data['variable'] == 'tas') & (pangeo_data['domain'] == 'Amon') ].copy()
-
-pangeo_126_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp126')].model.unique().copy()
-pangeo_126_esms.sort()
-pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.unique().copy()
-pangeo_585_esms.sort()
-
-
 # #############################################################################
 # Helper functions
 # #############################################################################
@@ -193,7 +182,7 @@ full_archive_data = pd.read_csv(full_archive_path)
 full_target_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 full_target_data = pd.read_csv(full_target_path)
 
-esms=['MIROC6']
+
 # for each of the esms in the experiment, subset to what we want
 # to work with and run the experiment.
 for esm in esms:
@@ -269,27 +258,6 @@ for esm in esms:
         if not target_245.empty:
             match_245_df = stitches.match_neighborhood(target_245, archive_data,
                                                        tol=tolerance)
-
-            # dat = match_245_df.drop_duplicates().copy()
-            # dat_count = dat.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model",
-            #                          "target_start_yr", "target_end_yr", "target_year", "target_fx",
-            #                          "target_dx"]).size().reset_index(name='n_matches')
-            # dat_count = dat_count.sort_values(["target_year"])
-            #
-            # dat_min = dat_count.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model"])[
-            #     'n_matches'].min().reset_index(name='minNumMatches')
-            # dat_prod = dat_count.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model"])[
-            #     'n_matches'].prod().reset_index(name='totalNumPerms')
-            # dat_count_merge = dat_min.merge(dat_prod)
-            #
-            # out = [dat_count_merge, dat_count]
-            #
-            # x = out[1].copy()
-            # y = x[x['n_matches'] <= 7].copy() # 7 from out[0]
-            # match_245_df.merge(y, how='inner')[['target_ensemble', 'target_year',
-            #                                     'archive_experiment', 'archive_ensemble', 'archive_year',
-            #                                     'dist_l2', 'n_matches']].drop_duplicates().to_csv((OUTPUT_DIR +'/matchcheck.csv'))
-
         else:
             print('No target ssp245 data for ' + esm + '. Analysis will be skipped')
 
@@ -373,3 +341,11 @@ for esm in esms:
         print(esm + ' failed. investigate offline')
 
 # end for loop over ESMs
+
+# rp1 = pd.read_csv((OUTPUT_DIR + '/MIROC6/gridded_recipes_MIROC6_target2451.csv'))
+# rp2 = pd.read_csv((OUTPUT_DIR + '/MIROC6/gridded_recipes_MIROC6_target245.csv'))
+# pd.merge(rp1, rp2, how = 'outer')
+
+# rp1 = pd.read_csv((OUTPUT_DIR + '/MRI-ESM2-0/gridded_recipes_MRI-ESM2-0_target3701.csv'))
+# rp2 = pd.read_csv((OUTPUT_DIR + '/MRI-ESM2-0/gridded_recipes_MRI-ESM2-0_target370.csv'))
+# pd.merge(rp1, rp2, how = 'outer')

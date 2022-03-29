@@ -28,33 +28,57 @@ OUTPUT_DIR = '/pic/projects/GCAM/stitches_pic/new_scenarioMIP_experiments'
 tolerance = 0.075
 Ndraws = 1
 
-# pangeo table of ESMs for reference
-pangeo_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
-pangeo_data = pd.read_csv(pangeo_path)
-pangeo_data = pangeo_data[(pangeo_data['variable'] == 'tas') & (pangeo_data['domain'] == 'Amon') ].copy()
+# #############################################################################
+# Helper functions
+# #############################################################################
+def prep_target_data(target_df):
+    if not target_df.empty:
+        grped = target_df.groupby(['experiment', 'variable', 'ensemble', 'model'])
+        for name, group in grped:
+            df1 = group.copy()
+            # if it isn't a complete time series (defined as going to 2099 or 2100),
+            # remove it from the target data frame:
+            if max(df1.end_yr) < 2099:
+                target_df = target_df.loc[(target_df['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
+                    drop=True)
+            del (df1)
+        del (grped)
 
-pangeo_126_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp126')].model.unique().copy()
-pangeo_126_esms.sort()
-pangeo_585_esms = pangeo_data[(pangeo_data['experiment'] == 'ssp585')].model.unique().copy()
-pangeo_585_esms.sort()
+        target_df = target_df.reset_index(drop=True).copy()
+        return(target_df)
 
+def get_orig_data(target_df):
+    if not target_df.empty:
+        esm_name = target_df.model.unique()[0]
+        scn_name = target_df.experiment.unique()[0]
+
+        full_rawtarget_path = pkg_resources.resource_filename('stitches', ('data/tas-data/' + esm_name + '_tas.csv'))
+        full_rawtarget_data = pd.read_csv(full_rawtarget_path)
+
+        orig_data = full_rawtarget_data[(full_rawtarget_data['experiment'] == scn_name)].copy()
+        keys = ['experiment', 'ensemble', 'model']
+        i1 = orig_data.set_index(keys).index
+        i2 = target_df.set_index(keys).index
+        orig_data = orig_data[i1.isin(i2)].copy()
+        del (i1)
+        del (i2)
+        del (keys)
+        del (full_rawtarget_data)
+        del (full_rawtarget_path)
+
+        orig_data = orig_data.reset_index(drop=True).copy()
+        return (orig_data)
+
+# #############################################################################
+# The experiment
+# #############################################################################
 
 esms = ['ACCESS-CM2', 'ACCESS-ESM1-5', 'BCC-CSM2-MR','CAMS-CSM1-0', 'CAS-ESM2-0',
         'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5','FGOALS-g3', 'FIO-ESM-2-0',
         'GISS-E2-1-G', 'HadGEM3-GC31-LL', 'MCM-UA-1-0', 'MIROC-ES2L', 'MIROC6',
         'MPI-ESM1-2-HR', 'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
         'TaiESM1', 'UKESM1-0-LL']
-      # ['ACCESS-CM2', 'ACCESS-ESM1-5', 'AWI-CM-1-1-MR', 'BCC-CSM2-MR',
-      #  'CAMS-CSM1-0', 'CAS-ESM2-0', 'CESM2', 'CESM2-WACCM',
-      #  'CMCC-CM2-SR5', 'CMCC-ESM2', 'CanESM5', 'FGOALS-g3', 'FIO-ESM-2-0',
-      #  'GISS-E2-1-G', 'HadGEM3-GC31-LL', 'HadGEM3-GC31-MM', 'IITM-ESM',
-      #  'MCM-UA-1-0', 'MIROC-ES2L', 'MIROC6', 'MPI-ESM1-2-HR',
-      #  'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NESM3', 'NorESM2-LM', 'NorESM2-MM',
-      #  'TaiESM1', 'UKESM1-0-LL']
 
-# #############################################################################
-# The experiment
-# #############################################################################
 
 # Load the full archive of all staggered windows, which we will be matching on
 full_archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
@@ -64,15 +88,6 @@ full_archive_data = pd.read_csv(full_archive_path)
 # the target trajectories from for matching
 full_target_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 full_target_data = pd.read_csv(full_target_path)
-
-
-# cap the target ensemble members to only the first 5 (if 5+ exist)
-#ensemble_keep = ['r1i1p1f1',
-#                 'r2i1p1f1',
-#                 'r3i1p1f1',
-#                 'r4i1p1f1',
-#                 'r5i1p1f1']
-
 
 # for each of the esms in the experiment, subset to what we want
 # to work with and run the experiment.
@@ -85,50 +100,80 @@ for esm in esms:
                                          ((full_archive_data['experiment'] == 'ssp126') |
                                           (full_archive_data['experiment'] == 'ssp585'))].copy()
 
+        # Initial subset of target data to experiments:
         target_245 = full_target_data[(full_target_data['model'] == esm) &
                                       (full_target_data['experiment'] == 'ssp245')].copy()
-
-        # Not all models start the ensemble count at 1, select 5 ensemble realizations to
-        # look at if there are more than 5.
-        if len(ensemble_list) > 5:
-            ensemble_list = target_245["ensemble"].unique()
-            ensemble_keep = ensemble_list[range(0, 5)]
-        else:
-            ensemble_keep = ensemble_list
-
-        target_245 = target_245[target_245['ensemble'].isin(ensemble_keep)].copy()
+        # target SSP370 realizations:
         target_370 = full_target_data[(full_target_data['model'] == esm) &
                                       (full_target_data['experiment'] == 'ssp370')].copy()
-        target_370 = target_370[target_370['ensemble'].isin(ensemble_keep)].copy()
 
-        # Some models (HadGEM3-GC31-LL for example), have realizations that stop
-        # in 2014. Our recipe permutation only works when every target realization
-        # has the same time series (and the same discretization of the time series).
-        # So we generally drop those realizations from the target dataframe.
+        # Clean up target data
         if not target_245.empty:
-            grped_245 = target_245.groupby(['experiment', 'variable', 'ensemble', 'model'])
-            for name, group in grped_245:
-                df1 = group.copy()
-                # if it isn't a complete time series (defined as going to 2099 or 2100),
-                # remove it from the target data frame:
-                if max(df1.end_yr) < 2099:
-                    target_245 = target_245.loc[
-                        (target_245['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(drop=True)
-                del (df1)
+            # clean up
+            target_245 = prep_target_data(target_245).copy()
 
-            del (grped_245)
         if not target_370.empty:
-            grped_370 = target_370.groupby(['experiment', 'variable', 'ensemble', 'model'])
-            for name, group in grped_370:
-                df1 = group.copy()
-                # if it isn't a complete time series (defined as going to 2099 or 2100),
-                # remove it from the target data frame:
-                if max(df1.end_yr) < 2099:
-                    target_370 = target_370.loc[
-                        (target_370['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
-                        drop=True)
-                del (df1)
-            del (grped_370)
+            # clean up
+            target_370 = prep_target_data(target_370).copy()
+
+        # Not all models start the ensemble count at 1,
+        # And not all experiments of a given model report the
+        # same realizations.
+        # select 5 ensemble realizations to
+        # look at if there are more than 5.
+        f = lambda x: x.ensemble[:x.idx]
+
+        if not target_245.empty:
+            ensemble_list = pd.DataFrame({'ensemble': target_245["ensemble"].unique()})
+            ensemble_list['idx'] = ensemble_list['ensemble'].str.index('i')
+            ensemble_list['ensemble_id'] = ensemble_list.apply(f, axis=1)
+            ensemble_list['ensemble_id'] = ensemble_list['ensemble_id'].str[1:].astype(int)
+            ensemble_list = ensemble_list.sort_values('ensemble_id').copy()
+            if len(ensemble_list) > 5:
+                ensemble_keep = ensemble_list.iloc[0:5].ensemble
+            else:
+                ensemble_keep = ensemble_list.ensemble
+
+            target_245 = target_245[target_245['ensemble'].isin(ensemble_keep)].copy()
+            del (ensemble_keep)
+            del (ensemble_list)
+        else:
+            print('No target ssp245 data for ' + esm + '. Analysis will be skipped')
+
+        if not target_370.empty:
+            ensemble_list = pd.DataFrame({'ensemble': target_370["ensemble"].unique()})
+            ensemble_list['idx'] = ensemble_list['ensemble'].str.index('i')
+            ensemble_list['ensemble_id'] = ensemble_list.apply(f, axis=1)
+            ensemble_list['ensemble_id'] = ensemble_list['ensemble_id'].str[1:].astype(int)
+            ensemble_list = ensemble_list.sort_values('ensemble_id').copy()
+            if len(ensemble_list) > 5:
+                ensemble_keep = ensemble_list.iloc[0:5].ensemble
+            else:
+                ensemble_keep = ensemble_list.ensemble
+
+            target_370 = target_370[target_370['ensemble'].isin(ensemble_keep)].copy()
+            del (ensemble_keep)
+            del (ensemble_list)
+
+        else:
+            print('No target ssp370 data for ' + esm + '. Analysis will be skipped')
+
+        del(f)
+
+        # Pull corresponding original data for these target runs.
+        if not target_245.empty:
+            orig_245  = get_orig_data(target_245)
+        else:
+            orig_245=[]
+
+        if not target_370.empty:
+            orig_370 = get_orig_data(target_370)
+        else:
+            orig_370=[]
+
+        orig_245.append(orig_370).to_csv((OUTPUT_DIR + '/' + esm + '/' +
+                                   'comparison_data_' + esm + '.csv'), index=False)
+
 
         # Use the match_neighborhood function to generate all of the matches between the target and
         # archive data points.
@@ -208,40 +253,9 @@ for esm in esms:
             except:
                 print(("Some issue stitching GMAT for " + esm + ". Skipping and moving on"))
 
-            # form and output the global gridded stitched products.
-            # stitches.gridded_stitching will work on a recipe data frame that contains
-            # many stitching recipes just fine. However, one step stitches.gridded_stitching
-            # takes is to download all needed netcdfs for all stitching_ids in the recipe
-            # data frame at once. When there are hundreds of stitching_ids (e.g. MIROC6),
-            # the step for downloading from pangeo hits a time and/or memory wall.
-            # To get around this for now, we simply loop over stitching_ids before
-            # calling stitches.gridded_stitching so that the function gets applied to
-            # each id individually, limiting the number of netcdfs that must be
-            # downloaded from pangeo at any one time
-            #
-            # try:
-            #     if not target_245.empty:
-            #         for single_id in recipe_245['stitching_id'].unique():
-            #             single_rp = recipe_245.loc[recipe_245['stitching_id'] == single_id].copy()
-            #             outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm ),
-            #                                                  single_rp)
-            #             del (single_rp)
-            #             del (outputs)
-            #     else:
-            #         print('No target ssp245 data for ' + esm + '. Gridded stitching skipped')
-            #
-            #     if not target_370.empty:
-            #         for single_id in recipe_370['stitching_id'].unique():
-            #             single_rp = recipe_370.loc[recipe_370['stitching_id'] == single_id].copy()
-            #             outputs = stitches.gridded_stitching((OUTPUT_DIR + '/' + esm ),
-            #                                                  single_rp)
-            #             del (single_rp)
-            #             del (outputs)
-            #     else:
-            #         print('No target ssp370 data for ' + esm + '. Gridded stitching skipped')
 
-            #except:
-             #   print(("Some issue stitching gridded for " + esm + ". Skipping and moving on"))
+
+
 
         # end for loop over draws
 

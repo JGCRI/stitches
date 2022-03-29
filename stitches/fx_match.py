@@ -164,7 +164,8 @@ def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=Tr
     util.check_columns(target_data, {"start_yr", "end_yr", "fx", "dx"})
 
     # shufflle the the archive data
-    archive_data = shuffle_function(archive_data)
+    # archive_data = shuffle_function(archive_data)
+    archive_data = archive_data.reset_index(drop=True).copy()
 
     # For every entry in the target data frame find its nearest neighboor from the archive data.
     # concatenate the results into a single data frame.

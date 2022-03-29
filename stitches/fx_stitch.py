@@ -100,7 +100,8 @@ def get_var_info(rp, dl, fl, name):
     extracted = dl[index]
 
     attrs = data.get_ds_meta(extracted)
-    attrs["calendar"] = extracted.indexes['time'].calendar
+    if (attrs.frequency.values != "mon"):
+        attrs["calendar"] = extracted.indexes['time'].calendar
 
     return attrs
 
@@ -176,8 +177,9 @@ def internal_stitch(rp, dl, fl):
         if ((max(rp["target_end_yr"]) == 2099) & (len(times) == (len(gridded_data) - 12))):
             gridded_data = gridded_data[0:len(times), 0:, 0:].copy()
 
-        if ((var_info["calendar"][0].lower() == "noleap") & (freq == "D")):
-            times = times[~((times.month == 2) & (times.day == 29))]
+        if (freq == "D"):
+                if ((var_info["calendar"][0].lower() == "noleap") & (freq == "D")):
+                    times = times[~((times.month == 2) & (times.day == 29))]
 
         assert (len(gridded_data) == len(times)), "Problem with the length of time"
 
@@ -208,7 +210,7 @@ def internal_stitch(rp, dl, fl):
     return out_dict
 
 
-def gridded_stitching(out_dir, rp):
+def gridded_stitching(out_dir: object, rp: object) -> object:
     """Stitch
         :param out_dir:        string directory location where to write the netcdf files out to
         :param rp:             data frame of the recipe

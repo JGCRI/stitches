@@ -96,7 +96,7 @@ data = data[data['experiment'].isin({'ssp126', 'ssp245', 'ssp370', 'ssp585',
 #     holder.append(df1[['model', 'experiment', 'n_ens']].drop_duplicates())
 # holder = pd.concat(holder).drop_duplicates().reset_index(drop=True).copy()
 
-model_list = ["CAMS-CSM1-0", "MIROC6"]
+model_list = ["CAMS-CSM1-0" "MIROC6"]
 
 # model_list = ["ACCESS-CM2", "ACCESS-ESM1-5", "AWI-CM-1-1-MR", "CAMS-CSM1-0", "CanESM5", "CAS-ESM2-0",
 #               "CESM2", "CESM2-WACCM", "FGOALS-g3", "FIO-ESM-2-0", "GISS-E2-1-G", "GISS-E2-1-H",

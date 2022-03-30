@@ -103,7 +103,7 @@ del(i1)
 del(i2)
 
 # #####################################################
-model_list = ["CAMS-CSM1-0","MIROC6"]
+model_list = ["CAMS-CSM1-0", "MIROC6"]
 
 # model_list = ["ACCESS-CM2", "ACCESS-ESM1-5", "AWI-CM-1-1-MR", "CAMS-CSM1-0", "CanESM5", "CAS-ESM2-0",
 #               "CESM2", "CESM2-WACCM", "FGOALS-g3", "FIO-ESM-2-0", "GISS-E2-1-G", "GISS-E2-1-H",
@@ -115,6 +115,10 @@ for model_to_use in model_list:
     archive_data = data[(data['model'] == model_to_use) &
                         ((data['experiment'] == 'ssp126') |
                          (data['experiment'] == 'ssp585'))].copy()
+
+    # save off the ensembles in the archive for CT to check from if needed
+    archive_data[['model', 'experiment', 'ensemble']].drop_duplicates().to_csv((OUTPUT_DIR + '/tas_psl_pr/archive_used_gridded_tas_psl_pr_' +
+                 model_to_use + '.csv'), index=False)
 
 
     # Run for the ssp2-4.5 targets --------------------------------------------------------------
@@ -255,11 +259,16 @@ for model_to_use in model_list:
     keep = keep.rename(columns = {'model':'source_id',
                                   'experiment': 'experiment_id',
                                   'ensemble' :'member_id'}).copy()
+    # save it off; These are the actual ensembles targeted, which is not necessarily
+    # the same as ensembles stitched (since we can run out of viable matches):
+    keep[keep['experiment_id'] != 'historical'].to_csv((OUTPUT_DIR + '/tas_psl_pr/ensembles_targeted_gridded_tas_psl_pr_' +
+                                      model_to_use+ '.csv'), index=False)
+
     # and use keep to filter the pangeo_table
     keys = list(keep.columns.values)
     i1 = pangeo_table.set_index(keys).index
     i2  = keep.set_index(keys).index
-    pangeo_table1 = pangeo_table[i1.isin(i2)].reset_index(drop=True).copy()
+    pangeo_table = pangeo_table[i1.isin(i2)].reset_index(drop=True).copy()
 
     # Save a copy of the data.
     for f in pangeo_table["zstore"]:

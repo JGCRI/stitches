@@ -58,53 +58,57 @@ def get_orig_GSAT_data(target_df):
         return (orig_data)
 
 
-# #####################################################
+# ##########################################################
+# We will do a run of a model with a lot of ensemble members,
+# and then a model with few.
+#
+# First, we will pre-determine which ensembles have pr, psl, tas.
+# The `make_recipe` function does this, but we'll do it up front for clarity.
+# pangeo table of ESMs for reference
+pangeo_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
+pangeo_data = pd.read_csv(pangeo_path)
+pangeo_data = pangeo_data[((pangeo_data['variable'] == 'tas') | (pangeo_data['variable'] == 'pr') | (pangeo_data['variable'] == 'psl'))
+                          & ((pangeo_data['domain'] == 'Amon') ) ].copy()
+
+# Keep only the runs that have data for all vars X all timesteps:
+pangeo_good_ensembles =[]
+for name, group in pangeo_data.groupby(['model', 'experiment', 'ensemble']):
+    df = group.drop_duplicates().copy()
+    if len(df) == 3:
+        pangeo_good_ensembles.append(df)
+    del(df)
+pangeo_good_ensembles = pd.concat(pangeo_good_ensembles)
+pangeo_good_ensembles  = pangeo_good_ensembles[['model', 'experiment', 'ensemble']].drop_duplicates().copy()
+pangeo_good_ensembles = pangeo_good_ensembles.reset_index(drop=True).copy()
+
+# won't use idealized runs
+pangeo_good_ensembles = pangeo_good_ensembles[~((pangeo_good_ensembles['experiment'] == '1pctCO2') |
+                                                (pangeo_good_ensembles['experiment'] == 'abrupt-4xCO2')|
+                                                (pangeo_good_ensembles['experiment'] == 'ssp534-over')) ].reset_index(drop=True).copy()
+
+
+# ##########################################################
 # Load the archive data we want to match on.
 archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 data = pd.read_csv(archive_path)
 data = data[data['experiment'].isin({'ssp126', 'ssp245', 'ssp370', 'ssp585',
                                          'ssp119',  'ssp534-over', 'ssp434', 'ssp460'})].copy()
 
-# ##########################################################
-# We will do a run of a model with a lot of ensemble members,
-# and then a model with few.
-#
-# # Code for determining models
-# pangeo_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
-# pangeo_data = pd.read_csv(pangeo_path)
-# pangeo_data = pangeo_data[((pangeo_data['variable'] == 'tas') | (pangeo_data['variable'] == 'pr') | (pangeo_data['variable'] == 'psl'))
-#                           & ((pangeo_data['domain'] == 'Amon') ) ].copy()
-#
-# # Keep only the runs that have data for all vars X all timesteps:
-# pangeo_good_ensembles =[]
-# for name, group in pangeo_data.groupby(['model', 'experiment', 'ensemble']):
-#     df = group.drop_duplicates().copy()
-#     if len(df) == 3:
-#         pangeo_good_ensembles.append(df)
-#     del(df)
-# pangeo_good_ensembles = pd.concat(pangeo_good_ensembles)
-# pangeo_good_ensembles  = pangeo_good_ensembles[['model', 'experiment', 'ensemble']].drop_duplicates().copy()
-# pangeo_good_ensembles = pangeo_good_ensembles.reset_index(drop=True).copy()
-#
-# x = pangeo_good_ensembles.drop_duplicates().reset_index(drop=True).copy()
-# x = x[(x['experiment'] == 'ssp126') | (x['experiment'] == 'ssp585')].copy()
-# holder = []
-# grped = x.groupby(['model', 'experiment'])
-# for name, group in grped:
-#     df1 = group.drop_duplicates().copy()
-#     df1['n_ens'] = len(df1)
-#     holder.append(df1[['model', 'experiment', 'n_ens']].drop_duplicates())
-# holder = pd.concat(holder).drop_duplicates().reset_index(drop=True).copy()
+# Keep only the entries that appeared in pangeo_good_ensembles:
+keys =['model', 'experiment', 'ensemble']
+i1 = data.set_index(keys).index
+i2 = pangeo_good_ensembles.set_index(keys).index
+data= data[i1.isin(i2)].copy()
+del(i1)
+del(i2)
 
-model_list = ["CAMS-CSM1-0" "MIROC6"]
+# #####################################################
+model_list = ["CAMS-CSM1-0","MIROC6"]
 
 # model_list = ["ACCESS-CM2", "ACCESS-ESM1-5", "AWI-CM-1-1-MR", "CAMS-CSM1-0", "CanESM5", "CAS-ESM2-0",
 #               "CESM2", "CESM2-WACCM", "FGOALS-g3", "FIO-ESM-2-0", "GISS-E2-1-G", "GISS-E2-1-H",
 #               "HadGEM3-GC31-LL", "HadGEM3-GC31-MM", "MIROC-ES2L", "MIROC6", "MPI-ESM1-2-HR",
 #               "MPI-ESM1-2-LR", "MRI-ESM2-0", "NorESM2-LM", "NorESM2-LM", "UKESM1-0-LL"]
-# ##########################################################
-
-
 for model_to_use in model_list:
     # Select the data to use as our archive.
     # For this paper experiment, we remain with the bracketing scenarios:
@@ -167,6 +171,13 @@ for model_to_use in model_list:
     # stitch and  save the gridded data
     out = stitches.gridded_stitching((OUTPUT_DIR +"/tas_psl_pr/stitched"), rp)
 
+    # save off info for the actual ensembles targeted so we can pull their real netcdfs
+    target_245_info = target_data[['model','variable', 'experiment', 'ensemble']].drop_duplicates().copy()
+    tmp = target_245_info[['model', 'variable', 'ensemble']].copy()
+    tmp['experiment'] = 'historical'
+    target_245_info = target_245_info.append(tmp).reset_index(drop=True).copy()
+    del(tmp)
+
 
     # Run for the ssp3-7.0 targets --------------------------------------------------------------
     # Select the some data to use as the target data
@@ -219,11 +230,15 @@ for model_to_use in model_list:
     gsat_370.to_csv((OUTPUT_DIR + '/tas_psl_pr/stitched_GSAT_data_ssp370_' +
                      model_to_use + '.csv'), index=False)
 
-
-
-
     # Stitch and save the gridded data:
     out = stitches.gridded_stitching((OUTPUT_DIR + "/tas_psl_pr/stitched"), rp)
+
+    # save off info for the actual ensembles targeted so we can pull their real netcdfs
+    target_370_info = target_data[['model', 'variable', 'experiment', 'ensemble']].drop_duplicates().copy()
+    tmp = target_370_info[['model', 'variable', 'ensemble']].copy()
+    tmp['experiment'] = 'historical'
+    target_370_info = target_370_info.append(tmp).reset_index(drop=True).copy()
+    del (tmp)
 
 
     # Save a copy for comparison data --------------------------------------------------------------
@@ -233,6 +248,18 @@ for model_to_use in model_list:
                                 (pangeo_table["experiment_id"].isin(['ssp245', 'ssp370', 'historical'])) &
                                 (pangeo_table["table_id"].str.contains("mon")) &
                                 (pangeo_table["variable_id"].isin(["tas", "psl", "pr"]))].copy().reset_index(drop=True)
+
+    # further subset to just the ensemble members in our targets:
+    keep = target_245_info.append(target_370_info).drop_duplicates().reset_index(drop=True)[['model', 'experiment', 'ensemble']]
+    # rename the columns of keep to be consistent with the pangeo_table:
+    keep = keep.rename(columns = {'model':'source_id',
+                                  'experiment': 'experiment_id',
+                                  'ensemble' :'member_id'}).copy()
+    # and use keep to filter the pangeo_table
+    keys = list(keep.columns.values)
+    i1 = pangeo_table.set_index(keys).index
+    i2  = keep.set_index(keys).index
+    pangeo_table1 = pangeo_table[i1.isin(i2)].reset_index(drop=True).copy()
 
     # Save a copy of the data.
     for f in pangeo_table["zstore"]:

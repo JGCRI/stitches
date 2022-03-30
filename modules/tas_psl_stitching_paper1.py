@@ -12,9 +12,53 @@ OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data')
 # Stitch one realization per target ensemble, match in specified tolerance.
 Nmatches = 1
 tolerance = 0.075
+# #####################################################
+# Helper functions
+# #####################################################
+# Function to remove any ensemble members from a target data frame that
+# stop before 2099, for example, ending in 2014 like some MIROC6 SSP245:
+def prep_target_data(target_df):
+    if not target_df.empty:
+        grped = target_df.groupby(['experiment', 'variable', 'ensemble', 'model'])
+        for name, group in grped:
+            df1 = group.copy()
+            # if it isn't a complete time series (defined as going to 2099 or 2100),
+            # remove it from the target data frame:
+            if max(df1.end_yr) < 2099:
+                target_df = target_df.loc[(target_df['ensemble'] != df1.ensemble.unique()[0])].copy().reset_index(
+                    drop=True)
+            del (df1)
+        del (grped)
+
+        target_df = target_df.reset_index(drop=True).copy()
+        return(target_df)
+
+# helper function to pull the GSAT data of the specific ensemble members in
+# a target data frame:
+def get_orig_GSAT_data(target_df):
+    if not target_df.empty:
+        esm_name = target_df.model.unique()[0]
+        scn_name = target_df.experiment.unique()[0]
+
+        full_rawtarget_path = pkg_resources.resource_filename('stitches', ('data/tas-data/' + esm_name + '_tas.csv'))
+        full_rawtarget_data = pd.read_csv(full_rawtarget_path)
+
+        orig_data = full_rawtarget_data[(full_rawtarget_data['experiment'] == scn_name)].copy()
+        keys = ['experiment', 'ensemble', 'model']
+        i1 = orig_data.set_index(keys).index
+        i2 = target_df.set_index(keys).index
+        orig_data = orig_data[i1.isin(i2)].copy()
+        del (i1)
+        del (i2)
+        del (keys)
+        del (full_rawtarget_data)
+        del (full_rawtarget_path)
+
+        orig_data = orig_data.reset_index(drop=True).copy()
+        return (orig_data)
 
 
-
+# #####################################################
 # Load the archive data we want to match on.
 archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 data = pd.read_csv(archive_path)
@@ -53,12 +97,12 @@ data = data[data['experiment'].isin({'ssp126', 'ssp245', 'ssp370', 'ssp585',
 # holder = pd.concat(holder).drop_duplicates().reset_index(drop=True).copy()
 
 model_list = ["CAMS-CSM1-0", "MIROC6"]
-# ##########################################################
+
 # model_list = ["ACCESS-CM2", "ACCESS-ESM1-5", "AWI-CM-1-1-MR", "CAMS-CSM1-0", "CanESM5", "CAS-ESM2-0",
 #               "CESM2", "CESM2-WACCM", "FGOALS-g3", "FIO-ESM-2-0", "GISS-E2-1-G", "GISS-E2-1-H",
 #               "HadGEM3-GC31-LL", "HadGEM3-GC31-MM", "MIROC-ES2L", "MIROC6", "MPI-ESM1-2-HR",
 #               "MPI-ESM1-2-LR", "MRI-ESM2-0", "NorESM2-LM", "NorESM2-LM", "UKESM1-0-LL"]
-
+# ##########################################################
 
 
 for model_to_use in model_list:
@@ -74,7 +118,8 @@ for model_to_use in model_list:
     target_data = data[data["model"] == model_to_use].copy()
     target_data = target_data[target_data["experiment"] == 'ssp245'].copy()
     target_data = target_data.reset_index(drop=True).copy()
-
+    # remove any ensemble members that stop in 2014:
+    target_data = prep_target_data(target_data).copy()
 
     # we will target  with the first 5 numerical ensemble members.
     # Not all models start the ensemble count at 1,
@@ -99,11 +144,10 @@ for model_to_use in model_list:
         del (ensemble_keep)
         del (ensemble_list)
 
+    # get original GSAT data corresponding to target
+    orig_245 = get_orig_GSAT_data(target_data)
 
-    # Here is an example of how to make a recipe using the make recipe function, is basically wraps
-    # all of the matching & formatting steps into a single function. Res can be set to "mon" or "day"
-    # to indicate the resolution of the stitched data. Right now day & res are both working!
-    # However we may run into issues with different types of calendars.
+    # Make the multivariable recipe.
     rp = stitches.make_recipe(target_data=target_data,
                               archive_data=archive_data,
                               res="mon",
@@ -111,14 +155,26 @@ for model_to_use in model_list:
                               non_tas_variables=["psl", "pr"],
                               N_matches=Nmatches,
                               reproducible=True)
+
+    # Save the recipe
     rp.to_csv(OUTPUT_DIR + "/tas_psl_pr/" + model_to_use + "_ssp245_rp.csv")
+
+    # Stitch save the stitched GSATs for quality assurance:
+    gsat_245 = stitches.gmat_stitching(rp)
+    gsat_245.to_csv((OUTPUT_DIR + '/tas_psl_pr/stitched_GSAT_data_ssp245_' +
+             model_to_use + '.csv'), index=False)
+
+    # stitch and  save the gridded data
     out = stitches.gridded_stitching((OUTPUT_DIR +"/tas_psl_pr/stitched"), rp)
+
 
     # Run for the ssp3-7.0 targets --------------------------------------------------------------
     # Select the some data to use as the target data
     target_data = data[data["model"] == model_to_use].copy()
     target_data = target_data[target_data["experiment"] == 'ssp370'].copy()
     target_data = target_data.reset_index(drop=True).copy()
+    # remove any ensemble members that stop in 2014:
+    target_data = prep_target_data(target_data).copy()
 
     # we will target  with the first 5 numerical ensemble members.
     # Not all models start the ensemble count at 1,
@@ -143,10 +199,10 @@ for model_to_use in model_list:
         del (ensemble_keep)
         del (ensemble_list)
 
-    # Here is an example of how to make a recipe using the make recipe function, is basically wraps
-    # all of the matching & formatting steps into a single function. Res can be set to "mon" or "day"
-    # to indicate the resolution of the stitched data. Right now day & res are both working!
-    # However we may run into issues with different types of calendars.
+    # get original GSAT data corresponding to target
+    orig_370= get_orig_GSAT_data(target_data)
+
+    # Make the multivariable recipe.
     rp = stitches.make_recipe(target_data=target_data,
                               archive_data=archive_data,
                               res="mon",
@@ -154,7 +210,19 @@ for model_to_use in model_list:
                               non_tas_variables=["psl", "pr"],
                               N_matches=Nmatches,
                               reproducible=True)
+
+    # Save the recipe
     rp.to_csv(OUTPUT_DIR + "/tas_psl_pr/" + model_to_use + "_ssp370_rp.csv")
+
+    # Stitch save the stitched GSATs for quality assurance:
+    gsat_370 = stitches.gmat_stitching(rp)
+    gsat_370.to_csv((OUTPUT_DIR + '/tas_psl_pr/stitched_GSAT_data_ssp370_' +
+                     model_to_use + '.csv'), index=False)
+
+
+
+
+    # Stitch and save the gridded data:
     out = stitches.gridded_stitching((OUTPUT_DIR + "/tas_psl_pr/stitched"), rp)
 
 
@@ -176,5 +244,9 @@ for model_to_use in model_list:
                  info.source_id[0] + "_" + info.member_id[0] + "_" +
                  info.variable_id[0] + ".nc")
         ds.to_netcdf(fname)
+
+    # Save a copy of the GSAT data as well:
+    orig_245.append(orig_370).to_csv((OUTPUT_DIR + '/tas_psl_pr/comparison_GSAT_data_' +
+                                      model_to_use+ '.csv'), index=False)
 
 # end for loop over ESMs

@@ -170,7 +170,7 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
         :param optional:        a previous output of this function that contains a list of already created recipes
                                 to avoid re-making (this is not implemented).
         :param testing:         Boolean True/False. Defaults to False. If True, then pd.DataFrame.sample() uses
-                                the argument random_state=stitch_ind so that the behavior can be reliably replicated
+                                the argument random_state=1 so that the behavior can be reliably replicated
                                 without setting global seeds.
 
 
@@ -670,7 +670,8 @@ def generate_gridded_recipe(messy_recipe, res='mon'):
     return out
 
 
-def make_recipe(target_data, archive_data, N_matches, res="mon", tol=0.1, non_tas_variables=None):
+def make_recipe(target_data, archive_data, N_matches, res="mon", tol=0.1, non_tas_variables=None,
+                reproducible = False):
     """ Generate a stitching recipe.
 
          :param target_data:       a pandas data frame of climate information to emulate.
@@ -679,6 +680,9 @@ def make_recipe(target_data, archive_data, N_matches, res="mon", tol=0.1, non_ta
          :param res:               str of mon or day to indicate the resolution of the stitched data
          :param tol:               float value indicating the tolerance to use in the matching process, default set to 0.1
          :param non_tas_variables: a list of variables other than tas to stitch together, when using the default set to None only tas will be stitched together.
+         :param reproducible:         Boolean True/False. Defaults to False. If True,the call to permute_stitching_recipes()
+                                                 uses the testing=True argument so that the behavior can be reliably replicated
+                                                                                 without setting global seeds.
 
          :return:                   pandas data frame of a formatted recpie
      """
@@ -734,7 +738,16 @@ def make_recipe(target_data, archive_data, N_matches, res="mon", tol=0.1, non_ta
 
     # So the permute stitiching recipe works it works when N matches is set to 1 see blow for an
     # example where the function fails to return 2 matches per target.
-    unformatted_recipe = permute_stitching_recipes(N_matches=N_matches, matched_data=match_df, archive=archive_data)
+    if reproducible:
+        unformatted_recipe = permute_stitching_recipes(N_matches=N_matches,
+                                                       matched_data=match_df,
+                                                       archive=archive_data,
+                                                       testing=True)
+    else:
+        unformatted_recipe = permute_stitching_recipes(N_matches=N_matches,
+                                                       matched_data=match_df,
+                                                       archive=archive_data,
+                                                       testing=False)
 
     # Format the recipe into the dataframe that can be used by the stitching functions.
     recipe = generate_gridded_recipe(unformatted_recipe, res=res)

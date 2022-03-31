@@ -13,6 +13,13 @@ import pandas as pd
 import pkg_resources
 import random
 
+# need functions from these two specific package files to save off
+# the order that the target ensemble members get run through in
+# the permutation step.
+import stitches.fx_util as util
+import stitches.fx_recepie as rp
+
+# define experiments of interest
 exps = ["ssp126", "ssp245", "ssp585", "ssp370"]
 archive_exps = set(['ssp126', 'ssp585'])  # set(exps)
 
@@ -50,6 +57,42 @@ def prep_target_data(target_df):
 
         target_df = target_df.reset_index(drop=True).copy()
         return(target_df)
+
+
+# helper function to save off order target ensemble members were permuted in:
+def target_permute_order(target_data, archive_data, tol):
+    matched_data_int =stitches.match_neighborhood(target_data, archive_data, tol=tol)
+
+    # identifying how many target windows are in a trajectory we want to
+    # create so that we know we have created a full trajectory with no
+    # missing widnows; basically a reference for us to us in checks.
+    num_target_windows = util.nrow(matched_data_int["target_year"].unique())
+
+    # Initialize perm_guide for iteration through the while loop.
+    # the permutation guide is one of the factors that the while loop
+    # will run checks on, must be initialized.
+    # Perm_guide is basically a dataframe where each target window
+    # lists the number of archive matches it has.
+    num_perms = rp.get_num_perms(matched_data_int)
+    perm_guide = num_perms[1]
+
+    # how many target trajectories are we matching to,
+    # how many collapse-free ensemble members can each
+    # target support, and order them according to that
+    # for construction.
+    targets = num_perms[0].sort_values(["minNumMatches"]).reset_index()
+    # Add a column of a target  id name, differentiate between the different input
+    # streams we are emulating.
+    # We specifically emulate starting with the realization that can support
+    # the fewest collapse-free generated realizations and work in increasing
+    # order from there. We iterate over the different realizations to facilitate
+    # checking for duplicates across generated realizations across target
+    # realizations.
+    targets['target_ordered_id'] = ['A' + str(x) for x in targets.index]
+    return(targets[['target_variable', 'target_model',
+                    'target_experiment', 'target_ensemble',
+                    'minNumMatches',  'target_ordered_id'  ]].drop_duplicates().reset_index(drop=True))
+
 
 # ##########################################################
 # Start by figuring out which of the models meets the criteria ~8/~10 ensemble members per scenario
@@ -149,24 +192,43 @@ for en_size in ensemble_size:
                                          N_matches=N_matches,
                                          tol=0.07,
                                          reproducible=True)
+            target_order_07 = target_permute_order(target_data=target_to_use,
+                                                   archive_data=archive_to_use,
+                                                   tol=0.07)
+            target_order_07['tol'] = '0.07'
+
             print(".075")
             rp_075 = stitches.make_recipe(target_data=target_to_use,
                                           archive_data=archive_to_use,
                                           N_matches=N_matches,
                                           tol=0.075,
                                           reproducible=True)
+            target_order_075 = target_permute_order(target_data=target_to_use,
+                                                   archive_data=archive_to_use,
+                                                   tol=0.075)
+            target_order_075['tol'] = '0.075'
+
             print(".1")
             rp_1 = stitches.make_recipe(target_data=target_to_use,
                                         archive_data=archive_to_use,
                                         N_matches=N_matches,
                                         tol=0.1,
                                         reproducible=True)
+            target_order_1 = target_permute_order(target_data=target_to_use,
+                                                   archive_data=archive_to_use,
+                                                   tol=0.1)
+            target_order_1['tol'] = '0.1'
+
             print(".13")
             rp_13 = stitches.make_recipe(target_data=target_to_use,
                                          archive_data=archive_to_use,
                                          N_matches=N_matches,
                                          tol=0.13,
                                          reproducible=True)
+            target_order_13 = target_permute_order(target_data=target_to_use,
+                                                   archive_data=archive_to_use,
+                                                   tol=0.13)
+            target_order_13['tol'] = '0.13'
 
             rp_07["tol"] = "0.07"
             rp_075["tol"] = "0.075"
@@ -175,6 +237,10 @@ for en_size in ensemble_size:
 
             out = pd.concat([rp_07,rp_075, rp_1, rp_13])
             fname = base_file_name + "_recepie.csv"
+            out.to_csv(fname)
+
+            out = pd.concat([target_order_07, target_order_075, target_order_1, target_order_13])
+            fname = base_file_name + "_target_order.csv"
             out.to_csv(fname)
 
             out_07 = stitches.gmat_stitching(rp_07)

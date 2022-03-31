@@ -82,13 +82,9 @@ ensemble_count = (
 archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
 archive_data = pd.read_csv(archive_path)
 
-# # limiting to a specific model...
-# limit_to_this = 'CanESM5' # 'ACCESS-ESM1-5' # , 'MIROC-ES2L']
-# archive_data = archive_data.loc[archive_data["model"] == limit_to_this]
-# ensemble_count = ensemble_count.loc[ensemble_count["model"] == limit_to_this]
 
 # Determine the ensemble sizes
-ensemble_size = [5, 10]
+ensemble_size = [5, 10, 15, 20, 25]
 for en_size in ensemble_size:
 
     sufficient_en_count = ensemble_count.loc[ensemble_count["ensemble"] >= en_size].copy()
@@ -102,6 +98,8 @@ for en_size in ensemble_size:
     # Iterate through each model that meets the experiment requirements
     for model in model_list:
         for target_exp in ["ssp245", "ssp370"]:
+
+            print(model +" " +  target_exp + ". Archive ensemble size " + str(en_size))
 
             # Set up the base name
             base_file_name = OUTPUT_DIR + '/'+ str(en_size) + "_" + model + "_" + target_exp
@@ -178,8 +176,7 @@ for en_size in ensemble_size:
             out_1["tol"] = "0.10"
             out_13["tol"] = "0.13"
 
-            out = pd.concat([out_07,out_075
-                                , out_1, out_13])
+            out = pd.concat([out_07,out_075, out_1, out_13])
             out["experiment"] = target_exp
             out["ensemble_size"] = en_size
             fname = base_file_name + "_synthetic.csv"

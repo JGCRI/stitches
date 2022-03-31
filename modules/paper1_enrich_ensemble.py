@@ -20,7 +20,11 @@ pd.set_option('display.max_columns', None)
 
 # results will be written into an `enrich_ensemble_size`  directory in the
 # stitches package `data` directory.
-OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/enrich_ensemble_size')
+if len(archive_exps) == 2:
+    OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/enrich_ensemble_size_bracketOnlyArchive')
+
+if len(archive_exps) == 4:
+    OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data/enrich_ensemble_size_allExpsArchive')
 
 
 # Set the seed so that it is reproducible
@@ -124,17 +128,17 @@ for en_size in ensemble_size:
             target_to_use.to_csv(fname)
 
             # Read in & save the comparison data.
-            data_path = pkg_resources.resource_filename('stitches', 'data/tas-data/' + model + "_tas.csv")
-            data = pd.read_csv(data_path)
-            data = data.loc[(data["experiment"] == target_exp) & (data["ensemble"].isin(selected_en))].copy()
-            fname = base_file_name + "_compdata.csv"
-            data.to_csv(fname)
+            # data_path = pkg_resources.resource_filename('stitches', 'data/tas-data/' + model + "_tas.csv")
+            # data = pd.read_csv(data_path)
+            # data = data.loc[(data["experiment"] == target_exp) & (data["ensemble"].isin(selected_en))].copy()
+            # fname = base_file_name + "_compdata.csv"
+            # data.to_csv(fname)
 
             data_path = pkg_resources.resource_filename('stitches', 'data/tas-data/' + model + "_tas.csv")
             data = pd.read_csv(data_path)
             data = data.loc[
                 (data["experiment"] == target_exp) & (data["ensemble"].isin(target_to_use.ensemble.unique()))].copy()
-            fname = base_file_name + "_compdata_entire_target.csv"
+            fname = base_file_name + "_compdata.csv"
             data.to_csv(fname)
 
             # Generate the recipes using the various tols.

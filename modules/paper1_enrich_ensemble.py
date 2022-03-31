@@ -130,6 +130,13 @@ for en_size in ensemble_size:
             fname = base_file_name + "_compdata.csv"
             data.to_csv(fname)
 
+            data_path = pkg_resources.resource_filename('stitches', 'data/tas-data/' + model + "_tas.csv")
+            data = pd.read_csv(data_path)
+            data = data.loc[
+                (data["experiment"] == target_exp) & (data["ensemble"].isin(target_to_use.ensemble.unique()))].copy()
+            fname = base_file_name + "_compdata_entire_target.csv"
+            data.to_csv(fname)
+
             # Generate the recipes using the various tols.
             N_matches = int(1e100)
             print(".07")

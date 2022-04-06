@@ -226,6 +226,8 @@ def gridded_stitching(out_dir, rp):
                             'archive_variable', 'archive_model', 'archive_ensemble', 'stitching_id',
                             'archive_start_yr', 'archive_end_yr'})
 
+    rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
+
     # Determine which variables will be downloaded.
     variables = find_var_cols(rp)
     if not (len(variables) >= 1):

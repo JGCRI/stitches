@@ -295,11 +295,12 @@ if filter_future:
     # read in each stitched realization, subset to 2015
     entries = Path((OUTPUT_DIR + '/tas_psl_pr/stitched/'))
     for entry in entries.iterdir():
-        print(entry.name)
-        ds = xr.open_dataset((OUTPUT_DIR + '/tas_psl_pr/stitched/') + entry.name)
-        ds = ds.sel(time = slice('2015-01-31', '2100-12-31')).copy()
-        ds.to_netcdf((OUTPUT_DIR + '/tas_psl_pr/stitched_future/') + entry.name)
-        del(ds)
+        if ('.nc' in entry.name) :
+            print(entry.name)
+            ds = xr.open_dataset((OUTPUT_DIR + '/tas_psl_pr/stitched/') + entry.name)
+            ds = ds.sel(time = slice('2015-01-31', '2100-12-31')).copy()
+            ds.to_netcdf((OUTPUT_DIR + '/tas_psl_pr/stitched_future/') + entry.name)
+            del(ds)
 
 
 

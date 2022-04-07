@@ -10,6 +10,7 @@ import xarray as xr
 OUTPUT_DIR = pkg_resources.resource_filename('stitches', 'data')
 
 # Stitch one realization per target ensemble, match in specified tolerance.
+filter_future = True
 Nmatches = 1
 tolerance = 0.075
 # #####################################################
@@ -103,7 +104,7 @@ del(i1)
 del(i2)
 
 # #####################################################
-model_list = ["CAMS-CSM1-0", "MIROC6"]
+model_list = [ "MIROC6"]
 
 # model_list = ["ACCESS-CM2", "ACCESS-ESM1-5", "AWI-CM-1-1-MR", "CAMS-CSM1-0", "CanESM5", "CAS-ESM2-0",
 #               "CESM2", "CESM2-WACCM", "FGOALS-g3", "FIO-ESM-2-0", "GISS-E2-1-G", "GISS-E2-1-H",
@@ -165,7 +166,7 @@ for model_to_use in model_list:
                               reproducible=True)
 
     # Save the recipe
-    rp.to_csv(OUTPUT_DIR + "/tas_psl_pr/" + model_to_use + "_ssp245_rp.csv")
+    rp.to_csv(OUTPUT_DIR + "/tas_psl_pr/" + model_to_use + "_ssp245_rp.csv",index=False)
 
     # Stitch save the stitched GSATs for quality assurance:
     gsat_245 = stitches.gmat_stitching(rp)
@@ -227,7 +228,7 @@ for model_to_use in model_list:
                               reproducible=True)
 
     # Save the recipe
-    rp.to_csv(OUTPUT_DIR + "/tas_psl_pr/" + model_to_use + "_ssp370_rp.csv")
+    rp.to_csv(OUTPUT_DIR + "/tas_psl_pr/" + model_to_use + "_ssp370_rp.csv", index=False)
 
     # Stitch save the stitched GSATs for quality assurance:
     gsat_370 = stitches.gmat_stitching(rp)
@@ -286,3 +287,20 @@ for model_to_use in model_list:
                                       model_to_use+ '.csv'), index=False)
 
 # end for loop over ESMs
+
+
+# Filter generated files to future if needed
+if filter_future:
+    from pathlib import Path
+    # read in each stitched realization, subset to 2015
+    entries = Path((OUTPUT_DIR + '/tas_psl_pr/stitched/'))
+    for entry in entries.iterdir():
+        print(entry.name)
+        ds = xr.open_dataset((OUTPUT_DIR + '/tas_psl_pr/stitched/') + entry.name)
+        ds = ds.sel(time = slice('2015-01-31', '2100-12-31')).copy()
+        ds.to_netcdf((OUTPUT_DIR + '/tas_psl_pr/stitched_future/') + entry.name)
+        del(ds)
+
+
+
+

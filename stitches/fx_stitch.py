@@ -333,6 +333,8 @@ def gmat_stitching(rp):
                             'archive_variable', 'archive_model', 'archive_ensemble', 'stitching_id',
                             'archive_start_yr', 'archive_end_yr', 'tas_file'})
 
+    rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
+
     # One the assumptions of this function is that it only works with tas, so
     # we can safely add tas as the variable column.
     rp['variable'] = 'tas'

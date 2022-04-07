@@ -227,6 +227,8 @@ def gridded_stitching(out_dir, rp):
                             'archive_variable', 'archive_model', 'archive_ensemble', 'stitching_id',
                             'archive_start_yr', 'archive_end_yr'})
 
+    rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
+
     # Determine which variables will be downloaded.
     variables = find_var_cols(rp)
     if not (len(variables) >= 1):
@@ -330,6 +332,8 @@ def gmat_stitching(rp):
     util.check_columns(rp, {'target_start_yr', 'target_end_yr', 'archive_experiment',
                             'archive_variable', 'archive_model', 'archive_ensemble', 'stitching_id',
                             'archive_start_yr', 'archive_end_yr', 'tas_file'})
+
+    rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
 
     # One the assumptions of this function is that it only works with tas, so
     # we can safely add tas as the variable column.

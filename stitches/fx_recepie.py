@@ -764,6 +764,7 @@ def make_recipe(target_data, archive_data, N_matches, res="mon", tol=0.1, non_ta
     else:
         out = recipe.copy()
 
+    out = out.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
     return out
 
 

@@ -134,6 +134,7 @@ def internal_stitch(rp, dl, fl):
         :return:               a list of the data arrays for the stitched products of the different variables.
     """
 
+    rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).copy()
     rp.reset_index(drop=True, inplace=True)
     variables = find_var_cols(rp)
     out = []

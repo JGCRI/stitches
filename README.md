@@ -10,6 +10,8 @@ Jupyter notebooks hosted on `stitches` use functionality that is contained withi
 
 **NOTE:**  Ensure you are using Python >= 3.6.  Calling `python` may use a different instance.  Some users may need to use `python3` or the like instead.
 
+`stitches`  users and devlopers agree to must agree to our community guidelines outlines in our [contirbutors guidelines](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md). To ask for help or report a problem please open a github issue ([how to open a github issue](https://docs.github.com/en/enterprise-server@3.1/issues/tracking-your-work-with-issues/creating-an-issue)). 
+
 #### For developers
 Clone the repository and then install the package in development mode using from inside the package's root directory:
 ```bash

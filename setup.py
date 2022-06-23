@@ -21,7 +21,7 @@ setup(
     author_email='',
     description='Amalgamate existing climate data to create monthly climate variable fields',
     long_description=readme(),
-    python_requires='>=3.6.0',
+    python_requires='>=3.9.0',
     include_package_data=True,
     install_requires=get_requirements()
 )

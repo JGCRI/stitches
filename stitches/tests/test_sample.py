@@ -81,8 +81,8 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(all(list(map(os.path.exists, out))))
 
         """Test load_datafiles"""
-        out = load_data_files("tests")
-        self.assertTrue(type(out) == pd.core.frame.DataFrame)
+        #out = load_data_files("tests")
+        #self.assertTrue(type(out) == pd.core.frame.DataFrame)
         #self.assertRaises(TypeError, load_data_files("fake"))
 
         """test combine_df"""

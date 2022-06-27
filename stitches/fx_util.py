@@ -15,6 +15,12 @@ def combine_df(df1, df2):
     :return:    a single pandas data frame.
     """
 
+    incommon = df1.columns.intersection(df2.columns)
+
+    if len(incommon) > 0:
+        raise TypeError(f"a: df1 and df2 must have unique column names")
+
+
     # Combine the two data frames with one another.
     df1["j"] = 1
     df2["j"] = 1
@@ -59,29 +65,6 @@ def selstr(a, start, stop):
         out.append(a[i])
     out = "".join(out)
     return out
-
-def join_exclude(dat, drop):
-    """ Drop some rows from a data frame.
-
-    :param dat:   pd data frame containing the data that needs to be dropped.
-    :param drop: pd data frame containing the data to drop.
-
-    :return:    pd data frame that is subset.
-    """
-    dat = dat.copy()
-    drop = drop.copy()
-
-    # Get the column names that two data frames have
-    # in common with one another.
-    in_common = list(set(dat.columns) & set(drop.columns))  # figure out what columns are in common between the two dfs
-    drop["drop"] = 1  # add an indicator column to indicate which rows need to be dropped
-    out = dat.merge(drop, how='left', on=in_common)
-
-    out = out.loc[out["drop"].isna()]  # remove the entries that need to be dropped
-    out = out[dat.columns]  # select the columns
-
-    return out
-
 
 def check_columns(data, names):
     """ Check to see if a data frame has all of the required columns.
@@ -220,7 +203,7 @@ def load_data_files(subdir):
         elif "pkl" in f:
             d = pd.read_pickle(f)
         else:
-            None
+            d = None
         raw_data.append(d)
     raw_data = pd.concat(raw_data)
 

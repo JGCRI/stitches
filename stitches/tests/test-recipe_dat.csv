@@ -1,3 +1,0 @@
-target_start_yr,target_end_yr,archive_experiment,archive_variable,archive_model,archive_ensemble,stitching_id,archive_start_yr,archive_end_yr,tas_file
-1850,1858,historical,tas,BCC-CSM2-MR,r1i1p1f1,ssp245~r1i1p1f1~1,1859,1867,gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/
-1859,1867,historical,tas,BCC-CSM2-MR,r1i1p1f1,ssp245~r1i1p1f1~1,1886,1894,gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/

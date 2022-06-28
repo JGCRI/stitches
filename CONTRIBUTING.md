@@ -15,7 +15,7 @@ But there are a few guidelines that we ask contributors to follow, guidelines th
 ## Making Changes
 
 * **Start your work on the correct branch**.
-  * The active delopment branch will be titled dev_X
+  * The active development branch will be titled dev
   * If your change is a PATCH, it will typically be based on the current dev branch; if MINOR, the next minor release branch; if MAJOR, the next major release branch. For example, as of this writing there are branches `dev`, `rc1.2` and `rc2.0`, corresponding to the PATCH-MINOR-MAJOR start points respectively.
   * We will never accept pull requests to the `master` branch.
 * Check for unnecessary whitespace with `git diff --check` before committing.

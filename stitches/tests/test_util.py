@@ -12,17 +12,17 @@ class TestUtil(unittest.TestCase):
     TABLE_C = pd.DataFrame(data={'col1': ["a", "b"], 'col2': [4, 4]})
     TABLE_D = pd.DataFrame(data={'col3': ["a", "b", "c"], 'col4': [3, 4, 5]})
 
-    def test_nrow(self):
-        self.assertTrue(nrow(self.TABLE_A), 4)
-        doubble_A = pd.concat([self.TABLE_A, self.TABLE_A])
-        self.assertTrue(nrow(doubble_A), nrow(self.TABLE_A) * 2)
-
     def test_check_columns(self):
         self.assertTrue(type(check_columns(self.TABLE_A, set(self.TABLE_A))) is type(None))
         with self.assertRaises(TypeError):
             check_columns(self.TABLE_A, self.TABLE_A.columns)
         with self.assertRaises(TypeError):
             check_columns(self.TABLE_A, {'fake'})
+
+    def test_nrow(self):
+        self.assertTrue(nrow(self.TABLE_A), 4)
+        doubble_A = pd.concat([self.TABLE_A, self.TABLE_A])
+        self.assertTrue(nrow(doubble_A), nrow(self.TABLE_A) * 2)
 
     def test_selstr(self):
         self.assertEqual(selstr("abcd", 0, 2), 'ab')

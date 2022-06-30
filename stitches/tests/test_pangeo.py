@@ -5,9 +5,8 @@ import xarray as xr
 from stitches.fx_pangeo import fetch_pangeo_table, fetch_nc
 
 class TestPangeo(unittest.TestCase):
-    """Tests for the our pangeo helper functions."""
 
-    def test_get_pangeo_data(self):
+    def test_pangeo_fn(self):
 
         # Get the table of all pangeo contents as a data frame
         ptable = fetch_pangeo_table()
@@ -18,7 +17,6 @@ class TestPangeo(unittest.TestCase):
         path = import_this["zstore"][0]
         out = fetch_nc(path)
         self.assertEqual(type(out), xr.core.dataset.Dataset, 'problem with fetch_nc')
-
 
 if __name__ == '__main__':
     unittest.main()

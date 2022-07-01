@@ -2,13 +2,15 @@ import pandas as pd
 import pkg_resources
 import unittest
 from stitches.fx_util import check_columns
-from stitches.fx_recepie import get_num_perms, remove_duplicates, make_recipe
+from stitches.fx_recepie import get_num_perms, remove_duplicates, permute_stitching_recipes, make_recipe
 from stitches.fx_match import match_neighborhood
 
 class TestRecipe(unittest.TestCase):
-
+    # ###################################################
     # some test data
-    # real ESM data that know will have some duplicates, etc to test with
+    # ###################################################
+    # real ESM data that know will have some duplicates, etc to test with.
+    # Easier than trying to make complete
     TARGET_DATA = pd.DataFrame(data = {'ensemble':['r1i1p1f1'] * 28,
                                        'variable':['tas'] * 28,
                                        'model':['test_model'] * 28,
@@ -159,11 +161,9 @@ class TestRecipe(unittest.TestCase):
                                      'dist_fx':[0.0586101 , 0.11535267],
                                      'dist_l2':[0.05921681, 0.18955498] })
 
-
-
-
-
-
+    # ###################################################
+    # tests
+    # ###################################################
 
     def test_get_num_perms(self):
 
@@ -186,11 +186,7 @@ class TestRecipe(unittest.TestCase):
     def test_remove_duplicates(self):
         """Test to make sure the remove_duplicates function if working correctly."""
 
-        # go through the interior of fx_recipe.py > remove_duplicates()
-
-
-
-        # Initialize the arguments to remove_duplicates
+        # Initial match data
         md = match_neighborhood(TestRecipe.TARGET_DATA,
                                 TestRecipe.ARCHIVE_DATA,
                                 tol=0.0)
@@ -219,7 +215,78 @@ class TestRecipe(unittest.TestCase):
                                       TestRecipe.NEW_MATCHES)
 
 
-    # def test_permute_stitching_recipes(self):
+    def test_permute_stitching_recipes(self):
+        # With tol < 0.17, the test data can only support one collapse free
+        # recipe. So a message will be printed to that effect
+        messy_rp1 = permute_stitching_recipes(N_matches=2,
+                                             matched_data=match_neighborhood(TestRecipe.TARGET_DATA,
+                                                                             TestRecipe.ARCHIVE_DATA,
+                                                                             tol=0.07),
+                                             archive=TestRecipe.ARCHIVE_DATA,
+                                             testing=True)
+
+        # Test that the recipe has the same number of time windows as the
+        # target:
+        self.assertEqual(len(messy_rp1), len(TestRecipe.TARGET_DATA),
+                         'drawn recipe does not have the same number of time windows as target ')
+
+
+        # Test that all of the recipe windows did in fact come from the archive:
+        cols = [col for col in messy_rp1 if col.startswith('archive_')]
+        archive_check = messy_rp1[cols]
+        new_names = list(map(lambda x: x.replace('archive_', ''), archive_check.columns))
+        archive_check.columns = new_names
+        self.assertTrue(len(archive_check.merge(TestRecipe.ARCHIVE_DATA)) == len(archive_check),
+                        'recipe has entries not from the archive somehow.')
+
+
+        # Test that no two target points got matched to the same archive point
+        # (ie that remove_duplicates was called correctly in permute_stitching_recipes)
+        md_archive = messy_rp1[['archive_experiment', 'archive_variable', 'archive_model',
+                                   'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
+                                   'archive_year', 'archive_fx', 'archive_dx']]
+        duplicates = messy_rp1.merge(md_archive[md_archive.duplicated()], how="inner")
+        self.assertEqual(len(duplicates), 0,
+                         'issue with call to remove_duplicates() in permute_stitching_recipe().')
+
+        # Test that our reproducible mode (testing=True) does produce the
+        # same recipe:
+        messy_rp2 = permute_stitching_recipes(N_matches=2,
+                                              matched_data=match_neighborhood(TestRecipe.TARGET_DATA,
+                                                                              TestRecipe.ARCHIVE_DATA,
+                                                                              tol=0.07),
+                                              archive=TestRecipe.ARCHIVE_DATA,
+                                              testing=True)
+        self.assertTrue(messy_rp2.equals(messy_rp1),
+                        'reproducible mode of permute_stitching_recipe failing 1')
+
+        # Test that turning it off produces something different:
+        messy_rp3 = permute_stitching_recipes(N_matches=2,
+                                              matched_data=match_neighborhood(TestRecipe.TARGET_DATA,
+                                                                              TestRecipe.ARCHIVE_DATA,
+                                                                              tol=0.07),
+                                              archive=TestRecipe.ARCHIVE_DATA,
+                                              testing=False)
+        self.assertTrue(not messy_rp3.equals(messy_rp1),
+                        'reproducible mode of permute_stitching_recipe failing 2')
+
+        # With tol = 0.17, it can support two (they may not be good
+        # trajectories but they will be collapse free).
+
+
+
+
+
+
+
+
+    # def test_handle_transition periods(self):
+
+    # def test_handle_final_period(self):
+
+    # def test_generate_gridded_recipe(self):
+
+    # def make_recipe(self):
 
 
 

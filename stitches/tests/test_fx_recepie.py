@@ -225,6 +225,7 @@ class TestRecipe(unittest.TestCase):
                                              archive=TestRecipe.ARCHIVE_DATA,
                                              testing=True)
 
+
         # Test that the recipe has the same number of time windows as the
         # target:
         self.assertEqual(len(messy_rp1), len(TestRecipe.TARGET_DATA),
@@ -270,24 +271,34 @@ class TestRecipe(unittest.TestCase):
         self.assertTrue(not messy_rp3.equals(messy_rp1),
                         'reproducible mode of permute_stitching_recipe failing 2')
 
-        # With tol = 0.17, it can support two (they may not be good
-        # trajectories but they will be collapse free).
+        # Test that we don't have collapse when targeting multiple
+        # ensemble members.
+        # combine the TARGET and ARCHIVE data sets so we have more ensemble
+        # members to work with:
+        target2 = pd.concat([TestRecipe.ARCHIVE_DATA, TestRecipe.TARGET_DATA]).reset_index(drop=True).copy()
+        archive2 = pd.concat([TestRecipe.ARCHIVE_DATA, TestRecipe.TARGET_DATA]).reset_index(drop=True).copy()
 
+        messy_rp = permute_stitching_recipes(N_matches=2,
+                                              matched_data=match_neighborhood(target2,
+                                                                              archive2,
+                                                                              tol=0.2),
+                                              archive=archive2,
+                                              testing=True)
 
+        # Test that there is no envelope collapse across ensemble members.
+        # We define collapse across ensemble members as 'you don't have
+        # realization 1 and realization 4 2070 getting matched to the same archive point.'
+        # if r1-2050 and r4-2070 get matched to the same archive point,
+        # that's fine. It's just multiple target  realizations having
+        cols = [col for col in messy_rp if col.startswith('archive_')]
 
-
-
-
-
-
-    # def test_handle_transition periods(self):
-
-    # def test_handle_final_period(self):
-
-    # def test_generate_gridded_recipe(self):
-
-    # def make_recipe(self):
-
+        for year in messy_rp['target_year'].unique():
+            tmp = messy_rp[messy_rp['target_year']==year].copy()
+            unique_archive_rows = tmp[cols].drop_duplicates().copy()
+            self.assertEqual(len(tmp), len(unique_archive_rows),
+                             'Envelope collapse has occurred')
+            del(tmp)
+            del(unique_archive_rows)
 
 
 

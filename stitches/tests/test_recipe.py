@@ -3,7 +3,7 @@ import pkg_resources
 import unittest
 from stitches.fx_util import check_columns
 from stitches.fx_recepie import get_num_perms, remove_duplicates, make_recipe
-import stitches.fx_match as match
+from stitches.fx_match import match_neighborhood
 
 class TestRecipe(unittest.TestCase):
 
@@ -98,9 +98,31 @@ class TestRecipe(unittest.TestCase):
                                              0.03212568,  0.02365025,  0.01311625,  0.01300568]
                                       })
 
+    DUPLICATES=pd.DataFrame(data={'target_variable':['tas']*4,
+                                  'target_experiment':['ssp245']*4,
+                                  'target_ensemble':['r1i1p1f1'] * 4,
+                                  'target_model':['test_model'] * 4,
+                                  'target_start_yr':[1859, 1868, 2057, 2066],
+                                  'target_end_yr':[1867, 1876, 2065, 2074],
+                                  'target_year':[1863, 1872, 2061, 2070],
+                                  'target_fx':[-1.26877615, -1.2150827 ,  2.22997751,  2.45954622],
+                                  'target_dx':[0.00931957, 0.00475767, 0.02252523, 0.03451772],
+                                  'archive_experiment':['ssp245']*4,
+                                  'archive_variable':['tas']*4,
+                                  'archive_model':['test_model'] * 4,
+                                  'archive_ensemble':['r3i1p1f1', 'r3i1p1f1', 'r3i1p1f1', 'r3i1p1f1'],
+                                  'archive_start_yr':[1859, 1859, 2057, 2057],
+                                  'archive_end_yr':[1867, 1867, 2065, 2065],
+                                  'archive_year':[1863, 1863, 2061, 2061],
+                                  'archive_fx':[-1.23273612, -1.23273612,  2.38665088,  2.38665088],
+                                  'archive_dx':[0.0083732 , 0.0083732 , 0.02965839, 0.02965839],
+                                  'dist_dx':[0.00757096, 0.02892424, 0.05706528, 0.03887464],
+                                  'dist_fx':[0.03604003, 0.01765342, 0.15667337, 0.07289534],
+                                  'dist_l2':[0.03682666, 0.03388591, 0.16674229, 0.08261337]})
 
 
-    def test_recipe_fxns(self):
+
+    def test_get_num_perms(self):
 
         # Read in the match test data.
         path = pkg_resources.resource_filename('stitches', 'tests/test-match_w_dup.csv')
@@ -116,6 +138,33 @@ class TestRecipe(unittest.TestCase):
                                    'target_model', 'target_start_yr', 'target_end_yr', 'target_year',
                                    'target_fx', 'target_dx', 'n_matches']))
         self.assertEqual(len(out), 2, "Test get_num_perms")
+
+
+    def test_remove_duplicates(self):
+        """Test to make sure the remove_duplicates function if working correctly."""
+
+        # go through the interior of fx_recipe.py > remove_duplicates()
+
+        # Initialize the arguments to remove_duplicates
+        md = match_neighborhood(TestRecipe.TARGET_DATA,
+                                TestRecipe.ARCHIVE_DATA,
+                                tol=0.0)
+        # ^ this does happen to have duplicates
+        archive = TestRecipe.ARCHIVE_DATA.copy()
+
+        # Function interior
+        #  Intialize everything that gets updated on each iteration of the while loop:
+        # 1. the data frame of matched_data -> make a copy of the argument md to initialize
+        # 2. the data frame of duplicates
+        matched_data = md.copy()
+
+        # Check to see if in the matched data frame if there are any repeated values.
+        md_archive = matched_data[['archive_experiment', 'archive_variable', 'archive_model',
+                                   'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
+                                   'archive_year', 'archive_fx', 'archive_dx']]
+        duplicates = matched_data.merge(md_archive[md_archive.duplicated()], how="inner")
+        pd.testing.assert_frame_equal(duplicates, TestRecipe.DUPLICATES)
+
 
 
 if __name__ == '__main__':

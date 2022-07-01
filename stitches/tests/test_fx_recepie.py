@@ -219,5 +219,11 @@ class TestRecipe(unittest.TestCase):
                                       TestRecipe.NEW_MATCHES)
 
 
+    def test_permute_stitching_recipes(self):
+
+
+
+
+
 if __name__ == '__main__':
     unittest.main()

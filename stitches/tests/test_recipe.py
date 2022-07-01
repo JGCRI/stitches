@@ -98,6 +98,10 @@ class TestRecipe(unittest.TestCase):
                                              0.03212568,  0.02365025,  0.01311625,  0.01300568]
                                       })
 
+
+    # Data relevant for remove_duplicates()
+    # these are the duplicate matches that should result from match_neighborhood
+    # with tol=0 on the above data sets.
     DUPLICATES=pd.DataFrame(data={'target_variable':['tas']*4,
                                   'target_experiment':['ssp245']*4,
                                   'target_ensemble':['r1i1p1f1'] * 4,
@@ -119,6 +123,45 @@ class TestRecipe(unittest.TestCase):
                                   'dist_dx':[0.00757096, 0.02892424, 0.05706528, 0.03887464],
                                   'dist_fx':[0.03604003, 0.01765342, 0.15667337, 0.07289534],
                                   'dist_l2':[0.03682666, 0.03388591, 0.16674229, 0.08261337]})
+
+    # Target years r1-1863 and r1-1872 both match to the same archive point: r3-1863.
+    # dist_l2 for r1-1872 = 0.034
+    # dist_l2 for r1-1863 = 0.037
+    # So r1-1872 keeps the match r3-1863 and r1-1863 needs to be rematched
+    #
+    # similarly targets r1-2061 and r1-2070 match to the same archive point: r3-2061.
+    # dist_l2 for r1-2061 = 0.17
+    # dist_l2 for r1-2070 = 0.08
+    # So r1-2070 keeps the match and r1-2061 needs to be rematched.
+    #
+    # So we will explicitly check that remove_dupilcates() does this.
+    REMATCHED_YEARS =[1863, 2061]
+
+    NEW_MATCHES = pd.DataFrame(data={'target_variable': ['tas']*2,
+                                     'target_experiment':['ssp245'] *2,
+                                     'target_ensemble':['r1i1p1f1'] *2,
+                                     'target_model':['test_model']*2,
+                                     'target_start_yr':[1859, 2057],
+                                     'target_end_yr':[1867, 2065],
+                                     'target_year':[1863, 2061],
+                                     'target_fx':[-1.26877615,  2.22997751],
+                                     'target_dx':[0.00931957, 0.02252523],
+                                     'archive_experiment':['ssp245'] *2,
+                                     'archive_variable': ['tas']*2,
+                                     'archive_model':['test_model']*2,
+                                     'archive_ensemble': ['r2i1p1f1'] *2,
+                                     'archive_start_yr':[1886,2057],
+                                     'archive_end_yr':[1894,2065],
+                                     'archive_year':[1890,2061],
+                                     'archive_fx':[-1.32738625,  2.34533018],
+                                     'archive_dx':[0.01037644, 0.04132718],
+                                     'dist_dx':[0.00845496, 0.1504156 ],
+                                     'dist_fx':[0.0586101 , 0.11535267],
+                                     'dist_l2':[0.05921681, 0.18955498] })
+
+
+
+
 
 
 
@@ -145,26 +188,35 @@ class TestRecipe(unittest.TestCase):
 
         # go through the interior of fx_recipe.py > remove_duplicates()
 
+
+
         # Initialize the arguments to remove_duplicates
         md = match_neighborhood(TestRecipe.TARGET_DATA,
                                 TestRecipe.ARCHIVE_DATA,
                                 tol=0.0)
-        # ^ this does happen to have duplicates
-        archive = TestRecipe.ARCHIVE_DATA.copy()
 
-        # Function interior
-        #  Intialize everything that gets updated on each iteration of the while loop:
-        # 1. the data frame of matched_data -> make a copy of the argument md to initialize
-        # 2. the data frame of duplicates
-        matched_data = md.copy()
+        # # #####################################################
+        # # Check to see if in the matched data frame if there are any repeated values.
+        # md_archive = md[['archive_experiment', 'archive_variable', 'archive_model',
+        #                            'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
+        #                            'archive_year', 'archive_fx', 'archive_dx']].copy()
+        # duplicates = md.merge(md_archive[md_archive.duplicated()], how="inner").copy()
+        #
+        # # assert that the correct duplicate matches returned from match_neighborhood()
+        # pd.testing.assert_frame_equal(duplicates, TestRecipe.DUPLICATES)
+        #
+        # # #####################################################
 
-        # Check to see if in the matched data frame if there are any repeated values.
-        md_archive = matched_data[['archive_experiment', 'archive_variable', 'archive_model',
-                                   'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
-                                   'archive_year', 'archive_fx', 'archive_dx']]
-        duplicates = matched_data.merge(md_archive[md_archive.duplicated()], how="inner")
-        pd.testing.assert_frame_equal(duplicates, TestRecipe.DUPLICATES)
+        cleaned_matched_data = remove_duplicates(md=md, archive=TestRecipe.ARCHIVE_DATA)
 
+        # every target point but r1-1863 and r1-2061 should be identical to md
+        pd.testing.assert_frame_equal(md[-md['target_year'].isin(TestRecipe.REMATCHED_YEARS)],
+                                        cleaned_matched_data[-cleaned_matched_data['target_year'].isin(TestRecipe.REMATCHED_YEARS)])
+
+        # and r1-1863 and r1-2061 should have been rematched with the resulting
+        # matches described in TestRecipe.NEW_MATCHES
+        pd.testing.assert_frame_equal(cleaned_matched_data[cleaned_matched_data['target_year'].isin(TestRecipe.REMATCHED_YEARS)].reset_index(drop=True),
+                                      TestRecipe.NEW_MATCHES)
 
 
 if __name__ == '__main__':

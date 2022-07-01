@@ -219,7 +219,7 @@ class TestRecipe(unittest.TestCase):
                                       TestRecipe.NEW_MATCHES)
 
 
-    def test_permute_stitching_recipes(self):
+    # def test_permute_stitching_recipes(self):
 
 
 

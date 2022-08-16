@@ -57,7 +57,7 @@ class TestStitch(unittest.TestCase):
         time_steps = max(self.MY_RP['target_end_yr']) - min(self.MY_RP['target_start_yr']) + 1
         self.assertEqual(nrow(out), time_steps)
 
-        # If the recipe is read in backwards, it shouldn't matter. The output should be the dame.
+        # If the recipe is read in backwards, it shouldn't matter. The output should be the same.
         reverse = self.MY_RP.copy()
         reverse = reverse.iloc[::-1]
         out2 = gmat_stitching(reverse)

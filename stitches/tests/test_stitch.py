@@ -1,58 +1,120 @@
-
+import numpy as np
 import pandas as pd
-import pkg_resources
 import os
 import unittest
 import xarray as xr
 
+from stitches.fx_util import nrow
 from stitches.fx_stitch import find_var_cols, find_zfiles, internal_stitch, gmat_stitching, gridded_stitching
-from stitches.fx_pangeo import  fetch_nc
+from stitches.fx_pangeo import fetch_nc
+
 
 class TestStitch(unittest.TestCase):
 
-    def test_stitch_fxns(self):
+    # This is an example recipe that will be used to test the stitching functions
+    MY_RP = pd.DataFrame(data={'target_start_yr': [1850, 1859],
+                               'target_end_yr': [1858, 1867],
+                               'archive_experiment': ["historical", "historical"],
+                               'archive_variable': ["tas", "tas"],
+                               'archive_model': ["BCC-CSM2-MR", "BCC-CSM2-MR"],
+                               'archive_ensemble': ["r1i1p1f1", "r1i1p1f1"],
+                               'stitching_id': ["ssp245~r1i1p1f1~1", "ssp245~r1i1p1f1~1"],
+                               'archive_start_yr': [1859, 1886],
+                               'archive_end_yr': [1867, 1894],
+                               'tas_file': ["gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/",
+                                           "gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/"]})
 
-        # Read in a small recipe, only for 2 period of time.
-        path = pkg_resources.resource_filename('stitches', 'tests/test-recipe_dat.csv')
-        recipe = pd.read_csv(path)
+    def test_find_var_cols(self):
+        o = pd.DataFrame(data={'tas': [1, 2], 'col2': [3, 4]})
+        self.assertEqual(len(find_var_cols(o)), 0)
 
-        """Test find_var_cols."""
-        # This is a tas recipe we know that the length of the variable should equal 1.
-        variables = find_var_cols(recipe)
-        self.assertEqual(len(variables), 1)
+        o = pd.DataFrame(data={'tas_file': [1, 2], 'col2': [3, 4]})
+        self.assertEqual(find_var_cols(o), ['tas'])
 
-        """Test find_zfiles"""
-        # The length of the files should be equal to the files used in the recipe.
-        file_list = find_zfiles(recipe)
-        self.assertEqual(len(file_list), len(recipe['tas_file'].unique()))
+        o = pd.DataFrame(data={'tas_file': [1, 2], 'col2': [3, 4], 'fake_file': [1, 2]})
+        self.assertEqual(len(find_var_cols(o)), 2)
 
-        """Test internal_stitch"""
-        # Download all of the data from pangeo.
+    def test_find_zfiles(self):
+        d = pd.DataFrame(data={'tas': [1, 2], 'col2': [3, 4], 'year': [1, 2]})
+        self.assertEqual(len(find_zfiles(d)), 0)
+
+        d = pd.DataFrame(data={'tas_file': ['file1.csv', 'file2.csv'], 'col2': [3, 4], 'year': [1, 2]})
+        file_list = find_zfiles(d)
+        self.assertEqual(type(file_list), np.ndarray)
+        self.assertEqual(len(file_list), 2)
+
+        d = pd.DataFrame(data={'tas_file': ['file1.csv', 'file1.csv'], 'col2': [3, 4], 'year': [1, 2]})
+        file_list = find_zfiles(d)
+        self.assertEqual(len(file_list), len(np.unique(file_list)))
+        self.assertTrue(len(file_list) != nrow(d))
+
+    def test_gmat_stitching(self):
+
+        # Check the output returned by gmat_stitching
+        out = gmat_stitching(self.MY_RP)
+
+        self.assertEqual(type(out), pd.core.frame.DataFrame)
+        time_steps = max(self.MY_RP['target_end_yr']) - min(self.MY_RP['target_start_yr']) + 1
+        self.assertEqual(nrow(out), time_steps)
+
+        # If the recipe is read in backwards, it shouldn't matter. The output should be the same.
+        reverse = self.MY_RP.copy()
+        reverse = reverse.iloc[::-1]
+        out2 = gmat_stitching(reverse)
+        self.assertEqual(out.shape, out2.shape)
+        self.assertEqual(out["year"][0], out2["year"][0])
+        self.assertEqual(out["value"][6], out["value"][6])
+
+        # Manipulate the recipe, sometimes it will be fine other times it will throw an error.
+        rp = self.MY_RP.copy()
+
+        rp['tas_file'] = ['fake.nc', 'fake.nc']
+        out = gmat_stitching(rp)
+        self.assertEqual(type(out), pd.core.frame.DataFrame)
+
+        # If the recpie is missing a column the stitching function should fail.
+        with self.assertRaises(KeyError):
+            gmat_stitching(rp.drop('tas_file'))
+
+        with self.assertRaises(KeyError):
+            gmat_stitching(rp.drop('target_start_yr'))
+
+        with self.assertRaises(IndexError):
+            rp['archive_model'] = ["fake", "fake"]
+            gmat_stitching(rp)
+
+    def test_gridded_related(self):
+        # Set up the elements required for internal_stitch
+        file_list = find_zfiles(self.MY_RP)
         data_list = list(map(fetch_nc, file_list))
-        self.assertEqual(len(file_list), len(data_list))
+        rslt = internal_stitch(self.MY_RP, data_list, file_list)
 
-        # Test the internal stitching function
-        rslt = internal_stitch(recipe, data_list, file_list)
-        self.assertTrue(type(rslt) is dict)
-        time_steps = 12 * (max(recipe['target_end_yr']) - min(recipe['target_start_yr'])) + 12
+        time_steps = 12 * (max(self.MY_RP['target_end_yr']) - min(self.MY_RP['target_start_yr'])) + 12
         self.assertEqual(len(rslt['tas']['time']), time_steps)
 
-        """Test gridded_stitching"""
-        # Test the gridded stitch function
-        # TODO CRV is there a better way to do this? I think ideally I would like to write
-        # to some temporary directory
-        out = gridded_stitching(".", recipe)
+        # Now do the stitching
+        out = gridded_stitching(".", self.MY_RP)
         data = xr.open_dataset(out[0])
+        time1 = data['tas']['time'].values
         self.assertEqual(type(data), xr.core.dataset.Dataset)
         self.assertEqual(len(data["time"]), time_steps)
         os.remove(out[0])
 
-        """Test gmat_stitching"""
-        # Test the global mean stitch function.
-        out = gmat_stitching(recipe)
-        time_steps = max(recipe['target_end_yr']) - min(recipe['target_start_yr']) + 1
-        self.assertEqual(out.shape[0], time_steps)
+        # If the recipe is read in backwards, it shouldn't matter the output should be the same.
+        reverse = self.MY_RP.copy()
+        reverse = reverse.iloc[::-1]
+        out = gridded_stitching(".", reverse)
+        data2 = xr.open_dataset(out[0])
+        time2 = data2['tas']['time'].values
+        os.remove(out[0])
+        self.assertEqual(max(time1 - time2), 0)
 
+        # Manipulate the recipe, sometimes it will be fine other times it will throw an error.
+        rp = self.MY_RP.copy()
+        with self.assertRaises(TypeError):
+            gridded_stitching("fake", rp)
+        with self.assertRaises(KeyError):
+            gridded_stitching(".", rp.drop('tas_file'))
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,7 @@
 # pycharm
 .idea
+**/.DS_Store
+**/stitches/.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -131,3 +133,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .Rproj.user
+stitches/.DS_Store

@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pkg_resources
 import pandas as pd
-import re
+
 
 
 def combine_df(df1, df2):
@@ -63,6 +63,7 @@ def selstr(a, start, stop):
     out = "".join(out)
     return out
 
+
 def check_columns(data, names):
     """ Check to see if a data frame has all of the required columns.
 
@@ -108,9 +109,10 @@ def anti_join(df1, df2):
     out = mergedTable.loc[key]
     return out[df1.columns]
 
-# Would we want to move this?? to a different fx file?
+
 def remove_obs_from_match(md, rm):
-    """ Return an updated matched data frame.
+    """ Return an updated matched data frame. The idea being that this function could be
+    useful to prevent envelope collapse doesn't happen between generated and synthetic ensembles
 
     :param md:   pd data
     :param rm:   pd data

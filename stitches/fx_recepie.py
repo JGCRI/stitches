@@ -457,7 +457,7 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
         # end the while loop for this target ensemble member
 
         # Add the collection of the recipes for each of the targets into single df.
-        recipe_collection = recipe_collection.append(recipes_col_by_target)
+        recipe_collection = pd.concat([recipe_collection, recipes_col_by_target]).reset_index(drop=True).copy()
 
     # end the for loop over target ensemble members
 
@@ -514,7 +514,7 @@ def handle_transition_periods(rp):
                  'archive_end_yr': max(historical_yrs)}
             ser = pd.Series(data=d, index=['target_start_yr', 'target_end_yr', 'archive_experiment',
                                            'archive_start_yr', 'archive_end_yr'])
-            historical_period = ser.append(constant_info).to_frame().transpose()
+            historical_period = pd.concat([ser, constant_info]).to_frame().transpose()
 
 
             # Check to make sure the lenths of time are correct
@@ -531,7 +531,9 @@ def handle_transition_periods(rp):
                  'archive_end_yr': max(future_yrs)}
             ser = pd.Series(data=d, index=['target_start_yr', 'target_end_yr', 'archive_experiment',
                                            'archive_start_yr', 'archive_end_yr'])
-            future_period = ser.append(constant_info).to_frame().transpose()
+            # future_period = ser.append(constant_info).to_frame().transpose()
+            future_period = pd.concat([ser, constant_info]).to_frame().transpose()
+
             # Check to make sure the lenths of time are correct
             targ_len = future_period['target_end_yr'].values - future_period['target_start_yr'].values
             arch_len = future_period['archive_end_yr'].values - future_period['archive_start_yr'].values

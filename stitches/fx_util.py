@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pkg_resources
 import pandas as pd
-import re
+
 
 
 def combine_df(df1, df2):
@@ -63,6 +63,7 @@ def selstr(a, start, stop):
     out = "".join(out)
     return out
 
+
 def check_columns(data, names):
     """ Check to see if a data frame has all of the required columns.
 
@@ -91,26 +92,9 @@ def nrow(df):
     return df.shape[0]
 
 
-def anti_join(df1, df2):
-    """ Return a data frame that has been created by an anti join.
-
-    :param df1:   pd data
-    :param df2:   pd data
-
-    :return:    data frame
-    """
-    names = list(np.intersect1d(df2.columns, df1.columns))
-    df2 = df2[names].copy()
-    df2["remove"] = True
-
-    mergedTable = pd.concat([df1, df2], axis=1, join='outer')
-    key = mergedTable["remove"].isnull()
-    out = mergedTable.loc[key]
-    return out[df1.columns]
-
-# Would we want to move this?? to a different fx file?
 def remove_obs_from_match(md, rm):
-    """ Return an updated matched data frame.
+    """ Return an updated matched data frame. The idea being that this function could be
+    useful to prevent envelope collapse between generated and target ensembles 
 
     :param md:   pd data
     :param rm:   pd data
@@ -144,10 +128,9 @@ def anti_join(x, y, bycols):
 
         :return:    pd.DataFrame object
         """
-
-    #TODO some test to make sure both x and y have all the columns in bycols
-
-
+    # Check the inputs
+    check_columns(x, set(bycols))
+    check_columns(y, set(bycols))
 
     # select only the entries of x that are not (['_merge'] == 'left_only') in y
     left_joined = x.merge(y, how = 'left', on=bycols, indicator=True).copy()
@@ -173,7 +156,6 @@ def anti_join(x, y, bycols):
     # as the columns of x
     cols_of_x_in_order = x.columns.copy()
     out = out[cols_of_x_in_order].copy()
-
     return out
 
 

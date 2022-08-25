@@ -94,7 +94,7 @@ def nrow(df):
 
 def remove_obs_from_match(md, rm):
     """ Return an updated matched data frame. The idea being that this function could be
-    useful to prevent envelope collapse doesn't happen between generated and synthetic ensembles
+    useful to prevent envelope collapse between generated and target ensembles 
 
     :param md:   pd data
     :param rm:   pd data

@@ -359,9 +359,9 @@ def gmat_stitching(rp):
         fut_exps = ['ssp245', 'ssp126', 'ssp585', 'ssp119', 'ssp370', 'ssp434', 'ssp534-over', 'ssp460']
         nonssp_data = data.loc[~data["experiment"].isin(fut_exps)]
         fut_data = data.loc[(data["experiment"].isin(fut_exps)) &
-                            (data["year"] > 2014)]
+                            (data["year"] > 2014)].copy()
         hist_data = data.loc[(data["experiment"].isin(fut_exps)) &
-                             (data["year"] <= 2014)]
+                             (data["year"] <= 2014)].copy()
         hist_data["experiment"] = "historical"
         tas_data = pd.concat([nonssp_data, fut_data, hist_data])[['variable', 'experiment', 'ensemble', 'model', 'year',
                                                                   'value']].drop_duplicates().reset_index(drop=True)

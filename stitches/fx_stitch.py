@@ -190,7 +190,6 @@ def internal_stitch(rp, dl, fl):
         lat = dl[0].lat.copy()
         lon = dl[0].lon.copy()
 
-        r = rp.reset_index(drop=True).to_string()
         rslt = xr.Dataset({v: xr.DataArray(
             gridded_data,
             coords=[times, lat, lon],
@@ -200,8 +199,7 @@ def internal_stitch(rp, dl, fl):
                    'experiment': var_info['experiment'][0],
                    'ensemble': var_info['ensemble'][0],
                    'model': var_info['model'][0],
-                   'stitching_id': rp['stitching_id'].unique()[0],
-                   'recipe': r})
+                   'stitching_id': rp['stitching_id'].unique()[0]})
         })
 
         out.append(rslt)
@@ -269,6 +267,10 @@ def gridded_stitching(out_dir, rp):
             for i in rslt.keys():
                 ds = rslt[i]
                 ds = ds.sortby('time').copy()
+                recipe_location = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' + ds[i].attrs['variable'] +
+                          '_' + single_id + "_recipe.csv")
+                ds[i].attrs['recipe_location'] = recipe_location
+                single_rp.to_csv(recipe_location, index=False)
                 fname = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' +
                          ds[i].attrs['variable'] + '_' + single_id + '.nc')
                 ds.to_netcdf(fname)

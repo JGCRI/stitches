@@ -4,6 +4,7 @@ from .fx_stitch import gridded_stitching, gmat_stitching
 from .make_tas_archive import make_tas_archive
 from .make_matching_archive import make_matching_archive
 from .make_pangeo_table import make_pangeo_table, make_pangeo_comparison
+from .install_pkgdata import install_package_data
 
 
 __version__ = "0.9.1"

@@ -12,7 +12,7 @@ def make_pangeo_table():
     in the the matching archive, this will be used in the stitching process.
     :return:          Nothing, write a file out to package data.
     """
-    # Using the information about what experiment/ensemble/models that are avaiable for matching.
+    # Using the information about what experiment/ensemble/models that are available for matching.
     archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')
     tas_exp_model = (pd.read_csv(archive_path)[["experiment", "ensemble", "model"]]
                      .drop_duplicates()

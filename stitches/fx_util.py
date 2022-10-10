@@ -28,7 +28,7 @@ def combine_df(df1, df2):
 
 
 def list_files(d):
-    """ Return the absolute path for all of the files in a single directory with the exccpetion of
+    """ Return the absolute path for all of the files in a single directory with the exception of
     .DS_Store files.
 
 
@@ -70,7 +70,7 @@ def check_columns(data, names):
     :param data:   pd data
     :param names: set of the required names
 
-    :return:    an error message if there is a colu,n is missing
+    :return:    an error message if there is a column is missing
     """
 
     col_names = set(data.columns)
@@ -162,7 +162,7 @@ def anti_join(x, y, bycols):
 def load_data_files(subdir):
     """ Read in a list of data frames.
 
-        :param subdir:   pd.DataFrame str for a sub directory that exsists
+        :param subdir:   pd.DataFrame str for a sub directory that exists
 
         :return:    pd.DataFrame object
     """

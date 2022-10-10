@@ -2,7 +2,7 @@ import pandas as pd
 import pkg_resources
 import unittest
 from stitches.fx_util import check_columns
-from stitches.fx_recepie import get_num_perms, remove_duplicates, permute_stitching_recipes, make_recipe
+from stitches.fx_recipe import get_num_perms, remove_duplicates, permute_stitching_recipes, make_recipe
 from stitches.fx_match import match_neighborhood
 
 class TestRecipe(unittest.TestCase):

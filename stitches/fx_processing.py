@@ -58,13 +58,10 @@ def chunk_ts(df, n, base_chunk=0):
   :type df:     pandas DataFrame
   :param n:    the size of the windows to chunk into separate periods
   :type n:    int
-  :param base_chunk: a helper argument for creating all of the staggered chunks, defatuls to 0 (original behavior)
+  :param base_chunk: a helper argument for creating all of the staggered chunks, defaults to 0 (original behavior)
   :type base_chunk: int
   :return:    pandas DataFrame identical to df with the addition of a chunk column
-  # TODO hmmm do we want this function to also work on ESM data? If so do we need to change this function??
-  # TODO does it need to be for only one variable?
-  # TODO do we like chunks or are these windows?
-  # TODO do we really need the year column?
+
   """
 
     # Check inputs
@@ -79,7 +76,6 @@ def chunk_ts(df, n, base_chunk=0):
     df = df[base_chunk:].copy()
 
 
-    # TODO How do we want to handle when the length of the time series cannot be split up into even chunks?
     # Add a column of data that categorizes the data into the different periods, right now we allow for
     # a list that is smaller than n at the end.
     # Save a copy of the length of the list
@@ -88,7 +84,7 @@ def chunk_ts(df, n, base_chunk=0):
     # Determine the number of unique n sized chunks, right now we assume that at most a chunk
     # can have n entries or less.
     n_chunks = math.ceil(yr_len / n)
-    # Make a np array of the chunk labels, where each label repeates n times.
+    # Make an np array of the chunk labels, where each label repeats n times.
     chunk_labels = np.repeat(list(range(0, n_chunks)), n)
     # Subset the chunk list so that matches the length of the data frame.
     chunk_labels = chunk_labels[range(0, yr_len)]
@@ -107,7 +103,6 @@ def get_chunk_info(df):
   """
 
     # Check the inputs
-    # TODO where/why is this index column appearing it is annoying & causing problems bleh!
     flag = 'index' in df.columns
     if flag:
         del df['index']
@@ -126,7 +121,7 @@ def get_chunk_info(df):
     # to extract information from each chunk of data.
     df_gby = df.groupby('chunk')
 
-    # Make an empty data frame that to store the chunk data.
+    # Make an empty data frame to store the chunk data.
     fx_dx_info = pd.DataFrame(columns=["start_yr", "end_yr", "year", "fx", "dx"])
 
     # Use the for loop to work our way through the different chunks/periods of
@@ -138,10 +133,7 @@ def get_chunk_info(df):
         start_yr = min(chunk["year"])
         end_yr = max(chunk["year"])
 
-        # how do we want to address if is no single middle year because the length of the
-        # chunks is even?
-        # Get the fx, the value of the center of the time period,
-        # TODO or should it be the median value over the time span?
+        # Get the fx, the value of the center of the time period
         x = math.ceil(np.median(chunk["year"]))  # right now we select the one from the high year
         fx = chunk[chunk["year"] == x]["value"].values[0]
 
@@ -165,7 +157,7 @@ def get_chunk_info(df):
     # for loop should end here
 
     # Now add the extra or meta information to the data frame containing
-    # the results. There is most likely a more effecient way to do this
+    # the results. There is most likely a more efficient way to do this
     # in python but for now create an placeholder index column to join
     # the meta data (1 row of data) to the output data.
     extra_info["i"] = 1

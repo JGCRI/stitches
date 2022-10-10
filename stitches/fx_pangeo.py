@@ -24,7 +24,7 @@ def fetch_nc(zstore):
 
     :param zstore:                str of the location of the cmip6 data file on pangeo.
 
-    :return:                      an xarray containing cmip6 data downloaded from the pangeo.
+    :return:                      an xarray containing cmip6 data downloaded from  pangeo.
     """
     ds = xr.open_zarr(fsspec.get_mapper(zstore))
     ds.sortby('time')

@@ -6,4 +6,4 @@ from .make_matching_archive import make_matching_archive
 from .make_pangeo_table import make_pangeo_table, make_pangeo_comparison
 
 
-__version__ = "0.9.0"
+__version__ = "0.9.1"

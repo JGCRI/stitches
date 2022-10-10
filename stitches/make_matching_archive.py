@@ -61,8 +61,6 @@ def make_matching_archive(smoothing_window=9, chunk_window=9, add_staggered=Fals
 
 
     # if adding staggered windows, do it now.
-    # this is the actual grossest code I have ever written but we do
-    # only have to run this once.
     if add_staggered:
         # for each offset, do the prep and append.
         for offset in range(1, chunk_window):
@@ -71,8 +69,6 @@ def make_matching_archive(smoothing_window=9, chunk_window=9, add_staggered=Fals
 
                 # if this data set doesn't have at least chunk_window worth of years,
                 # just print a message that it isn't getting processed into chunks.
-                # (it doesn't make sense to create a 9 year chunk window from 6
-                # years of data, and it causes issues when we want to add the staggered
                 if (dat['year'].nunique() < chunk_window):
                     mod = dat.model.unique()[0]
                     exp = dat.experiment.unique()[0]

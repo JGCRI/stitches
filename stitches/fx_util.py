@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pkg_resources
 import pandas as pd
-import re
+
 
 
 def combine_df(df1, df2):
@@ -14,6 +14,9 @@ def combine_df(df1, df2):
 
     :return:    a single pandas data frame.
     """
+    incommon = df1.columns.intersection(df2.columns)
+    if len(incommon) > 0:
+        raise TypeError(f"a: df1 and df2 must have unique column names")
 
     # Combine the two data frames with one another.
     df1["j"] = 1
@@ -25,7 +28,7 @@ def combine_df(df1, df2):
 
 
 def list_files(d):
-    """ Return the absolute path for all of the files in a single directory with the exccpetion of
+    """ Return the absolute path for all of the files in a single directory with the exception of
     .DS_Store files.
 
 
@@ -60,28 +63,6 @@ def selstr(a, start, stop):
     out = "".join(out)
     return out
 
-def join_exclude(dat, drop):
-    """ Drop some rows from a data frame.
-
-    :param dat:   pd data frame containing the data that needs to be dropped.
-    :param drop: pd data frame containing the data to drop.
-
-    :return:    pd data frame that is subset.
-    """
-    dat = dat.copy()
-    drop = drop.copy()
-
-    # Get the column names that two data frames have
-    # in common with one another.
-    in_common = list(set(dat.columns) & set(drop.columns))  # figure out what columns are in common between the two dfs
-    drop["drop"] = 1  # add an indicator column to indicate which rows need to be dropped
-    out = dat.merge(drop, how='left', on=in_common)
-
-    out = out.loc[out["drop"].isna()]  # remove the entries that need to be dropped
-    out = out[dat.columns]  # select the columns
-
-    return out
-
 
 def check_columns(data, names):
     """ Check to see if a data frame has all of the required columns.
@@ -89,7 +70,7 @@ def check_columns(data, names):
     :param data:   pd data
     :param names: set of the required names
 
-    :return:    an error message if there is a colu,n is missing
+    :return:    an error message if there is a column is missing
     """
 
     col_names = set(data.columns)
@@ -111,26 +92,9 @@ def nrow(df):
     return df.shape[0]
 
 
-def anti_join(df1, df2):
-    """ Return a data frame that has been created by an anti join.
-
-    :param df1:   pd data
-    :param df2:   pd data
-
-    :return:    data frame
-    """
-    names = list(np.intersect1d(df2.columns, df1.columns))
-    df2 = df2[names].copy()
-    df2["remove"] = True
-
-    mergedTable = pd.concat([df1, df2], axis=1, join='outer')
-    key = mergedTable["remove"].isnull()
-    out = mergedTable.loc[key]
-    return out[df1.columns]
-
-# Would we want to move this?? to a different fx file?
 def remove_obs_from_match(md, rm):
-    """ Return an updated matched data frame.
+    """ Return an updated matched data frame. The idea being that this function could be
+    useful to prevent envelope collapse between generated and target ensembles 
 
     :param md:   pd data
     :param rm:   pd data
@@ -164,10 +128,9 @@ def anti_join(x, y, bycols):
 
         :return:    pd.DataFrame object
         """
-
-    #TODO some test to make sure both x and y have all the columns in bycols
-
-
+    # Check the inputs
+    check_columns(x, set(bycols))
+    check_columns(y, set(bycols))
 
     # select only the entries of x that are not (['_merge'] == 'left_only') in y
     left_joined = x.merge(y, how = 'left', on=bycols, indicator=True).copy()
@@ -193,14 +156,13 @@ def anti_join(x, y, bycols):
     # as the columns of x
     cols_of_x_in_order = x.columns.copy()
     out = out[cols_of_x_in_order].copy()
-
     return out
 
 
 def load_data_files(subdir):
     """ Read in a list of data frames.
 
-        :param subdir:   pd.DataFrame str for a sub directory that exsists
+        :param subdir:   pd.DataFrame str for a sub directory that exists
 
         :return:    pd.DataFrame object
     """
@@ -220,7 +182,7 @@ def load_data_files(subdir):
         elif "pkl" in f:
             d = pd.read_pickle(f)
         else:
-            None
+            d = None
         raw_data.append(d)
     raw_data = pd.concat(raw_data)
 

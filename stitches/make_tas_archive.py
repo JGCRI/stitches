@@ -134,7 +134,6 @@ def paste_historical_data(input_data):
     frames.append(other_data)
     data = pd.concat(frames)
 
-    # TODO is there a better way to prevent duplicates in 2015 & 2016 values?
     d = data.groupby(['variable', 'experiment', 'ensemble', 'model', 'year'])['value'].agg('mean').reset_index()
 
     return d

@@ -1,9 +1,10 @@
-
+# This script generates the csv files that are used as comparison data
+# in the stitches unit testing. It also seems like some of the testing
+# data wasn't actually included in this repo
+# TODO this script needs to be revisited
 
 import pandas as pd
 import pkg_resources
-
-
 from stitches.fx_match import match_neighborhood
 
 archive_path = pkg_resources.resource_filename('stitches', 'data/matching_archive.csv')

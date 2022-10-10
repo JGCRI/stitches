@@ -57,7 +57,7 @@ def remove_duplicates(md, archive):
         raise TypeError(f"You have multiple matches to a single target year, this function can only accept a matched "
                         f"data frame of singular matches between target & archive data.")
 
-    #  Intialize everything that gets updated on each iteration of the while loop:
+    #  Initialize everything that gets updated on each iteration of the while loop:
     # 1. the data frame of matched_data -> make a copy of the argument md to initialize
     # 2. the data frame of duplicates is calculated for the first time.
     matched_data = md.copy()
@@ -131,7 +131,7 @@ def remove_duplicates(md, archive):
         matched_data = pd.concat([matched_data_minus_rematched_targ_years, rematched]) \
             .sort_values('target_year').reset_index(drop=True)
 
-        # Identify duplicates in the updated matched_datafor the next iteration of the while loop
+        # Identify duplicates in the updated matched_data for the next iteration of the while loop
         md_archive = matched_data[['archive_experiment', 'archive_variable', 'archive_model',
                                    'archive_ensemble', 'archive_start_yr', 'archive_end_yr',
                                    'archive_year', 'archive_fx', 'archive_dx']]
@@ -195,7 +195,7 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
 
     # identifying how many target windows are in a trajectory we want to
     # create so that we know we have created a full trajectory with no
-    # missing widnows; basically a reference for us to us in checks.
+    # missing windows; basically a reference for us to us in checks.
     num_target_windows = util.nrow(matched_data_int["target_year"].unique())
 
     # Initialize perm_guide for iteration through the while loop.
@@ -229,7 +229,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
     N_data_max = min(num_perms[0]['minNumMatches'])
 
     if N_matches > N_data_max:
-        # TODO this should be written up as a proper python message statement.
         print("You have requested more recipes than possible for at least one target trajectories, returning what can")
 
     # Initialize the number of matches to either 0 or the input read from optional:
@@ -332,7 +331,6 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
             #  Make sure that no changes were made to the target years.
             if sum(~new_recipe['target_start_yr'].isin(set(matched_data_int['target_start_yr']))) > 0:
                 raise TypeError(f"problem the new single recipe target years!")
-            # TODO add a check to make sure that the correct number of rows are being returned.
 
             # Compare the new_recipe to the previously drawn recipes across all target
             # ensembles.
@@ -379,7 +377,7 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
             # the while loop. We DON'T update the matched_points or conditions, so the
             # while loop is forced to re-run so that another random draw is done to create
             # a new candidate new_recipe.
-            # We check for what we want: the new recipe is the first or all(comparsion)==False.
+            # We check for what we want: the new recipe is the first or all(comparison)==False.
             # In either case, we are safe to keep new_recipe and update all the data frames
             # for the next iteration of the while loop.
             if all(comparison) == False:
@@ -457,7 +455,7 @@ def permute_stitching_recipes(N_matches, matched_data, archive, optional=None, t
         # end the while loop for this target ensemble member
 
         # Add the collection of the recipes for each of the targets into single df.
-        recipe_collection = recipe_collection.append(recipes_col_by_target)
+        recipe_collection = pd.concat([recipe_collection, recipes_col_by_target]).reset_index(drop=True).copy()
 
     # end the for loop over target ensemble members
 
@@ -514,14 +512,14 @@ def handle_transition_periods(rp):
                  'archive_end_yr': max(historical_yrs)}
             ser = pd.Series(data=d, index=['target_start_yr', 'target_end_yr', 'archive_experiment',
                                            'archive_start_yr', 'archive_end_yr'])
-            historical_period = ser.append(constant_info).to_frame().transpose()
+            historical_period = pd.concat([ser, constant_info]).to_frame().transpose()
 
 
-            # Check to make sure the lenths of time are correct
+            # Check to make sure the lengths of time are correct
             targ_len = historical_period['target_end_yr'].values - historical_period['target_start_yr'].values
             arch_len = historical_period['archive_end_yr'].values - historical_period['archive_start_yr'].values
             if targ_len != arch_len:
-                raise TypeError(f"probelm with the length of the historical archive & target yrs")
+                raise TypeError(f"problem with the length of the historical archive & target yrs")
 
             # Now construct the future period information
             d = {'target_start_yr': target_yrs[len(historical_yrs)],
@@ -531,12 +529,14 @@ def handle_transition_periods(rp):
                  'archive_end_yr': max(future_yrs)}
             ser = pd.Series(data=d, index=['target_start_yr', 'target_end_yr', 'archive_experiment',
                                            'archive_start_yr', 'archive_end_yr'])
-            future_period = ser.append(constant_info).to_frame().transpose()
-            # Check to make sure the lenths of time are correct
+            # future_period = ser.append(constant_info).to_frame().transpose()
+            future_period = pd.concat([ser, constant_info]).to_frame().transpose()
+
+            # Check to make sure the lengths of time are correct
             targ_len = future_period['target_end_yr'].values - future_period['target_start_yr'].values
             arch_len = future_period['archive_end_yr'].values - future_period['archive_start_yr'].values
             if not targ_len == arch_len:
-                raise TypeError(f"probelm with the length of the historical archive & target yrs")
+                raise TypeError(f"problem with the length of the historical archive & target yrs")
 
 
             # Combine the period information
@@ -563,7 +563,7 @@ def handle_final_period(rp):
     Otherwise you'll end up with extra years in the stitched data. This is really 
     only an issue for the final period of target data because sometimes that period is somewhat short. 
     OR if the normal sized target window gets matched to the final period of data from one
-    of the archive matches. Since the final period is typically pnly one year shorter than the 
+    of the archive matches. Since the final period is typically only one year shorter than the
     full window target period in this case, we simply repeat the final archive year to get 
     enough matches.
 
@@ -593,7 +593,6 @@ def handle_final_period(rp):
                        'archive_end_yr']]
             out['archive_end_yr'] = out['archive_end_yr'] - 1
         else:
-            # TODO need to may need to revisit, just added an extra year to the archive length but that seems somewhat pretty sus.
             # Figure out how much shorter the target period is than the archive period.
             out = x.to_frame().transpose().reset_index(drop=True)
             out = out[['target_start_yr', 'target_end_yr', 'archive_experiment', 'archive_variable',
@@ -610,13 +609,11 @@ def handle_final_period(rp):
 
 
 def generate_gridded_recipe(messy_recipe, res='mon'):
-    """ Using a messy recipe create the messy recipe that can be used in the
-         stitching process. TODO I think that when the permuate recipe function
-         is fixed, I thinkn that funciton should be nested into here so that this function
-         takes in a matched df & generates the recpies.
+    """ Using a messy recipe create the recipe that can be used in the
+         stitching process.
 
 
-         :param messy_recipe:       a data frame generated by the permuate_recpies
+         :param messy_recipe:       a data frame generated by the permute_recipes
          :param res:                string mon or day
 
          :return:                   a recipe data frame
@@ -629,8 +626,6 @@ def generate_gridded_recipe(messy_recipe, res='mon'):
                                       'archive_end_yr', 'archive_year', 'archive_fx', 'archive_dx', 'dist_dx',
                                       'dist_fx', 'dist_l2', 'stitching_id'})
     if res not in ['mon', 'day']:
-        # TODO figure out a better way to handle the tas resolution matching, will also need
-        # to figure out how to translate this to non tas variables as well.
         raise TypeError(f"generate_gridded_recipe: does not recognize the res input")
 
     # Clean up the recipe
@@ -696,11 +691,9 @@ def make_recipe(target_data, archive_data, N_matches, res="mon", tol=0.1, non_ta
         raise TypeError(f"N_matches: must be an integer")
     if not type(tol) is float:
         raise TypeError(f"tol: must be a float")
-    #if not type(non_tas_variables) in [None, list]:
-    #    raise TypeError(f"non_tas_variables: must be None or a list")
 
 
-    # If there are non tas variables to be stitched subset the archive to limit
+    # If there are non tas variables to be stitched, subset the archive to limit
     # the coverage to only the entries with the complete coverage.
     if type(non_tas_variables) == list:
         if res not in ['mon', 'day']:
@@ -736,8 +729,7 @@ def make_recipe(target_data, archive_data, N_matches, res="mon", tol=0.1, non_ta
     # Match the archive & target data together.
     match_df = match.match_neighborhood(target_data, archive_data, tol=tol)
 
-    # So the permute stitiching recipe works it works when N matches is set to 1 see blow for an
-    # example where the function fails to return 2 matches per target.
+
     if reproducible:
         unformatted_recipe = permute_stitching_recipes(N_matches=N_matches,
                                                        matched_data=match_df,

@@ -23,7 +23,7 @@ setup(
     author_email='abigail.snyder@pnnl.gov; kalyn.dorheim@pnnl.gov; claudia.tebaldi@pnnl.gov',
     description='Amalgamate existing climate data to create monthly climate variable fields',
     long_description=readme(),
-    python_requires='>=3.6.0',
+    python_requires='>=3.9.0',
     include_package_data=True,
     install_requires=get_requirements()
 )

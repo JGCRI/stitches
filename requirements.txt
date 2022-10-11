@@ -9,3 +9,4 @@ sklearn>=0.0
 setuptools~=57.1.0
 gcsfs~=2022.5.0
 fsspec~=2022.5.0
+tqdm~=4.64.1

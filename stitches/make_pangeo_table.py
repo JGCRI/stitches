@@ -1,8 +1,6 @@
 # Save a copy of the pangeo table, this has information about the z store file.
-import pandas as pd
 
 import stitches.fx_pangeo as pangeo
-import stitches.fx_util as util
 import pandas as pd
 import pkg_resources
 

@@ -8,6 +8,50 @@ import stitches.fx_util as util
 import os
 import pkg_resources
 import pandas as pd
+from tqdm import tqdm
+
+
+def join_exclude(dat, drop):
+    """ Drop some rows from a data frame.
+    :param dat:   pd data frame containing the data that needs to be dropped.
+    :param drop: pd data frame containing the data to drop.
+    :return:    pd data frame that is subset.
+    """
+    dat = dat.copy()
+    drop = drop.copy()
+
+    # Get the column names that two data frames have
+    # in common with one another.
+    in_common = list(set(dat.columns) & set(drop.columns))  # figure out what columns are in common between the two dfs
+    drop["drop"] = 1  # add an indicator column to indicate which rows need to be dropped
+    out = dat.merge(drop, how='left', on=in_common)
+
+    out = out.loc[out["drop"].isna()]  # remove the entries that need to be dropped
+    out = out[dat.columns]  # select the columns
+
+    return out
+
+
+def rbind(dat1, dat2):
+    """Combine two data frames together even if a data frame is empty.
+
+    :param dat1:    data frame of values
+    :type dat1:     pandas.core.frame.DataFrame
+
+    :param dat2:    data frame of values
+    :type dat2:     pandas.core.frame.DataFrame
+
+    :return: a singular data frame
+    """
+
+    if util.nrow(dat1) == 0:
+        return dat2
+
+    if util.nrow(dat2) == 0:
+        return dat1
+
+    out = pd.concat([dat1, dat2])
+    return out
 
 
 def get_global_tas(path):
@@ -19,10 +63,7 @@ def get_global_tas(path):
 
     :return:      str path to the location of file containing the weighted global mean.
     """
-
-    # Make the name of the output file that will only be created if the output
-    # does not already exists.
-    temp_dir = pkg_resources.resource_filename('stitches', 'data/temp-data')
+    temp_dir = pkg_resources.resource_filename('stitches', 'data')
 
     if os.path.isdir(temp_dir) == False:
         os.mkdir(temp_dir)
@@ -52,7 +93,6 @@ def get_global_tas(path):
         return ofile
     else:
         return ofile
-
 
 
 def calculate_anomaly(data, startYr=1995, endYr=2014):
@@ -145,12 +185,10 @@ def make_tas_archive():
 
     :return:          Array of the tas files created.
     """
-    # Get tas data & calculate global mean temp
-
     # Get the pangeo table of contents.
     df = pangeo.fetch_pangeo_table()
 
-    # Subset the monthly tas data, these are the files that we will want to process
+    # Subset the monthly tas data these are the files that we will want to process
     # for the tas archive.
     xps = ["historical", "1pctCO2", "abrupt-4xCO2", "abrupt-2xCO2", "ssp370", "ssp245", "ssp119",
            "ssp434", "ssp460", "ssp126", "ssp585", "ssp534-over"]
@@ -162,8 +200,11 @@ def make_tas_archive():
 
     # For each of the CMIP6 files to calculate the global mean temperature and write the
     # results to the temporary directory.
-    files = list(map(get_global_tas, df.zstore.values))
+    print("Downloading tas data from pangeo...")
+    to_download = tqdm(df.zstore.values)
+    files = list(map(get_global_tas, to_download))
 
+    print("Processing data this may take a moment.")
     # Clean Up & Quality Control
     #
     # Find all of the files and read in the data, store as a single data frame.
@@ -189,8 +230,8 @@ def make_tas_archive():
 
     # Make sure that all of historical have data up until 2014
     end_yr = his_info[his_info["max"] < 2014].copy()
-    to_remove = to_remove.append(end_yr[["model", "experiment", "ensemble"]])
-    clean_d1 = util.join_exclude(raw_data, to_remove)
+    to_remove = rbind(to_remove, end_yr[["model", "experiment", "ensemble"]])
+    clean_d1 = join_exclude(raw_data, to_remove)
 
     # Second round of cleaning check the future dates.
     # Make sure that the future scenarios start at 2015 & run beyond 2100.
@@ -207,8 +248,8 @@ def make_tas_archive():
 
     # Make sure the future scenario runs until 2098 otherwise drop it.
     end_yr = fut_info[fut_info["max"] < 2098].copy()
-    to_remove = to_remove.append(end_yr[["model", "experiment", "ensemble"]])
-    clean_d2 = util.join_exclude(clean_d1, to_remove)
+    to_remove = rbind(to_remove, end_yr[["model", "experiment", "ensemble"]])
+    clean_d2 = join_exclude(clean_d1, to_remove)
 
     # Third round of clean up
     # Make sure that there is data from the historical experiment for each ensemble member with
@@ -234,7 +275,7 @@ def make_tas_archive():
     # Before the fourth round of clean up add back in the idealized experiment results.
     idealized_exps = {'1pctCO2', 'abrupt-2xCO2', 'abrupt-4xCO2'}
     idealized_dat = raw_data.loc[raw_data['experiment'].isin(idealized_exps)]
-    clean_d3 = pd.concat([clean_d3, idealized_dat])
+    clean_d3 = rbind(clean_d3, idealized_dat)
 
     # Fourth round of cleaning make sure there are no missing dates.
     yrs = (clean_d2.groupby(["model", "experiment", "ensemble"])["year"]
@@ -246,17 +287,17 @@ def make_tas_archive():
     yrs["diff"] = (yrs["max"] - yrs["min"]) + 1
     yrs["diff"] = yrs["diff"].astype(int)
     to_remove = yrs[yrs["diff"] != yrs["count"]]
-    clean_d4 = util.join_exclude(clean_d3, to_remove)
+    clean_d4 = join_exclude(clean_d3, to_remove).copy()
 
     # Order the data frame to make sure that all of the years are in order.
     cleaned_data = (clean_d4.sort_values(by=['variable', 'experiment', 'ensemble', 'model', 'year'])
-                    .reset_index(drop=True))
+                    .reset_index(drop=True)).copy()
 
     # Format Data
     #
     # In this section convert from absolute value to an anomaly & concatenate the historical data
     # with the future scenarios.
-    data_anomaly = calculate_anomaly(cleaned_data)
+    data_anomaly = calculate_anomaly(cleaned_data).copy()
     data = paste_historical_data(data_anomaly)
     data = data.sort_values(by=['variable', 'experiment', 'ensemble', 'model', 'year'])
     data = data[["variable", "experiment", "ensemble", "model", "year", "value"]].reset_index(drop=True)
@@ -305,10 +346,10 @@ def make_tas_archive():
 
     files = []
     tas_data_dir = pkg_resources.resource_filename('stitches', 'data/tas-data')
-    os.mkdir(tas_data_dir)
     for name, group in data.groupby(['model']):
         path = tas_data_dir + '/' + name + '_tas.csv'
         files.append(path)
         group.to_csv(path, index=False)
 
+    print("Global tas data complete")
     return files

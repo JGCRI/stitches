@@ -34,7 +34,7 @@ def make_matching_archive(smoothing_window=9, chunk_window=9, add_staggered=Fals
     # For each group in the data set go through, chunk and extract the fx and dx␣ values.
     # For now we have to do this with a for loop, to process each model/experiment/ensemble/variable
     # individually.
-    # The key function preparing these chunks is prep.chunk_ts
+    # The key function prepfor aring these chunks is prep.chunk_ts
     data = smoothed_data[["model", "experiment", "ensemble", "year", "variable", "value"]]
     data = data.reset_index(drop=True).copy()
     group_by = ['model', 'experiment', 'ensemble', 'variable']

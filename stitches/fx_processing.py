@@ -47,7 +47,7 @@ def calculate_rolling_mean(data, size):
     # dplyr group_by %>% mutate()  call.
 
     # rename so that value is the smoothed data:
-    rslt = rslt.drop('value', 1).rename(columns={'rollingAvg': 'value'}).reset_index(drop=True)
+    rslt = rslt.drop(columns='value', axis=1).rename(columns={'rollingAvg':'value'}).reset_index(drop=True)
 
     return rslt
 

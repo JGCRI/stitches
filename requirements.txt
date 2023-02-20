@@ -6,7 +6,7 @@ intake~=0.6.6
 intake-esm~=2021.8.17
 nc_time_axis~=1.4.1
 sklearn>=0.0
-setuptools~=57.1.0
+setuptools
 gcsfs~=2022.5.0
 fsspec~=2022.5.0
 tqdm~=4.64.1

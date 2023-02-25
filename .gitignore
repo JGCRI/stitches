@@ -8,6 +8,7 @@ stitches/data/pangeo_table.csv
 
 # generated data
 notebooks/stitched_*
+stitches/tests/stitched_*
 
 # system
 .DS_Store

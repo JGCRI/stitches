@@ -1,0 +1,664 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stitches.make_tas_archive &#8212; stitches documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/quickstarter.html">
+   Quickstarter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/tutorial.html">
+   Tutorial
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../examples/modify-inputs.html">
+   Modify Inputs
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Python API
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../reference/api.html">
+   Python API
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../reference/contributing.html">
+   Contributing to
+   <strong>
+    stitches
+   </strong>
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/JGCRI/stitches"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/JGCRI/stitches/issues/new?title=Issue%20on%20page%20%2F_modules/stitches/make_tas_archive.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for stitches.make_tas_archive</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Define the functions used to get Get the weighted global mean temperature</span>
+<span class="c1"># from pangeo CMIP6 results.</span>
+
+<span class="c1"># Import packages</span>
+<span class="kn">import</span> <span class="nn">stitches.fx_pangeo</span> <span class="k">as</span> <span class="nn">pangeo</span>
+<span class="kn">import</span> <span class="nn">stitches.fx_data</span> <span class="k">as</span> <span class="nn">data</span>
+<span class="kn">import</span> <span class="nn">stitches.fx_util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+
+<span class="k">def</span> <span class="nf">join_exclude</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">drop</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Drop some rows from a data frame.</span>
+<span class="sd">    :param dat:   pd data frame containing the data that needs to be dropped.</span>
+<span class="sd">    :param drop: pd data frame containing the data to drop.</span>
+<span class="sd">    :return:    pd data frame that is subset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">drop</span> <span class="o">=</span> <span class="n">drop</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Get the column names that two data frames have</span>
+    <span class="c1"># in common with one another.</span>
+    <span class="n">in_common</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">drop</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>  <span class="c1"># figure out what columns are in common between the two dfs</span>
+    <span class="n">drop</span><span class="p">[</span><span class="s2">&quot;drop&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># add an indicator column to indicate which rows need to be dropped</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">drop</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">in_common</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;drop&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>  <span class="c1"># remove the entries that need to be dropped</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="n">dat</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>  <span class="c1"># select the columns</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">rbind</span><span class="p">(</span><span class="n">dat1</span><span class="p">,</span> <span class="n">dat2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine two data frames together even if a data frame is empty.</span>
+
+<span class="sd">    :param dat1:    data frame of values</span>
+<span class="sd">    :type dat1:     pandas.core.frame.DataFrame</span>
+
+<span class="sd">    :param dat2:    data frame of values</span>
+<span class="sd">    :type dat2:     pandas.core.frame.DataFrame</span>
+
+<span class="sd">    :return: a singular data frame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">dat1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dat2</span>
+
+    <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">dat2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dat1</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dat1</span><span class="p">,</span> <span class="n">dat2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">get_global_tas</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the weighted annual global mean temp.</span>
+
+<span class="sd">    :param path:  a zstore path to the CMIP6 files stored on pangeo.</span>
+<span class="sd">    :type path:   str</span>
+
+<span class="sd">    :return:      str path to the location of file containing the weighted global mean.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">temp_dir</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span>
+
+    <span class="n">tag</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;gs:__&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;temp.csv&quot;</span>
+    <span class="n">ofile</span> <span class="o">=</span> <span class="n">temp_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">file_name</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ofile</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="c1"># Download the CMIP data &amp; calculate the weighted annual global mean .</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">pangeo</span><span class="o">.</span><span class="n">fetch_nc</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">global_mean</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">global_mean</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">annual_mean</span> <span class="o">=</span> <span class="n">global_mean</span><span class="o">.</span><span class="n">coarsen</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+        <span class="c1"># Format the CMIP meta data &amp; global means, then combine into a single data frame.</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_ds_meta</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">annual_mean</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">util</span><span class="o">.</span><span class="n">selstr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">t</span><span class="p">))</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="n">annual_mean</span><span class="p">[</span><span class="s2">&quot;tas&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">}</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">combine_df</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+
+        <span class="c1"># Write the output</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">ofile</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ofile</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ofile</span>
+
+
+<span class="k">def</span> <span class="nf">calculate_anomaly</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">startYr</span><span class="o">=</span><span class="mi">1995</span><span class="p">,</span> <span class="n">endYr</span><span class="o">=</span><span class="mi">2014</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert the temp data from absolute into an anomaly relative to a reference period.</span>
+
+<span class="sd">    :param data:        A data frame of the cmip absolute temperature</span>
+<span class="sd">    :type data:        pandas.core.frame.DataFrame</span>
+<span class="sd">    :param startYr:      The first year of the reference period, default set to 1995 corresponding to the IPCC defined reference period.</span>
+<span class="sd">    :type startYr:       int</span>
+<span class="sd">    :param endYr:       The final year of the reference period, default set to 2014 corresponding to the IPCC defined reference period.</span>
+<span class="sd">    :type endYr:        int</span>
+
+<span class="sd">    :return:          A pandas data frame of cmip tgav as anomalies relative to a time-averaged value from a reference period, default uses a reference period form 1995-2014</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Inputs</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">})</span>
+    <span class="n">to_use</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Calculate the average value for the reference period defined</span>
+    <span class="c1"># by the startYr and ednYr arguments.</span>
+    <span class="c1"># The default reference period is set from 1995 - 2014.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Start by subsetting the data so that it only includes values from the specified reference period.</span>
+    <span class="n">to_use</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_use</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">to_use</span> <span class="o">=</span> <span class="n">to_use</span><span class="p">[</span><span class="n">to_use</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;historical&quot;</span><span class="p">]</span>
+    <span class="n">subset_data</span> <span class="o">=</span> <span class="n">to_use</span><span class="p">[</span><span class="n">to_use</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="n">startYr</span><span class="p">,</span> <span class="n">endYr</span><span class="p">)]</span>
+
+    <span class="c1"># Calculate the time-averaged reference value for each ensemble</span>
+    <span class="c1"># realization. This reference value will be used to convert from absolute to</span>
+    <span class="c1"># relative temperature.</span>
+    <span class="n">reference_values</span> <span class="o">=</span> <span class="n">subset_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+        <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">reference_values</span> <span class="o">=</span> <span class="n">reference_values</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;ref_values&quot;</span><span class="p">})</span>
+
+    <span class="c1"># Combine the dfs that contain the absolute temperature values with the reference values.</span>
+    <span class="c1"># Then calculate the relative temperature.</span>
+    <span class="n">merged_df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">reference_values</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
+    <span class="n">merged_df</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">merged_df</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">merged_df</span><span class="p">[</span><span class="s1">&#39;ref_values&#39;</span><span class="p">]</span>
+    <span class="n">merged_df</span> <span class="o">=</span> <span class="n">merged_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;ref_values&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">merged_df</span>
+
+
+<span class="k">def</span> <span class="nf">paste_historical_data</span><span class="p">(</span><span class="n">input_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;</span>
+<span class="sd">    Paste the appropriate historical data into each future scenario so that SSP585 realization 1, for</span>
+<span class="sd">    example, has the appropriate data from 1850-2100.</span>
+
+<span class="sd">    :param input_data:        A data frame of the cmip absolute temperature</span>
+<span class="sd">    :type input_data:        pandas.core.frame.DataFrame</span>
+
+<span class="sd">    :return:          A pandas data frame of the smoothed time series (rolling mean applied)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Relabel the historical values so that there is a continuous rolling mean between the</span>
+    <span class="c1"># historical and future values.</span>
+    <span class="c1"># #######################################################</span>
+    <span class="c1"># Create a subset of the non historical &amp; future scns</span>
+    <span class="n">other_exps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1pctCO2&#39;</span><span class="p">,</span> <span class="s1">&#39;abrupt-2xCO2&#39;</span><span class="p">,</span> <span class="s1">&#39;abrupt-4xCO2&#39;</span><span class="p">]</span>
+    <span class="n">other_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">other_exps</span><span class="p">)]</span>
+
+    <span class="c1"># Subset the historical data</span>
+    <span class="n">historical_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;historical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Create a subset of the future data</span>
+    <span class="n">fut_exps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ssp126&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp245&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp370&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp585&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp534-over&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp119&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp434&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp460&#39;</span><span class="p">]</span>
+    <span class="n">future_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">fut_exps</span><span class="p">)]</span>
+    <span class="n">future_scns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">future_data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+
+    <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">scn</span> <span class="ow">in</span> <span class="n">future_scns</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">historical_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scn</span>
+        <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future_data</span><span class="p">)</span>
+    <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">other_data</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">])[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">d</span>
+
+
+<div class="viewcode-block" id="make_tas_archive"><a class="viewcode-back" href="../../reference/api.html#stitches.make_tas_archive">[docs]</a><span class="k">def</span> <span class="nf">make_tas_archive</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;</span>
+<span class="sd">    #  The function that creates the archive</span>
+
+<span class="sd">    :return:          Array of the tas files created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the pangeo table of contents.</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pangeo</span><span class="o">.</span><span class="n">fetch_pangeo_table</span><span class="p">()</span>
+
+    <span class="c1"># Subset the monthly tas data these are the files that we will want to process</span>
+    <span class="c1"># for the tas archive.</span>
+    <span class="n">xps</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;historical&quot;</span><span class="p">,</span> <span class="s2">&quot;1pctCO2&quot;</span><span class="p">,</span> <span class="s2">&quot;abrupt-4xCO2&quot;</span><span class="p">,</span> <span class="s2">&quot;abrupt-2xCO2&quot;</span><span class="p">,</span> <span class="s2">&quot;ssp370&quot;</span><span class="p">,</span> <span class="s2">&quot;ssp245&quot;</span><span class="p">,</span> <span class="s2">&quot;ssp119&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;ssp434&quot;</span><span class="p">,</span> <span class="s2">&quot;ssp460&quot;</span><span class="p">,</span> <span class="s2">&quot;ssp126&quot;</span><span class="p">,</span> <span class="s2">&quot;ssp585&quot;</span><span class="p">,</span> <span class="s2">&quot;ssp534-over&quot;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;experiment_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">xps</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># experiments of interest</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;table_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Amon&quot;</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="c1"># monthly data</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;grid_label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;gn&quot;</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="c1"># we are only interested in the results returned in the native</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;variable_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;tas&quot;</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="c1"># select temperature data</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;member_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">))]</span>  <span class="c1"># select only the members of the p1 physics group</span>
+
+    <span class="c1"># For each of the CMIP6 files to calculate the global mean temperature and write the</span>
+    <span class="c1"># results to the temporary directory.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Downloading tas data from pangeo...&quot;</span><span class="p">)</span>
+    <span class="n">to_download</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">zstore</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">get_global_tas</span><span class="p">,</span> <span class="n">to_download</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Processing data this may take a moment.&quot;</span><span class="p">)</span>
+    <span class="c1"># Clean Up &amp; Quality Control</span>
+    <span class="c1">#</span>
+    <span class="c1"># Find all of the files and read in the data, store as a single data frame.</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">,</span> <span class="n">files</span><span class="p">)))</span>
+
+
+    <span class="c1"># Note that the first three steps only apply to the historical &amp; ssp experiments,</span>
+    <span class="c1"># the idealized experiments do not need to go through these steps.</span>
+    <span class="c1">#</span>
+    <span class="c1"># First round of cleaning check the historical dates.</span>
+    <span class="c1"># Make sure that the historical run starts some time</span>
+    <span class="c1"># before 1855 &amp; that that it runs until 2014.</span>
+    <span class="c1"># Subset the Hector historical</span>
+    <span class="n">his_info</span> <span class="o">=</span> <span class="p">(</span><span class="n">raw_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">raw_data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;historical&quot;</span><span class="p">)]</span>
+                <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">])[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+                <span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>
+    <span class="n">his_info</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">his_info</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">his_info</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">his_info</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># Make sure the start date is some times before 1855.</span>
+    <span class="n">start_yr</span> <span class="o">=</span> <span class="n">his_info</span><span class="p">[</span><span class="n">his_info</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1855</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">to_remove</span> <span class="o">=</span> <span class="n">start_yr</span><span class="p">[[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">]]</span>
+
+    <span class="c1"># Make sure that all of historical have data up until 2014</span>
+    <span class="n">end_yr</span> <span class="o">=</span> <span class="n">his_info</span><span class="p">[</span><span class="n">his_info</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2014</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">to_remove</span> <span class="o">=</span> <span class="n">rbind</span><span class="p">(</span><span class="n">to_remove</span><span class="p">,</span> <span class="n">end_yr</span><span class="p">[[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">]])</span>
+    <span class="n">clean_d1</span> <span class="o">=</span> <span class="n">join_exclude</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">to_remove</span><span class="p">)</span>
+
+    <span class="c1"># Second round of cleaning check the future dates.</span>
+    <span class="c1"># Make sure that the future scenarios start at 2015 &amp; run beyond 2100.</span>
+    <span class="n">fut_exps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ssp245&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp126&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp585&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp119&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp370&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp434&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp534-over&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp460&#39;</span><span class="p">]</span>
+    <span class="n">fut_info</span> <span class="o">=</span> <span class="p">(</span><span class="n">clean_d1</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">clean_d1</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">fut_exps</span><span class="p">))]</span>
+                <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">])[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+                <span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>
+    <span class="n">fut_info</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fut_info</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">fut_info</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fut_info</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># If the future scenario starts after 2015 drop it.</span>
+    <span class="n">start_yr</span> <span class="o">=</span> <span class="n">fut_info</span><span class="p">[</span><span class="n">fut_info</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2015</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">to_remove</span> <span class="o">=</span> <span class="n">start_yr</span><span class="p">[[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">]]</span>
+
+    <span class="c1"># Make sure the future scenario runs until 2098 otherwise drop it.</span>
+    <span class="n">end_yr</span> <span class="o">=</span> <span class="n">fut_info</span><span class="p">[</span><span class="n">fut_info</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2098</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">to_remove</span> <span class="o">=</span> <span class="n">rbind</span><span class="p">(</span><span class="n">to_remove</span><span class="p">,</span> <span class="n">end_yr</span><span class="p">[[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">]])</span>
+    <span class="n">clean_d2</span> <span class="o">=</span> <span class="n">join_exclude</span><span class="p">(</span><span class="n">clean_d1</span><span class="p">,</span> <span class="n">to_remove</span><span class="p">)</span>
+
+    <span class="c1"># Third round of clean up</span>
+    <span class="c1"># Make sure that there is data from the historical experiment for each ensemble member with</span>
+    <span class="c1"># future results.</span>
+    <span class="n">exp_en_mod</span> <span class="o">=</span> <span class="n">clean_d2</span><span class="p">[[</span><span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Separate the data frame of the experiment / ensemble / model information into</span>
+    <span class="c1"># the historical and non historical experiments.</span>
+    <span class="n">hist_ensemble</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp_en_mod</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">exp_en_mod</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;historical&quot;</span><span class="p">][[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">]]</span>
+                     <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+                     <span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+    <span class="n">non_hist_ensemble</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp_en_mod</span><span class="p">[</span><span class="n">exp_en_mod</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;historical&quot;</span><span class="p">][[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">]]</span>
+                         <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+                         <span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+    <span class="c1"># use an inner join to select the historical ensemble that have future results as well as</span>
+    <span class="c1"># the future results have have historical results.</span>
+    <span class="n">to_keep</span> <span class="o">=</span> <span class="n">non_hist_ensemble</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">hist_ensemble</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Update the raw data table to only include the model / ensembles members that have both a</span>
+    <span class="c1"># historical and non historical ensemble realization.</span>
+    <span class="n">clean_d3</span> <span class="o">=</span> <span class="n">clean_d2</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">to_keep</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Before the fourth round of clean up add back in the idealized experiment results.</span>
+    <span class="n">idealized_exps</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1pctCO2&#39;</span><span class="p">,</span> <span class="s1">&#39;abrupt-2xCO2&#39;</span><span class="p">,</span> <span class="s1">&#39;abrupt-4xCO2&#39;</span><span class="p">}</span>
+    <span class="n">idealized_dat</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;experiment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">idealized_exps</span><span class="p">)]</span>
+    <span class="n">clean_d3</span> <span class="o">=</span> <span class="n">rbind</span><span class="p">(</span><span class="n">clean_d3</span><span class="p">,</span> <span class="n">idealized_dat</span><span class="p">)</span>
+
+    <span class="c1"># Fourth round of cleaning make sure there are no missing dates.</span>
+    <span class="n">yrs</span> <span class="o">=</span> <span class="p">(</span><span class="n">clean_d2</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">])[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+           <span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">])</span>
+           <span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>
+    <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;diff&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;diff&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;diff&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">to_remove</span> <span class="o">=</span> <span class="n">yrs</span><span class="p">[</span><span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;diff&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">yrs</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]]</span>
+    <span class="n">clean_d4</span> <span class="o">=</span> <span class="n">join_exclude</span><span class="p">(</span><span class="n">clean_d3</span><span class="p">,</span> <span class="n">to_remove</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Order the data frame to make sure that all of the years are in order.</span>
+    <span class="n">cleaned_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">clean_d4</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">])</span>
+                    <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Format Data</span>
+    <span class="c1">#</span>
+    <span class="c1"># In this section convert from absolute value to an anomaly &amp; concatenate the historical data</span>
+    <span class="c1"># with the future scenarios.</span>
+    <span class="n">data_anomaly</span> <span class="o">=</span> <span class="n">calculate_anomaly</span><span class="p">(</span><span class="n">cleaned_data</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">paste_historical_data</span><span class="p">(</span><span class="n">data_anomaly</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">])</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s2">&quot;variable&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Add the z store values to the data frame.</span>
+    <span class="c1"># Get the pangeo table of contents &amp; assert that the data frame exists and contains information.</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pangeo</span><span class="o">.</span><span class="n">fetch_pangeo_table</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;table_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Amon&quot;</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="c1"># monthly data</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;grid_label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;gn&quot;</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="c1"># we are only interested in the results returned in the native</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;variable_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;tas&quot;</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="c1"># select temperature data</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;member_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">))]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># select only the members of the p1 physics group</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Unable to connect to pangeo, make sure to disconnect from VP&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Format the pangeo data frame so that it reflects the contents of data.</span>
+    <span class="n">pangeo_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;source_id&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment_id&quot;</span><span class="p">,</span> <span class="s2">&quot;member_id&quot;</span><span class="p">,</span> <span class="s2">&quot;variable_id&quot;</span><span class="p">,</span> <span class="s2">&quot;zstore&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    <span class="n">pangeo_df</span> <span class="o">=</span> <span class="n">pangeo_df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment_id&quot;</span><span class="p">:</span> <span class="s2">&quot;experiment&quot;</span><span class="p">,</span>
+                                          <span class="s2">&quot;member_id&quot;</span><span class="p">:</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;variable_id&quot;</span><span class="p">:</span> <span class="s2">&quot;variable&quot;</span><span class="p">})</span>
+
+    <span class="c1"># Add the zstore file information to the data frame via a left join.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">pangeo_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Modify the zstore path names to replace the future scn string with historical.</span>
+    <span class="c1"># TODO replace this for loop it is pretty slow</span>
+    <span class="n">new_zstore</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="c1"># Select the row from the data frame.</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># Check to see if the zstore needs to be changed based on if it is a future experiment.</span>
+        <span class="n">fut_exps</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;ssp119&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp126&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp245&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp370&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp434&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp460&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp534-over&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp585&#39;</span><span class="p">])</span>
+        <span class="n">change</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">fut_exps</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">:</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;zstore&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">],</span> <span class="s2">&quot;historical&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;zstore&quot;</span><span class="p">]</span>
+
+        <span class="n">new_zstore</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;zstore&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_zstore</span>
+
+    <span class="c1"># Save a copy of the tas values, these are the value that will be used to get the</span>
+    <span class="c1"># tas data chunks. Note that this file has to be compressed so will need to read in</span>
+    <span class="c1"># using pickle_utils.load()</span>
+
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">tas_data_dir</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">,</span> <span class="s1">&#39;data/tas-data&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;model&#39;</span><span class="p">]):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">tas_data_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;_tas.csv&#39;</span>
+        <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Global tas data complete&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">files</span></div>
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Abigail Snyder; Kalyn Dorheim; Claudia Tebaldi<br/>
+  
+      &copy; Copyright 2022-current, Battelle Memorial Institute.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,692 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stitches.fx_stitch &#8212; stitches documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/quickstarter.html">
+   Quickstarter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/tutorial.html">
+   Tutorial
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../examples/modify-inputs.html">
+   Modify Inputs
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Python API
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../reference/api.html">
+   Python API
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../reference/contributing.html">
+   Contributing to
+   <strong>
+    stitches
+   </strong>
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/JGCRI/stitches"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/JGCRI/stitches/issues/new?title=Issue%20on%20page%20%2F_modules/stitches/fx_stitch.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for stitches.fx_stitch</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># Import packages</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">os</span> <span class="k">as</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">stitches.fx_util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">stitches.fx_data</span> <span class="k">as</span> <span class="nn">data</span>
+<span class="kn">import</span> <span class="nn">stitches.fx_pangeo</span> <span class="k">as</span> <span class="nn">pangeo</span>
+
+
+<span class="k">def</span> <span class="nf">find_zfiles</span><span class="p">(</span><span class="n">rp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Determine which cmip files must be downloaded from pangeo.</span>
+<span class="sd">        :param rp:             data frame of the recipes</span>
+<span class="sd">        :return:               numpy.ndarray array of the gs:// files to pull from pangeo</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Figure out which columns contain the string file</span>
+    <span class="n">flat_list</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">unique_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">flat_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">unique_list</span>
+
+
+<span class="k">def</span> <span class="nf">find_var_cols</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Determine which variables that are going to be downloaded.</span>
+<span class="sd">        :param x:             pandas data frame of the stitches recipe</span>
+<span class="sd">        :return:              a list of the variables that are going to be written out to the netcdf files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Parse out the variable name so that we can use it</span>
+    <span class="c1"># to label the final output.</span>
+    <span class="nb">set</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;file&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">:</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_file&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">get_netcdf_values</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">rp</span><span class="p">,</span> <span class="n">fl</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the archive values from the list of downloaded cmip data</span>
+<span class="sd">        :param i:              int index of the row of the recipe data frame</span>
+<span class="sd">        :param dl:             list of xarray cmip files</span>
+<span class="sd">        :param rp:             data frame of the recipe</span>
+<span class="sd">        :param fl:             list of the cmip files</span>
+<span class="sd">        :param name:           name of the variable file that is going to be processed.</span>
+<span class="sd">        :return:               a slice of xarray (not sure confident on the technical term)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">file</span> <span class="o">=</span> <span class="n">rp</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">start_yr</span> <span class="o">=</span> <span class="n">rp</span><span class="p">[</span><span class="s2">&quot;archive_start_yr&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">end_yr</span> <span class="o">=</span> <span class="n">rp</span><span class="p">[</span><span class="s2">&quot;archive_end_yr&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c1"># Figure out which index level we are on and then get the</span>
+    <span class="c1"># xarray from the list.</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fl</span> <span class="o">==</span> <span class="n">file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">extracted</span> <span class="o">=</span> <span class="n">dl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">sortby</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_file&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Have to have special time handler</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">extracted</span><span class="o">.</span><span class="n">indexes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">xr</span><span class="o">.</span><span class="n">coding</span><span class="o">.</span><span class="n">cftimeindex</span><span class="o">.</span><span class="n">CFTimeIndex</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">indexes</span><span class="o">.</span><span class="n">datetimes</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">]:</span>
+        <span class="n">yrs</span> <span class="o">=</span> <span class="n">extracted</span><span class="o">.</span><span class="n">indexes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">year</span> <span class="c1"># pull out the year information from the time index</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_yr</span><span class="p">,</span> <span class="n">end_yr</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">yrs</span><span class="p">))</span>
+        <span class="n">to_keep</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">flags</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unsupported time type&quot;</span><span class="p">)</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="n">extracted</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">to_keep</span><span class="p">)[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="p">((</span><span class="n">times</span><span class="o">.</span><span class="n">freq</span> <span class="o">==</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">times</span><span class="o">.</span><span class="n">freq</span> <span class="o">==</span> <span class="s1">&#39;day&#39;</span><span class="p">)):</span>
+        <span class="n">expected_times</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">start_yr</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">end_yr</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-12-31&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">times</span><span class="o">.</span><span class="n">calendar</span> <span class="o">==</span> <span class="s1">&#39;noleap&#39;</span><span class="p">:</span>
+            <span class="n">expected_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">expected_times</span><span class="p">[</span><span class="o">~</span><span class="p">((</span><span class="n">expected_times</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">expected_times</span><span class="o">.</span><span class="n">day</span> <span class="o">==</span> <span class="mi">29</span><span class="p">))])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">expected_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">start_yr</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">end_yr</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-12-31&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">))</span>
+
+
+    <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span> <span class="o">==</span> <span class="n">expected_len</span><span class="p">),</span> <span class="s2">&quot;Not enough data in &quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="o">+</span> <span class="s2">&quot;for period &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_yr</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_yr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dat</span>
+
+
+<span class="k">def</span> <span class="nf">get_var_info</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">fl</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the cmip variable attribute information.</span>
+<span class="sd">               :param rp:             data frame of the recipes</span>
+<span class="sd">               :param dl:             list of the data files</span>
+<span class="sd">               :param fl:             list of the data file names</span>
+<span class="sd">               :param name:           string of the column containing the variable file name from rp</span>
+<span class="sd">               :return:               pandas dataframe of the variable meta data</span>
+<span class="sd">           &quot;&quot;&quot;</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="p">{</span><span class="n">name</span><span class="p">})</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">rp</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fl</span> <span class="o">==</span> <span class="n">file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">extracted</span> <span class="o">=</span> <span class="n">dl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="n">attrs</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_ds_meta</span><span class="p">(</span><span class="n">extracted</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">frequency</span><span class="o">.</span><span class="n">values</span> <span class="o">!=</span> <span class="s2">&quot;mon&quot;</span><span class="p">):</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extracted</span><span class="o">.</span><span class="n">indexes</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">calendar</span>
+
+    <span class="k">return</span> <span class="n">attrs</span>
+
+
+<span class="k">def</span> <span class="nf">get_atts</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">fl</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the cmip variable attribute information.</span>
+<span class="sd">           :param rp:             data frame of the recipes</span>
+<span class="sd">           :param dl:             list of the data files</span>
+<span class="sd">           :param fl:             list of the data file names</span>
+<span class="sd">           :param name:           string of the column containing the variable files to process</span>
+<span class="sd">           :return:               dict object containing the cmip variable information</span>
+<span class="sd">       &quot;&quot;&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">rp</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fl</span> <span class="o">==</span> <span class="n">file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">extracted</span> <span class="o">=</span> <span class="n">dl</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_file&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">out</span><span class="o">=</span><span class="n">extracted</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">internal_stitch</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">fl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stitch a single recipe into netcdf outputs</span>
+<span class="sd">        :param dl:             list of xarray cmip files</span>
+<span class="sd">        :param rp:             data frame of the recipe</span>
+<span class="sd">        :param fl:             list of the cmip files</span>
+<span class="sd">        :return:               a list of the data arrays for the stitched products of the different variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rp</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">rp</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="n">find_var_cols</span><span class="p">(</span><span class="n">rp</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># For each of the of the variables stitch the</span>
+    <span class="c1"># data together.</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+
+        <span class="c1"># Get the information about the variable that is going to be stitched together.</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="s1">&#39;_file&#39;</span>
+        <span class="n">var_info</span> <span class="o">=</span> <span class="n">get_var_info</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">fl</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span>
+
+        <span class="c1"># For each of time slices extract the data &amp; concatenate together.</span>
+        <span class="n">gridded_data</span> <span class="o">=</span> <span class="n">get_netcdf_values</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dl</span><span class="o">=</span><span class="n">dl</span><span class="p">,</span> <span class="n">rp</span><span class="o">=</span><span class="n">rp</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="n">fl</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
+
+        <span class="c1"># Now add the other time slices.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rp</span><span class="p">)):</span>
+            <span class="n">new_vals</span> <span class="o">=</span> <span class="n">get_netcdf_values</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">dl</span><span class="o">=</span><span class="n">dl</span><span class="p">,</span> <span class="n">rp</span><span class="o">=</span><span class="n">rp</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="n">fl</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
+            <span class="n">gridded_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">gridded_data</span><span class="p">,</span> <span class="n">new_vals</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Note that the pd.date_range call need the date/month defined otherwise it will</span>
+        <span class="c1"># truncate the year from start of first year to start of end year which is not</span>
+        <span class="c1"># what we want. We want the full final year to be included in the times series.</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">rp</span><span class="p">[</span><span class="s2">&quot;target_start_yr&quot;</span><span class="p">]))</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">rp</span><span class="p">[</span><span class="s2">&quot;target_end_yr&quot;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">var_info</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;mon&quot;</span><span class="p">:</span>
+            <span class="n">freq</span> <span class="o">=</span> <span class="s2">&quot;M&quot;</span>
+        <span class="k">elif</span> <span class="n">var_info</span><span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;day&quot;</span><span class="p">:</span>
+            <span class="n">freq</span> <span class="o">=</span> <span class="s2">&quot;D&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unsupported frequency&quot;</span><span class="p">)</span>
+
+        <span class="n">times</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span> <span class="o">+</span> <span class="s2">&quot;-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span> <span class="o">+</span> <span class="s2">&quot;-12-31&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)</span>
+
+        <span class="c1"># Again, some ESMs stop in 2099 instead of 2100 - so we just drop the</span>
+        <span class="c1"># last year of gridded_data when that is the case.</span>
+        <span class="c1">#TODO this will need something extra/different for daily data; maybe just</span>
+        <span class="c1"># a simple len(times)==len(gridded_data)-12 : len(times) == len(gridded_data)-(nDaysInYear)</span>
+        <span class="c1"># with correct parentheses would do it</span>
+        <span class="k">if</span> <span class="p">((</span><span class="nb">max</span><span class="p">(</span><span class="n">rp</span><span class="p">[</span><span class="s2">&quot;target_end_yr&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2099</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gridded_data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">12</span><span class="p">))):</span>
+            <span class="n">gridded_data</span> <span class="o">=</span> <span class="n">gridded_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="mi">0</span><span class="p">:,</span> <span class="mi">0</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">freq</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">var_info</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;noleap&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">freq</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">)):</span>
+                <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="o">~</span><span class="p">((</span><span class="n">times</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">times</span><span class="o">.</span><span class="n">day</span> <span class="o">==</span> <span class="mi">29</span><span class="p">))]</span>
+
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gridded_data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)),</span> <span class="s2">&quot;Problem with the length of time&quot;</span>
+
+        <span class="c1"># Extract the lat and lon information that will be used to structure the</span>
+        <span class="c1"># empty netcdf file. Make sure to copy all of the information including</span>
+        <span class="c1"># the attributes!</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">dl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">dl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lon</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">rslt</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">({</span><span class="n">v</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+            <span class="n">gridded_data</span><span class="p">,</span>
+            <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="n">times</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">],</span>
+            <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">],</span>
+            <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="n">var_info</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="n">var_info</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="s1">&#39;experiment&#39;</span><span class="p">:</span> <span class="n">var_info</span><span class="p">[</span><span class="s1">&#39;experiment&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="s1">&#39;ensemble&#39;</span><span class="p">:</span> <span class="n">var_info</span><span class="p">[</span><span class="s1">&#39;ensemble&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">var_info</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="s1">&#39;stitching_id&#39;</span><span class="p">:</span> <span class="n">rp</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]})</span>
+        <span class="p">})</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rslt</span><span class="p">)</span>
+
+    <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="n">out</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">out_dict</span>
+
+
+<div class="viewcode-block" id="gridded_stitching"><a class="viewcode-back" href="../../reference/api.html#stitches.gridded_stitching">[docs]</a><span class="k">def</span> <span class="nf">gridded_stitching</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">rp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stitch</span>
+<span class="sd">        :param out_dir:        string directory location where to write the netcdf files out to</span>
+<span class="sd">        :param rp:             data frame of the recipe</span>
+<span class="sd">        :return:               a list of the netcdf files paths</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">flag</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">flag</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The output directory does not exist.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check inputs.</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">})</span>
+
+    <span class="n">rp</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Determine which variables will be downloaded.</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="n">find_var_cols</span><span class="p">(</span><span class="n">rp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No variables were found to be processed.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Determine which files need to be downloaded from pangeo.</span>
+    <span class="n">file_list</span> <span class="o">=</span> <span class="n">find_zfiles</span><span class="p">(</span><span class="n">rp</span><span class="p">)</span>
+
+    <span class="c1"># Make sure that all of the files are available to download from pangeo.</span>
+    <span class="c1"># Note that this might be excessively cautious but this is an issue we have run into in</span>
+    <span class="c1"># the past.</span>
+    <span class="n">avail</span> <span class="o">=</span> <span class="n">pangeo</span><span class="o">.</span><span class="n">fetch_pangeo_table</span><span class="p">()</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">avail</span><span class="p">[</span><span class="s1">&#39;zstore&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">file_list</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">flag</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trying to request a zstore file that does not exist&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Download all of the data from pangeo.</span>
+    <span class="n">data_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">pangeo</span><span class="o">.</span><span class="n">fetch_nc</span><span class="p">,</span> <span class="n">file_list</span><span class="p">))</span>
+
+    <span class="c1"># For each of the stitching recipes go through and stitch a recipe.</span>
+    <span class="k">for</span> <span class="n">single_id</span> <span class="ow">in</span> <span class="n">rp</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="c1"># initialize f to be empty just to be safe now that we&#39;ve added a</span>
+        <span class="c1"># try...except approach. It&#39;s technically possible the first id</span>
+        <span class="c1"># tried will fail and the function will try to return a non-existent f.</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span>
+                    <span class="s1">&#39;Stitching gridded netcdf for: &#39;</span> <span class="o">+</span> <span class="n">rp</span><span class="o">.</span><span class="n">archive_model</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">rp</span><span class="o">.</span><span class="n">archive_variable</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">single_id</span><span class="p">))</span>
+
+            <span class="c1"># Do the stitching!</span>
+            <span class="c1"># ** this can be a slow step and prone to errors</span>
+            <span class="n">single_rp</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rp</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">single_id</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">rslt</span> <span class="o">=</span> <span class="n">internal_stitch</span><span class="p">(</span><span class="n">rp</span><span class="o">=</span><span class="n">single_rp</span><span class="p">,</span> <span class="n">dl</span><span class="o">=</span><span class="n">data_list</span><span class="p">,</span> <span class="n">fl</span><span class="o">=</span><span class="n">file_list</span><span class="p">)</span>
+
+            <span class="c1"># Print the files out at netcdf files</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rslt</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">ds</span> <span class="o">=</span> <span class="n">rslt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">sortby</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">recipe_location</span> <span class="o">=</span> <span class="p">(</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s2">&quot;stitched_&quot;</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">]</span> <span class="o">+</span>
+                          <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">single_id</span> <span class="o">+</span> <span class="s2">&quot;_recipe.csv&quot;</span><span class="p">)</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;recipe_location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recipe_location</span>
+                <span class="n">single_rp</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">recipe_location</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="p">(</span><span class="n">out_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="s2">&quot;stitched_&quot;</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span>
+                         <span class="n">ds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">single_id</span> <span class="o">+</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
+                <span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="c1"># end For loop over rslt keys</span>
+        <span class="c1">#end try</span>
+
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;Stitching gridded netcdf for: &#39;</span> <span class="o">+</span> <span class="n">rp</span><span class="o">.</span><span class="n">archive_model</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">rp</span><span class="o">.</span><span class="n">archive_variable</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">single_id</span> <span class="o">+</span><span class="s1">&#39; failed. Skipping. Error thrown within gridded_stitching fxn.&#39;</span><span class="p">))</span>
+        <span class="c1"># end except</span>
+     <span class="c1"># end for loop over single_id</span>
+
+    <span class="k">return</span> <span class="n">f</span></div>
+<span class="c1"># end gridded stitching function</span>
+
+
+<span class="k">def</span> <span class="nf">gmat_internal_stitch</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Select data from a tas archive based on a single row in a recipe data frame, this</span>
+<span class="sd">            function is used to iterate over an entire recipe to do the stitching.</span>
+
+<span class="sd">            :param row:        pandas.core.series.Series a row entry of a fully formatted recipe</span>
+<span class="sd">            :param data:       pandas.core.frame.DataFrame containing the tas values to be stitched together</span>
+<span class="sd">            :return:           pandas.core.frame.DataFrame of tas values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;target_start_yr&quot;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;target_end_yr&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">select_years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;archive_start_yr&quot;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;archive_end_yr&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">selected_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;archive_experiment&quot;</span><span class="p">])</span> <span class="o">&amp;</span>
+                             <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">select_years</span><span class="p">))</span> <span class="o">&amp;</span>
+                             <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ensemble&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;archive_ensemble&quot;</span><span class="p">])]</span>
+
+    <span class="c1"># some models stop at 2099 instead of 2100 - so there is a mismatch</span>
+    <span class="c1"># between len(years) and selected data but not a fatal one.</span>
+    <span class="c1"># Write a very specific if statement to catch this &amp; just chop the extra year</span>
+    <span class="c1"># off the end of selected_data.</span>
+    <span class="k">if</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">years</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">selected_data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">years</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2099</span><span class="p">)</span> <span class="p">):</span>
+        <span class="n">selected_data</span> <span class="o">=</span> <span class="n">selected_data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">years</span><span class="p">),</span> <span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">years</span><span class="p">)</span> <span class="o">!=</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">selected_data</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Trouble with selecting the tas data.&quot;</span><span class="p">)</span>
+
+    <span class="n">new_vals</span> <span class="o">=</span> <span class="n">selected_data</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="n">years</span><span class="p">,</span>
+         <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">new_vals</span><span class="p">}</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;tas&#39;</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+
+
+<div class="viewcode-block" id="gmat_stitching"><a class="viewcode-back" href="../../reference/api.html#stitches.gmat_stitching">[docs]</a><span class="k">def</span> <span class="nf">gmat_stitching</span><span class="p">(</span><span class="n">rp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Based on a recipe data frame stitch together a time series of global tas data.</span>
+
+<span class="sd">        :param rp:        pandas.core.frame.DataFrame a fully formatted recipe data frame.</span>
+<span class="sd">        :return:          pandas.core.frame.DataFrame of stitched together tas data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check inputs.</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;tas_file&#39;</span><span class="p">})</span>
+
+    <span class="n">rp</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># One the assumptions of this function is that it only works with tas, so</span>
+    <span class="c1"># we can safely add tas as the variable column.</span>
+    <span class="n">rp</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;tas&#39;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">rp</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">]):</span>
+
+        <span class="c1"># Reset the index in the match data frame so that we can use a for loop</span>
+        <span class="c1"># to iterate through match data frame an apply the gmat_internal_stitch.</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Find the tas data to be stitched together.</span>
+        <span class="n">dir_path</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">,</span> <span class="s1">&#39;data/tas-data&#39;</span><span class="p">)</span>
+        <span class="n">all_files</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">list_files</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>
+
+        <span class="c1"># Load the tas data for a particular model.</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">match</span><span class="p">[</span><span class="s1">&#39;archive_model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">csv_to_load</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">all_files</span> <span class="k">if</span> <span class="p">(</span><span class="n">model</span> <span class="ow">in</span> <span class="n">file</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_to_load</span><span class="p">)</span>
+
+        <span class="c1"># Format the data so that if we have historical years in the future scenarios</span>
+        <span class="c1"># then that experiment is relabeled as &quot;historical&quot;.</span>
+        <span class="n">fut_exps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ssp245&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp126&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp585&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp119&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp370&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp434&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp534-over&#39;</span><span class="p">,</span> <span class="s1">&#39;ssp460&#39;</span><span class="p">]</span>
+        <span class="n">nonssp_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">fut_exps</span><span class="p">)]</span>
+        <span class="n">fut_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">fut_exps</span><span class="p">))</span> <span class="o">&amp;</span>
+                            <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2014</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">hist_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">fut_exps</span><span class="p">))</span> <span class="o">&amp;</span>
+                             <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">2014</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">hist_data</span><span class="p">[</span><span class="s2">&quot;experiment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;historical&quot;</span>
+        <span class="n">tas_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">nonssp_data</span><span class="p">,</span> <span class="n">fut_data</span><span class="p">,</span> <span class="n">hist_data</span><span class="p">])[[</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span>
+                                                                  <span class="s1">&#39;value&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Stitch the data together based on the matched recipes.</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">match</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">dat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gmat_internal_stitch</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">tas_data</span><span class="p">))</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+
+        <span class="c1"># Add the stitching id column to the data frame.</span>
+        <span class="n">dat</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="c1"># Add the data to the out list</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+
+    <span class="c1"># Format the list of data frames into a single data frame.</span>
+    <span class="n">final_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="n">final_output</span> <span class="o">=</span> <span class="n">final_output</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">final_output</span> <span class="o">=</span> <span class="n">final_output</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">final_output</span> <span class="o">=</span> <span class="n">final_output</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">final_output</span></div>
+
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Abigail Snyder; Kalyn Dorheim; Claudia Tebaldi<br/>
+  
+      &copy; Copyright 2022-current, Battelle Memorial Institute.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stitches.fx_match &#8212; stitches documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/quickstarter.html">
+   Quickstarter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/tutorial.html">
+   Tutorial
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../examples/modify-inputs.html">
+   Modify Inputs
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Python API
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../reference/api.html">
+   Python API
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../reference/contributing.html">
+   Contributing to
+   <strong>
+    stitches
+   </strong>
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/JGCRI/stitches"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/JGCRI/stitches/issues/new?title=Issue%20on%20page%20%2F_modules/stitches/fx_match.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for stitches.fx_match</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Define the functions that are used in the matching process.</span>
+
+<span class="kn">import</span> <span class="nn">stitches.fx_util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+
+<span class="c1"># Internal fx</span>
+<span class="k">def</span> <span class="nf">internal_dist</span><span class="p">(</span><span class="n">fx_pt</span><span class="p">,</span> <span class="n">dx_pt</span><span class="p">,</span> <span class="n">archivedata</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; This function calculates the euclidean distance between the target values (fx and dx)</span>
+<span class="sd">    and the archive values contained in the data frame. It will be used to help select which</span>
+<span class="sd">    of the archive values best matches the target values. To ensure a consistent unit across</span>
+<span class="sd">    all dimensions of the space, dx is updated to be windowsize*dx so that it has units of</span>
+<span class="sd">    degC. This results in a distance metric (Euclidean/l2) in units of degC.</span>
+<span class="sd">    Could _very_ easily make that choice of unit consistency optional via arg and if-statement.</span>
+
+<span class="sd">        :param fx_pt:          a single value of the target fx value</span>
+<span class="sd">        :param dx_pt:          a single value of the target dx value</span>
+<span class="sd">        :param archivedata:    a data frame of the archive fx and dx values</span>
+<span class="sd">        :param archivedata:    a data frame of the archive fx and dx values</span>
+<span class="sd">        :param tol:            a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned</span>
+
+<span class="sd">        :return:               a data frame with the target data and the corresponding matched archive data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check the inputs</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">archivedata</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;variable&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">})</span>
+
+    <span class="c1"># Compute the window size of the archive data to use to update</span>
+    <span class="c1"># dx values to be windowsize*dx so that it has units of degC</span>
+    <span class="n">windowsize</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">archivedata</span><span class="p">[</span><span class="s1">&#39;end_yr&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">archivedata</span><span class="p">[</span><span class="s1">&#39;start_yr&#39;</span><span class="p">])</span>
+
+
+    <span class="c1"># Update the names of the columns in the archive data.</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">archivedata</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">dist</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;archive_&#39;</span> <span class="o">+</span> <span class="n">dist</span><span class="o">.</span><span class="n">columns</span>
+
+    <span class="c1"># calculate the euclidean distance between the target point</span>
+    <span class="c1"># and the archive observations.</span>
+    <span class="c1"># Calculating distance d(target, archive_i) for each point i in the archive.</span>
+    <span class="c1"># calculating the distance in the dx and fx dimensions separately because</span>
+    <span class="c1"># now we want to track those in addition to the l2 distance.</span>
+    <span class="n">dist</span><span class="p">[</span><span class="s2">&quot;dist_dx&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">windowsize</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="s2">&quot;archive_dx&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">dx_pt</span><span class="p">)</span>
+    <span class="n">dist</span><span class="p">[</span><span class="s2">&quot;dist_fx&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="s1">&#39;archive_fx&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fx_pt</span><span class="p">)</span>
+    <span class="n">dist</span><span class="p">[</span><span class="s2">&quot;dist_l2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="s2">&quot;dist_fx&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">dist</span><span class="p">[</span><span class="s2">&quot;dist_dx&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">.5</span>
+
+    <span class="c1"># this returns the first minimum run into, which is not how we are going to want to do it,</span>
+    <span class="c1"># we will want some way to keep track of the min and combine to have different realizations</span>
+    <span class="c1"># or have some random generation. But for now I think that this is probably sufficient.</span>
+    <span class="n">min_dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="s1">&#39;dist_l2&#39;</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="s1">&#39;dist_l2&#39;</span><span class="p">])]</span>
+    <span class="n">dist_radius</span> <span class="o">=</span> <span class="n">min_dist</span> <span class="o">+</span> <span class="n">tol</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="s2">&quot;dist_l2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">dist_radius</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;target_fx&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fx_pt</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;target_dx&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dx_pt</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="c1"># Internal fx</span>
+<span class="k">def</span> <span class="nf">shuffle_function</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Randomly shuffle the deck, this should help with the matching process.</span>
+
+<span class="sd">        :param dt:          a data of archive values that will be used in the matching process.</span>
+
+<span class="sd">        :return:               a randomly ordered data frame.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nrow</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">nrow</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="c1"># Internal fx</span>
+<span class="k">def</span> <span class="nf">drop_hist_false_duplicates</span><span class="p">(</span><span class="n">matched_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A helper function to remove false duplicate matches in the historical period. For</span>
+<span class="sd">    example, target 1850 gets 1872 data from realization 13 of SSP126 and SSP585.</span>
+<span class="sd">    The metadata of these archive values are different, but the actual data</span>
+<span class="sd">    values are identical because we just pasted in the same historical data to</span>
+<span class="sd">    every Experiment. So this function keeps only the first match.</span>
+
+<span class="sd">        :param matched_data:    pandas object returned from match_neighborhood.</span>
+
+<span class="sd">        :return:               a data frame of matched data with the same structure as the input, with false duplicates in the historical period dropped</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># Subset the idealized runs, since these are not concatenated with the historical time series</span>
+    <span class="c1"># they can be left alone.</span>
+    <span class="n">idealized_exps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1pctCO2&#39;</span><span class="p">,</span> <span class="s1">&#39;abrupt-4xCO2&#39;</span><span class="p">,</span> <span class="s1">&#39;abrupt-2xCO2&#39;</span><span class="p">]</span>
+    <span class="n">idealized_matched_data</span> <span class="o">=</span> <span class="n">matched_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">matched_data</span><span class="p">[</span><span class="s1">&#39;archive_experiment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">idealized_exps</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Now select the non idealized runs, these are the time series that are a combination of the</span>
+    <span class="c1"># historical and future time series.</span>
+    <span class="n">fut_matched_data</span> <span class="o">=</span> <span class="n">matched_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">matched_data</span><span class="p">[</span><span class="s1">&#39;archive_experiment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">idealized_exps</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Determine the historical cut off year based on the size of the chunks.</span>
+    <span class="n">cut_off_yr</span> <span class="o">=</span> <span class="mi">2015</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">fut_matched_data</span><span class="p">[</span><span class="s2">&quot;target_end_yr&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fut_matched_data</span><span class="p">[</span><span class="s2">&quot;target_start_yr&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="c1"># Because smoothing with window =9 has occurred,</span>
+    <span class="c1"># historical is actually 2010 or earlier: the chunks</span>
+    <span class="c1"># that had purely historical data in them and none</span>
+    <span class="c1"># from the future when smoothing.</span>
+    <span class="n">subset_df</span> <span class="o">=</span> <span class="n">fut_matched_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fut_matched_data</span><span class="p">[</span><span class="s2">&quot;target_year&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">cut_off_yr</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Only operate if there are any historic years to deal with:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">subset_df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="c1"># parse out information about the ssp experiment id</span>
+        <span class="n">subset_df</span><span class="p">[</span><span class="s2">&quot;idvalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-over&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)),</span> <span class="n">subset_df</span><span class="p">[</span><span class="s2">&quot;archive_experiment&quot;</span><span class="p">]))</span>
+        <span class="c1"># group the data frame by the target information, recall that for each target match</span>
+        <span class="c1"># there might be more matches with the archive. Here we want to make sure that we do</span>
+        <span class="c1"># not want to have multiple matches with experiments from the historical period</span>
+        <span class="c1"># from the archive.</span>
+        <span class="n">grouped_dat</span> <span class="o">=</span> <span class="n">subset_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;target_variable&quot;</span><span class="p">,</span> <span class="s2">&quot;target_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;target_ensemble&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;target_model&quot;</span><span class="p">,</span> <span class="s2">&quot;target_start_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;target_end_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;target_year&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;target_fx&quot;</span><span class="p">,</span> <span class="s2">&quot;target_dx&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_year&quot;</span><span class="p">])</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped_dat</span><span class="p">:</span>
+            <span class="n">min_id_value</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;idvalue&#39;</span><span class="p">])</span>
+            <span class="n">dat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;idvalue&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">min_id_value</span><span class="p">])</span>
+        <span class="n">historical</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+        <span class="n">cols_to_keep</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_year&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;target_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;target_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_dx&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;dist_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_l2&#39;</span><span class="p">]</span>
+        <span class="n">historical</span> <span class="o">=</span> <span class="n">historical</span><span class="p">[</span><span class="n">cols_to_keep</span><span class="p">]</span>
+
+        <span class="c1"># select the future matched data</span>
+        <span class="c1"># TODO should it be 2010 or should it be the cut off year?</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">fut_matched_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fut_matched_data</span><span class="p">[</span><span class="s1">&#39;target_year&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2010</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                             <span class="n">historical</span><span class="p">,</span> <span class="n">idealized_matched_data</span><span class="p">])</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;target_year&#39;</span><span class="p">)</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">cols_to_keep</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_year&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;target_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;target_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_dx&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;dist_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_l2&#39;</span><span class="p">]</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="n">matched</span><span class="p">[</span><span class="n">cols_to_keep</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">matched</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">matched_data</span>
+
+<div class="viewcode-block" id="match_neighborhood"><a class="viewcode-back" href="../../reference/api.html#stitches.match_neighborhood">[docs]</a><span class="k">def</span> <span class="nf">match_neighborhood</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">archive_data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop_hist_duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="c1"># Check the inputs of the functions</span>
+    <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">target_data</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;target_data is an empty data frame&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">archive_data</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;archive_data is an empty data frame&quot;</span><span class="p">)</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">archive_data</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;variable&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;start_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;end_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;fx&quot;</span><span class="p">,</span> <span class="s2">&quot;dx&quot;</span><span class="p">})</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;start_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;end_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;fx&quot;</span><span class="p">,</span> <span class="s2">&quot;dx&quot;</span><span class="p">})</span>
+
+    <span class="n">archive_data</span> <span class="o">=</span> <span class="n">archive_data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># For every entry in the target data frame find its nearest neighbor from the archive data.</span>
+    <span class="c1"># concatenate the results into a single data frame.</span>
+    <span class="n">rslt</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fx</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="n">internal_dist</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">archivedata</span><span class="o">=</span><span class="n">archive_data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">),</span>
+               <span class="n">target_data</span><span class="p">[</span><span class="s2">&quot;fx&quot;</span><span class="p">],</span> <span class="n">target_data</span><span class="p">[</span><span class="s2">&quot;dx&quot;</span><span class="p">])</span>
+    <span class="n">matched</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rslt</span><span class="p">))</span>
+
+    <span class="c1"># Now add the information about the matches to the target data</span>
+    <span class="c1"># Make sure it is clear which columns contain  data that comes from the target compared</span>
+    <span class="c1"># to which ones correspond to the archive information.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Make a copy of the target data to work with and use in creating the output matched data frame,</span>
+    <span class="c1"># so that this function doesn&#39;t change the column names of one of its arguments.</span>
+    <span class="n">target_data_copied</span> <span class="o">=</span> <span class="n">target_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">target_data_copied</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;target_&#39;</span> <span class="o">+</span> <span class="n">target_data_copied</span><span class="o">.</span><span class="n">columns</span>
+
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">matched</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">target_data_copied</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;target_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;target_dx&#39;</span><span class="p">])</span>
+    <span class="n">cols_to_keep</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;target_variable&quot;</span><span class="p">,</span> <span class="s2">&quot;target_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;target_ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;target_model&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;target_start_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;target_end_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;target_year&quot;</span><span class="p">,</span> <span class="s2">&quot;target_fx&quot;</span><span class="p">,</span> <span class="s2">&quot;target_dx&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;archive_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_variable&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_model&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_ensemble&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;archive_start_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_end_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_year&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_fx&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_dx&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;dist_dx&quot;</span><span class="p">,</span> <span class="s2">&quot;dist_fx&quot;</span><span class="p">,</span> <span class="s2">&quot;dist_l2&quot;</span><span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="n">cols_to_keep</span><span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">drop_hist_duplicates</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">drop_hist_false_duplicates</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Abigail Snyder; Kalyn Dorheim; Claudia Tebaldi<br/>
+  
+      &copy; Copyright 2022-current, Battelle Memorial Institute.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

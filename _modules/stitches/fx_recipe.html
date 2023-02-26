@@ -1,0 +1,1071 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stitches.fx_recipe &#8212; stitches documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/quickstarter.html">
+   Quickstarter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting-started/tutorial.html">
+   Tutorial
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../examples/modify-inputs.html">
+   Modify Inputs
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Python API
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../reference/api.html">
+   Python API
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../reference/contributing.html">
+   Contributing to
+   <strong>
+    stitches
+   </strong>
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/JGCRI/stitches"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/JGCRI/stitches/issues/new?title=Issue%20on%20page%20%2F_modules/stitches/fx_recipe.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for stitches.fx_recipe</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Define the collection of helper functions that are used to generate the different</span>
+<span class="c1"># permutations of the recipes &amp; re-format for stitching.</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">stitches.fx_util</span> <span class="k">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">stitches.fx_match</span> <span class="k">as</span> <span class="nn">match</span>
+
+
+<span class="k">def</span> <span class="nf">get_num_perms</span><span class="p">(</span><span class="n">matched_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A function to give you the number of potential permutations from a</span>
+<span class="sd">    matched set of data. Ie Taking in the the results of `match_neighborhood(target, archive)`.</span>
+
+<span class="sd">        :param matched_data:          data output from match_neighborhood.</span>
+<span class="sd">        :return:                      A list with two entries. First, the total number of potential permutations of the</span>
+<span class="sd">        matches that cover 1850-2100 of the  target data in the matched_data dataframe. The second, a data frame with</span>
+<span class="sd">        the break down of how many matches are in each period of the target data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check inputs</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">matched_data</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_year&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;target_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;target_dx&#39;</span><span class="p">})</span>
+
+    <span class="n">dat</span> <span class="o">=</span> <span class="n">matched_data</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    <span class="n">dat_count</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;target_variable&quot;</span><span class="p">,</span> <span class="s2">&quot;target_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;target_ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;target_model&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;target_start_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;target_end_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;target_year&quot;</span><span class="p">,</span> <span class="s2">&quot;target_fx&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;target_dx&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_matches&#39;</span><span class="p">)</span>
+    <span class="n">dat_count</span> <span class="o">=</span> <span class="n">dat_count</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;target_year&quot;</span><span class="p">])</span>
+
+    <span class="n">dat_min</span> <span class="o">=</span> <span class="n">dat_count</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;target_variable&quot;</span><span class="p">,</span> <span class="s2">&quot;target_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;target_ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;target_model&quot;</span><span class="p">])[</span>
+        <span class="s1">&#39;n_matches&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;minNumMatches&#39;</span><span class="p">)</span>
+    <span class="n">dat_prod</span> <span class="o">=</span> <span class="n">dat_count</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;target_variable&quot;</span><span class="p">,</span> <span class="s2">&quot;target_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;target_ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;target_model&quot;</span><span class="p">])[</span>
+        <span class="s1">&#39;n_matches&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;totalNumPerms&#39;</span><span class="p">)</span>
+    <span class="n">dat_count_merge</span> <span class="o">=</span> <span class="n">dat_min</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">dat_prod</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">dat_count_merge</span><span class="p">,</span> <span class="n">dat_count</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">remove_duplicates</span><span class="p">(</span><span class="n">md</span><span class="p">,</span> <span class="n">archive</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A function that makes sure that within a single given matched recipe that</span>
+<span class="sd">        there each archive point used is unique. When two target tgav windows in</span>
+<span class="sd">        the trajectory match to the same archive window, the target window with</span>
+<span class="sd">        smaller Euclidean distance keeps the match, and the other target window</span>
+<span class="sd">        gets re-matched with its nearest-neighbor match from a new archive, the</span>
+<span class="sd">        previous one with all matched points removed.</span>
+<span class="sd">        </span>
+<span class="sd">        :param md:          A data frame with results of matching for a single</span>
+<span class="sd">                            tgav recipe. Either because match_neighborhood was</span>
+<span class="sd">                            used specifically to return NN or because the multiple</span>
+<span class="sd">                            matches have been permuted into new recipes and then</span>
+<span class="sd">                            split with this function being applied to each recipe.</span>
+<span class="sd">        :param archive:     data frame object consisting of the tas archive to use</span>
+<span class="sd">                            for re-matching duplicate points.</span>
+<span class="sd">        :return:                       data frame with same structure as raw matched, with duplicate matches replaced.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;target_year&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">&lt;</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">md</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;You have multiple matches to a single target year, this function can only accept a matched &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;data frame of singular matches between target &amp; archive data.&quot;</span><span class="p">)</span>
+
+    <span class="c1">#  Initialize everything that gets updated on each iteration of the while loop:</span>
+    <span class="c1"># 1. the data frame of matched_data -&gt; make a copy of the argument md to initialize</span>
+    <span class="c1"># 2. the data frame of duplicates is calculated for the first time.</span>
+    <span class="n">matched_data</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Check to see if in the matched data frame if there are any repeated values.</span>
+    <span class="n">md_archive</span> <span class="o">=</span> <span class="n">matched_data</span><span class="p">[[</span><span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">]]</span>
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="n">matched_data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">md_archive</span><span class="p">[</span><span class="n">md_archive</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+
+    <span class="c1"># As long as duplicates exist, rematch the target windows with the larger</span>
+    <span class="c1"># dist l2 to each archive chunk, add back in, iterate to be safe.</span>
+    <span class="c1"># By matching on new_archive = archive - matches that were used in md,</span>
+    <span class="c1"># we don&#39;t introduce new duplicates when we rematch. So the while loop is</span>
+    <span class="c1"># probably over cautious but it does only execute one iteration.</span>
+    <span class="k">while</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+        <span class="c1"># within each iteration of checking duplicates,</span>
+        <span class="c1"># pull out the one with smallest dist_l2 -</span>
+        <span class="c1"># this is the one that gets to keep the archive match, and we use</span>
+        <span class="c1"># as an index to work on the complement of (in case the same</span>
+        <span class="c1"># archive point gets matched for more than 2 target years)</span>
+        <span class="n">grouped</span> <span class="o">=</span> <span class="n">duplicates</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">])</span>
+        <span class="c1"># Pick which of the target points will continue to be matched with the archive</span>
+        <span class="c1"># pair.</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
+            <span class="n">min_value</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;dist_l2&#39;</span><span class="p">])</span>
+            <span class="n">dat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">group</span><span class="p">[</span><span class="s1">&#39;dist_l2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">min_value</span><span class="p">])</span>
+        <span class="n">duplicates_min</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+
+        <span class="c1"># target points contained in duplicates-duplicates_min </span>
+        <span class="c1"># are the  ones that need a new archive match.</span>
+        <span class="n">filter_col</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">duplicates</span> <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;target_&#39;</span><span class="p">)]</span>
+        <span class="n">points_to_rematch</span> <span class="o">=</span> <span class="n">duplicates</span><span class="p">[</span><span class="n">filter_col</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="o">~</span><span class="n">duplicates</span><span class="p">[</span><span class="s1">&#39;target_year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">duplicates_min</span><span class="p">[</span><span class="s1">&#39;target_year&#39;</span><span class="p">]))]</span>
+        <span class="n">new_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;target_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">points_to_rematch</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+        <span class="n">points_to_rematch</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">new_names</span>
+
+        <span class="c1"># Because we know that none of the archive values can be reused in the match,</span>
+        <span class="c1"># discard the ones already used (eg in matched_data)</span>
+        <span class="c1"># from the updated archive that will be used in the rematching.</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">matched_data</span> <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;archive_&#39;</span><span class="p">)]</span>
+        <span class="n">rm_from_archive</span> <span class="o">=</span> <span class="n">matched_data</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
+        <span class="n">new_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;archive_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">rm_from_archive</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+        <span class="n">rm_from_archive</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">new_names</span>
+
+        <span class="c1"># Use our anti_join utility function to return the rows of archive that are</span>
+        <span class="c1"># not in rm_from_archive</span>
+        <span class="n">new_archive</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anti_join</span><span class="p">(</span><span class="n">archive</span><span class="p">,</span> <span class="n">rm_from_archive</span><span class="p">,</span>
+                                     <span class="n">bycols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Find new matches for the data the target data that is missing the archive pair. Because we</span>
+        <span class="c1"># are only interested in completing our singular recipe the tol must be 0.</span>
+        <span class="n">rematched</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">match_neighborhood</span><span class="p">(</span><span class="n">target_data</span><span class="o">=</span><span class="n">points_to_rematch</span><span class="p">,</span> <span class="n">archive_data</span><span class="o">=</span><span class="n">new_archive</span><span class="p">,</span>
+                                             <span class="n">tol</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Now, we update our key data frames for the next iteration of the while loop:</span>
+        <span class="c1"># 1. matched_data gets updated to be rematched + (previous matched_data minus the targets</span>
+        <span class="c1"># that were rematched).</span>
+        <span class="c1"># 2. duplicates gets recreated, checking for duplicates in our updated matched_data.</span>
+
+        <span class="c1"># update matched_data:</span>
+        <span class="c1"># first, drop the target windows that got rematched from the current matched_data:</span>
+        <span class="n">matched_data_minus_rematched_targ_years</span> <span class="o">=</span> <span class="n">matched_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+            <span class="o">~</span><span class="p">(</span><span class="n">matched_data</span><span class="p">[</span><span class="s1">&#39;target_year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">rematched</span><span class="p">[</span><span class="s1">&#39;target_year&#39;</span><span class="p">]))]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">matched_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">matched_data_minus_rematched_targ_years</span><span class="p">,</span> <span class="n">rematched</span><span class="p">])</span> \
+            <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;target_year&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Identify duplicates in the updated matched_data for the next iteration of the while loop</span>
+        <span class="n">md_archive</span> <span class="o">=</span> <span class="n">matched_data</span><span class="p">[[</span><span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">]]</span>
+        <span class="n">duplicates</span> <span class="o">=</span> <span class="n">matched_data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">md_archive</span><span class="p">[</span><span class="n">md_archive</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Clean up for the next while loop iteration</span>
+        <span class="k">del</span> <span class="p">(</span><span class="n">duplicates_min</span><span class="p">,</span> <span class="n">points_to_rematch</span><span class="p">,</span> <span class="n">rm_from_archive</span><span class="p">,</span> <span class="n">rematched</span><span class="p">,</span>
+             <span class="n">matched_data_minus_rematched_targ_years</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">matched_data</span>
+
+
+<div class="viewcode-block" id="permute_stitching_recipes"><a class="viewcode-back" href="../../reference/api.html#stitches.permute_stitching_recipes">[docs]</a><span class="k">def</span> <span class="nf">permute_stitching_recipes</span><span class="p">(</span><span class="n">N_matches</span><span class="p">,</span> <span class="n">matched_data</span><span class="p">,</span> <span class="n">archive</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">testing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;  A function to sample from input `matched_data` (the the results</span>
+<span class="sd">    of `match_neighborhood(target, archive, tol)` to produce permutations</span>
+<span class="sd">    of possible stitching recipes that will match the target data.</span>
+
+<span class="sd">    matched_data is the output from match_neighborhood</span>
+<span class="sd">    If matched_data has only one target SSP-ensemble member:</span>
+<span class="sd">       Then you get N_matches of new realizations, there&#39;s no collapse</span>
+<span class="sd">       within those but there may be collapse across other ensemble</span>
+<span class="sd">       members.</span>
+
+<span class="sd">    If matched_data has multiple target SSP-ensemble members (same ssp):</span>
+<span class="sd">      The code _attempts_ to give N_matches generated realizations for</span>
+<span class="sd">      each target ensemble member. Fewer may be possible, etc. There is no collapse</span>
+<span class="sd">      across the generated realizations. This is basically targeting the</span>
+<span class="sd">      SSP as a whole, not necessarily the actual ensemble members.</span>
+
+<span class="sd">    To look at multiple target SSPs, basically call this function</span>
+<span class="sd">    separately for each because we do not care about collapse.</span>
+
+<span class="sd">        :param N_matches:       int the number of desired stitching recipes.</span>
+<span class="sd">        :param matched_data:    data output from match_neighborhood.</span>
+<span class="sd">        :param archive:         the archive data to use for re-matching duplicate points</span>
+<span class="sd">        :param optional:        a previous output of this function that contains a list of already created recipes</span>
+<span class="sd">                                to avoid re-making (this is not implemented).</span>
+<span class="sd">        :param testing:         Boolean True/False. Defaults to False. If True, then pd.DataFrame.sample() uses</span>
+<span class="sd">                                the argument random_state=1 so that the behavior can be reliably replicated</span>
+<span class="sd">                                without setting global seeds.</span>
+
+
+<span class="sd">        :return:                data frame with same structure as raw matched, with duplicate matches replaced.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check inputs</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">matched_data</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_year&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;target_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;target_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_dx&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;dist_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_l2&#39;</span><span class="p">})</span>
+
+    <span class="c1"># Initialize quantities updated on every iteration of the while loop:</span>
+    <span class="c1"># 1. A copy of the matched data</span>
+    <span class="c1"># 2. perm_guide</span>
+
+    <span class="c1"># Initialize matched_data_int for iteration through the while loop:</span>
+    <span class="c1"># make a copy of the data to work with to be sure we don&#39;t touch original argument</span>
+    <span class="n">matched_data_int</span> <span class="o">=</span> <span class="n">matched_data</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># identifying how many target windows are in a trajectory we want to</span>
+    <span class="c1"># create so that we know we have created a full trajectory with no</span>
+    <span class="c1"># missing windows; basically a reference for us to us in checks.</span>
+    <span class="n">num_target_windows</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">matched_data_int</span><span class="p">[</span><span class="s2">&quot;target_year&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+
+    <span class="c1"># Initialize perm_guide for iteration through the while loop.</span>
+    <span class="c1"># the permutation guide is one of the factors that the while loop</span>
+    <span class="c1"># will run checks on, must be initialized.</span>
+    <span class="c1"># Perm_guide is basically a dataframe where each target window</span>
+    <span class="c1"># lists the number of archive matches it has.</span>
+    <span class="n">num_perms</span> <span class="o">=</span> <span class="n">get_num_perms</span><span class="p">(</span><span class="n">matched_data_int</span><span class="p">)</span>
+    <span class="n">perm_guide</span> <span class="o">=</span> <span class="n">num_perms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># how many target trajectories are we matching to,</span>
+    <span class="c1"># how many collapse-free ensemble members can each</span>
+    <span class="c1"># target support, and order them according to that</span>
+    <span class="c1"># for construction.</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">num_perms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;minNumMatches&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="c1"># Add a column of a target  id name, differentiate between the different input</span>
+    <span class="c1"># streams we are emulating.</span>
+    <span class="c1"># We specifically emulate starting with the realization that can support</span>
+    <span class="c1"># the fewest collapse-free generated realizations and work in increasing</span>
+    <span class="c1"># order from there. We iterate over the different realizations to facilitate</span>
+    <span class="c1"># checking for duplicates across generated realizations across target</span>
+    <span class="c1"># realizations.</span>
+    <span class="n">targets</span><span class="p">[</span><span class="s1">&#39;target_ordered_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">num_perms</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;target_experiment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;function permute_stitching_recipes should be applied to separate data frames for each target experiment of interest (multiple target ensemble members for a single target experiment is fine)&quot;</span><span class="p">)</span>
+
+    <span class="c1"># max number of permutations per target without repeating across generated</span>
+    <span class="c1"># ensemble members.</span>
+    <span class="n">N_data_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_perms</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;minNumMatches&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">N_matches</span> <span class="o">&gt;</span> <span class="n">N_data_max</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You have requested more recipes than possible for at least one target trajectories, returning what can&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Initialize the number of matches to either 0 or the input read from optional:</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">optional</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;initialize to the read-in: has not been translated&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">recipe_collection</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="c1"># Loop over each target ensemble member, creating N_matches generated</span>
+    <span class="c1"># realizations via a while loop before moving to the next target.</span>
+    <span class="k">for</span> <span class="n">target_id</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">[</span><span class="s1">&#39;target_ordered_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="c1"># subset the target info, the target df contains meta information about the run we</span>
+        <span class="c1"># and the number of permutations and such.</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">targets</span><span class="p">[</span><span class="s2">&quot;target_ordered_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">target_id</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># initialize a recipes data frame holder for each target, for</span>
+        <span class="c1"># the while loop to iterate on</span>
+        <span class="n">recipes_col_by_target</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">var_name</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;target_experiment&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;target_model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ens</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;target_ensemble&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># While the following conditions are met continue to generate new recipes.</span>
+        <span class="c1"># 1. While we have fewer matches than requested for the target ensemble_member,</span>
+        <span class="c1">#    keep going.</span>
+        <span class="c1"># 2. Filter the perm_guide to just the target ensemble member in this loop and</span>
+        <span class="c1">#    make sure there are at least num_target_windows of time windows: basically</span>
+        <span class="c1">#    make sure there is at least one remaining archive match to draw from for</span>
+        <span class="c1">#    each target window in this target ensemble. Note this means the perm_guide</span>
+        <span class="c1">#    must be updated at the end of every while loop iteration.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Initialize these conditions so we enter the while loop, then update again at the</span>
+        <span class="c1"># end of each iteration:</span>
+        <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">recipes_col_by_target</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">condition1</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">recipes_col_by_target</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">&lt;</span> <span class="n">N_matches</span><span class="p">:</span>
+            <span class="n">condition1</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">condition1</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">perm_rows</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span>
+            <span class="n">perm_guide</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">perm_guide</span><span class="p">[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">var_name</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">perm_guide</span><span class="p">[</span><span class="s1">&#39;target_experiment&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">exp</span><span class="p">)</span> <span class="o">&amp;</span>
+                           <span class="p">(</span><span class="n">perm_guide</span><span class="p">[</span><span class="s1">&#39;target_model&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">mod</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">perm_guide</span><span class="p">[</span><span class="s1">&#39;target_ensemble&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens</span><span class="p">)]</span>
+                <span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">perm_rows</span> <span class="o">==</span> <span class="n">num_target_windows</span><span class="p">:</span>
+            <span class="n">condition2</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">condition2</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># And an integer index to initialize the count of stitched</span>
+        <span class="c1"># trajectories for each target</span>
+        <span class="n">stitch_ind</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Run the while loop!</span>
+        <span class="k">while</span> <span class="nb">all</span><span class="p">([</span><span class="n">condition1</span><span class="p">,</span> <span class="n">condition2</span><span class="p">]):</span>
+
+            <span class="c1"># Group matched data for a single target by the chunks of the target information.</span>
+            <span class="c1"># Right now a single target chunk may have multiple matches with archive points. The</span>
+            <span class="c1"># next several steps of the while loop will create a one to one paring between the</span>
+            <span class="c1"># target and archive data, then check to make sure that the pairing meets the requirements</span>
+            <span class="c1"># for what we call a recipe.</span>
+            <span class="n">grouped_targets</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">grouped_targets</span> <span class="o">=</span> <span class="n">matched_data_int</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">matched_data_int</span><span class="p">[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">var_name</span><span class="p">)</span> <span class="o">&amp;</span>
+                                                   <span class="p">(</span><span class="n">matched_data_int</span><span class="p">[</span><span class="s1">&#39;target_experiment&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">exp</span><span class="p">)</span> <span class="o">&amp;</span>
+                                                   <span class="p">(</span><span class="n">matched_data_int</span><span class="p">[</span><span class="s1">&#39;target_model&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">mod</span><span class="p">)</span> <span class="o">&amp;</span>
+                                                   <span class="p">(</span><span class="n">matched_data_int</span><span class="p">[</span><span class="s1">&#39;target_ensemble&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;target_model&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">])</span>
+
+            <span class="c1"># For each target window group,</span>
+            <span class="c1"># Randomly select one of the archive matches to use.</span>
+            <span class="c1"># This creates one_one_match, a candidate recipe.</span>
+            <span class="n">one_one_match</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped_targets</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">testing</span><span class="p">:</span>
+                    <span class="n">one_one_match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">one_one_match</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">one_one_match</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">one_one_match</span><span class="p">)</span>
+            <span class="n">one_one_match</span> <span class="o">=</span> <span class="n">one_one_match</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="c1"># Before we can accept our candidate recipe, one_one_match,</span>
+            <span class="c1"># we run it through a lot of tests.</span>
+
+            <span class="c1"># Force one_one_match to meet our first condition,</span>
+            <span class="c1"># that each archive data point in the recipe must be unique.</span>
+            <span class="c1"># Then give it a stitching id</span>
+            <span class="n">new_recipe</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">new_recipe</span> <span class="o">=</span> <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">one_one_match</span><span class="p">,</span> <span class="n">archive</span><span class="p">)</span>
+            <span class="n">stitching_id</span> <span class="o">=</span> <span class="n">exp</span> <span class="o">+</span> <span class="s1">&#39;~&#39;</span> <span class="o">+</span> <span class="n">ens</span> <span class="o">+</span> <span class="s1">&#39;~&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">stitch_ind</span><span class="p">)</span>
+            <span class="n">new_recipe</span><span class="p">[</span><span class="s2">&quot;stitching_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stitching_id</span>
+            <span class="n">new_recipe</span> <span class="o">=</span> <span class="n">new_recipe</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="c1"># Make sure the new recipe isn&#39;t missing any years:</span>
+            <span class="k">if</span> <span class="o">~</span><span class="n">new_recipe</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">num_target_windows</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;problem: the new single recipe is missing years of data!&quot;</span><span class="p">)</span>
+            <span class="c1">#  Make sure that no changes were made to the target years.</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="o">~</span><span class="n">new_recipe</span><span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">matched_data_int</span><span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">])))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;problem the new single recipe target years!&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Compare the new_recipe to the previously drawn recipes across all target</span>
+            <span class="c1"># ensembles.</span>
+            <span class="c1"># There is no collapse within each target ensemble because  we remove the constructed</span>
+            <span class="c1"># new_recipe from the matched_data at the end of each iteration of the while loop -</span>
+            <span class="c1"># The sampled points CAN&#39;T be used again for the current target ensemble member</span>
+            <span class="c1"># for loop iteration, or for any other target ensemble members. Meaning we</span>
+            <span class="c1"># avoid envelope collapse when targeting multiple realizations (you don&#39;t have</span>
+            <span class="c1"># realization 1 and realization 4 2070 getting matched to the same archive point.</span>
+            <span class="c1"># The code below is checking to make sure that our new_recipe doesn&#39;t exist</span>
+            <span class="c1"># in the saved recipe_collection. This shouldn&#39;t be possible with how we update</span>
+            <span class="c1"># our matched_data_int on every loop, but just to be cautious, we check.</span>
+            <span class="c1"># Again, the challenge is seeing if our entire sample has</span>
+            <span class="c1"># been included in recipes before, not just a row or two.</span>
+
+            <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">recipe_collection</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># If previous recipes exist, we must create a comparison</span>
+                <span class="c1"># data frame that checks each existing recipe in recipe_collection</span>
+                <span class="c1"># against new_recipe and record True/False</span>
+                <span class="c1">#</span>
+                <span class="c1"># Compare the new recipe with the existing collection of all recipes.</span>
+                <span class="n">cols_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span>
+                <span class="n">grouped_collection</span> <span class="o">=</span> <span class="n">recipe_collection</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">])</span>
+                <span class="n">comparison</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped_collection</span><span class="p">:</span>
+                    <span class="n">df1</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">cols_to_use</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">df2</span> <span class="o">=</span> <span class="n">new_recipe</span><span class="p">[</span><span class="n">cols_to_use</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">comparison</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">df2</span><span class="p">))</span>
+
+                <span class="c1"># end for loop</span>
+            <span class="c1"># end if statement</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Otherwise, this is the first recipe we&#39;ve done at all, so we set comparison manually</span>
+                <span class="c1"># so that the next if statement triggers just like it was appending a new recipe to an</span>
+                <span class="c1"># existing list.</span>
+                <span class="n">comparison</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span>
+            <span class="c1"># end else</span>
+
+            <span class="c1"># If the new_recipe is not unique (aka, any(comparison) == True), then</span>
+            <span class="c1"># we don&#39;t want it and we don&#39;t want to do anything else in this iteration of</span>
+            <span class="c1"># the while loop. We DON&#39;T update the matched_points or conditions, so the</span>
+            <span class="c1"># while loop is forced to re-run so that another random draw is done to create</span>
+            <span class="c1"># a new candidate new_recipe.</span>
+            <span class="c1"># We check for what we want: the new recipe is the first or all(comparison)==False.</span>
+            <span class="c1"># In either case, we are safe to keep new_recipe and update all the data frames</span>
+            <span class="c1"># for the next iteration of the while loop.</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">comparison</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+
+                <span class="c1"># add new_recipe to the list of recipes for this target ensemble</span>
+                <span class="n">recipes_col_by_target</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">recipes_col_by_target</span><span class="p">,</span> <span class="n">new_recipe</span><span class="p">])</span>
+
+                <span class="c1"># And we remove it from the matched_points_int so the archive</span>
+                <span class="c1"># values used in this new_recipe can&#39;t be used to construct</span>
+                <span class="c1"># subsequent realizations for this target ensemble member.</span>
+                <span class="c1"># This updated matched_data_int is used in each iteration</span>
+                <span class="c1"># of the while loop. Since we are removing the constructed</span>
+                <span class="c1"># new_recipe from the matched_data_int at the end of each</span>
+                <span class="c1"># iteration of the while loop, the sample points can&#39;t be</span>
+                <span class="c1"># randomly drawn again for the next generated trajectory</span>
+                <span class="c1"># of the current target ensemble member for loop iteration.</span>
+
+                <span class="c1"># Now each (target_window, archive_window) combination must</span>
+                <span class="c1"># be removed from matched data for all target ensemble members,</span>
+                <span class="c1"># not just the one we are currently operating on.</span>
+                <span class="c1"># This ensures that we don&#39;t get collapse in the generated</span>
+                <span class="c1"># envelope across target ensemble members (e.g you don&#39;t</span>
+                <span class="c1"># have realization 1 and realization 4 2070 getting matched</span>
+                <span class="c1"># to the same archive point).</span>
+                <span class="c1"># Use an anti-join</span>
+                <span class="n">matched_data_int</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anti_join</span><span class="p">(</span><span class="n">matched_data_int</span><span class="p">,</span> <span class="n">new_recipe</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                                                  <span class="n">bycols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;target_year&quot;</span><span class="p">,</span> <span class="s2">&quot;target_start_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;target_end_yr&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;archive_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_variable&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_model&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;archive_ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_start_yr&quot;</span><span class="p">,</span> <span class="s2">&quot;archive_end_yr&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;archive_year&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                <span class="c1"># update permutation count info with the revised matched data so</span>
+                <span class="c1"># the while loop behaves - this makes sure that every target window</span>
+                <span class="c1"># in the perm_guide actually has at least one matched archive point</span>
+                <span class="c1"># available for draws .</span>
+                <span class="c1"># That way, we don&#39;t try to construct a trajectory with fewer years</span>
+                <span class="c1"># than the targets.</span>
+                <span class="n">num_perms</span> <span class="o">=</span> <span class="n">get_num_perms</span><span class="p">(</span><span class="n">matched_data_int</span><span class="p">)</span>
+                <span class="n">perm_guide</span> <span class="o">=</span> <span class="n">num_perms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="c1"># Use the updated perm_guide to update</span>
+                <span class="c1"># the while loop conditions:</span>
+
+                <span class="c1"># Condition 1:</span>
+                <span class="c1"># If we haven&#39;t reached the N_matches goal for this target ensemble</span>
+                <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">recipes_col_by_target</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">condition1</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">elif</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">recipes_col_by_target</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span> <span class="o">&lt;</span> <span class="n">N_matches</span><span class="p">:</span>
+                    <span class="n">condition1</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">condition1</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># end updating Condition 1</span>
+
+                <span class="c1"># Condition 2:</span>
+                <span class="c1"># make sure each target window in the updated perm guide has at least one archive match available</span>
+                <span class="c1"># to draw on the next iteration.</span>
+                <span class="n">perm_rows</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span>
+                    <span class="n">perm_guide</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                        <span class="p">(</span><span class="n">perm_guide</span><span class="p">[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">var_name</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">perm_guide</span><span class="p">[</span><span class="s1">&#39;target_experiment&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">exp</span><span class="p">)</span> <span class="o">&amp;</span>
+                        <span class="p">(</span><span class="n">perm_guide</span><span class="p">[</span><span class="s1">&#39;target_model&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">mod</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">perm_guide</span><span class="p">[</span><span class="s1">&#39;target_ensemble&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens</span><span class="p">)]</span>
+                        <span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                        <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">())</span>
+
+                <span class="k">if</span> <span class="n">perm_rows</span> <span class="o">==</span> <span class="n">num_target_windows</span><span class="p">:</span>
+                    <span class="n">condition2</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">condition2</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># end updating condition 2</span>
+
+                <span class="c1"># Add to the stitch_ind, to update the count of stitched</span>
+                <span class="c1"># trajectories for each target ensemble member.</span>
+                <span class="n">stitch_ind</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># end if statement</span>
+        <span class="c1"># end the while loop for this target ensemble member</span>
+
+        <span class="c1"># Add the collection of the recipes for each of the targets into single df.</span>
+        <span class="n">recipe_collection</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">recipe_collection</span><span class="p">,</span> <span class="n">recipes_col_by_target</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># end the for loop over target ensemble members</span>
+
+    <span class="c1"># do outputs</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">recipe_collection</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">out</span><span class="p">[[</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_year&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;target_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;target_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_dx&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;dist_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_l2&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">]]</span></div>
+
+
+<span class="k">def</span> <span class="nf">handle_transition_periods</span><span class="p">(</span><span class="n">rp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Go through the recipe and when there is a transition period, aka the archive years span both the</span>
+<span class="sd">    historical and future scenarios go through and insert in an extra period so that they don&#39;t do</span>
+<span class="sd">    this over lap any more.</span>
+
+<span class="sd">        :param rp:       a data frame of the recipe.</span>
+
+<span class="sd">        :return:         a data frame of of the recipe with no over lapping historical/future experiments, this is now ready to join with pangeo information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">rp</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_year&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;target_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;target_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_dx&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;dist_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_l2&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">internal_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="c1"># First check to see the archive period spans the historical to future scenario</span>
+        <span class="n">transition_period</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="mi">2014</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;archive_start_yr&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;archive_end_yr&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span>
+                <span class="p">(</span><span class="mi">2015</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;archive_start_yr&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;archive_end_yr&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">transition_period</span><span class="p">:</span>
+            <span class="n">target_yrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;target_end_yr&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">archive_yrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;archive_start_yr&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">hist_cut_off</span> <span class="o">=</span> <span class="mi">2014</span>  <span class="c1"># the final complete year of the historical experiment</span>
+
+            <span class="n">historical_yrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">hist_cut_off</span><span class="p">,</span> <span class="n">archive_yrs</span><span class="p">))</span>
+            <span class="n">future_yrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">archive_yrs</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">historical_yrs</span><span class="p">)))</span>
+
+            <span class="c1"># This is the information that is constant between the historical and future periods.</span>
+            <span class="n">constant_info</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">({</span><span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">})]</span>
+
+            <span class="c1"># Construct the historical period information</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">target_yrs</span><span class="p">),</span>
+                 <span class="s1">&#39;target_end_yr&#39;</span><span class="p">:</span> <span class="n">target_yrs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">historical_yrs</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                 <span class="s1">&#39;archive_experiment&#39;</span><span class="p">:</span> <span class="s1">&#39;historical&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">historical_yrs</span><span class="p">),</span>
+                 <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">historical_yrs</span><span class="p">)}</span>
+            <span class="n">ser</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">])</span>
+            <span class="n">historical_period</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ser</span><span class="p">,</span> <span class="n">constant_info</span><span class="p">])</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+
+
+            <span class="c1"># Check to make sure the lengths of time are correct</span>
+            <span class="n">targ_len</span> <span class="o">=</span> <span class="n">historical_period</span><span class="p">[</span><span class="s1">&#39;target_end_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">historical_period</span><span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">arch_len</span> <span class="o">=</span> <span class="n">historical_period</span><span class="p">[</span><span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">historical_period</span><span class="p">[</span><span class="s1">&#39;archive_start_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">if</span> <span class="n">targ_len</span> <span class="o">!=</span> <span class="n">arch_len</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;problem with the length of the historical archive &amp; target yrs&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Now construct the future period information</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">:</span> <span class="n">target_yrs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">historical_yrs</span><span class="p">)],</span>
+                 <span class="s1">&#39;target_end_yr&#39;</span><span class="p">:</span> <span class="n">target_yrs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">target_yrs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+                 <span class="s1">&#39;archive_experiment&#39;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;archive_experiment&#39;</span><span class="p">],</span>
+                 <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">future_yrs</span><span class="p">),</span>
+                 <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">future_yrs</span><span class="p">)}</span>
+            <span class="n">ser</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">])</span>
+            <span class="c1"># future_period = ser.append(constant_info).to_frame().transpose()</span>
+            <span class="n">future_period</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ser</span><span class="p">,</span> <span class="n">constant_info</span><span class="p">])</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+
+            <span class="c1"># Check to make sure the lengths of time are correct</span>
+            <span class="n">targ_len</span> <span class="o">=</span> <span class="n">future_period</span><span class="p">[</span><span class="s1">&#39;target_end_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">future_period</span><span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">arch_len</span> <span class="o">=</span> <span class="n">future_period</span><span class="p">[</span><span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">future_period</span><span class="p">[</span><span class="s1">&#39;archive_start_yr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">targ_len</span> <span class="o">==</span> <span class="n">arch_len</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;problem with the length of the historical archive &amp; target yrs&quot;</span><span class="p">)</span>
+
+
+            <span class="c1"># Combine the period information</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">historical_period</span><span class="p">,</span> <span class="n">future_period</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="c1"># Note that data frame returned might not be identical in shape to the</span>
+    <span class="c1"># recipe read in because any periods that cover the historical period</span>
+    <span class="c1"># will be split into two rows.</span>
+    <span class="n">ser</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">internal_func</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">ser</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">handle_final_period</span><span class="p">(</span><span class="n">rp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Go through a recipe and ensure that all of the periods have the same archive </span>
+<span class="sd">    and target period length, if not update to reflect the target period length. </span>
+<span class="sd">    Otherwise you&#39;ll end up with extra years in the stitched data. This is really </span>
+<span class="sd">    only an issue for the final period of target data because sometimes that period is somewhat short. </span>
+<span class="sd">    OR if the normal sized target window gets matched to the final period of data from one</span>
+<span class="sd">    of the archive matches. Since the final period is typically only one year shorter than the</span>
+<span class="sd">    full window target period in this case, we simply repeat the final archive year to get </span>
+<span class="sd">    enough matches.</span>
+
+<span class="sd">        :param rp:       a data frame of the recipe.</span>
+
+<span class="sd">        :return:         a recipe data frame that has target and archive periods of the same length.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Define an internal function that checks row by row if we are working</span>
+    <span class="c1"># with the final period &amp; if that is a problem, if so handle it.</span>
+    <span class="k">def</span> <span class="nf">internal_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">len_target</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;target_end_yr&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">]</span>
+        <span class="n">len_archive</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;archive_start_yr&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">len_target</span> <span class="o">==</span> <span class="n">len_archive</span><span class="p">:</span>
+            <span class="c1"># No problem return the the row as is</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]]</span>
+
+        <span class="k">elif</span> <span class="n">len_target</span> <span class="o">&lt;</span> <span class="n">len_archive</span><span class="p">:</span>
+            <span class="c1"># Figure out how much shorter the target period is than the archive period.</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]]</span>
+            <span class="n">out</span><span class="p">[</span><span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Figure out how much shorter the target period is than the archive period.</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]]</span>
+            <span class="n">out</span><span class="p">[</span><span class="s1">&#39;archive_start_yr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;archive_start_yr&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="n">ser</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">internal_func</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">ser</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<div class="viewcode-block" id="generate_gridded_recipe"><a class="viewcode-back" href="../../reference/api.html#stitches.generate_gridded_recipe">[docs]</a><span class="k">def</span> <span class="nf">generate_gridded_recipe</span><span class="p">(</span><span class="n">messy_recipe</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="s1">&#39;mon&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Using a messy recipe create the recipe that can be used in the</span>
+<span class="sd">         stitching process.</span>
+
+
+<span class="sd">         :param messy_recipe:       a data frame generated by the permute_recipes</span>
+<span class="sd">         :param res:                string mon or day</span>
+
+<span class="sd">         :return:                   a recipe data frame</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="c1"># Check inputs</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">messy_recipe</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_year&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;target_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;target_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_year&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_dx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_dx&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;dist_fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dist_l2&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">res</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mon&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;generate_gridded_recipe: does not recognize the res input&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Clean up the recipe</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="n">handle_transition_periods</span><span class="p">(</span><span class="n">messy_recipe</span><span class="p">)</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="n">handle_final_period</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+
+    <span class="c1"># Make sure that if there are historical years of data being used assign</span>
+    <span class="c1"># the experiment name to historical.</span>
+    <span class="n">dat</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dat</span><span class="p">[</span><span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">2014</span><span class="p">,</span> <span class="s2">&quot;archive_experiment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;historical&quot;</span>
+
+    <span class="c1"># Now that we have the formatted recipe add the pangeo tas information!!</span>
+    <span class="n">ptable_path</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">,</span> <span class="s1">&#39;data/pangeo_table.csv&#39;</span><span class="p">)</span>
+    <span class="n">pangeo_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">ptable_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="s1">&#39;mon&#39;</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="s1">&#39;Amon&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="s1">&#39;day&#39;</span>
+    <span class="n">tas_meta_info</span> <span class="o">=</span> <span class="n">pangeo_table</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">pangeo_table</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tas&#39;</span><span class="p">)</span> <span class="o">&amp;</span>
+                                     <span class="p">(</span><span class="n">pangeo_table</span><span class="p">[</span><span class="s1">&#39;domain&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">table</span><span class="p">)]</span>
+    <span class="n">tas_meta_info</span> <span class="o">=</span> <span class="n">tas_meta_info</span><span class="p">[[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;zstore&#39;</span><span class="p">]]</span>
+    <span class="n">tas_meta_info</span> <span class="o">=</span> <span class="n">tas_meta_info</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;archive_model&quot;</span><span class="p">,</span>
+                                                  <span class="s2">&quot;experiment&quot;</span><span class="p">:</span> <span class="s2">&quot;archive_experiment&quot;</span><span class="p">,</span>
+                                                  <span class="s2">&quot;ensemble&quot;</span><span class="p">:</span> <span class="s2">&quot;archive_ensemble&quot;</span><span class="p">,</span>
+                                                  <span class="s2">&quot;variable&quot;</span><span class="p">:</span> <span class="s2">&quot;archive_variable&quot;</span><span class="p">})</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">dat</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">tas_meta_info</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span>
+                                                      <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">])</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Make sure that no information has been lost, if that is the case raise an error.</span>
+    <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">!=</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">dat</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Problem in generate_gridded_recipe, loosing data in recipe!&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="make_recipe"><a class="viewcode-back" href="../../reference/api.html#stitches.make_recipe">[docs]</a><span class="k">def</span> <span class="nf">make_recipe</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">archive_data</span><span class="p">,</span> <span class="n">N_matches</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="s2">&quot;mon&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">non_tas_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">reproducible</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate a stitching recipe.</span>
+
+<span class="sd">         :param target_data:       a pandas data frame of climate information to emulate.</span>
+<span class="sd">         :param archive_data:      a pandas data frame of temperature data to use as the archive to match on.</span>
+<span class="sd">         :param N_matches:         a int to the maximum number of matches per target data</span>
+<span class="sd">         :param res:               str of mon or day to indicate the resolution of the stitched data</span>
+<span class="sd">         :param tol:               float value indicating the tolerance to use in the matching process, default set to 0.1</span>
+<span class="sd">         :param non_tas_variables: a list of variables other than tas to stitch together, when using the default set to None only tas will be stitched together.</span>
+<span class="sd">         :param reproducible:         Boolean True/False. Defaults to False. If True,the call to permute_stitching_recipes()</span>
+<span class="sd">                                                 uses the testing=True argument so that the behavior can be reliably replicated</span>
+<span class="sd">                                                                                 without setting global seeds.</span>
+
+<span class="sd">         :return:                   pandas data frame of a formatted recpie</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check the inputs</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;start_yr&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">]))</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">archive_data</span><span class="p">,</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;start_yr&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;fx&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">N_matches</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;N_matches: must be an integer&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">tol</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tol: must be a float&quot;</span><span class="p">)</span>
+
+
+    <span class="c1"># If there are non tas variables to be stitched, subset the archive to limit</span>
+    <span class="c1"># the coverage to only the entries with the complete coverage.</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">non_tas_variables</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">res</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mon&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;does not recognize the res input&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;tas&#39;</span> <span class="ow">in</span> <span class="n">non_tas_variables</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;non_tas_variables: cannot contain tas&quot;</span><span class="p">)</span>
+
+        <span class="n">pt_path</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">,</span> <span class="s1">&#39;data/pangeo_table.csv&#39;</span><span class="p">)</span>
+        <span class="n">pangeo_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">pt_path</span><span class="p">)</span>
+
+        <span class="n">var_list</span> <span class="o">=</span> <span class="n">pangeo_table</span><span class="p">[</span><span class="s2">&quot;variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">non_tas_variables</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">var_list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;1 or more of the variables are not found in pangeo table.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Subset the pangeo table so that it contains the resolution &amp; variables of data of interest.</span>
+        <span class="n">non_tas_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;tas&#39;</span><span class="p">)</span>
+        <span class="n">pt_subset</span> <span class="o">=</span> <span class="n">pangeo_table</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">pangeo_table</span><span class="p">[</span><span class="s2">&quot;domain&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">&amp;</span>
+                                      <span class="n">pangeo_table</span><span class="p">[</span><span class="s2">&quot;variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">non_tas_variables</span><span class="p">)</span> <span class="o">&amp;</span>
+                                      <span class="o">~</span><span class="n">pangeo_table</span><span class="p">[</span><span class="s2">&quot;zstore&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;AerChemMIP&quot;</span><span class="p">))]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Format the variable column to the &quot;file&quot; so that we can</span>
+        <span class="n">pt_subset</span><span class="p">[</span><span class="s2">&quot;variable&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt_subset</span><span class="p">[</span><span class="s2">&quot;variable&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_file&quot;</span>
+        <span class="n">wide_df</span> <span class="o">=</span> <span class="n">pt_subset</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;variable&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;zstore&quot;</span><span class="p">)</span>
+        <span class="n">wide_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">wide_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">wide_df</span> <span class="o">=</span> <span class="n">wide_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+        <span class="c1"># Select the archive entries for the model, ensemble, experiment to keep, there are the entries</span>
+        <span class="c1"># that also have complete coverage for the variables listed in the non tas variable list.</span>
+        <span class="n">to_keep</span> <span class="o">=</span> <span class="n">wide_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">wide_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">])]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">archive_data</span> <span class="o">=</span> <span class="n">archive_data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">to_keep</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Match the archive &amp; target data together.</span>
+    <span class="n">match_df</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">match_neighborhood</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">archive_data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">reproducible</span><span class="p">:</span>
+        <span class="n">unformatted_recipe</span> <span class="o">=</span> <span class="n">permute_stitching_recipes</span><span class="p">(</span><span class="n">N_matches</span><span class="o">=</span><span class="n">N_matches</span><span class="p">,</span>
+                                                       <span class="n">matched_data</span><span class="o">=</span><span class="n">match_df</span><span class="p">,</span>
+                                                       <span class="n">archive</span><span class="o">=</span><span class="n">archive_data</span><span class="p">,</span>
+                                                       <span class="n">testing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">unformatted_recipe</span> <span class="o">=</span> <span class="n">permute_stitching_recipes</span><span class="p">(</span><span class="n">N_matches</span><span class="o">=</span><span class="n">N_matches</span><span class="p">,</span>
+                                                       <span class="n">matched_data</span><span class="o">=</span><span class="n">match_df</span><span class="p">,</span>
+                                                       <span class="n">archive</span><span class="o">=</span><span class="n">archive_data</span><span class="p">,</span>
+                                                       <span class="n">testing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Format the recipe into the dataframe that can be used by the stitching functions.</span>
+    <span class="n">recipe</span> <span class="o">=</span> <span class="n">generate_gridded_recipe</span><span class="p">(</span><span class="n">unformatted_recipe</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="n">res</span><span class="p">)</span>
+    <span class="n">recipe</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_variable&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;archive_model&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_ensemble&#39;</span><span class="p">,</span> <span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;archive_start_yr&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;archive_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;tas_file&#39;</span><span class="p">]</span>
+
+    <span class="c1"># If there are non tas variables add the non tas variables to the formatted recpie.</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">non_tas_variables</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+
+        <span class="n">to_join</span> <span class="o">=</span> <span class="n">wide_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">wide_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="s2">&quot;experiment&quot;</span><span class="p">])]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">to_join</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;tas_file&#39;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">recipe</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Abigail Snyder; Kalyn Dorheim; Claudia Tebaldi<br/>
+  
+      &copy; Copyright 2022-current, Battelle Memorial Institute.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

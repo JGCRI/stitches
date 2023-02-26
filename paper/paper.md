@@ -24,7 +24,7 @@ I can cite these papers in my summary [@alova2020global; @craig2018review; @srid
 
 We present the `stitches` Python package... [Figure 1].
 
-![This is a figure.](stitches_diagram.png)
+![This is a figure.](stitches_diagram.jpg)
 
 # Statement of Need
 You really need `stitches` because of something that was published in @vernon2018cerf and other reasons.  

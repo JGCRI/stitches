@@ -205,10 +205,14 @@ def internal_stitch(rp, dl, fl):
     return out_dict
 
 
-def gridded_stitching(out_dir, rp):
-    """Stitch
-        :param out_dir:        string directory location where to write the netcdf files out to
-        :param rp:             data frame of the recipe
+def gridded_stitching(out_dir: str, rp):
+    """Stitch the gridded netcdfs for variables contained in recipe file and save.
+
+        :param out_dir:        string directory location where to write the netcdf files to
+        :type out_dir:          str
+
+        :param rp:             data frame of the recipe including variables to stitch
+
         :return:               a list of the netcdf files paths
     """
 
@@ -320,8 +324,9 @@ def gmat_internal_stitch(row, data):
 def gmat_stitching(rp):
     """ Based on a recipe data frame stitch together a time series of global tas data.
 
-        :param rp:        pandas.core.frame.DataFrame a fully formatted recipe data frame.
-        :return:          pandas.core.frame.DataFrame of stitched together tas data.
+        :param rp:        pandas DataFrame - a fully formatted recipe data frame.
+
+        :return:          pandas DataFrame of stitched together tas data.
     """
 
     # Check inputs.

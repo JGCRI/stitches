@@ -9,8 +9,7 @@ import fsspec
 def fetch_pangeo_table():
     """ Get a copy of the pangeo archive contents
 
-    :return: a pandas data frame containing information about the model, source, experiment, ensemble and
-    so on that is available for download on pangeo.
+    :return: a pandas data frame containing information about the model, source, experiment, ensemble and so on that is available for download on pangeo.
     """
 
     # The url path that contains to the pangeo archive table of contents.

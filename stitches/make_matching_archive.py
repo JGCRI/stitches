@@ -8,17 +8,21 @@ import stitches.fx_util as util
 import pandas as pd
 import pkg_resources
 
-def make_matching_archive(smoothing_window=9, chunk_window=9, add_staggered=False):
-    """"
+def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_staggered: bool = False):
+    """
     The function that creates the archive of rate of change (dx) and mean (fx) values for
     from the CMIP6 archive, these the the values that will be using in the matching portion
     of the stitching pipeline.
 
     :param smoothing_window:   int default set to 9, the size of the smoothing window to be applied to the ts.
-    :param chunk_window:   int default set to 9, the size of the chunks of data to summarize with dx & fx.
-    :param add_staggered: boolean default set to False. If True, the staggered windows will be added to the archive.
+    :type smoothing_window:     int
 
-    :return:               str location of the matching archive file.
+    :param chunk_window:   int default set to 9, the size of the chunks of data to summarize with dx & fx.
+    :type chunk_window:     int
+
+    :param add_staggered: boolean default set to False. If True, the staggered windows will be added to the archive.
+    :type add_staggered:    bool
+
     :return:               str location of the matching archive file.
     """
     # Start by loading all of the tas files.

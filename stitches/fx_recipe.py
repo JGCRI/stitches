@@ -159,6 +159,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
             :param optional:        a previous output of this function that contains a list of already created recipes to avoid re-making (this is not implemented).
 
             :param testing:         Boolean True/False. Defaults to False. When True, the behavior can be reliably replicated without setting global seeds.
+            :type testing:           bool
 
             :return:                    data frame with same structure as raw matched, with duplicate matches replaced.
         """
@@ -674,8 +675,9 @@ def make_recipe(target_data, archive_data, N_matches: int, res: str = "mon",
          :param non_tas_variables: a list of variables other than tas to stitch together, when using the default set to None only tas will be stitched together.
          :type non_tas_variables: [str]
 
-         :param reproducible:         Boolean True/False. Defaults to False. If True, the call to permute_stitching_recipes()
-                                                uses the testing=True argument so that the behavior can be reliably replicated without setting global seeds.
+         :param reproducible:         Boolean True/False. Defaults to False. If True, the call to permute_stitching_recipes() uses the testing=True argument so that the behavior can be reliably replicated without setting global seeds.
+         :type reproducible:            bool
+
 
          :return:                   pandas data frame of a formatted recipe
      """

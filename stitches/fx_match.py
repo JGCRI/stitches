@@ -156,6 +156,7 @@ def match_neighborhood(target_data, archive_data, tol: float =0, drop_hist_dupli
         :type tol:              float
 
         :param drop_hist_duplicates:    a Boolean True/False that defaults to True to determine whether to consider historical values across SSP scenarios to be duplicates and therefore all but one dropped from matching (True) or to be distinct points for matching (False).
+        :type drop_hist_duplicates:     bool
 
         :return:               a data frame with the target data and the corresponding matched archive data.
     """

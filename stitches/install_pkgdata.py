@@ -86,12 +86,14 @@ class InstallPackageData:
                         shutil.copy(tfile, out_file)
 
 
-def install_package_data(data_dir=None):
-    """Download and unpack Zenodo minted that matches the current installed
+def install_package_data(data_dir: str = None):
+    """Download and unpack Zenodo-minted stitches package data that matches the current installed
     stitches distribution.
-    :param data_dir:                    Optional.  Full path to the directory you wish to store the data in.  Default is
-                                        to install it in data directory of the package.
+
+    :param data_dir:                    Optional.  Full path to the directory you wish to store the data in.  Default is to install it in data directory of the package.
     :type data_dir:                     str
+
+    :return:          Nothing, write a file out to package data.
     """
 
     zen = InstallPackageData(data_dir=data_dir)

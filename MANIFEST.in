@@ -2,3 +2,5 @@ include README.md
 include LICENSE
 include DISCLAIMER
 include notebooks/*.*
+include data/tas-data/README.md
+include data/temp-data/README.md

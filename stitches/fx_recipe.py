@@ -1,7 +1,11 @@
 # Define the collection of helper functions that are used to generate the different
 # permutations of the recipes & re-format for stitching.
-import pandas as pd
+
+import os
 import pkg_resources
+
+import pandas as pd
+
 import stitches.fx_util as util
 import stitches.fx_match as match
 
@@ -621,7 +625,7 @@ def generate_gridded_recipe(messy_recipe, res: str = 'mon'):
     dat.loc[dat['archive_end_yr'] <= 2014, "archive_experiment"] = "historical"
 
     # Now that we have the formatted recipe add the pangeo tas information!!
-    ptable_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
+    ptable_path = os.path.join(pkg_resources.resource_filename('stitches', 'data'), "pangeo_table.csv")
     pangeo_table = pd.read_csv(ptable_path)
 
     if res == 'mon':

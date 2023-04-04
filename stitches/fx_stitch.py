@@ -340,7 +340,7 @@ def gmat_stitching(rp):
     # we can safely add tas as the variable column.
     rp['variable'] = 'tas'
     out = []
-    for name, match in rp.groupby(['stitching_id']):
+    for name, match in rp.groupby('stitching_id'):
 
         # Reset the index in the match data frame so that we can use a for loop
         # to iterate through match data frame an apply the gmat_internal_stitch.

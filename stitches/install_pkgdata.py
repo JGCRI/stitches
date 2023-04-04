@@ -37,6 +37,14 @@ class InstallPackageData:
         else:
             data_directory = self.data_dir
 
+        # build needed subdirectories if they do not already exist
+        tas_data_path = os.path.join(data_directory, "tas-data")
+        temp_data_path = os.path.join(data_directory, "temp-data")
+        if not os.path.exists(tas_data_path):
+            os.mkdir(tas_data_path)
+        if not os.path.exists(temp_data_path):
+            os.mkdir(temp_data_path)
+
         # get the current version of stitches that is installed
         current_version = pkg_resources.get_distribution('stitches').version
 
@@ -68,7 +76,7 @@ class InstallPackageData:
 
                     # Check to see if tas-data is in the file path
                     if "tas-data" in f:
-                        basename = "tas-data/" + basename
+                        basename = os.path.join("tas-data", basename)
 
                     out_file = os.path.join(data_directory, basename)
 

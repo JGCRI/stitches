@@ -26,15 +26,22 @@ ESMs are expensive to run, often limiting the scenarios that can be explored and
 
 
 
-
-
 References
 ---------------------------
 
-Tebaldi et al. "STITCHES: creating new scenarios of climate model output by stitching together pieces of existing simulations"
-*Earth System Dynamics* , 2022.
-https://doi.org/10.5194/esd-13-1557-2022
+.. code-block:: bibtex
 
+    @Article{esd-13-1557-2022,
+    	AUTHOR = {Tebaldi, C. and Snyder, A. and Dorheim, K.},
+    	TITLE = {STITCHES: creating new scenarios of climate model output by stitching together pieces of existing simulations},
+    	JOURNAL = {Earth System Dynamics},
+    	VOLUME = {13},
+    	YEAR = {2022},
+    	NUMBER = {4},
+    	PAGES = {1557--1609},
+    	URL = {https://esd.copernicus.org/articles/13/1557/2022/},
+    	DOI = {10.5194/esd-13-1557-2022}
+    }
 
 
 
@@ -46,14 +53,7 @@ Documentation
    :caption: Getting Started
 
    getting-started/installation
-   getting-started/quickstarter
-   getting-started/tutorial
-
-.. toctree::
-   :maxdepth: 1
-   :caption: User Guides
-
-   examples/modify-inputs
+   getting-started/stitches-quickstart
 
 .. toctree::
    :maxdepth: 1

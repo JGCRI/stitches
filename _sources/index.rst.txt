@@ -53,7 +53,7 @@ Documentation
    :caption: Getting Started
 
    getting-started/installation
-   getting-started/stitches-quickstart
+   getting-started/quickstarter
 
 .. toctree::
    :maxdepth: 1

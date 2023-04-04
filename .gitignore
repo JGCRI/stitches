@@ -1,3 +1,11 @@
+# for docs only
+.DS_Store
+docs/*
+notebooks/*
+paper/*
+stitches/*
+
+
 # pycharm
 .idea
 

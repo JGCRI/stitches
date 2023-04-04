@@ -18,6 +18,7 @@ python -m pip install git+https://github.com/JGCRI/stitches.git
 To install pre-built run the following:
 ```python
 import stitches
+
 stitches.install_package_data()
 ```
 
@@ -29,7 +30,6 @@ import stitches
 stitches.generate_pkg_data()
 ```
 but note that this will take several hours to run.
-
 
 ### Tutorial Jupyter Notebooks
 | Notebook | Description |

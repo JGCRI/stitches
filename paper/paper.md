@@ -64,7 +64,7 @@ While many existing ESM emulation methods rely on 'bottom up' methods (inferring
 the multivariate distribution governing the spatiotemporal behavior of ESM
 outputs), `stitches` instead takes a top-down approach more similar to the 
 warming-level style of analyses used by past Intergovernmental Panel on Climate
-Change (e.g. @SR15) reports. Specifically, `stitches` takes existing ESM
+Change (e.g. [@SR15]) reports. Specifically, `stitches` takes existing ESM
 output and intelligently recombines time windows in these gridded, multivariate 
 outputs into new instances by stitching them together on the basis of a target
 global average temperature (GSAT) trajectory representing an existing or new 
@@ -80,8 +80,7 @@ directly with `stitches`, but a multitude of impact-relevant variables can be.
 
 The distributions inferred via bottom-up methods can often be used to generate
 an unlimited number of realizations, however the emulators trained with bottom-
-up methods often can only handle a small number of variables jointly (e.g. 
-temperature and precipitation). By contrast, `stitches` can produce new 
+up methods often can only handle a small number of variables jointly (e.g. temperature and precipitation). By contrast, `stitches` can produce new 
 realizations for any variables archived by the ESM, albeit finitely many new
 realizations dependent on the number of runs archived by each ESM. For example,
 global hydrology models often require at least monthly temperature, precipitation,
@@ -112,8 +111,7 @@ models with little to no code changes in the impacts models.
 The `stitches` GitHub repository (https://github.com/JGCRI/stitches) provides 
 installation instructions. 
 
-Also included is a quickstart notebook (https://github.com/JGCRI/stitches/blob/dev/notebooks/stitches-quickstart.ipynb)
-that serves as a tutorial for using the package.
+Also included is a [quickstart notebook](https://github.com/JGCRI/stitches/blob/main/notebooks/stitches-quickstart.ipynb) that serves as a tutorial for using the package.
 
 
 # Acknowledgements

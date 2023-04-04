@@ -9,4 +9,4 @@ from .install_pkgdata import install_package_data
 from .package_data import *
 
 
-__version__ = "0.9.1"
+__version__ = "0.10.0"

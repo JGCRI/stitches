@@ -16,10 +16,13 @@ class InstallPackageData:
                         os to install it in the data directory of the package.
 
     :type data_dir:     str
+    
     """
 
     # URL for DOI minted example data hosted on Zenodo
-    DATA_VERSION_URLS = {'0.9.1':'https://zenodo.org/record/7181977/files/data.zip?download=1'}
+    DATA_VERSION_URLS = {'0.9.1': 'https://zenodo.org/record/7181977/files/data.zip?download=1',
+                         '0.10.0': 'https://zenodo.org/record/7181977/files/data.zip?download=1',
+                         '1.0.0': 'https://zenodo.org/record/7181977/files/data.zip?download=1'}
 
     DEFAULT_VERSION = 'https://zenodo.org/record/7181977/files/data.zip?download=1'
 

@@ -64,7 +64,7 @@ While many existing ESM emulation methods rely on 'bottom up' methods (inferring
 the multivariate distribution governing the spatiotemporal behavior of ESM
 outputs), `stitches` instead takes a top-down approach more similar to the 
 warming-level style of analyses used by past Intergovernmental Panel on Climate
-Change (e.g. [@SR15]) reports. Specifically, `stitches` takes existing ESM
+Change reports [@SR15]. Specifically, `stitches` takes existing ESM
 output and intelligently recombines time windows in these gridded, multivariate 
 outputs into new instances by stitching them together on the basis of a target
 global average temperature (GSAT) trajectory representing an existing or new 

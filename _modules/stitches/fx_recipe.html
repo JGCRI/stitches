@@ -71,6 +71,8 @@
     <a class="navbar-brand text-wrap" href="../../index.html">
       
       
+      <img src="../../_static/../../_static/logo_stitches.png" class="logo" alt="logo">
+      
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -274,8 +276,12 @@ title="Open an issue"
   <h1>Source code for stitches.fx_recipe</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Define the collection of helper functions that are used to generate the different</span>
 <span class="c1"># permutations of the recipes &amp; re-format for stitching.</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="kn">import</span> <span class="nn">stitches.fx_util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">stitches.fx_match</span> <span class="k">as</span> <span class="nn">match</span>
 
@@ -418,39 +424,23 @@ title="Open an issue"
     <span class="k">return</span> <span class="n">matched_data</span>
 
 
-<div class="viewcode-block" id="permute_stitching_recipes"><a class="viewcode-back" href="../../reference/api.html#stitches.permute_stitching_recipes">[docs]</a><span class="k">def</span> <span class="nf">permute_stitching_recipes</span><span class="p">(</span><span class="n">N_matches</span><span class="p">,</span> <span class="n">matched_data</span><span class="p">,</span> <span class="n">archive</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">testing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;  A function to sample from input `matched_data` (the the results</span>
-<span class="sd">    of `match_neighborhood(target, archive, tol)` to produce permutations</span>
-<span class="sd">    of possible stitching recipes that will match the target data.</span>
+<div class="viewcode-block" id="permute_stitching_recipes"><a class="viewcode-back" href="../../reference/api.html#stitches.permute_stitching_recipes">[docs]</a><span class="k">def</span> <span class="nf">permute_stitching_recipes</span><span class="p">(</span><span class="n">N_matches</span><span class="p">:</span> <span class="nb">int</span> <span class="p">,</span> <span class="n">matched_data</span><span class="p">,</span> <span class="n">archive</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">testing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A function to sample from input `matched_data` (the the results of `match_neighborhood(target, archive, tol)` to produce permutations  of possible stitching recipes that will match the target data.</span>
 
-<span class="sd">    matched_data is the output from match_neighborhood</span>
-<span class="sd">    If matched_data has only one target SSP-ensemble member:</span>
-<span class="sd">       Then you get N_matches of new realizations, there&#39;s no collapse</span>
-<span class="sd">       within those but there may be collapse across other ensemble</span>
-<span class="sd">       members.</span>
+<span class="sd">            :param N_matches:         a int to the maximum number of matches per target data</span>
+<span class="sd">            :type N_matches:           int</span>
 
-<span class="sd">    If matched_data has multiple target SSP-ensemble members (same ssp):</span>
-<span class="sd">      The code _attempts_ to give N_matches generated realizations for</span>
-<span class="sd">      each target ensemble member. Fewer may be possible, etc. There is no collapse</span>
-<span class="sd">      across the generated realizations. This is basically targeting the</span>
-<span class="sd">      SSP as a whole, not necessarily the actual ensemble members.</span>
+<span class="sd">            :param matched_data:    data output from match_neighborhood.</span>
 
-<span class="sd">    To look at multiple target SSPs, basically call this function</span>
-<span class="sd">    separately for each because we do not care about collapse.</span>
+<span class="sd">            :param archive:         the archive data to use for re-matching duplicate points</span>
 
-<span class="sd">        :param N_matches:       int the number of desired stitching recipes.</span>
-<span class="sd">        :param matched_data:    data output from match_neighborhood.</span>
-<span class="sd">        :param archive:         the archive data to use for re-matching duplicate points</span>
-<span class="sd">        :param optional:        a previous output of this function that contains a list of already created recipes</span>
-<span class="sd">                                to avoid re-making (this is not implemented).</span>
-<span class="sd">        :param testing:         Boolean True/False. Defaults to False. If True, then pd.DataFrame.sample() uses</span>
-<span class="sd">                                the argument random_state=1 so that the behavior can be reliably replicated</span>
-<span class="sd">                                without setting global seeds.</span>
+<span class="sd">            :param optional:        a previous output of this function that contains a list of already created recipes to avoid re-making (this is not implemented).</span>
 
+<span class="sd">            :param testing:         Boolean True/False. Defaults to False. When True, the behavior can be reliably replicated without setting global seeds.</span>
+<span class="sd">            :type testing:           bool</span>
 
-<span class="sd">        :return:                data frame with same structure as raw matched, with duplicate matches replaced.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
+<span class="sd">            :return:                    data frame with same structure as raw matched, with duplicate matches replaced.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
     <span class="c1"># Check inputs</span>
     <span class="n">util</span><span class="o">.</span><span class="n">check_columns</span><span class="p">(</span><span class="n">matched_data</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;target_variable&#39;</span><span class="p">,</span> <span class="s1">&#39;target_experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;target_ensemble&#39;</span><span class="p">,</span>
                                       <span class="s1">&#39;target_model&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;target_year&#39;</span><span class="p">,</span>
@@ -882,13 +872,13 @@ title="Open an issue"
     <span class="k">return</span> <span class="n">out</span>
 
 
-<div class="viewcode-block" id="generate_gridded_recipe"><a class="viewcode-back" href="../../reference/api.html#stitches.generate_gridded_recipe">[docs]</a><span class="k">def</span> <span class="nf">generate_gridded_recipe</span><span class="p">(</span><span class="n">messy_recipe</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="s1">&#39;mon&#39;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Using a messy recipe create the recipe that can be used in the</span>
-<span class="sd">         stitching process.</span>
-
+<div class="viewcode-block" id="generate_gridded_recipe"><a class="viewcode-back" href="../../reference/api.html#stitches.generate_gridded_recipe">[docs]</a><span class="k">def</span> <span class="nf">generate_gridded_recipe</span><span class="p">(</span><span class="n">messy_recipe</span><span class="p">,</span> <span class="n">res</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mon&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Using a messy recipe create the recipe that can be used in the stitching process.</span>
 
 <span class="sd">         :param messy_recipe:       a data frame generated by the permute_recipes</span>
+
 <span class="sd">         :param res:                string mon or day</span>
+<span class="sd">         :type res:                 str</span>
 
 <span class="sd">         :return:                   a recipe data frame</span>
 <span class="sd">     &quot;&quot;&quot;</span>
@@ -911,7 +901,7 @@ title="Open an issue"
     <span class="n">dat</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dat</span><span class="p">[</span><span class="s1">&#39;archive_end_yr&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">2014</span><span class="p">,</span> <span class="s2">&quot;archive_experiment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;historical&quot;</span>
 
     <span class="c1"># Now that we have the formatted recipe add the pangeo tas information!!</span>
-    <span class="n">ptable_path</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">,</span> <span class="s1">&#39;data/pangeo_table.csv&#39;</span><span class="p">)</span>
+    <span class="n">ptable_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span> <span class="s2">&quot;pangeo_table.csv&quot;</span><span class="p">)</span>
     <span class="n">pangeo_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">ptable_path</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="s1">&#39;mon&#39;</span><span class="p">:</span>
@@ -939,21 +929,32 @@ title="Open an issue"
     <span class="k">return</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="make_recipe"><a class="viewcode-back" href="../../reference/api.html#stitches.make_recipe">[docs]</a><span class="k">def</span> <span class="nf">make_recipe</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">archive_data</span><span class="p">,</span> <span class="n">N_matches</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="s2">&quot;mon&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">non_tas_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">reproducible</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate a stitching recipe.</span>
+<div class="viewcode-block" id="make_recipe"><a class="viewcode-back" href="../../reference/api.html#stitches.make_recipe">[docs]</a><span class="k">def</span> <span class="nf">make_recipe</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">archive_data</span><span class="p">,</span> <span class="n">N_matches</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">res</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mon&quot;</span><span class="p">,</span>
+                <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">non_tas_variables</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">reproducible</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate a stitching recipe from target and archive data.</span>
 
 <span class="sd">         :param target_data:       a pandas data frame of climate information to emulate.</span>
-<span class="sd">         :param archive_data:      a pandas data frame of temperature data to use as the archive to match on.</span>
-<span class="sd">         :param N_matches:         a int to the maximum number of matches per target data</span>
-<span class="sd">         :param res:               str of mon or day to indicate the resolution of the stitched data</span>
-<span class="sd">         :param tol:               float value indicating the tolerance to use in the matching process, default set to 0.1</span>
-<span class="sd">         :param non_tas_variables: a list of variables other than tas to stitch together, when using the default set to None only tas will be stitched together.</span>
-<span class="sd">         :param reproducible:         Boolean True/False. Defaults to False. If True,the call to permute_stitching_recipes()</span>
-<span class="sd">                                                 uses the testing=True argument so that the behavior can be reliably replicated</span>
-<span class="sd">                                                                                 without setting global seeds.</span>
 
-<span class="sd">         :return:                   pandas data frame of a formatted recpie</span>
+<span class="sd">         :param archive_data:      a pandas data frame of temperature data to use as the archive to match on.</span>
+
+<span class="sd">         :param N_matches:         a int to the maximum number of matches per target data</span>
+<span class="sd">         :type N_matches:           int</span>
+
+<span class="sd">         :param res:               str of &#39;mon&#39; or &#39;day&#39; to indicate the resolution of the stitched data</span>
+<span class="sd">         :type res:                 str</span>
+
+<span class="sd">         :param tol:               float value indicating the tolerance to use in the matching process, default set to 0.1</span>
+<span class="sd">         :type tol:                 float</span>
+
+<span class="sd">         :param non_tas_variables: a list of variables other than tas to stitch together, when using the default set to None only tas will be stitched together.</span>
+<span class="sd">         :type non_tas_variables: [str]</span>
+
+<span class="sd">         :param reproducible:         Boolean True/False. Defaults to False. If True, the call to permute_stitching_recipes() uses the testing=True argument so that the behavior can be reliably replicated without setting global seeds.</span>
+<span class="sd">         :type reproducible:            bool</span>
+
+
+<span class="sd">         :return:                   pandas data frame of a formatted recipe</span>
 <span class="sd">     &quot;&quot;&quot;</span>
 
     <span class="c1"># Check the inputs</span>

@@ -94,25 +94,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="getting-started/quickstarter.html">
+  <a class="reference internal" href="getting-started/stitches-quickstart.html">
    Quickstarter
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="getting-started/tutorial.html">
-   Tutorial
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  User Guides
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="examples/modify-inputs.html">
-   Modify Inputs
   </a>
  </li>
 </ul>
@@ -427,24 +410,38 @@ title="Print to PDF"
                 
   <section id="welcome-to-stitches">
 <h1>Welcome to <strong>stitches</strong>!<a class="headerlink" href="#welcome-to-stitches" title="Permalink to this heading">#</a></h1>
-<p><strong>stitches</strong> is a python-based framework that provides users with a way to easily interact with StateMod in a linux-based environment. Figure 1 demonstrates the <strong>stitches</strong> workflow.</p>
+<p><strong>stitches</strong> is a python-based framework that provides users with a way to easily interact with Pangeo-hosted CMIP6 data to emulate the output variables of a target Earth System Model (ESM). Figure 1 demonstrates the <strong>stitches</strong> workflow.</p>
 <figure class="align-default">
 <img alt="**stitches** workflow" src="_images/figure_1.jpg" />
 </figure>
 <p>To use <strong>stitches</strong>, there are a number of decisions users have to make, perhaps the most important being:</p>
 <ul class="simple">
-<li><p>Which ESM will <strong>stitches</strong> emulate?</p></li>
-<li><p>What archive data will be used? These are values that the target data will be matched to. It should only contain data for the specific ESM that is being emulated. Users may limit the number of experiments or ensemble realizations within the archive in order to achieve their specific experimental setup.</p></li>
-<li><p>What target data will be used? This data frame represents the temperature pathway the stitched product will follow. The contents of this data frame may come from CMIP6 ESM results for an SSP or it may follow some arbitrary pathway.</p></li>
+<li><p>Which <strong>ESM</strong> will <strong>stitches</strong> emulate?</p></li>
+<li><p>What <strong>scenario</strong> will be the target of the emulation?</p></li>
+<li><p>Which available CMIP6 <strong>experiments</strong>, from the ESM to be emulated, will constitute the archive, i.e., the building blocks that stitches will use to construct the target scenario?</p></li>
 </ul>
+<p><strong>stitches</strong> works by connecting together short segments of existing ESM simulations, relying on the fact that most variables are not path dependent, i.e., have short memory. It works by matching existing pieces (9-year windows in our specific implementation) of global average temperature trajectories from different experiments available, to the target scenario’s global temperature trajectory, which has been divided up into pieces of the same length. Once the sequence of time windows-experiments in the archive  is identified that matches the target, any variable in the ESM output available for those time windows-experiments whose evolution is not path dependent can be extracted and stitched together according to the same sequence.</p>
 </section>
 <section id="why-do-we-need-stitches">
 <h1>Why do we need <strong>stitches</strong>?<a class="headerlink" href="#why-do-we-need-stitches" title="Permalink to this heading">#</a></h1>
-<p>My content here</p>
+<p>Impact research often requires many output variables from ESMs, including but not limited to global gridded temperature, precipitation, sea level pressure, relative humidity, and more. Impact research also often requires these values on a monthly or even daily time scale.</p>
+<p>ESMs are expensive to run, often limiting the scenarios that can be explored and the number of ensemble members that can be generated for each scenario. <strong>stitches</strong> intelligently recombines the existing model runs available from ESMs in CMIP6 into global, gridded, multivariate outputs for <em>novel scenarios</em> (e.g., using a simple model to translate new forcing pathways into a global temperature trajectory that becomes stitches target).  on monthly or daily timescales. <strong>stitches</strong> can also be used to enrich the ensemble sizes of existing scenarios. The resulting generated gridded multivariate outputs preserve the ensemble statistics of the ESM’s data. If the ESM has saved it, <strong>stitches</strong> can emulate the ESM output at any frequency: monthly, daily or even higher.</p>
 </section>
 <section id="references">
 <h1>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h1>
-<p>My content here</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@Article</span><span class="p">{</span><span class="nl">esd-13-1557-2022</span><span class="p">,</span>
+<span class="w">    </span><span class="na">AUTHOR</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Tebaldi, C. and Snyder, A. and Dorheim, K.}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">TITLE</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{STITCHES: creating new scenarios of climate model output by stitching together pieces of existing simulations}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">JOURNAL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Earth System Dynamics}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">VOLUME</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{13}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">YEAR</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2022}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">NUMBER</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{4}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">PAGES</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1557--1609}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">URL</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{https://esd.copernicus.org/articles/13/1557/2022/}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">DOI</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{10.5194/esd-13-1557-2022}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="documentation">
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">#</a></h1>
@@ -452,14 +449,7 @@ title="Print to PDF"
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting-started/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting-started/quickstarter.html">Quickstarter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="getting-started/tutorial.html">Tutorial</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guides</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="examples/modify-inputs.html">Modify Inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started/stitches-quickstart.html">Quickstarter</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">

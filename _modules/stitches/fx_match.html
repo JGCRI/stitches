@@ -71,6 +71,8 @@
     <a class="navbar-brand text-wrap" href="../../index.html">
       
       
+      <img src="../../_static/../../_static/logo_stitches.png" class="logo" alt="logo">
+      
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -419,7 +421,21 @@ title="Open an issue"
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">matched_data</span>
 
-<div class="viewcode-block" id="match_neighborhood"><a class="viewcode-back" href="../../reference/api.html#stitches.match_neighborhood">[docs]</a><span class="k">def</span> <span class="nf">match_neighborhood</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">archive_data</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop_hist_duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="match_neighborhood"><a class="viewcode-back" href="../../reference/api.html#stitches.match_neighborhood">[docs]</a><span class="k">def</span> <span class="nf">match_neighborhood</span><span class="p">(</span><span class="n">target_data</span><span class="p">,</span> <span class="n">archive_data</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">drop_hist_duplicates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; This function takes data frames of target and archive data and calculates the euclidean distance between the target values (fx and dx) and the archive values.</span>
+
+<span class="sd">        :param target_data:           a data frame of the target fx and dx values</span>
+
+<span class="sd">        :param archive_data:         a data frame of the archive fx and dx values</span>
+
+<span class="sd">        :param tol:            a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned</span>
+<span class="sd">        :type tol:              float</span>
+
+<span class="sd">        :param drop_hist_duplicates:    a Boolean True/False that defaults to True to determine whether to consider historical values across SSP scenarios to be duplicates and therefore all but one dropped from matching (True) or to be distinct points for matching (False).</span>
+<span class="sd">        :type drop_hist_duplicates:     bool</span>
+
+<span class="sd">        :return:               a data frame with the target data and the corresponding matched archive data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Check the inputs of the functions</span>
     <span class="k">if</span> <span class="n">util</span><span class="o">.</span><span class="n">nrow</span><span class="p">(</span><span class="n">target_data</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;target_data is an empty data frame&quot;</span><span class="p">)</span>

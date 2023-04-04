@@ -71,6 +71,8 @@
     <a class="navbar-brand text-wrap" href="../../index.html">
       
       
+      <img src="../../_static/../../_static/logo_stitches.png" class="logo" alt="logo">
+      
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -479,10 +481,14 @@ title="Open an issue"
     <span class="k">return</span> <span class="n">out_dict</span>
 
 
-<div class="viewcode-block" id="gridded_stitching"><a class="viewcode-back" href="../../reference/api.html#stitches.gridded_stitching">[docs]</a><span class="k">def</span> <span class="nf">gridded_stitching</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">rp</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stitch</span>
-<span class="sd">        :param out_dir:        string directory location where to write the netcdf files out to</span>
-<span class="sd">        :param rp:             data frame of the recipe</span>
+<div class="viewcode-block" id="gridded_stitching"><a class="viewcode-back" href="../../reference/api.html#stitches.gridded_stitching">[docs]</a><span class="k">def</span> <span class="nf">gridded_stitching</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stitch the gridded netcdfs for variables contained in recipe file and save.</span>
+
+<span class="sd">        :param out_dir:        string directory location where to write the netcdf files to</span>
+<span class="sd">        :type out_dir:          str</span>
+
+<span class="sd">        :param rp:             data frame of the recipe including variables to stitch</span>
+
 <span class="sd">        :return:               a list of the netcdf files paths</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -594,8 +600,9 @@ title="Open an issue"
 <div class="viewcode-block" id="gmat_stitching"><a class="viewcode-back" href="../../reference/api.html#stitches.gmat_stitching">[docs]</a><span class="k">def</span> <span class="nf">gmat_stitching</span><span class="p">(</span><span class="n">rp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Based on a recipe data frame stitch together a time series of global tas data.</span>
 
-<span class="sd">        :param rp:        pandas.core.frame.DataFrame a fully formatted recipe data frame.</span>
-<span class="sd">        :return:          pandas.core.frame.DataFrame of stitched together tas data.</span>
+<span class="sd">        :param rp:        pandas DataFrame - a fully formatted recipe data frame.</span>
+
+<span class="sd">        :return:          pandas DataFrame of stitched together tas data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Check inputs.</span>
@@ -609,7 +616,7 @@ title="Open an issue"
     <span class="c1"># we can safely add tas as the variable column.</span>
     <span class="n">rp</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;tas&#39;</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">rp</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">rp</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;stitching_id&#39;</span><span class="p">):</span>
 
         <span class="c1"># Reset the index in the match data frame so that we can use a for loop</span>
         <span class="c1"># to iterate through match data frame an apply the gmat_internal_stitch.</span>

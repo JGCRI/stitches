@@ -71,6 +71,8 @@
     <a class="navbar-brand text-wrap" href="../../index.html">
       
       
+      <img src="../../_static/../../_static/logo_stitches.png" class="logo" alt="logo">
+      
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -282,17 +284,21 @@ title="Open an issue"
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
 
-<div class="viewcode-block" id="make_matching_archive"><a class="viewcode-back" href="../../reference/api.html#stitches.make_matching_archive">[docs]</a><span class="k">def</span> <span class="nf">make_matching_archive</span><span class="p">(</span><span class="n">smoothing_window</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">chunk_window</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">add_staggered</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="make_matching_archive"><a class="viewcode-back" href="../../reference/api.html#stitches.make_matching_archive">[docs]</a><span class="k">def</span> <span class="nf">make_matching_archive</span><span class="p">(</span><span class="n">smoothing_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span> <span class="n">chunk_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span> <span class="n">add_staggered</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The function that creates the archive of rate of change (dx) and mean (fx) values for</span>
 <span class="sd">    from the CMIP6 archive, these the the values that will be using in the matching portion</span>
 <span class="sd">    of the stitching pipeline.</span>
 
 <span class="sd">    :param smoothing_window:   int default set to 9, the size of the smoothing window to be applied to the ts.</span>
-<span class="sd">    :param chunk_window:   int default set to 9, the size of the chunks of data to summarize with dx &amp; fx.</span>
-<span class="sd">    :param add_staggered: boolean default set to False. If True, the staggered windows will be added to the archive.</span>
+<span class="sd">    :type smoothing_window:     int</span>
 
-<span class="sd">    :return:               str location of the matching archive file.</span>
+<span class="sd">    :param chunk_window:   int default set to 9, the size of the chunks of data to summarize with dx &amp; fx.</span>
+<span class="sd">    :type chunk_window:     int</span>
+
+<span class="sd">    :param add_staggered: boolean default set to False. If True, the staggered windows will be added to the archive.</span>
+<span class="sd">    :type add_staggered:    bool</span>
+
 <span class="sd">    :return:               str location of the matching archive file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Start by loading all of the tas files.</span>

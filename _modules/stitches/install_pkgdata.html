@@ -71,6 +71,8 @@
     <a class="navbar-brand text-wrap" href="../../index.html">
       
       
+      <img src="../../_static/../../_static/logo_stitches.png" class="logo" alt="logo">
+      
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
@@ -290,12 +292,14 @@ title="Open an issue"
 <span class="sd">                        os to install it in the data directory of the package.</span>
 
 <span class="sd">    :type data_dir:     str</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># URL for DOI minted example data hosted on Zenodo</span>
-    <span class="n">DATA_VERSION_URLS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0.9.1&#39;</span><span class="p">:</span><span class="s1">&#39;https://zenodo.org/record/7181977/files/data.zip?download=1&#39;</span><span class="p">}</span>
+    <span class="n">DATA_VERSION_URLS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0.9.1&#39;</span><span class="p">:</span> <span class="s1">&#39;https://zenodo.org/record/7181977/files/data.zip?download=1&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;0.10.0&#39;</span><span class="p">:</span> <span class="s1">&#39;https://zenodo.org/record/7181977/files/data.zip?download=1&#39;</span><span class="p">}</span>
 
-    <span class="n">DEFAULT_VERSION</span> <span class="o">=</span> <span class="s1">&#39;https://zenodo.org/record/7181977/files/data.zip?download=1&#39;</span>
+    <span class="n">DEFAULT_VERSION</span> <span class="o">=</span> <span class="s1">&#39;https://zenodo.org/record/7167526/files/data.zip?download=1&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
@@ -310,6 +314,14 @@ title="Open an issue"
             <span class="n">data_directory</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">data_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span>
+
+        <span class="c1"># build needed subdirectories if they do not already exist</span>
+        <span class="n">tas_data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;tas-data&quot;</span><span class="p">)</span>
+        <span class="n">temp_data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="s2">&quot;temp-data&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tas_data_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">tas_data_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">temp_data_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">temp_data_path</span><span class="p">)</span>
 
         <span class="c1"># get the current version of stitches that is installed</span>
         <span class="n">current_version</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">get_distribution</span><span class="p">(</span><span class="s1">&#39;stitches&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">version</span>
@@ -342,7 +354,7 @@ title="Open an issue"
 
                     <span class="c1"># Check to see if tas-data is in the file path</span>
                     <span class="k">if</span> <span class="s2">&quot;tas-data&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                        <span class="n">basename</span> <span class="o">=</span> <span class="s2">&quot;tas-data/&quot;</span> <span class="o">+</span> <span class="n">basename</span>
+                        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;tas-data&quot;</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
 
                     <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_directory</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
 
@@ -360,12 +372,14 @@ title="Open an issue"
                         <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tfile</span><span class="p">,</span> <span class="n">out_file</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="install_package_data"><a class="viewcode-back" href="../../reference/api.html#stitches.install_package_data">[docs]</a><span class="k">def</span> <span class="nf">install_package_data</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download and unpack Zenodo minted that matches the current installed</span>
+<div class="viewcode-block" id="install_package_data"><a class="viewcode-back" href="../../reference/api.html#stitches.install_package_data">[docs]</a><span class="k">def</span> <span class="nf">install_package_data</span><span class="p">(</span><span class="n">data_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download and unpack Zenodo-minted stitches package data that matches the current installed</span>
 <span class="sd">    stitches distribution.</span>
-<span class="sd">    :param data_dir:                    Optional.  Full path to the directory you wish to store the data in.  Default is</span>
-<span class="sd">                                        to install it in data directory of the package.</span>
+
+<span class="sd">    :param data_dir:                    Optional.  Full path to the directory you wish to store the data in.  Default is to install it in data directory of the package.</span>
 <span class="sd">    :type data_dir:                     str</span>
+
+<span class="sd">    :return:          Nothing, write a file out to package data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">zen</span> <span class="o">=</span> <span class="n">InstallPackageData</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">data_dir</span><span class="p">)</span>

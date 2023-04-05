@@ -1,3 +1,19 @@
+# external data
+stitches/data/tas-data/*.*
+stitches/data/temp-data/*.*
+stitches/data/*.nc
+stitches/data/matching_archive.csv
+stitches/data/matching_archive_staggered.csv
+stitches/data/pangeo_comparison_table.csv
+stitches/data/pangeo_table.csv
+
+# generated data
+notebooks/stitched_*
+stitches/tests/stitched_*
+
+# system
+.DS_Store
+
 # pycharm
 .idea
 
@@ -29,6 +45,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.DS_Store
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -131,3 +148,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .Rproj.user
+stitches/.DS_Store

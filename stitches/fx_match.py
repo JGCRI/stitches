@@ -31,15 +31,6 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
     # dx values to be windowsize*dx so that it has units of degC
     windowsize = max(archivedata['end_yr'] - archivedata['start_yr'])
 
-    # TODO ACS do we need to implement this check?
-    # # For now comment out the code that enforces that there is only type of window size,
-    # # however we do know that when the full ts is not divisible by a window size of 9
-    # # or what not then we will run into issues with this. We do know that is will be
-    # # important to ennsure that the size of the target chunk and archive chunks are equivalent.
-    # TODO address this issue at a latter time
-    # if(length(windowsize) > 1){
-    #  stop("you've made your archive by chunking with multiple window sizes, don't do that!")
-    # }
 
     # Update the names of the columns in the archive data.
     dist = archivedata.copy()
@@ -56,7 +47,7 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
 
     # this returns the first minimum run into, which is not how we are going to want to do it,
     # we will want some way to keep track of the min and combine to have different realizations
-    # or have some random generation. But for now I think that this is probably sufficent.
+    # or have some random generation. But for now I think that this is probably sufficient.
     min_dist = dist['dist_l2'][np.argmin(dist['dist_l2'])]
     dist_radius = min_dist + tol
     index = np.where(dist["dist_l2"].values <= dist_radius)
@@ -90,10 +81,10 @@ def drop_hist_false_duplicates(matched_data):
 
         :param matched_data:    pandas object returned from match_neighborhood.
 
-        :return:               a data frame of matched data with the same structure as the input, with false duplicates in the historical period droppe
+        :return:               a data frame of matched data with the same structure as the input, with false duplicates in the historical period dropped
     """
 
-    # TODO ACS this fx had to be modified to account for the idealized exps, please review carefuly.
+
     # Subset the idealized runs, since these are not concatenated with the historical time series
     # they can be left alone.
     idealized_exps = ['1pctCO2', 'abrupt-4xCO2', 'abrupt-2xCO2']
@@ -106,7 +97,7 @@ def drop_hist_false_duplicates(matched_data):
     # Determine the historical cut off year based on the size of the chunks.
     cut_off_yr = 2015 - max(fut_matched_data["target_end_yr"] - fut_matched_data["target_start_yr"]) / 2
 
-    # Because smoothing with window =9 has occured,
+    # Because smoothing with window =9 has occurred,
     # historical is actually 2010 or earlier: the chunks
     # that had purely historical data in them and none
     # from the future when smoothing.
@@ -154,7 +145,21 @@ def drop_hist_false_duplicates(matched_data):
     else:
         return matched_data
 
-def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=True):
+def match_neighborhood(target_data, archive_data, tol: float =0, drop_hist_duplicates: bool = True):
+    """ This function takes data frames of target and archive data and calculates the euclidean distance between the target values (fx and dx) and the archive values.
+
+        :param target_data:           a data frame of the target fx and dx values
+
+        :param archive_data:         a data frame of the archive fx and dx values
+
+        :param tol:            a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned
+        :type tol:              float
+
+        :param drop_hist_duplicates:    a Boolean True/False that defaults to True to determine whether to consider historical values across SSP scenarios to be duplicates and therefore all but one dropped from matching (True) or to be distinct points for matching (False).
+        :type drop_hist_duplicates:     bool
+
+        :return:               a data frame with the target data and the corresponding matched archive data.
+    """
     # Check the inputs of the functions
     if util.nrow(target_data) <= 0:
         raise TypeError(f"target_data is an empty data frame")
@@ -163,30 +168,24 @@ def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=Tr
     util.check_columns(archive_data, {"experiment", "variable", "ensemble", "start_yr", "end_yr", "fx", "dx"})
     util.check_columns(target_data, {"start_yr", "end_yr", "fx", "dx"})
 
-    # shufflle the the archive data
-    # archive_data = shuffle_function(archive_data)
     archive_data = archive_data.reset_index(drop=True).copy()
 
-    # For every entry in the target data frame find its nearest neighboor from the archive data.
+    # For every entry in the target data frame find its nearest neighbor from the archive data.
     # concatenate the results into a single data frame.
     rslt = map(lambda fx, dx: internal_dist(fx, dx, archivedata=archive_data, tol=tol),
                target_data["fx"], target_data["dx"])
     matched = pd.concat(list(rslt))
 
     # Now add the information about the matches to the target data
-    # Make sure it if clear which columns contain  data that comes from the target compared
-    # to which ones correspond to the archive information. Right now there are lots of columns
-    # that contain duplicate information for now it is probably fine to be moving these things around.
+    # Make sure it is clear which columns contain  data that comes from the target compared
+    # to which ones correspond to the archive information.
     #
     # Make a copy of the target data to work with and use in creating the output matched data frame,
     # so that this function doesn't change the column names of one of its arguments.
     target_data_copied = target_data.copy()
     target_data_copied.columns = 'target_' + target_data_copied.columns
 
-    # Now add the information about the matches to the target data
-    # Make sure it if clear which columns contain  data that comes from the target compared
-    # to which ones correspond to the archive information. Right now there are lots of columns
-    # that contain duplicate information for now it is probably fine to be moving these things around.
+
     out = matched.merge(target_data_copied, how='left', on=['target_fx', 'target_dx'])
     cols_to_keep = ["target_variable", "target_experiment", "target_ensemble", "target_model",
                     "target_start_yr", "target_end_yr", "target_year", "target_fx", "target_dx",

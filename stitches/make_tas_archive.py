@@ -180,8 +180,8 @@ def paste_historical_data(input_data):
 
 
 def make_tas_archive():
-    """"
-    #  The function that creates the archive
+    """
+    The function that creates the archive from Pangeo-hosted CMIP6 data.
 
     :return:          Array of the tas files created.
     """

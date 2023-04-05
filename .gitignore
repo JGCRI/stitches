@@ -1,7 +1,21 @@
+# external data
+stitches/data/tas-data/*.*
+stitches/data/temp-data/*.*
+stitches/data/*.nc
+stitches/data/matching_archive.csv
+stitches/data/matching_archive_staggered.csv
+stitches/data/pangeo_comparison_table.csv
+stitches/data/pangeo_table.csv
+
+# generated data
+notebooks/stitched_*
+stitches/tests/stitched_*
+
+# system
+.DS_Store
+
 # pycharm
 .idea
-**/.DS_Store
-**/stitches/.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

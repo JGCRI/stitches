@@ -25,5 +25,17 @@ setup(
     long_description=readme(),
     python_requires='>=3.9.0',
     include_package_data=True,
-    install_requires=get_requirements()
+    install_requires=[
+        "matplotlib>=3.3.2",
+        "xarray>=2022.9.0",
+        "numpy>=1.23.3",
+        "pandas>=1.5.0,<2",
+        "intake>=0.6.6",
+        "intake-esm>=2021.8.17",
+        "nc_time_axis>=1.4.1",
+        "scikit-learn>=1.1",
+        "gcsfs>=2022.5.0",
+        "fsspec>=2022.5.0",
+        "tqdm>=4.64.1"
+    ]
 )

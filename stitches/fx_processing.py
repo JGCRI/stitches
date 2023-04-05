@@ -1,12 +1,13 @@
 # Define the functions that are used to process raw tas time series
 # into the "chunks" of data that is used in the matching process.
 
-# Import packages
-import stitches.fx_util as util
-from sklearn.linear_model import LinearRegression
 import math as math
+
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+import stitches.fx_util as util
 
 
 def calculate_rolling_mean(data, size):
@@ -112,7 +113,7 @@ def get_chunk_info(df):
         raise TypeError(f'Multiple variables discovered in "{df}"')
 
     # Save information that will be added to
-    extra_columns = set(df.columns).difference({"chunk", "value", "year"})
+    extra_columns = list(set(df.columns).difference({"chunk", "value", "year"}))
     extra_info = df[extra_columns].drop_duplicates()
     if not (len(extra_info) == 1):
         raise TypeError(f'more than 1 type of data being read into the function')
@@ -121,13 +122,12 @@ def get_chunk_info(df):
     # to extract information from each chunk of data.
     df_gby = df.groupby('chunk')
 
-    # Make an empty data frame to store the chunk data.
-    fx_dx_info = pd.DataFrame(columns=["start_yr", "end_yr", "year", "fx", "dx"])
-
     # Use the for loop to work our way through the different chunks/periods of
     # data, gathering information about each start and stop year, the central
     # value, and the rate of change.
+    index = 0
     for key, chunk in df_gby:
+
         # Save some information about the period of data, when it starts and stops.
         chunk["year"] = chunk["year"].astype(int)
         start_yr = min(chunk["year"])
@@ -152,7 +152,11 @@ def get_chunk_info(df):
 
         # Format the the chunk data into a pandas data frame.
         row = pd.DataFrame([[start_yr, end_yr, x, fx, dx]], columns=["start_yr", "end_yr", "year", "fx", "dx"])
-        fx_dx_info = fx_dx_info.append(row)
+        if index == 0:
+            fx_dx_info = row
+            index += 1
+        else:
+            fx_dx_info = pd.concat([fx_dx_info, row])
 
     # for loop should end here
 

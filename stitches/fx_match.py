@@ -145,7 +145,21 @@ def drop_hist_false_duplicates(matched_data):
     else:
         return matched_data
 
-def match_neighborhood(target_data, archive_data, tol=0, drop_hist_duplicates=True):
+def match_neighborhood(target_data, archive_data, tol: float =0, drop_hist_duplicates: bool = True):
+    """ This function takes data frames of target and archive data and calculates the euclidean distance between the target values (fx and dx) and the archive values.
+
+        :param target_data:           a data frame of the target fx and dx values
+
+        :param archive_data:         a data frame of the archive fx and dx values
+
+        :param tol:            a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned
+        :type tol:              float
+
+        :param drop_hist_duplicates:    a Boolean True/False that defaults to True to determine whether to consider historical values across SSP scenarios to be duplicates and therefore all but one dropped from matching (True) or to be distinct points for matching (False).
+        :type drop_hist_duplicates:     bool
+
+        :return:               a data frame with the target data and the corresponding matched archive data.
+    """
     # Check the inputs of the functions
     if util.nrow(target_data) <= 0:
         raise TypeError(f"target_data is an empty data frame")

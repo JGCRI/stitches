@@ -9,8 +9,7 @@ import fsspec
 def fetch_pangeo_table():
     """ Get a copy of the pangeo archive contents
 
-    :return: a pd data frame containing information about the model, source, experiment, ensemble and
-    so on that is available for download on pangeo.
+    :return: a pandas data frame containing information about the model, source, experiment, ensemble and so on that is available for download on pangeo.
     """
 
     # The url path that contains to the pangeo archive table of contents.
@@ -19,10 +18,11 @@ def fetch_pangeo_table():
 
     return out.df
 
-def fetch_nc(zstore):
+def fetch_nc(zstore: str):
     """Extract data for a single file.
 
     :param zstore:                str of the location of the cmip6 data file on pangeo.
+    :type zstore:                  str
 
     :return:                      an xarray containing cmip6 data downloaded from  pangeo.
     """

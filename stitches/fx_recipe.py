@@ -700,7 +700,8 @@ def make_recipe(target_data, archive_data, N_matches: int, res: str = "mon",
         if 'tas' in non_tas_variables:
             raise TypeError(f"non_tas_variables: cannot contain tas")
 
-        pt_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
+        data_directory = pkg_resources.resource_filename('stitches', "data")
+        pt_path = os.path.join(data_directory, "pangeo_table.csv")
         pangeo_table = pd.read_csv(pt_path)
 
         var_list = pangeo_table["variable"].unique()

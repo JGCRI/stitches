@@ -3,6 +3,7 @@ import os
 import pkg_resources
 import shutil
 import tempfile
+from tqdm import tqdm
 import zipfile
 
 import requests
@@ -61,18 +62,18 @@ class InstallPackageData:
             print(msg)
 
         # retrieve content from URL
-        print("Downloading example data for stitches version {}...".format(current_version))
-        r = requests.get(data_link)
+        print("Downloading example data for stitches version {}.  This may take a few minutes...".format(current_version))
+        response = requests.get(data_link)
 
-        with zipfile.ZipFile(BytesIO(r.content)) as zipped:
+        with zipfile.ZipFile(BytesIO(response.content)) as zipped:
 
             # extract each file in the zipped dir to the project
             for f in zipped.namelist():
 
                 extension = os.path.splitext(f)[-1]
 
-                # Extract only the csv files
-                if all([len(extension) > 0, extension == ".csv"]):
+                # Extract only the csv and nc files
+                if all([len(extension) > 0, extension in (".csv", ".nc")]):
 
                     basename = os.path.basename(f)
 

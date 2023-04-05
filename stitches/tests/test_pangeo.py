@@ -6,7 +6,7 @@ from stitches.fx_pangeo import fetch_pangeo_table, fetch_nc
 
 
 class TestPangeo(unittest.TestCase):
-    
+
     # flag for run 'all' or for 'ci'
     RUN = "ci"
 

@@ -176,22 +176,3 @@ def get_chunk_info(df):
     out = out.astype(data_types_dict)
 
     return out
-
-
-def subset_archive(staggered_archive, end_yr_vector):
-    """ Take a staggered archive with chunked data for a 9 year window following
-         each year in 1850-2100 and subset to the entries with `end_yr` in
-         `end_yr_vector`.
-      :param staggered_archive:     A formatted archive with chunked data starting
-                                                 in each year
-      :type df:     pandas DataFrame
-
-      :param end_yr_vector:   vector of end_yrs want to subset the archive to.
-
-
-      :return:    pandas DataFrame of the subsetted archive, same format just fewer
-                    entries
-      """
-
-    out = staggered_archive[staggered_archive['end_yr'].isin(end_yr_vector)].reset_index(drop=True).copy()
-    return out

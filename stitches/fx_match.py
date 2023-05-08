@@ -197,6 +197,33 @@ def match_neighborhood(target_data, archive_data, tol: float =0, drop_hist_dupli
     if drop_hist_duplicates:
         out = drop_hist_false_duplicates(out)
 
+    # if there are any nearest neighbor matches that are maybe still large,
+    # warn the user that they will want to validate the outcome.
+
+    # get the nearest neighbor match only for each target window
+    grouped = out.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model",
+                           "target_start_yr", "target_end_yr", "target_year", "target_fx", "target_dx"])
+    formatted_nn = pd.DataFrame()
+    for name, group in grouped:
+        df = group.copy()
+        df = df[df['dist_l2'] == np.min(df['dist_l2'])].copy()
+        formatted_nn = pd.concat([formatted_nn, df]).reset_index(drop=True)
+        del (df)
+
+
+    # subset to just the far away nearest neighbors
+    formatted_nn = formatted_nn[formatted_nn['dist_l2'] > 0.25].reset_index(drop=True).copy()
+
+    if (~ formatted_nn.empty):
+        print('The following target windows have a nearest neighbor in T, dT space')
+        print('that is more than 0.25degC away. This may or may not result in poor')
+        print('matches and we recommend validation')
+        print(formatted_nn)
+        print('-----------------------------------------------------------------------------------------')
+    del(formatted_nn)
+    del(grouped)
+
+
     return out
 
 

@@ -214,10 +214,11 @@ def match_neighborhood(target_data, archive_data, tol: float =0, drop_hist_dupli
     # subset to just the far away nearest neighbors
     formatted_nn = formatted_nn[formatted_nn['dist_l2'] > 0.25].reset_index(drop=True).copy()
 
-    if (~ formatted_nn.empty):
+
+    if (not formatted_nn.empty):
         print('The following target windows have a nearest neighbor in T, dT space')
         print('that is more than 0.25degC away. This may or may not result in poor')
-        print('matches and we recommend validation')
+        print('matches and we recommend validation.')
         print(formatted_nn)
         print('-----------------------------------------------------------------------------------------')
     del(formatted_nn)

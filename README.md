@@ -1,7 +1,7 @@
 # stitches
 Amalgamate existing climate data to create monthly climate variable fields.
 
-[![DOI](https://zenodo.org/badge/317969428.svg)](https://zenodo.org/badge/latestdoi/317969428) ![test-coverage](https://github.com/JGCRI/stitches/workflows/build/badge.svg) [![codecov](https://codecov.io/gh/JGCRI/stitches/branch/main/graph/badge.svg)](https://codecov.io/gh/JGCRI/stitches)
+[![DOI](https://zenodo.org/badge/317969428.svg)](https://zenodo.org/badge/latestdoi/317969428) [![test-coverage](https://github.com/JGCRI/stitches/workflows/build/badge.svg)](https://github.com/JGCRI/stitches/actions/workflows/workflow.yml) [![codecov](https://codecov.io/gh/JGCRI/stitches/branch/main/graph/badge.svg)](https://codecov.io/gh/JGCRI/stitches)
 
 ## Getting Started Using `stitches`
 Jupyter notebooks hosted on `stitches` use functionality that is contained within the accompanying Python package.

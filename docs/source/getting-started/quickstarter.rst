@@ -49,13 +49,13 @@ These packages are installed as ``stitches`` dependencies.
     import os
     import pkg_resources
     import warnings
-    
+
     import numpy as np
     import pandas as pd
     from matplotlib import pyplot as plt
-    
-    
-    
+
+
+
     # For help with plotting
     %matplotlib inline
     %config InlineBackend.figure_format = 'retina'
@@ -113,8 +113,8 @@ Decide on the archive data
     data_directory = pkg_resources.resource_filename('stitches', "data")
     path = os.path.join(data_directory, 'matching_archive.csv')
     data = pd.read_csv(path)
-    
-    archive_data = data.loc[(data["experiment"].isin(['ssp126',  'ssp370', 'ssp585'])) 
+
+    archive_data = data.loc[(data["experiment"].isin(['ssp126',  'ssp370', 'ssp585']))
                            & (data["model"] == "CanESM5")].copy()
 
 
@@ -143,9 +143,9 @@ Modify Inputs - Decide on the target data
     targ = pd.read_csv(os.path.join(data_directory, "tas-data", "CanESM5_tas.csv"))
     target_data = targ.loc[(targ["model"] == "CanESM5")
                            & (targ["experiment"] == 'ssp245')].copy()
-    
+
     target_data  = target_data[target_data["ensemble"].isin(['r1i1p1f1'])].copy()
-    
+
     target_data = target_data.drop(columns='zstore').reset_index(drop=True)
 
 
@@ -207,7 +207,7 @@ target data into correctly structured target data for matching.
     target_data.plot(x='year', y='value')
     plt.show()
     plt.close()
-    
+
     # then process so it can be matched on:
     target_data = stitches.fx_processing.get_chunk_info(
         stitches.fx_processing.chunk_ts(df = target_data,  n=9)).copy()
@@ -241,9 +241,9 @@ Use the target_data and archive_data to make the recipes using the function ``ma
 
 .. code:: ipython3
 
-    my_recipes = stitches.make_recipe(target_data, 
+    my_recipes = stitches.make_recipe(target_data,
                                       archive_data,
-                                      tol=0.06, 
+                                      tol=0.06,
                                       N_matches=4,
                                       reproducible=True)
 
@@ -263,10 +263,10 @@ Visualize Results
 .. code:: ipython3
 
     groups = stitched_global_temp.groupby('stitching_id')
-    
+
     for name, group in groups:
         plt.plot(group.year, group.value, label = name)
-        
+
     plt.xlabel("Year")
     plt.ylabel("C")
     plt.title("Stitched Global Mean Temperature")
@@ -297,7 +297,7 @@ Now let’s compare the stitched products with the actual CanESM5 SSP245 data
 
     # Load the comparison GSAT data
     data_path = pkg_resources.resource_filename('stitches', 'data/tas-data/CanESM5_tas.csv')
-    
+
     comp_data = pd.read_csv(data_path)
     comp_data = comp_data.loc[comp_data["experiment"] == "ssp245"]
 
@@ -311,19 +311,19 @@ Now let’s compare the stitched products with the actual CanESM5 SSP245 data
             plt.plot(group.year, group.value, color = "black", linewidth = 2.0)
         else:
             plt.plot(group.year, group.value, color = "0.5", alpha=0.5)
-    
+
     # The stitched realizations:
     groups = stitched_global_temp.groupby('stitching_id')
     for name, group in groups:
         plt.plot(group.year, group.value, linewidth= 1.0, label = name)
-    
+
     plt.legend()
     plt.xlabel("Year")
     plt.ylabel("C")
     plt.title("Stitched Global Mean Temperature vs CanESM5 Results")
     plt.show()
     plt.close()
-    
+
 
 
 
@@ -389,7 +389,7 @@ same setup for CanESM5 ssp245.
 
 .. code:: ipython3
 
-    my_recipes = stitches.make_recipe(target_data, 
+    my_recipes = stitches.make_recipe(target_data,
                                       archive_data,
                                       tol=0.06,
                                       non_tas_variables=['pr'],
@@ -420,7 +420,7 @@ Load generated data
 
     # load the stitched (generated) temperature (tas) netcdf files
     gen_tas = stitches.fetch_quickstarter_data(variable="tas")
-    
+
     # load the stitched pr netcdf file
     gen_pr = stitches.fetch_quickstarter_data(variable="pr")
 
@@ -432,15 +432,15 @@ Fetch target data from pangeo for comparison
 
     # Fetch the actual data directly from pangeo
     pangeo_path = pkg_resources.resource_filename('stitches', 'data/pangeo_table.csv')
-    
+
     pangeo_data = pd.read_csv(pangeo_path)
-    
+
     pangeo_data = pangeo_data.loc[(pangeo_data['variable'].isin(['tas', 'pr']))
-                                  & (pangeo_data['domain'].str.contains('mon')) 
+                                  & (pangeo_data['domain'].str.contains('mon'))
                                   & (pangeo_data['experiment'].isin(['ssp245']))
                                   & (pangeo_data['ensemble'].isin(['r1i1p1f1']))
                                   & (pangeo_data['model'].isin(['CanESM5']))].copy()
-    
+
     pangeo_data
 
 
@@ -454,11 +454,11 @@ Fetch target data from pangeo for comparison
         .dataframe tbody tr th:only-of-type {
             vertical-align: middle;
         }
-    
+
         .dataframe tbody tr th {
             vertical-align: top;
         }
-    
+
         .dataframe thead th {
             text-align: right;
         }
@@ -505,7 +505,7 @@ Fetch target data from pangeo for comparison
     # load the target tas netcdf files
     tas_address = pangeo_data.loc[pangeo_data['variable']== 'tas'].zstore.copy()
     tar_tas = stitches.fetch_nc(tas_address.values[0])
-    
+
     # load the target pr netcdf files
     pr_address = pangeo_data.loc[pangeo_data['variable']== 'pr'].zstore.copy()
     tar_pr = stitches.fetch_nc(pr_address.values[0])
@@ -519,32 +519,32 @@ first-cut comparison
 
 .. code:: ipython3
 
-    def plot_comparison(generated_data, 
+    def plot_comparison(generated_data,
                         target_data,
                         variable,
                         alpha=0.8):
         """Plot comparision between target variable time series and generated data"""
-        
+
         if variable.casefold() == "pr":
             variable_name = "precipitation"
             units = "kg m-2 s-1"
         else:
             variable_name = "temperature"
             units = "C"
-            
+
         # temperature (tas)
         plt.plot(generated_data.time,
                  generated_data[variable],
                  label=f"Generated monthly {variable}")
-    
+
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore")
-    
+
             plt.plot(target_data.indexes['time'].to_datetimeindex(),
                      target_data[variable],
                      alpha=alpha,
                      label = f"Target monthly {variable}")
-    
+
         plt.legend()
         plt.xlabel("Year")
         plt.ylabel(units)
@@ -558,7 +558,7 @@ first-cut comparison
     # lon and lat values for a grid cell near the Joint Global Change Research Institute in College Park, MD, USA
     cp_lat = 38.9897
     cp_lon = 180 + 76.9378
-    
+
     # lat and lon coordinates closest
     abslat = np.abs(gen_tas.lat - cp_lat)
     abslon = np.abs(gen_tas.lon-cp_lon)
@@ -566,28 +566,28 @@ first-cut comparison
     ([lon_loc], [lat_loc]) = np.where(c == np.min(c))
     lon_grid = gen_tas.lon[lon_loc]
     lat_grid = gen_tas.lat[lat_loc]
-    
-    cp_tas_gen = gen_tas.sel(lon=lon_grid, 
+
+    cp_tas_gen = gen_tas.sel(lon=lon_grid,
                              lat=lat_grid,
                              time=slice('2015-01-01', '2099-12-31')).copy()
-    
-    cp_tas_tar = tar_tas.sel(lon=lon_grid, 
+
+    cp_tas_tar = tar_tas.sel(lon=lon_grid,
                              lat=lat_grid,
                              time=slice('2015-01-01', '2099-12-31')).copy()
-    
-    cp_pr_gen = gen_pr.sel(lon=lon_grid, 
+
+    cp_pr_gen = gen_pr.sel(lon=lon_grid,
                            lat=lat_grid,
                            time=slice('2015-01-01', '2099-12-31')).copy()
-    
-    cp_pr_tar = tar_pr.sel(lon=lon_grid, 
+
+    cp_pr_tar = tar_pr.sel(lon=lon_grid,
                            lat=lat_grid,
                            time=slice('2015-01-01', '2099-12-31')).copy()
-    
+
     # temperature (tas)
     plot_comparison(generated_data=cp_tas_gen,
                     target_data=cp_tas_tar,
                     variable="tas")
-    
+
     # precipitation (pr)
     plot_comparison(generated_data=cp_pr_gen,
                     target_data=cp_pr_tar,

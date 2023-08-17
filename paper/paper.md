@@ -28,7 +28,7 @@ bibliography: paper.bib
 
 --- 
 
-# Statement of need
+# Summary
 
 State of the art impact models characterizing aspects of the interaction between 
 the human and Earth systems require decade-long time series of relatively high
@@ -36,6 +36,9 @@ frequency, spatially resolved and often multiple variables representing
 climatic impact-drivers. Most commonly these are derived from Earth System
 Model (ESM) output, according to a standard, limited set of future scenarios, 
 the latest being the SSP-RCPs run under CMIP6-ScenarioMIP [@Eyringetal2016;@ONeilletal2016].
+CMIP6/ScenarioMIP is a heavily used product in international
+efforts such as AR6 [citation].
+
 Often, however, impact modeling seeks to explore new scenarios, and/or needs a
 larger set of initial condition ensemble members than are typically available to
 quantify the effects of ESM internal variability. In addition, the recognition that
@@ -46,7 +49,8 @@ challenging [@thornton2017biospheric].
 For the dual needs of the creation of new scenario realizations and the 
 simplified representation of ESM behavior in a coupled human-Earth system
 modeling framework, climate model output emulators can be the answer. 
-We proposed a new, comprehensive approach to such emulation, STITCHES [@tebaldi2022stitches].
+We proposed a new, comprehensive approach to such emulation of CMIP6/ScenarioMIP
+ESM experiments, STITCHES [@tebaldi2022stitches].
 The corresponding `stitches` Python package uses existing archives of ESMs’ 
 scenario experiments to construct new scenarios, or enrich existing initial 
 condition ensembles. Its output has the same characteristics of the ESM output
@@ -55,7 +59,7 @@ saved), spatially resolved (down to the native grid of the ESM), and as high
 frequency as the original output has been saved at.
 
 
-# Summary
+# Statement of need
 
 ESM emulation methods generally attempt to preserve the complex statistical
 characteristics of ESM outputs for multiple variables and at time scales (often

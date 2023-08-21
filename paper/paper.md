@@ -155,7 +155,7 @@ little to no code changes in the impact models. It may also be possible to
 endogenize climate impacts in scenario construction by coupling `stitches` 
 with impact models for multiple sectors and a reduced complexity climate model 
 such as Hector, Magicc, or FAIR 
-[@hartin2015simple;@meinshausen2011emulating;@smith2018fair. With the 
+[@hartin2015simple;@meinshausen2011emulating;@smith2018fair]. With the 
 computational efficiency of using emulators,
 it may be possible to interactively develop new scenarios with more insight than
 would be possible using multimodel ESM ensemble statistics or using off-the-shelf

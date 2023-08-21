@@ -179,7 +179,7 @@ def paste_historical_data(input_data):
     return d
 
 
-def make_tas_archive():
+def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
     """
     The function that creates the archive from Pangeo-hosted CMIP6 data.
 
@@ -297,7 +297,9 @@ def make_tas_archive():
     #
     # In this section convert from absolute value to an anomaly & concatenate the historical data
     # with the future scenarios.
-    data_anomaly = calculate_anomaly(cleaned_data).copy()
+    data_anomaly = calculate_anomaly(cleaned_data,
+                                     startYr= anomaly_startYr,
+                                     endYr= anomaly_endYr).copy()
     data = paste_historical_data(data_anomaly)
     data = data.sort_values(by=['variable', 'experiment', 'ensemble', 'model', 'year'])
     data = data[["variable", "experiment", "ensemble", "model", "year", "value"]].reset_index(drop=True)
@@ -321,10 +323,13 @@ def make_tas_archive():
     # Add the zstore file information to the data frame via a left join.
     data = data.merge(pangeo_df, on=['variable', 'experiment', 'ensemble', 'model'], how="inner")
 
+    # add a units column with the temperature anomaly years
+    data['unit'] = [('degC change from avg over ' + anomaly_startYr + '~' + anomaly_startYr)] * len(data)
+
     # Modify the zstore path names to replace the future scn string with historical.
     # TODO replace this for loop it is pretty slow
     new_zstore = []
-    for i in data.index:
+    for i in data.index[0:2]:
         # Select the row from the data frame.
         row = data.loc[i]
 

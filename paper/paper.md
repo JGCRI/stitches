@@ -68,7 +68,7 @@ is strictly focused on CMIP6/ScenarioMIP data hosted on Pangeo
 The corresponding `stitches` Python package uses existing archives of ESMs’  
 scenario experiments from CMIP6/ScenarioMIP to construct gridded, multivariate 
 realizations of new scenarios provided by reduced complexity climate models 
-(see [@hartin2015simple;@meinshausen2011emulating;@smith2018fair]), or to 
+[@hartin2015simple;@meinshausen2011emulating;@smith2018fair], or to 
 enrich existing initial condition ensembles. Its output has the 
 same characteristics of the ESM output emulated: multivariate (spanning 
 potentially all variables that the ESM has saved), spatially resolved (down to 

@@ -7,6 +7,6 @@ from .make_matching_archive import make_matching_archive
 from .make_pangeo_table import make_pangeo_table, make_pangeo_comparison
 from .install_pkgdata import install_package_data
 from .package_data import *
-
+from .generate_package_data import generate_pkg_data
 
 __version__ = "0.10.0"

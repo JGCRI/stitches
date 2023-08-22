@@ -1,6 +1,6 @@
 # Define the functions used to create the archive that is used in the matching process,
 # aka the rate of change (dx) and median value (fx) for the temperature anomoly time series.
-
+import numpy as np
 
 # Import packages
 import stitches.fx_processing as prep
@@ -39,9 +39,9 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
     # For now we have to do this with a for loop, to process each model/experiment/ensemble/variable
     # individually.
     # The key function prepfor aring these chunks is prep.chunk_ts
-    data = smoothed_data[["model", "experiment", "ensemble", "year", "variable", "value"]]
+    data = smoothed_data[["model", "experiment", "ensemble", "year", "variable", "value", "unit"]]
     data = data.reset_index(drop=True).copy()
-    group_by = ['model', 'experiment', 'ensemble', 'variable']
+    group_by = ['model', 'experiment', 'ensemble', 'variable', 'unit']
     out = []
     for key, d in data.groupby(group_by):
         dat = d.reset_index(drop=True).copy()
@@ -59,6 +59,7 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
         else:
             dd = prep.chunk_ts(df=dat, n=chunk_window)
             rslt = prep.get_chunk_info(dd)
+            rslt['unit'] = (np.repeat(d['unit'].unique(), len(rslt))).copy()
             out.append(rslt)
         # end if-else
     # end of the for loop
@@ -82,6 +83,7 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
                 else:
                     dd = prep.chunk_ts(df=dat, n=chunk_window, base_chunk=offset)
                     rslt = prep.get_chunk_info(dd)
+                    rslt['unit'] = (np.repeat(d['unit'].unique(), len(rslt))).copy()
                     out.append(rslt)
                 # end if-else
             # end of the for loop over (model-experiment-ensemble-variable) combos
@@ -90,6 +92,7 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
 
     #  concatenate results into a single data frame.
     data = pd.concat(out).reset_index(drop=True)
+
 
 
     outdir_path = pkg_resources.resource_filename('stitches', 'data')

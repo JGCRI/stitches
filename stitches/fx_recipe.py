@@ -2,6 +2,8 @@
 # permutations of the recipes & re-format for stitching.
 
 import os
+
+import numpy as np
 import pkg_resources
 
 import pandas as pd
@@ -692,6 +694,20 @@ def make_recipe(target_data, archive_data, N_matches: int, res: str = "mon",
         raise TypeError(f"tol: must be a float")
 
 
+    if (target_data['unit'].unique() != archive_data['unit'].unique()):
+        raise TypeError(f"units of target and archive data do not match")
+
+    # pull off the unit so we have it
+    unit = target_data['unit'].unique().copy()
+
+
+    # drop the units from each dataframe so matching functions don't need updates
+    target_data = target_data[['experiment', 'variable', 'ensemble', 'model', 'start_yr',
+                                         'end_yr', 'year', 'fx', 'dx']].copy()
+    archive_data = archive_data[['experiment', 'variable', 'ensemble', 'model', 'start_yr',
+                               'end_yr', 'year', 'fx', 'dx']].copy()
+
+
     # If there are non tas variables to be stitched, subset the archive to limit
     # the coverage to only the entries with the complete coverage.
     if type(non_tas_variables) == list:
@@ -755,6 +771,10 @@ def make_recipe(target_data, archive_data, N_matches: int, res: str = "mon",
 
     else:
         out = recipe.copy()
+
+
+    # append unit:
+    out['unit'] = np.repeat(unit, len(out)).copy()
 
     out = out.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
     return out

@@ -63,7 +63,7 @@ def get_global_tas(path):
 
     :return:      str path to the location of file containing the weighted global mean.
     """
-    temp_dir = pkg_resources.resource_filename('stitches', 'data')
+    temp_dir = pkg_resources.resource_filename('stitches', 'data/temp-data')
 
     if os.path.isdir(temp_dir) == False:
         os.mkdir(temp_dir)
@@ -324,12 +324,12 @@ def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
     data = data.merge(pangeo_df, on=['variable', 'experiment', 'ensemble', 'model'], how="inner")
 
     # add a units column with the temperature anomaly years
-    data['unit'] = [('degC change from avg over ' + anomaly_startYr + '~' + anomaly_startYr)] * len(data)
+    data['unit'] = [('degC change from avg over ' + str(anomaly_startYr) + '~' + str(anomaly_endYr))] * len(data)
 
     # Modify the zstore path names to replace the future scn string with historical.
     # TODO replace this for loop it is pretty slow
     new_zstore = []
-    for i in data.index[0:2]:
+    for i in data.index:
         # Select the row from the data frame.
         row = data.loc[i]
 

@@ -313,10 +313,12 @@ def gmat_internal_stitch(row, data):
         raise TypeError(f"Trouble with selecting the tas data.")
 
     new_vals = selected_data['value']
+
     d = {'year': years,
          'value': new_vals}
     df = pd.DataFrame(data=d)
     df['variable'] = 'tas'
+    df['unit'] = np.repeat(selected_data['unit'].unique(), len(df)).copy()
 
     return df
 
@@ -332,7 +334,7 @@ def gmat_stitching(rp):
     # Check inputs.
     util.check_columns(rp, {'target_start_yr', 'target_end_yr', 'archive_experiment',
                             'archive_variable', 'archive_model', 'archive_ensemble', 'stitching_id',
-                            'archive_start_yr', 'archive_end_yr', 'tas_file'})
+                            'archive_start_yr', 'archive_end_yr', 'tas_file', 'unit'})
 
     rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
 
@@ -366,7 +368,7 @@ def gmat_stitching(rp):
                              (data["year"] <= 2014)].copy()
         hist_data["experiment"] = "historical"
         tas_data = pd.concat([nonssp_data, fut_data, hist_data])[['variable', 'experiment', 'ensemble', 'model', 'year',
-                                                                  'value']].drop_duplicates().reset_index(drop=True)
+                                                                  'value', 'unit']].drop_duplicates().reset_index(drop=True)
         # Stitch the data together based on the matched recipes.
         dat = []
         for i in match.index:

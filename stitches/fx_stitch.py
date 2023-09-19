@@ -63,25 +63,41 @@ def get_netcdf_values(i, dl, rp, fl, name):
     # Have to have special time handler
     times = extracted.indexes['time']
 
+    # Time frequency
+    freq = xr.infer_freq(times)
+
     if type(times) in [xr.coding.cftimeindex.CFTimeIndex, pd.core.indexes.datetimes.DatetimeIndex]:
         yrs = extracted.indexes['time'].year # pull out the year information from the time index
         flags = list(map(lambda x: x in range(start_yr, end_yr+1), yrs))
         to_keep = times[flags]
     else:
         raise TypeError(f"unsupported time type")
-    dat = extracted.sel(time=to_keep)[v].values.copy()
+    
+    # Select only the days within the period
+    dat = extracted.sel(time=to_keep)
+    
+    # The number of days we have in our data
+    actual_len = len(dat.time)
 
     if ((times.freq == 'D') | (times.freq == 'day')):
+        # Create series of days using standard daily calendar
         expected_times = pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='D')
-        if times.calendar == 'noleap':
+        # Get number of days
+        expected_len = len(expected_times)
+        # If using noleap calendar
+        if extracted['time'].dt.calendar == 'noleap':
+            # Get number of days over given period with no leap years
             expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
+        # TODO: 360 day calendars not implemented here
     else:
+        # Number of months over given year range
         expected_len = len(pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='M'))
 
+    # Error when number of days in data =/= to the expected number of days over the given period
+    assert (actual_len == expected_len), "Not enough data in " + file + "for period " + str(start_yr) + "-" + str(end_yr)
 
-    assert (len(dat) == expected_len), "Not enough data in " + file + "for period " + str(start_yr) + "-" + str(end_yr)
-
-    return dat
+    # Return data over the given period as a numpy array
+    return dat[v].values.copy()
 
 
 def get_var_info(rp, dl, fl, name):

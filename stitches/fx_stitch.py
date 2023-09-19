@@ -99,7 +99,7 @@ def get_var_info(rp, dl, fl, name):
 
     attrs = data.get_ds_meta(extracted)
     if (attrs.frequency.values != "mon"):
-        attrs["calendar"] = extracted.indexes['time'].calendar
+        attrs["calendar"] = extracted['time'].dt.calendar
 
     return attrs
 

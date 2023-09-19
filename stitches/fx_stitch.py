@@ -75,11 +75,11 @@ def get_netcdf_values(i, dl, rp, fl, name):
     
     # Select only the days within the period
     dat = extracted.sel(time=to_keep)
-    
+
     # The number of days we have in our data
     actual_len = len(dat.time)
 
-    if ((times.freq == 'D') | (times.freq == 'day')):
+    if ((freq == 'D') | (freq == 'day')):
         # Create series of days using standard daily calendar
         expected_times = pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='D')
         # Get number of days

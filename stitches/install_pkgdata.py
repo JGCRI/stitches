@@ -3,7 +3,6 @@ import os
 import pkg_resources
 import shutil
 import tempfile
-from tqdm import tqdm
 import zipfile
 
 import requests

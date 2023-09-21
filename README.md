@@ -15,14 +15,14 @@ To install for use, run the following:
 python -m pip install git+https://github.com/JGCRI/stitches.git
 ```
 
-To install pre-built run the following:
+To install package data that has already been pre-processed run the following:
 ```python
 import stitches
 
 stitches.install_package_data()
 ```
 
-For users that would like to generate the run the following: 
+For users who would like to generate the package data locally, run the following: 
 
 ```python
 import stitches

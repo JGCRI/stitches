@@ -279,7 +279,6 @@ class TestRecipe(unittest.TestCase):
         archive2 = pd.concat([TestRecipe.ARCHIVE_DATA, TestRecipe.TARGET_DATA]).reset_index(drop=True).copy()
 
         pd.set_option('display.max_columns', None)
-        print(match_neighborhood(target2,archive2, tol=0.2))
 
         messy_rp = permute_stitching_recipes(N_matches=2,
                                               matched_data=match_neighborhood(target2,
@@ -287,6 +286,7 @@ class TestRecipe(unittest.TestCase):
                                                                               tol=0.2),
                                               archive=archive2,
                                               testing=True)
+        print(messy_rp)
 
         # Test that there is no envelope collapse across ensemble members.
         # We define collapse across ensemble members as 'you don't have

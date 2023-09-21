@@ -393,13 +393,20 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
                 # have realization 1 and realization 4 2070 getting matched
                 # to the same archive point).
                 # Use an anti-join
-                print(new_recipe.drop(['stitching_id']))
+
+
+                print(new_recipe['stitching_id'].drop_duplicates())
+                print(util.nrow(matched_data_int))
+                print('---------')
 
                 matched_data_int = util.anti_join(matched_data_int, new_recipe.drop(['stitching_id'], axis=1).copy(),
                                                   bycols=["target_year", "target_start_yr", "target_end_yr",
                                                           "archive_experiment", "archive_variable", "archive_model",
                                                           "archive_ensemble", "archive_start_yr", "archive_end_yr",
                                                           "archive_year"]).copy()
+
+                print(util.nrow(matched_data_int))
+                print('---------')
 
                 # update permutation count info with the revised matched data so
                 # the while loop behaves - this makes sure that every target window

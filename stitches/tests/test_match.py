@@ -5,7 +5,9 @@ from stitches.fx_match import match_neighborhood, shuffle_function, internal_dis
     drop_hist_false_duplicates
 from stitches.fx_util import remove_obs_from_match, nrow
 
+
 class TestMatch(unittest.TestCase):
+
     def test_match_fxns(self):
         """Testing the `match_neighborhood` functions"""
         # Read in some made up target data.

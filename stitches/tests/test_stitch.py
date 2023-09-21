@@ -25,7 +25,8 @@ class TestStitch(unittest.TestCase):
                                'archive_start_yr': [1859, 1886],
                                'archive_end_yr': [1867, 1894],
                                'tas_file': ["gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/",
-                                           "gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/"]})
+                                           "gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/"],
+                               "unit": None})
 
     def test_find_var_cols(self):
         o = pd.DataFrame(data={'tas': [1, 2], 'col2': [3, 4]})

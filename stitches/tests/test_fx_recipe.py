@@ -278,6 +278,9 @@ class TestRecipe(unittest.TestCase):
         target2 = pd.concat([TestRecipe.ARCHIVE_DATA, TestRecipe.TARGET_DATA]).reset_index(drop=True).copy()
         archive2 = pd.concat([TestRecipe.ARCHIVE_DATA, TestRecipe.TARGET_DATA]).reset_index(drop=True).copy()
 
+        pd.set_option('display.max_columns', None)
+        print(match_neighborhood(target2,archive2, tol=0.2))
+
         messy_rp = permute_stitching_recipes(N_matches=2,
                                               matched_data=match_neighborhood(target2,
                                                                               archive2,

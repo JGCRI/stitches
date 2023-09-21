@@ -393,7 +393,8 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
                 # have realization 1 and realization 4 2070 getting matched
                 # to the same archive point).
                 # Use an anti-join
-                print(new_recipe.drop(['stitching_id'])
+                print(new_recipe.drop(['stitching_id']))
+
                 matched_data_int = util.anti_join(matched_data_int, new_recipe.drop(['stitching_id'], axis=1).copy(),
                                                   bycols=["target_year", "target_start_yr", "target_end_yr",
                                                           "archive_experiment", "archive_variable", "archive_model",

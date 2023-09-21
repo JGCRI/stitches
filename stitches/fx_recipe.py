@@ -419,6 +419,11 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
                 print('---------')
                 print('here7')
 
+                print(matched_data_int[matched_data_int['target_year'] == 1863] )
+
+                print('---------')
+                print('here7a')
+
                 # update permutation count info with the revised matched data so
                 # the while loop behaves - this makes sure that every target window
                 # in the perm_guide actually has at least one matched archive point

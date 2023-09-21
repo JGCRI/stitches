@@ -286,7 +286,6 @@ class TestRecipe(unittest.TestCase):
                                                                               tol=0.2),
                                               archive=archive2,
                                               testing=True)
-        print(messy_rp)
 
         # Test that there is no envelope collapse across ensemble members.
         # We define collapse across ensemble members as 'you don't have

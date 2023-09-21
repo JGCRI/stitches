@@ -295,6 +295,8 @@ class TestRecipe(unittest.TestCase):
         for year in messy_rp['target_year'].unique():
             tmp = messy_rp[messy_rp['target_year']==year].copy()
             unique_archive_rows = tmp[cols].drop_duplicates().copy()
+            print(tmp)
+            print(unique_archive_rows)
             self.assertEqual(len(tmp), len(unique_archive_rows),
                              'Envelope collapse has occurred')
             del(tmp)

@@ -129,6 +129,7 @@ def anti_join(x, y, bycols):
         :return:    pd.DataFrame object
         """
     # Check the inputs
+    print('in anti-join')
     check_columns(x, set(bycols))
     check_columns(y, set(bycols))
 

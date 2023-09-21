@@ -335,6 +335,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
             # our matched_data_int on every loop, but just to be cautious, we check.
             # Again, the challenge is seeing if our entire sample has
             # been included in recipes before, not just a row or two.
+            print(util.nrow(recipe_collection))
 
             if util.nrow(recipe_collection) != 0:
                 # If previous recipes exist, we must create a comparison
@@ -394,7 +395,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
                 # to the same archive point).
                 # Use an anti-join
 
-
+                pd.set_option('display.max_columns', None)
                 print(new_recipe['stitching_id'].drop_duplicates())
                 print(util.nrow(matched_data_int))
                 print('---------')

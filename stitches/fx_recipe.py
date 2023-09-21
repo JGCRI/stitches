@@ -182,6 +182,9 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
     # Initialize matched_data_int for iteration through the while loop:
     # make a copy of the data to work with to be sure we don't touch original argument
     matched_data_int = matched_data.drop_duplicates().copy()
+    print('here00')
+    print(util.nrow(matched_data_int))
+    print('here0')
 
     # identifying how many target windows are in a trajectory we want to
     # create so that we know we have created a full trajectory with no
@@ -309,11 +312,13 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
             # Force one_one_match to meet our first condition,
             # that each archive data point in the recipe must be unique.
             # Then give it a stitching id
+            print('here1')
             new_recipe = []
             new_recipe = remove_duplicates(one_one_match, archive)
             stitching_id = exp + '~' + ens + '~' + str(stitch_ind)
             new_recipe["stitching_id"] = stitching_id
             new_recipe = new_recipe.reset_index(drop=True).copy()
+            print('here2')
 
             # Make sure the new recipe isn't missing any years:
             if ~new_recipe.shape[0] == num_target_windows:
@@ -338,6 +343,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
             print(util.nrow(recipe_collection))
 
             if util.nrow(recipe_collection) != 0:
+                print('here3')
                 # If previous recipes exist, we must create a comparison
                 # data frame that checks each existing recipe in recipe_collection
                 # against new_recipe and record True/False
@@ -350,6 +356,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
                 grouped_collection = recipe_collection.groupby(['stitching_id'])
                 comparison = []
                 for name, group in grouped_collection:
+                    print('here4')
                     df1 = group[cols_to_use].copy().reset_index(drop=True).sort_index(axis=1)
                     df2 = new_recipe[cols_to_use].copy().reset_index(drop=True).sort_index(axis=1)
                     comparison.append(df1.equals(df2))
@@ -357,6 +364,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
                 # end for loop
             # end if statement
             else:
+                print('here5')
                 # Otherwise, this is the first recipe we've done at all, so we set comparison manually
                 # so that the next if statement triggers just like it was appending a new recipe to an
                 # existing list.
@@ -372,6 +380,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
             # In either case, we are safe to keep new_recipe and update all the data frames
             # for the next iteration of the while loop.
             if all(comparison) == False:
+                print('here6')
 
                 # add new_recipe to the list of recipes for this target ensemble
                 recipes_col_by_target = pd.concat([recipes_col_by_target, new_recipe])
@@ -408,6 +417,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
 
                 print(util.nrow(matched_data_int))
                 print('---------')
+                print('here7')
 
                 # update permutation count info with the revised matched data so
                 # the while loop behaves - this makes sure that every target window
@@ -417,6 +427,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
                 # than the targets.
                 num_perms = get_num_perms(matched_data_int)
                 perm_guide = num_perms[1]
+                print('here8')
 
                 # Use the updated perm_guide to update
                 # the while loop conditions:
@@ -424,32 +435,42 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
                 # Condition 1:
                 # If we haven't reached the N_matches goal for this target ensemble
                 if util.nrow(recipes_col_by_target) == 0:
+                    print('here9')
                     condition1 = True
                 elif util.nrow(recipes_col_by_target['stitching_id'].unique()) < N_matches:
+                    print('here10')
                     condition1 = True
                 else:
+                    print('here11')
                     condition1 = False
                 # end updating Condition 1
 
                 # Condition 2:
                 # make sure each target window in the updated perm guide has at least one archive match available
                 # to draw on the next iteration.
+                print('here12')
                 perm_rows = util.nrow(
                     perm_guide.loc[
                         (perm_guide['target_variable'] == var_name) & (perm_guide['target_experiment'] == exp) &
                         (perm_guide['target_model'] == mod) & (perm_guide['target_ensemble'] == ens)]
                         .copy()
                         .drop_duplicates())
+                print('here13')
 
                 if perm_rows == num_target_windows:
+                    print('here14')
                     condition2 = True
                 else:
+                    print('here15')
                     condition2 = False
                 # end updating condition 2
 
+
                 # Add to the stitch_ind, to update the count of stitched
                 # trajectories for each target ensemble member.
+                print('here16')
                 stitch_ind += 1
+                print('here17')
 
             # end if statement
         # end the while loop for this target ensemble member

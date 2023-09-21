@@ -270,6 +270,9 @@ class TestRecipe(unittest.TestCase):
                                               testing=False)
         self.assertTrue(not messy_rp3.equals(messy_rp1),
                         'reproducible mode of permute_stitching_recipe failing 2')
+        print('======================================================')
+        print('Test we care about vvvvv')
+        print('======================================================')
 
         # Test that we don't have collapse when targeting multiple
         # ensemble members.

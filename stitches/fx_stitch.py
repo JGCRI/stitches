@@ -53,6 +53,8 @@ def get_netcdf_values(i, dl, rp, fl, name):
     file = rp[name][i]
     start_yr = rp["archive_start_yr"][i]
     end_yr = rp["archive_end_yr"][i]
+    target_start_yr = rp["target_start_yr"][i]
+    target_end_yr = rp["target_end_yr"][i]
 
     # Figure out which index level we are on and then get the
     # xarray from the list.
@@ -66,6 +68,15 @@ def get_netcdf_values(i, dl, rp, fl, name):
     # Time frequency
     freq = xr.infer_freq(times)
 
+    # If daily frequency, check for mis-matched leap-years
+    if ((freq == 'D') | (freq == 'day')):
+        # If using cftime
+        if (type(times) == xr.coding.cftimeindex.CFTimeIndex):
+            target_time_range = xr.cftime_range(start = f'{target_start_yr}-01-01', end = f'{target_end_yr}-12-31', freq='D', calendar=extracted.time.dt.calendar)
+        # Otherwise using pd DatetimeIndex
+        else:
+            target_time_range = pd.date_range(start=f"{target_start_yr}-01-01", end=f"{target_end_yr}-12-31", freq='D')
+
     if type(times) in [xr.coding.cftimeindex.CFTimeIndex, pd.core.indexes.datetimes.DatetimeIndex]:
         yrs = extracted.indexes['time'].year # pull out the year information from the time index
         flags = list(map(lambda x: x in range(start_yr, end_yr+1), yrs))
@@ -75,10 +86,10 @@ def get_netcdf_values(i, dl, rp, fl, name):
     
     # Select only the days within the period
     dat = extracted.sel(time=to_keep)
+    # Output grid as numpy array
+    result = dat[v].values.copy()
 
-    # The number of days we have in our data
-    actual_len = len(dat.time)
-
+    # Get length of time series expected from archive date range
     if ((freq == 'D') | (freq == 'day')):
         # Create series of days using standard daily calendar
         expected_times = pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='D')
@@ -87,17 +98,40 @@ def get_netcdf_values(i, dl, rp, fl, name):
         # If using noleap calendar
         if extracted['time'].dt.calendar == 'noleap':
             # Get number of days over given period with no leap years
-            expected_len = len(expected_times[~((expected_times.month == 2) & (expected_times.day == 29))])
-        # TODO: 360 day calendars not implemented here
+            expected_len = xr.cftime_range(start = f'{start_yr}-01-01', end = f'{end_yr}-12-31', freq='D', calendar='noleap')
+        elif extracted['time'].dt.calendar == '360_day':
+            # Get number of days over given period with 360 day calendar
+            expected_len = xr.cftime_range(start = f'{start_yr}-01-01', end = f'{end_yr}-12-31', freq='D', calendar='360_day')
     else:
         # Number of months over given year range
         expected_len = len(pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='M'))
 
+    # For daily data, target_time_range and expected_len should be made to match
+    if ((freq == 'D') | (freq == 'day')):
+        len_diff = expected_len - len(target_time_range)
+        # If more leap days in archive data, need to remove that number of days (could be at most one?)
+        if(len_diff > 0):
+            # Remove last "len_diff" days
+            result = result[0:(-len_diff),:,:].copy()
+        # If more leap days in target period than archive data, need to add missing days
+        elif(len_diff < 0):
+            # Get shape of data
+            result_shape = result.shape
+            # Extra days shape
+            extra_days_shape = (np.abs(len_diff), result_shape[1], result_shape[2])
+            # Get last "len_diff" days
+            extra_days = result[(len_diff-1):-1,:,:].copy().reshape(extra_days_shape)
+            # Concatenate onto end of data
+            result = np.concatenate((result, extra_days), axis=0)
+
+    # The number of days we have in our data
+    actual_len = len(result)
+
     # Error when number of days in data =/= to the expected number of days over the given period
-    assert (actual_len == expected_len), "Not enough data in " + file + "for period " + str(start_yr) + "-" + str(end_yr)
+    assert (actual_len == len(target_time_range)), f"Time dimensions mismatching in {file} for period {start_yr}-{end_yr}. Expected: {len(target_time_range)}, Actual: {actual_len}."
 
     # Return data over the given period as a numpy array
-    return dat[v].values.copy()
+    return result
 
 
 def get_var_info(rp, dl, fl, name):
@@ -138,87 +172,78 @@ def get_atts(rp, dl, fl, name):
     return out
 
 
-def internal_stitch(rp, dl, fl):
+def internal_stitch(rp, v, dl, fl):
     """Stitch a single recipe into netcdf outputs
         :param dl:             list of xarray cmip files
         :param rp:             data frame of the recipe
+        :param v:              name of variable
         :param fl:             list of the cmip files
         :return:               a list of the data arrays for the stitched products of the different variables.
     """
 
-    rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).copy()
+    rp = rp.sort_values(by=['target_start_yr']).copy()
     rp.reset_index(drop=True, inplace=True)
-    variables = find_var_cols(rp)
-    out = []
 
-    # For each of the of the variables stitch the
-    # data together.
-    for v in variables:
+    # Get the information about the variable that is going to be stitched together.
+    col = v + '_file'
+    var_info = get_var_info(rp, dl, fl, col)
 
-        # Get the information about the variable that is going to be stitched together.
-        col = v + '_file'
-        var_info = get_var_info(rp, dl, fl, col)
+    # For each of time slices extract the data & concatenate together.
+    gridded_data = get_netcdf_values(i=0, dl=dl, rp=rp, fl=fl, name=col)
 
-        # For each of time slices extract the data & concatenate together.
-        gridded_data = get_netcdf_values(i=0, dl=dl, rp=rp, fl=fl, name=col)
+    # Now add the other time slices.
+    for i in range(1, len(rp)):
+        new_vals = get_netcdf_values(i=i, dl=dl, rp=rp, fl=fl, name=col)
+        gridded_data = np.concatenate((gridded_data, new_vals), axis=0)
 
-        # Now add the other time slices.
-        for i in range(1, len(rp)):
-            new_vals = get_netcdf_values(i=i, dl=dl, rp=rp, fl=fl, name=col)
-            gridded_data = np.concatenate((gridded_data, new_vals), axis=0)
+    # Note that the pd.date_range call need the date/month defined otherwise it will
+    # truncate the year from start of first year to start of end year which is not
+    # what we want. We want the full final year to be included in the times series.
+    start = str(min(rp["target_start_yr"]))
+    end = str(max(rp["target_end_yr"]))
 
-        # Note that the pd.date_range call need the date/month defined otherwise it will
-        # truncate the year from start of first year to start of end year which is not
-        # what we want. We want the full final year to be included in the times series.
-        start = str(min(rp["target_start_yr"]))
-        end = str(max(rp["target_end_yr"]))
+    if var_info["frequency"][0].lower() == "mon":
+        freq = "M"
+    elif var_info["frequency"][0].lower() == "day":
+        freq = "D"
+    else:
+        raise TypeError(f"unsupported frequency")
 
-        if var_info["frequency"][0].lower() == "mon":
-            freq = "M"
-        elif var_info["frequency"][0].lower() == "day":
-            freq = "D"
-        else:
-            raise TypeError(f"unsupported frequency")
+    times = pd.date_range(start=start + "-01-01", end=end + "-12-31", freq=freq)
 
-        times = pd.date_range(start=start + "-01-01", end=end + "-12-31", freq=freq)
+    # Again, some ESMs stop in 2099 instead of 2100 - so we just drop the
+    # last year of gridded_data when that is the case.
+    #TODO this will need something extra/different for daily data; maybe just
+    # a simple len(times)==len(gridded_data)-12 : len(times) == len(gridded_data)-(nDaysInYear)
+    # with correct parentheses would do it
+    if ((max(rp["target_end_yr"]) == 2099) & (len(times) == (len(gridded_data) - 12))):
+        gridded_data = gridded_data[0:len(times), 0:, 0:].copy()
 
-        # Again, some ESMs stop in 2099 instead of 2100 - so we just drop the
-        # last year of gridded_data when that is the case.
-        #TODO this will need something extra/different for daily data; maybe just
-        # a simple len(times)==len(gridded_data)-12 : len(times) == len(gridded_data)-(nDaysInYear)
-        # with correct parentheses would do it
-        if ((max(rp["target_end_yr"]) == 2099) & (len(times) == (len(gridded_data) - 12))):
-            gridded_data = gridded_data[0:len(times), 0:, 0:].copy()
+    if (freq == "D"):
+        if ((var_info["calendar"][0].lower() == "noleap") & (freq == "D")):
+            times = times[~((times.month == 2) & (times.day == 29))]
 
-        if (freq == "D"):
-            if ((var_info["calendar"][0].lower() == "noleap") & (freq == "D")):
-                times = times[~((times.month == 2) & (times.day == 29))]
+    assert (len(gridded_data) == len(times)), f"Problem with the length of time. Expected - {len(times)}. Actual - {len(gridded_data)}."
 
-        assert (len(gridded_data) == len(times)), "Problem with the length of time"
+    # Extract the lat and lon information that will be used to structure the
+    # empty netcdf file. Make sure to copy all of the information including
+    # the attributes!
+    lat = dl[0].lat.copy()
+    lon = dl[0].lon.copy()
 
-        # Extract the lat and lon information that will be used to structure the
-        # empty netcdf file. Make sure to copy all of the information including
-        # the attributes!
-        lat = dl[0].lat.copy()
-        lon = dl[0].lon.copy()
+    rslt = xr.Dataset({v: xr.DataArray(
+        gridded_data,
+        coords=[times, lat, lon],
+        dims=["time", "lat", 'lon'],
+        attrs={'units': var_info['units'][0],
+                'variable': var_info['variable'][0],
+                'experiment': var_info['experiment'][0],
+                'ensemble': var_info['ensemble'][0],
+                'model': var_info['model'][0],
+                'stitching_id': rp['stitching_id'].unique()[0]})
+    })
 
-        rslt = xr.Dataset({v: xr.DataArray(
-            gridded_data,
-            coords=[times, lat, lon],
-            dims=["time", "lat", 'lon'],
-            attrs={'units': var_info['units'][0],
-                   'variable': var_info['variable'][0],
-                   'experiment': var_info['experiment'][0],
-                   'ensemble': var_info['ensemble'][0],
-                   'model': var_info['model'][0],
-                   'stitching_id': rp['stitching_id'].unique()[0]})
-        })
-
-        out.append(rslt)
-
-    out_dict = dict(zip(variables, out))
-
-    return out_dict
+    return rslt
 
 
 def gridded_stitching(out_dir: str, rp):
@@ -243,6 +268,9 @@ def gridded_stitching(out_dir: str, rp):
 
     rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
 
+    # Model name
+    model_name = rp.archive_model.unique()[0]
+
     # Determine which variables will be downloaded.
     variables = find_var_cols(rp)
     if not (len(variables) >= 1):
@@ -262,41 +290,49 @@ def gridded_stitching(out_dir: str, rp):
     # Download all of the data from pangeo.
     data_list = list(map(pangeo.fetch_nc, file_list))
 
+    # Empty dictionary of filenames to be populated
+    f = {}
+
     # For each of the stitching recipes go through and stitch a recipe.
     for single_id in rp['stitching_id'].unique():
-        # initialize f to be empty just to be safe now that we've added a
-        # try...except approach. It's technically possible the first id
-        # tried will fail and the function will try to return a non-existent f.
-        f = []
 
-        try:
-            print((
-                    'Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id))
+        # Get the recipe for the given stitching ID
+        single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
 
-            # Do the stitching!
-            # ** this can be a slow step and prone to errors
-            single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
-            rslt = internal_stitch(rp=single_rp, dl=data_list, fl=file_list)
+        # Save recipe as csv
+        # Output file name + location
+        recipe_location = f'{out_dir}/stitched_{model_name}_{single_id}_recipe.csv'
+        single_rp.to_csv(recipe_location, index=False)
 
-            # Print the files out at netcdf files
-            f = []
-            for i in rslt.keys():
-                ds = rslt[i]
-                ds = ds.sortby('time').copy()
-                recipe_location = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' + ds[i].attrs['variable'] +
-                          '_' + single_id + "_recipe.csv")
-                ds[i].attrs['recipe_location'] = recipe_location
-                single_rp.to_csv(recipe_location, index=False)
-                fname = (out_dir + '/' + "stitched_" + ds[i].attrs['model'] + '_' +
-                         ds[i].attrs['variable'] + '_' + single_id + '.nc')
-                ds.to_netcdf(fname)
-                f.append(fname)
-            # end For loop over rslt keys
-        #end try
+        for variable in variables:
 
-        except:
-            print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Error thrown within gridded_stitching fxn.'))
-        # end except
+            try:
+                print(f'Stitching gridded netcdf for: {model_name}, {variable}, {single_id}')
+
+                # Do the stitching!
+                # ** this can be a slow step and prone to errors
+                rslt = internal_stitch(rp=single_rp, v=variable, dl=data_list, fl=file_list)
+
+                # Order dataset by time (already ordered. Can do to be safe, but takes a long time for no reason)
+                # rslt = rslt.sortby('time').copy()
+
+                # Putting file name in attributes
+                rslt[variable].attrs['recipe_location'] = recipe_location
+
+                # NetCDF file name and location
+                netcdf_file_name = f'{out_dir}/stitched_{model_name}_{variable}_{single_id}_recipe.nc'
+
+                # Write to NetCDF
+                rslt.to_netcdf(netcdf_file_name)
+
+                # Populate list of file names
+                f[f'{single_id}_{variable}'] = netcdf_file_name
+            #end try
+
+            except:
+                print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Error thrown within gridded_stitching fxn.'))
+            # end except
+        # end for loop over variables
      # end for loop over single_id
 
     return f

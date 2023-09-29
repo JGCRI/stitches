@@ -320,7 +320,7 @@ def gridded_stitching(out_dir: str, rp):
                 rslt[variable].attrs['recipe_location'] = recipe_location
 
                 # NetCDF file name and location
-                netcdf_file_name = f'{out_dir}/stitched_{model_name}_{variable}_{single_id}_recipe.nc'
+                netcdf_file_name = f'{out_dir}/stitched_{model_name}_{variable}_{single_id}.nc'
 
                 # Write to NetCDF
                 rslt.to_netcdf(netcdf_file_name)

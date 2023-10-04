@@ -305,10 +305,9 @@ def gridded_stitching(out_dir: str, rp):
         single_rp.to_csv(recipe_location, index=False)
 
         for variable in variables:
+            print(f'Stitching gridded netcdf for: {model_name}, {variable}, {single_id}')
 
             try:
-                print(f'Stitching gridded netcdf for: {model_name}, {variable}, {single_id}')
-
                 # Do the stitching!
                 # ** this can be a slow step and prone to errors
                 rslt = internal_stitch(rp=single_rp, v=variable, dl=data_list, fl=file_list)

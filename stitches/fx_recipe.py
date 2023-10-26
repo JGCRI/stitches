@@ -3,6 +3,7 @@
 
 import os
 import pkg_resources
+from typing import List
 
 import pandas as pd
 
@@ -309,7 +310,7 @@ def permute_stitching_recipes(N_matches: int , matched_data, archive, optional=N
             # Then give it a stitching id
             new_recipe = []
             new_recipe = remove_duplicates(one_one_match, archive)
-            stitching_id = exp + '~' + ens + '~' + str(stitch_ind)
+            stitching_id = exp
             new_recipe["stitching_id"] = stitching_id
             new_recipe = new_recipe.reset_index(drop=True).copy()
 
@@ -654,7 +655,7 @@ def generate_gridded_recipe(messy_recipe, res: str = 'mon'):
 
 
 def make_recipe(target_data, archive_data, N_matches: int, res: str = "mon",
-                tol: float = 0.1, non_tas_variables: [str] = None,
+                tol: float = 0.1, non_tas_variables: List[str] = None,
                 reproducible: bool = False):
     """ Generate a stitching recipe from target and archive data.
 

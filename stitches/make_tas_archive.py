@@ -70,7 +70,7 @@ def get_global_tas(path):
 
     :return:      str path to the location of file containing the weighted global mean.
     """
-    temp_dir = pkg_resources.resource_filename("stitches", "data")
+    temp_dir = pkg_resources.resource_filename('stitches', 'data/temp-data')
 
     if not os.path.isdir(temp_dir):
         os.mkdir(temp_dir)
@@ -205,7 +205,7 @@ def paste_historical_data(input_data):
     return d
 
 
-def make_tas_archive():
+def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
     """
     The function that creates the archive from Pangeo-hosted CMIP6 data.
 
@@ -364,7 +364,9 @@ def make_tas_archive():
     #
     # In this section convert from absolute value to an anomaly & concatenate the historical data
     # with the future scenarios.
-    data_anomaly = calculate_anomaly(cleaned_data).copy()
+    data_anomaly = calculate_anomaly(cleaned_data,
+                                     startYr= anomaly_startYr,
+                                     endYr= anomaly_endYr).copy()
     data = paste_historical_data(data_anomaly)
     data = data.sort_values(by=["variable", "experiment", "ensemble", "model", "year"])
     data = data[

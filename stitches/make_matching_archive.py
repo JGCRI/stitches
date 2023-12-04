@@ -47,7 +47,7 @@ def make_matching_archive(
         ["model", "experiment", "ensemble", "year", "variable", "value"]
     ]
     data = data.reset_index(drop=True).copy()
-    group_by = ["model", "experiment", "ensemble", "variable"]
+    group_by = ['model', 'experiment', 'ensemble', 'variable', 'unit']
     out = []
     for key, d in data.groupby(group_by):
         dat = d.reset_index(drop=True).copy()
@@ -73,6 +73,7 @@ def make_matching_archive(
         else:
             dd = prep.chunk_ts(df=dat, n=chunk_window)
             rslt = prep.get_chunk_info(dd)
+            rslt['unit'] = (np.repeat(d['unit'].unique(), len(rslt))).copy()
             out.append(rslt)
         # end if-else
     # end of the for loop
@@ -103,6 +104,7 @@ def make_matching_archive(
                 else:
                     dd = prep.chunk_ts(df=dat, n=chunk_window, base_chunk=offset)
                     rslt = prep.get_chunk_info(dd)
+                    rslt['unit'] = (np.repeat(d['unit'].unique(), len(rslt))).copy()
                     out.append(rslt)
                 # end if-else
             # end of the for loop over (model-experiment-ensemble-variable) combos

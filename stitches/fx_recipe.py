@@ -3,6 +3,9 @@
 
 import os
 
+import numpy as np
+import pkg_resources
+
 import pandas as pd
 import pkg_resources
 
@@ -1067,7 +1070,22 @@ def make_recipe(
     if not type(N_matches) is int:
         raise TypeError("N_matches: must be an integer")
     if not type(tol) is float:
-        raise TypeError("tol: must be a float")
+        raise TypeError(f"tol: must be a float")
+
+
+    if (target_data['unit'].unique() != archive_data['unit'].unique()):
+        raise TypeError(f"units of target and archive data do not match")
+
+    # pull off the unit so we have it
+    unit = target_data['unit'].unique().copy()
+
+
+    # drop the units from each dataframe so matching functions don't need updates
+    target_data = target_data[['experiment', 'variable', 'ensemble', 'model', 'start_yr',
+                                         'end_yr', 'year', 'fx', 'dx']].copy()
+    archive_data = archive_data[['experiment', 'variable', 'ensemble', 'model', 'start_yr',
+                               'end_yr', 'year', 'fx', 'dx']].copy()
+
 
     # If there are non tas variables to be stitched, subset the archive to limit
     # the coverage to only the entries with the complete coverage.

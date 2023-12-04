@@ -18,154 +18,98 @@ authors:
   - name: Chris R. Vernon
     orcid: 0000-0002-3406-6214
     affiliation: 2
-affiliations: 
+affiliations:
   - name: Joint Global Change Research Institute/Pacific Northwest National Laboratory, USA
     index: 1
   - name: Pacific Northwest National Laboratory, USA
     index: 2
-date: 
+date:
 bibliography: paper.bib
 
---- 
-
-# Summary
-
-Understanding the interaction between humans and the Earth system is a 
-computationally daunting task, with many possible approaches depending on 
-resources available and questions of interest. For example, state of the art 
-impact models require decade-long time series of relatively high frequency, 
-spatially resolved and often multiple variables representing climatic impact-
-drivers [@ruane2022climatic]. Most commonly these are derived from the outputs 
-of  detailed, computationally expensive Earth System Models (ESMs) run according 
-to a standard, limited set of future scenarios, the latest being the SSP-RCPs 
-run under CMIP6-ScenarioMIP [@Eyringetal2016;@ONeilletal2016]. At the time of 
-writing, O'Neill et al has been cited more than 1750 times and Eyring et al 
-more than 5000 times, highlighting the broad, general use of this data.
-
-
-Often, however, impact modeling seeks to explore new scenarios that were not 
-part of the ScenarioMIP protocol, and/or needs a larger set of initial condition
-ensemble members than are typically available to quantify the effects of ESM 
-internal variability. In addition, the recognition that the human and Earth 
-systems are fundamentally intertwined, and may feature potentially
-significant feedback loops, is making integrated, simultaneous modeling of 
-the coupled human-Earth system increasingly necessary, if computationally 
-challenging with most existing tools [@thornton2017biospheric]. 
-
-
-For impact modelers, climate model emulators can be the answer to meet both 
-the needs of 1) creating realizations for novel scenarios and 2)achieving a 
-simplified, computationally tractable  representation of ESM behavior in a
-coupled human-Earth system modeling framework.  We proposed a new, 
-comprehensive approach to such emulation of gridded, multivariate ESM 
-outputs for novel scenarios without the computational cost of a full ESM,
-STITCHES [@tebaldi2022stitches]. The approach outlined in Tebaldi et al. should
-be extensible to future CMIP eras, although the `stitches` software at present 
-is strictly focused on CMIP6/ScenarioMIP data hosted on Pangeo 
-(https://gallery.pangeo.io/repos/pangeo-gallery/cmip6/). 
-
-
-The corresponding `stitches` Python package uses existing archives of ESMs’  
-scenario experiments from CMIP6/ScenarioMIP to construct gridded, multivariate 
-realizations of new scenarios provided by reduced complexity climate models 
-[@hartin2015simple;@meinshausen2011emulating;@smith2018fair], or to 
-enrich existing initial condition ensembles. Its output has the 
-same characteristics of the ESM output emulated: multivariate (spanning 
-potentially all variables that the ESM has saved), spatially resolved (down to 
-the native grid of the ESM), and as high frequency as the original output has 
-been saved at. A new realization of multiple variables can be generated on 
-the order of minutes with `stitches`, rather than the hours or sometimes days
-that ESMs require. 
-
-
+---
 
 # Statement of need
 
+State of the art impact models characterizing aspects of the interaction between
+the human and Earth systems require decade-long time series of relatively high
+frequency, spatially resolved and often multiple variables representing
+climatic impact-drivers. Most commonly these are derived from Earth System
+Model (ESM) output, according to a standard, limited set of future scenarios,
+the latest being the SSP-RCPs run under CMIP6-ScenarioMIP [@Eyringetal2016;@ONeilletal2016].
+Often, however, impact modeling seeks to explore new scenarios, and/or needs a
+larger set of initial condition ensemble members than are typically available to
+quantify the effects of ESM internal variability. In addition, the recognition that
+the human and Earth systems are fundamentally intertwined, and may feature
+potentially significant feedback loops, is making integrated, simultaneous modeling
+of the coupled human-Earth system increasingly necessary, if computationally
+challenging [@thornton2017biospheric].
+For the dual needs of the creation of new scenario realizations and the
+simplified representation of ESM behavior in a coupled human-Earth system
+modeling framework, climate model output emulators can be the answer.
+We proposed a new, comprehensive approach to such emulation, STITCHES [@tebaldi2022stitches].
+The corresponding `stitches` Python package uses existing archives of ESMs’
+scenario experiments to construct new scenarios, or enrich existing initial
+condition ensembles. Its output has the same characteristics of the ESM output
+emulated: multivariate (spanning potentially all variables that the ESM has
+saved), spatially resolved (down to the native grid of the ESM), and as high
+frequency as the original output has been saved at.
+
+
+# Summary
+
 ESM emulation methods generally attempt to preserve the complex statistical
-characteristics of a particular ESM’s outputs for multiple variables and at 
-time scales (often daily or monthly) relevant to impact models. Many 
-existing ESM emulation methods, such as MESMER 
-[@beusch2020emulating;@nath2022mesmer;@quilcaille2022showcasing], rely 
-on 'bottom up' methods, 
-inferring from the ESM outputs available for training the details of some 
-statistical process (or, more recently, a machine learning algorithm) able to
-generate new realizations with the same spatiotemporal behavior of the original
-ESM outputs, using as input in the generative phase only large scale information,
-like global average temperature (GSAT), that can be generated by a reduced 
-complexity model, such as Hector, Magicc, or FAIR
-[@hartin2015simple;@meinshausen2011emulating;@smith2018fair]
+characteristics of ESM outputs for multiple variables and at time scales (often
+daily or monthly) relevant to impacts models.
+While many existing ESM emulation methods rely on 'bottom up' methods (inferring
+the multivariate distribution governing the spatiotemporal behavior of ESM
+outputs), `stitches` instead takes a top-down approach more similar to the
+warming-level style of analyses used by past Intergovernmental Panel on Climate
+Change reports [@SR15]. Specifically, `stitches` takes existing ESM
+output and intelligently recombines time windows in these gridded, multivariate
+outputs into new instances by stitching them together on the basis of a target
+global average temperature (GSAT) trajectory representing an existing or new
+scenario, as long as the latter is intermediate to existing ones in forcing levels.
+Research from the climate science
+community has indicated that many ESM output variables are tightly dependent upon
+the GSAT trajectory and thus scenario independent, justifying our approach.
+Thus, the statistical characteristics of ESM
+output are preserved by the construction process. Variables that represent
+the cumulative effect of warming, such as sea level rise, cannot be emulated
+directly with `stitches`, but a multitude of impact-relevant variables can be.
 
 
-
-The STITCHES approach instead takes a top-down approach inspired by the warming-
-level style of analyses used by past Intergovernmental Panel on Climate Change 
-reports [@SR15;@arias2021climate;@masson2021ipcc;@core2023ipcc]. Specifically,
-`stitches` takes existing ESM output and intelligently recombines time windows 
-of these gridded, multivariate outputs into new instances of transient, 21st 
-century trajectories by stitching them together on the basis of a target GSAT 
-trajectory. The latter can represent an existing scenario (i.e., one that the 
-ESM has run) or a new one that a simple model can produce, as long as the latter 
-is intermediate to existing ones in forcing levels/GSAT. We encourage users to 
-see the flowchart included in the `stitches` 
-[quickstart notebook](https://github.com/JGCRI/stitches/blob/main/notebooks/stitches-quickstart.ipynb) 
-and [website](https://jgcri.github.io/stitches/), as well as in Tebaldi et al,
-for a visual example of this process. Tebaldi et al of course contains full 
-details and more illustrative figures.
-
-
-Research from the climate science  community has indicated that many ESM output 
-variables are tightly dependent upon the GSAT trajectory and thus scenario 
-independent (see [@SR15] and citations therein, in particular James et al. 
-[@james2017characterizing]), justifying our approach. Thus, the statistical 
-characteristics of ESM output are preserved by the construction process `stitches` 
-implements, as outlined in Tebaldi et al. One of the major benefits of this 
-top-down approach is that it jointly emulates outputs of multiple ESM variables,
-maintaining by construction the joint behavior of the original ESM output, 
-something not presently available in other packages to our knowledge. Most 
-impact-relevant atmospheric variables such as temperature, precipitation, relative 
-humidity, and sea level pressure can be emulated by `stitches` as they are 
-scenario-independent and have a short memory (compared to the window used by 
-‘stitches’, presently set to 9-years). Any variable that the ESM has archived can 
-be emulated jointly. Variables that represent the cumulative effect of warming, 
-such as sea level rise, or that have a long memory, like glacier mass loss or 
-mega-drought, cannot be emulated with `stitches`. `stitches` can produce new 
-realizations for variables archived by the ESM, but it can produce only finitely 
-many new realizations, the maximum  number depending on the number of runs 
-archived by each ESM. Currently, new realizations from `stitches` can be 
-appended to archived ESM realizations to result in  double to triple the number
-of runs available, this is arguably one of the main differences from the above-
-mentioned bottom-up approaches, which can generate infinite new realizations 
-once an accurate statistical process is estimated from existing data. We see 
-this as a source of complementarity between these two emulation approaches.
+The distributions inferred via bottom-up methods can often be used to generate
+an unlimited number of realizations, however the emulators trained with bottom-
+up methods often can only handle a small number of variables jointly (e.g. temperature and precipitation). By contrast, `stitches` can produce new
+realizations for any variables archived by the ESM, albeit finitely many new
+realizations dependent on the number of runs archived by each ESM. For example,
+global hydrology models often require at least monthly temperature, precipitation,
+and humidity variables to run, with additional variables often ideal. Currently,
+new realizations can be appended to archived ESM realizations to result in
+double to triple the number of runs available (depending on variables of
+interest), with plans in future versions to further increase this generated
+ensemble size.
 
 The `stitches` Python package currently relies on close integration with the
-Pangeo cloud catalog of CMIP6 ESM outputs 
-(https://gallery.pangeo.io/repos/pangeo-gallery/cmip6/). Thanks to this 
-integration, users are not required to pre-download the entire 
-CMIP6-ScenarioMIP archive of ESM outputs, and can quickly and flexibly 
-emulate variables from any of the 40 ESMs participating in ScenarioMIP. 
-In addition to the requirements for working with Pangeo in Python, `stitches`
-relies only on a few common scientific Python packages (`xarray`, `numpy`, 
-`pandas`, `sk-learn`), which are specified required dependencies in the package. 
-Finally, because `stitches` is intended for use by  impact modelers, the new 
-realizations generated by `stitches` are NetCDF files with the same dimension 
-information and generally identical structure to the original CMIP6 ESM outputs.
-These outputs from `stitches` can then serve as inputs to impact models with 
-little to no code changes in the impact models. It may also be possible to 
-endogenize climate impacts in scenario construction by coupling `stitches` 
-with impact models for multiple sectors and a reduced complexity climate model 
-such as Hector, Magicc, or FAIR 
-[@hartin2015simple;@meinshausen2011emulating;@smith2018fair]. With the 
-computational efficiency of using emulators,
-it may be possible to interactively develop new scenarios with more insight than
-would be possible using multimodel ESM ensemble statistics or using off-the-shelf
-ESM scenarios alone.
+Pangeo cloud catalog of CMIP6 ESM outputs
+(https://gallery.pangeo.io/repos/pangeo-gallery/cmip6/). Thanks to
+this integration, users are not required to pre-download the entire CMIP6-ScenarioMIP
+archive of ESM outputs, and can quickly and flexibly
+emulate variables from any of the 40 ESMs participating in ScenarioMIP.
+In addition to the requirements for working with Pangeo in Python,
+`stitches` relies only on a few common scientific Python packages
+(`xarray`, `numpy`, `pandas`, `sk-learn`), which are specified required dependencies
+in the package. Finally, because `stitches` is intended for use by
+impacts modelers, the
+new realizations generated by `stitches` are NetCDF files with the same
+dimension information and generally identical structure to the original CMIP6
+ESM outputs. These outputs from `stitches` can then serve as inputs to impacts
+models with little to no code changes in the impacts models.
 
 
-
-# Code availability 
-The `stitches` GitHub repository (https://github.com/JGCRI/stitches) provides 
-installation instructions. 
+# Code availability
+The `stitches` GitHub repository (https://github.com/JGCRI/stitches) provides
+installation instructions.
 
 Also included is a [quickstart notebook](https://github.com/JGCRI/stitches/blob/main/notebooks/stitches-quickstart.ipynb) that serves as a tutorial for using the package.
 

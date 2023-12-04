@@ -1,12 +1,12 @@
-from io import BytesIO as BytesIO
 import os
-import pkg_resources
 import shutil
 import tempfile
-from tqdm import tqdm
 import zipfile
+from io import BytesIO as BytesIO
 
+import pkg_resources
 import requests
+from tqdm import tqdm
 
 
 class InstallPackageData:
@@ -21,13 +21,14 @@ class InstallPackageData:
     """
 
     # URL for DOI minted example data hosted on Zenodo
-    DATA_VERSION_URLS = {'0.9.1': 'https://zenodo.org/record/7181977/files/data.zip?download=1',
-                         '0.10.0': 'https://zenodo.org/record/7799725/files/data.zip?download=1'}
+    DATA_VERSION_URLS = {
+        "0.9.1": "https://zenodo.org/record/7181977/files/data.zip?download=1",
+        "0.10.0": "https://zenodo.org/record/7799725/files/data.zip?download=1",
+    }
 
-    DEFAULT_VERSION = 'https://zenodo.org/record/7167526/files/data.zip?download=1'
+    DEFAULT_VERSION = "https://zenodo.org/record/7167526/files/data.zip?download=1"
 
     def __init__(self, data_dir=None):
-
         self.data_dir = data_dir
 
     def fetch_zenodo(self):
@@ -36,7 +37,7 @@ class InstallPackageData:
 
         # full path to the stitches root directory where the example dir will be stored
         if self.data_dir is None:
-            data_directory = pkg_resources.resource_filename('stitches', 'data')
+            data_directory = pkg_resources.resource_filename("stitches", "data")
         else:
             data_directory = self.data_dir
 
@@ -49,7 +50,7 @@ class InstallPackageData:
             os.mkdir(temp_data_path)
 
         # get the current version of stitches that is installed
-        current_version = pkg_resources.get_distribution('stitches').version
+        current_version = pkg_resources.get_distribution("stitches").version
 
         try:
             data_link = InstallPackageData.DATA_VERSION_URLS[current_version]
@@ -62,19 +63,18 @@ class InstallPackageData:
             print(msg)
 
         # retrieve content from URL
-        print("Downloading example data for stitches version {}.  This may take a few minutes...".format(current_version))
+        print(
+            f"Downloading example data for stitches version {current_version}.  This may take a few minutes..."
+        )
         response = requests.get(data_link)
 
         with zipfile.ZipFile(BytesIO(response.content)) as zipped:
-
             # extract each file in the zipped dir to the project
             for f in zipped.namelist():
-
                 extension = os.path.splitext(f)[-1]
 
                 # Extract only the csv and nc files
                 if all([len(extension) > 0, extension in (".csv", ".nc")]):
-
                     basename = os.path.basename(f)
 
                     # Check to see if tas-data is in the file path
@@ -85,7 +85,6 @@ class InstallPackageData:
 
                     # extract to a temporary directory to be able to only keep the file out of the dir structure
                     with tempfile.TemporaryDirectory() as tdir:
-
                         # extract file to temporary directory
                         zipped.extract(f, tdir)
 

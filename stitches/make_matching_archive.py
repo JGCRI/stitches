@@ -2,13 +2,17 @@
 # aka the rate of change (dx) and median value (fx) for the temperature anomoly time series.
 
 
-# Import packages
-import stitches.fx_processing as prep
-import stitches.fx_util as util
 import pandas as pd
 import pkg_resources
 
-def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_staggered: bool = False):
+# Import packages
+import stitches.fx_processing as prep
+import stitches.fx_util as util
+
+
+def make_matching_archive(
+    smoothing_window: int = 9, chunk_window: int = 9, add_staggered: bool = False
+):
     """
     The function that creates the archive of rate of change (dx) and mean (fx) values for
     from the CMIP6 archive, these the the values that will be using in the matching portion
@@ -26,8 +30,8 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
     :return:               str location of the matching archive file.
     """
     # Start by loading all of the tas files.
-    raw_data = util.load_data_files('data/tas-data')
-    raw_data = raw_data[raw_data['year'] <= 2100].copy()
+    raw_data = util.load_data_files("data/tas-data")
+    raw_data = raw_data[raw_data["year"] <= 2100].copy()
 
     # Smooth the anomalies, get the running mean of each time series.
     # Each year in the original time series is retained, and the running mean
@@ -39,9 +43,11 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
     # For now we have to do this with a for loop, to process each model/experiment/ensemble/variable
     # individually.
     # The key function prepfor aring these chunks is prep.chunk_ts
-    data = smoothed_data[["model", "experiment", "ensemble", "year", "variable", "value"]]
+    data = smoothed_data[
+        ["model", "experiment", "ensemble", "year", "variable", "value"]
+    ]
     data = data.reset_index(drop=True).copy()
-    group_by = ['model', 'experiment', 'ensemble', 'variable']
+    group_by = ["model", "experiment", "ensemble", "variable"]
     out = []
     for key, d in data.groupby(group_by):
         dat = d.reset_index(drop=True).copy()
@@ -50,19 +56,26 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
         # just print a message that it isn't getting processed into chunks.
         # (it doesn't make sense to create a 9 year chunk window from 6
         # years of data, and it causes issues when we want to add the staggered
-        if (dat['year'].nunique() < chunk_window):
+        if dat["year"].nunique() < chunk_window:
             mod = dat.model.unique()[0]
             exp = dat.experiment.unique()[0]
             ens = dat.ensemble.unique()[0]
-            print(mod + '  ' + exp + '  ' + ens + '  has fewer than chunk_window=' +
-                  str(chunk_window) + ' years in its time series. Skipping')
+            print(
+                mod
+                + "  "
+                + exp
+                + "  "
+                + ens
+                + "  has fewer than chunk_window="
+                + str(chunk_window)
+                + " years in its time series. Skipping"
+            )
         else:
             dd = prep.chunk_ts(df=dat, n=chunk_window)
             rslt = prep.get_chunk_info(dd)
             out.append(rslt)
         # end if-else
     # end of the for loop
-
 
     # if adding staggered windows, do it now.
     if add_staggered:
@@ -73,12 +86,20 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
 
                 # if this data set doesn't have at least chunk_window worth of years,
                 # just print a message that it isn't getting processed into chunks.
-                if (dat['year'].nunique() < chunk_window):
+                if dat["year"].nunique() < chunk_window:
                     mod = dat.model.unique()[0]
                     exp = dat.experiment.unique()[0]
                     ens = dat.ensemble.unique()[0]
-                    print(mod + '  ' + exp + '  ' + ens + '  has fewer than chunk_window=' +
-                          str(chunk_window) + ' years in its time series. Skipping')
+                    print(
+                        mod
+                        + "  "
+                        + exp
+                        + "  "
+                        + ens
+                        + "  has fewer than chunk_window="
+                        + str(chunk_window)
+                        + " years in its time series. Skipping"
+                    )
                 else:
                     dd = prep.chunk_ts(df=dat, n=chunk_window, base_chunk=offset)
                     rslt = prep.get_chunk_info(dd)
@@ -91,9 +112,8 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
     #  concatenate results into a single data frame.
     data = pd.concat(out).reset_index(drop=True)
 
-
-    outdir_path = pkg_resources.resource_filename('stitches', 'data')
-    if (add_staggered):
+    outdir_path = pkg_resources.resource_filename("stitches", "data")
+    if add_staggered:
         ofile = outdir_path + "/matching_archive_staggered.csv"
         # for the staggered archive, because we've added so many points to
         # the archive, we keep only the points based on chunk_window years of
@@ -101,7 +121,7 @@ def make_matching_archive(smoothing_window: int = 9, chunk_window: int = 9, add_
         # to lose).
         # This way, we don't have to change any of our stitching functions to handle
         # those cases when we use the staggered archive
-        data = data[(data['end_yr'] - data['start_yr'] + 1 == chunk_window)].copy()
+        data = data[(data["end_yr"] - data["start_yr"] + 1 == chunk_window)].copy()
         data.to_csv(ofile, index=False)
     else:
         ofile = outdir_path + "/matching_archive.csv"

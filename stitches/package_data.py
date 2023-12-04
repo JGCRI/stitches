@@ -1,7 +1,9 @@
 import os
-import pkg_resources
 
+import pkg_resources
 import xarray as xr
+
+__all__ = ["fetch_quickstarter_data"]
 
 
 def fetch_quickstarter_data(variable: str) -> xr.Dataset:
@@ -17,7 +19,9 @@ def fetch_quickstarter_data(variable: str) -> xr.Dataset:
     variable_lower = variable.casefold()
 
     if variable_lower not in ("tas", "pr"):
-        raise KeyError(f"Variable '{variable}' not a valid option.  Choose from 'tas' or 'pr'.")
+        raise KeyError(
+            f"Variable '{variable}' not a valid option.  Choose from 'tas' or 'pr'."
+        )
 
     data_directory = pkg_resources.resource_filename("stitches", "data")
     filename = f"stitched_CanESM5_{variable_lower}_ssp245~r1i1p1f1~1.nc"

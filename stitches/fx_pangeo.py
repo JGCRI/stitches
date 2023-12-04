@@ -1,13 +1,13 @@
 # Define the functions that are useful for working with the pangeo data base
 # see https://pangeo.io/index.html for more details.
 
+import fsspec
 import intake
 import xarray as xr
-import fsspec
 
 
 def fetch_pangeo_table():
-    """ Get a copy of the pangeo archive contents
+    """Get a copy of the pangeo archive contents
 
     :return: a pandas data frame containing information about the model, source, experiment, ensemble and so on that is available for download on pangeo.
     """
@@ -18,6 +18,7 @@ def fetch_pangeo_table():
 
     return out.df
 
+
 def fetch_nc(zstore: str):
     """Extract data for a single file.
 
@@ -27,7 +28,5 @@ def fetch_nc(zstore: str):
     :return:                      an xarray containing cmip6 data downloaded from  pangeo.
     """
     ds = xr.open_zarr(fsspec.get_mapper(zstore))
-    ds.sortby('time')
+    ds.sortby("time")
     return ds
-
-

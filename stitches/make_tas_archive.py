@@ -1,18 +1,21 @@
 # Define the functions used to get Get the weighted global mean temperature
 # from pangeo CMIP6 results.
 
+import os
+
+import pandas as pd
+import pkg_resources
+from tqdm import tqdm
+
+import stitches.fx_data as data
+
 # Import packages
 import stitches.fx_pangeo as pangeo
-import stitches.fx_data as data
 import stitches.fx_util as util
-import os
-import pkg_resources
-import pandas as pd
-from tqdm import tqdm
 
 
 def join_exclude(dat, drop):
-    """ Drop some rows from a data frame.
+    """Drop some rows from a data frame.
     :param dat:   pd data frame containing the data that needs to be dropped.
     :param drop: pd data frame containing the data to drop.
     :return:    pd data frame that is subset.
@@ -22,9 +25,13 @@ def join_exclude(dat, drop):
 
     # Get the column names that two data frames have
     # in common with one another.
-    in_common = list(set(dat.columns) & set(drop.columns))  # figure out what columns are in common between the two dfs
-    drop["drop"] = 1  # add an indicator column to indicate which rows need to be dropped
-    out = dat.merge(drop, how='left', on=in_common)
+    in_common = list(
+        set(dat.columns) & set(drop.columns)
+    )  # figure out what columns are in common between the two dfs
+    drop[
+        "drop"
+    ] = 1  # add an indicator column to indicate which rows need to be dropped
+    out = dat.merge(drop, how="left", on=in_common)
 
     out = out.loc[out["drop"].isna()]  # remove the entries that need to be dropped
     out = out[dat.columns]  # select the columns
@@ -63,16 +70,16 @@ def get_global_tas(path):
 
     :return:      str path to the location of file containing the weighted global mean.
     """
-    temp_dir = pkg_resources.resource_filename('stitches', 'data')
+    temp_dir = pkg_resources.resource_filename("stitches", "data")
 
-    if os.path.isdir(temp_dir) == False:
+    if not os.path.isdir(temp_dir):
         os.mkdir(temp_dir)
 
     tag = path.replace("/", "_")
     file_name = tag.replace("gs:__", "") + "temp.csv"
     ofile = temp_dir + "/" + file_name
 
-    if os.path.isfile(ofile) == False:
+    if not os.path.isfile(ofile):
         # Download the CMIP data & calculate the weighted annual global mean .
         d = pangeo.fetch_nc(path)
         global_mean = data.global_mean(d)
@@ -84,7 +91,7 @@ def get_global_tas(path):
         year = list(map(lambda x: util.selstr(x, start=0, stop=4), t))
 
         val = annual_mean["tas"].values
-        d = {'year': year, 'value': val}
+        d = {"year": year, "value": val}
         df = pd.DataFrame(data=d)
         out = util.combine_df(meta, df)
 
@@ -110,8 +117,10 @@ def calculate_anomaly(data, startYr=1995, endYr=2014):
     """
 
     # Inputs
-    util.check_columns(data, {'variable', 'experiment', 'ensemble', 'model', 'year', 'value'})
-    to_use = data[['model', 'experiment', 'ensemble', 'year', 'value']].copy()
+    util.check_columns(
+        data, {"variable", "experiment", "ensemble", "model", "year", "value"}
+    )
+    to_use = data[["model", "experiment", "ensemble", "year", "value"]].copy()
 
     # Calculate the average value for the reference period defined
     # by the startYr and ednYr arguments.
@@ -120,26 +129,30 @@ def calculate_anomaly(data, startYr=1995, endYr=2014):
     # Start by subsetting the data so that it only includes values from the specified reference period.
     to_use["year"] = to_use["year"].astype(int)
     to_use = to_use[to_use["experiment"] == "historical"]
-    subset_data = to_use[to_use['year'].between(startYr, endYr)]
+    subset_data = to_use[to_use["year"].between(startYr, endYr)]
 
     # Calculate the time-averaged reference value for each ensemble
     # realization. This reference value will be used to convert from absolute to
     # relative temperature.
-    reference_values = subset_data.groupby(['model', 'ensemble']).agg(
-        {'value': lambda x: sum(x) / len(x)}).reset_index().copy()
+    reference_values = (
+        subset_data.groupby(["model", "ensemble"])
+        .agg({"value": lambda x: sum(x) / len(x)})
+        .reset_index()
+        .copy()
+    )
     reference_values = reference_values.rename(columns={"value": "ref_values"})
 
     # Combine the dfs that contain the absolute temperature values with the reference values.
     # Then calculate the relative temperature.
-    merged_df = data.merge(reference_values, on=['model', 'ensemble'], how='inner')
-    merged_df['value'] = merged_df['value'] - merged_df['ref_values']
-    merged_df = merged_df.drop(columns='ref_values')
+    merged_df = data.merge(reference_values, on=["model", "ensemble"], how="inner")
+    merged_df["value"] = merged_df["value"] - merged_df["ref_values"]
+    merged_df = merged_df.drop(columns="ref_values")
 
     return merged_df
 
 
 def paste_historical_data(input_data):
-    """"
+    """ "
     Paste the appropriate historical data into each future scenario so that SSP585 realization 1, for
     example, has the appropriate data from 1850-2100.
 
@@ -153,14 +166,23 @@ def paste_historical_data(input_data):
     # historical and future values.
     # #######################################################
     # Create a subset of the non historical & future scns
-    other_exps = ['1pctCO2', 'abrupt-2xCO2', 'abrupt-4xCO2']
+    other_exps = ["1pctCO2", "abrupt-2xCO2", "abrupt-4xCO2"]
     other_data = input_data[input_data["experiment"].isin(other_exps)]
 
     # Subset the historical data
     historical_data = input_data[input_data["experiment"] == "historical"].copy()
 
     # Create a subset of the future data
-    fut_exps = ['ssp126', 'ssp245', 'ssp370', 'ssp585', 'ssp534-over', 'ssp119', 'ssp434', 'ssp460']
+    fut_exps = [
+        "ssp126",
+        "ssp245",
+        "ssp370",
+        "ssp585",
+        "ssp534-over",
+        "ssp119",
+        "ssp434",
+        "ssp460",
+    ]
     future_data = input_data[input_data["experiment"].isin(fut_exps)]
     future_scns = set(future_data["experiment"].unique())
 
@@ -174,7 +196,11 @@ def paste_historical_data(input_data):
     frames.append(other_data)
     data = pd.concat(frames)
 
-    d = data.groupby(['variable', 'experiment', 'ensemble', 'model', 'year'])['value'].agg('mean').reset_index()
+    d = (
+        data.groupby(["variable", "experiment", "ensemble", "model", "year"])["value"]
+        .agg("mean")
+        .reset_index()
+    )
 
     return d
 
@@ -190,13 +216,29 @@ def make_tas_archive():
 
     # Subset the monthly tas data these are the files that we will want to process
     # for the tas archive.
-    xps = ["historical", "1pctCO2", "abrupt-4xCO2", "abrupt-2xCO2", "ssp370", "ssp245", "ssp119",
-           "ssp434", "ssp460", "ssp126", "ssp585", "ssp534-over"]
-    df = df.loc[(df["experiment_id"].isin(xps)) &  # experiments of interest
-                (df["table_id"] == "Amon") &  # monthly data
-                (df["grid_label"] == "gn") &  # we are only interested in the results returned in the native
-                (df["variable_id"] == "tas") &  # select temperature data
-                (df['member_id'].str.contains('p1'))]  # select only the members of the p1 physics group
+    xps = [
+        "historical",
+        "1pctCO2",
+        "abrupt-4xCO2",
+        "abrupt-2xCO2",
+        "ssp370",
+        "ssp245",
+        "ssp119",
+        "ssp434",
+        "ssp460",
+        "ssp126",
+        "ssp585",
+        "ssp534-over",
+    ]
+    df = df.loc[
+        (df["experiment_id"].isin(xps))
+        & (df["table_id"] == "Amon")  # experiments of interest
+        & (df["grid_label"] == "gn")  # monthly data
+        & (  # we are only interested in the results returned in the native
+            df["variable_id"] == "tas"
+        )
+        & (df["member_id"].str.contains("p1"))  # select temperature data
+    ]  # select only the members of the p1 physics group
 
     # For each of the CMIP6 files to calculate the global mean temperature and write the
     # results to the temporary directory.
@@ -210,7 +252,6 @@ def make_tas_archive():
     # Find all of the files and read in the data, store as a single data frame.
     raw_data = pd.concat(list(map(pd.read_csv, files)))
 
-
     # Note that the first three steps only apply to the historical & ssp experiments,
     # the idealized experiments do not need to go through these steps.
     #
@@ -218,9 +259,12 @@ def make_tas_archive():
     # Make sure that the historical run starts some time
     # before 1855 & that that it runs until 2014.
     # Subset the Hector historical
-    his_info = (raw_data.loc[(raw_data["experiment"] == "historical")]
-                .groupby(["model", "experiment", "ensemble"])["year"]
-                .agg(["min", "max"]).reset_index())
+    his_info = (
+        raw_data.loc[(raw_data["experiment"] == "historical")]
+        .groupby(["model", "experiment", "ensemble"])["year"]
+        .agg(["min", "max"])
+        .reset_index()
+    )
     his_info["min"] = his_info["min"].astype(int)
     his_info["max"] = his_info["max"].astype(int)
 
@@ -235,10 +279,22 @@ def make_tas_archive():
 
     # Second round of cleaning check the future dates.
     # Make sure that the future scenarios start at 2015 & run beyond 2100.
-    fut_exps = ['ssp245', 'ssp126', 'ssp585', 'ssp119', 'ssp370', 'ssp434', 'ssp534-over', 'ssp460']
-    fut_info = (clean_d1.loc[(clean_d1["experiment"].isin(fut_exps))]
-                .groupby(["model", "experiment", "ensemble"])["year"]
-                .agg(["min", "max"]).reset_index())
+    fut_exps = [
+        "ssp245",
+        "ssp126",
+        "ssp585",
+        "ssp119",
+        "ssp370",
+        "ssp434",
+        "ssp534-over",
+        "ssp460",
+    ]
+    fut_info = (
+        clean_d1.loc[(clean_d1["experiment"].isin(fut_exps))]
+        .groupby(["model", "experiment", "ensemble"])["year"]
+        .agg(["min", "max"])
+        .reset_index()
+    )
     fut_info["min"] = fut_info["min"].astype(int)
     fut_info["max"] = fut_info["max"].astype(int)
 
@@ -258,29 +314,37 @@ def make_tas_archive():
 
     # Separate the data frame of the experiment / ensemble / model information into
     # the historical and non historical experiments.
-    hist_ensemble = (exp_en_mod.loc[exp_en_mod["experiment"] == "historical"][["model", "ensemble"]]
-                     .drop_duplicates()
-                     .copy())
-    non_hist_ensemble = (exp_en_mod[exp_en_mod["experiment"] != "historical"][["model", "ensemble"]]
-                         .drop_duplicates()
-                         .copy())
+    hist_ensemble = (
+        exp_en_mod.loc[exp_en_mod["experiment"] == "historical"][["model", "ensemble"]]
+        .drop_duplicates()
+        .copy()
+    )
+    non_hist_ensemble = (
+        exp_en_mod[exp_en_mod["experiment"] != "historical"][["model", "ensemble"]]
+        .drop_duplicates()
+        .copy()
+    )
     # use an inner join to select the historical ensemble that have future results as well as
     # the future results have have historical results.
-    to_keep = non_hist_ensemble.merge(hist_ensemble, how="inner", on=["ensemble", "model"])
+    to_keep = non_hist_ensemble.merge(
+        hist_ensemble, how="inner", on=["ensemble", "model"]
+    )
 
     # Update the raw data table to only include the model / ensembles members that have both a
     # historical and non historical ensemble realization.
     clean_d3 = clean_d2.merge(to_keep, how="inner")
 
     # Before the fourth round of clean up add back in the idealized experiment results.
-    idealized_exps = {'1pctCO2', 'abrupt-2xCO2', 'abrupt-4xCO2'}
-    idealized_dat = raw_data.loc[raw_data['experiment'].isin(idealized_exps)]
+    idealized_exps = {"1pctCO2", "abrupt-2xCO2", "abrupt-4xCO2"}
+    idealized_dat = raw_data.loc[raw_data["experiment"].isin(idealized_exps)]
     clean_d3 = rbind(clean_d3, idealized_dat)
 
     # Fourth round of cleaning make sure there are no missing dates.
-    yrs = (clean_d2.groupby(["model", "experiment", "ensemble"])["year"]
-           .agg(["min", "max", "count"])
-           .reset_index())
+    yrs = (
+        clean_d2.groupby(["model", "experiment", "ensemble"])["year"]
+        .agg(["min", "max", "count"])
+        .reset_index()
+    )
     yrs["min"] = yrs["min"].astype(int)
     yrs["max"] = yrs["max"].astype(int)
     yrs["count"] = yrs["count"].astype(int)
@@ -290,8 +354,11 @@ def make_tas_archive():
     clean_d4 = join_exclude(clean_d3, to_remove).copy()
 
     # Order the data frame to make sure that all of the years are in order.
-    cleaned_data = (clean_d4.sort_values(by=['variable', 'experiment', 'ensemble', 'model', 'year'])
-                    .reset_index(drop=True)).copy()
+    cleaned_data = (
+        clean_d4.sort_values(
+            by=["variable", "experiment", "ensemble", "model", "year"]
+        ).reset_index(drop=True)
+    ).copy()
 
     # Format Data
     #
@@ -299,27 +366,43 @@ def make_tas_archive():
     # with the future scenarios.
     data_anomaly = calculate_anomaly(cleaned_data).copy()
     data = paste_historical_data(data_anomaly)
-    data = data.sort_values(by=['variable', 'experiment', 'ensemble', 'model', 'year'])
-    data = data[["variable", "experiment", "ensemble", "model", "year", "value"]].reset_index(drop=True)
+    data = data.sort_values(by=["variable", "experiment", "ensemble", "model", "year"])
+    data = data[
+        ["variable", "experiment", "ensemble", "model", "year", "value"]
+    ].reset_index(drop=True)
 
     # Add the z store values to the data frame.
     # Get the pangeo table of contents & assert that the data frame exists and contains information.
     df = pangeo.fetch_pangeo_table()
-    df = df.loc[(df["table_id"] == "Amon") &  # monthly data
-                (df["grid_label"] == "gn") &  # we are only interested in the results returned in the native
-                (df["variable_id"] == "tas") &  # select temperature data
-                (df['member_id'].str.contains('p1'))].copy()  # select only the members of the p1 physics group
+    df = df.loc[
+        (df["table_id"] == "Amon")
+        & (df["grid_label"] == "gn")  # monthly data
+        & (  # we are only interested in the results returned in the native
+            df["variable_id"] == "tas"
+        )
+        & (df["member_id"].str.contains("p1"))  # select temperature data
+    ].copy()  # select only the members of the p1 physics group
 
     if len(df) <= 0:
-        raise Exception('Unable to connect to pangeo, make sure to disconnect from VP')
+        raise Exception("Unable to connect to pangeo, make sure to disconnect from VP")
 
     # Format the pangeo data frame so that it reflects the contents of data.
-    pangeo_df = df[["source_id", "experiment_id", "member_id", "variable_id", "zstore"]].drop_duplicates()
-    pangeo_df = pangeo_df.rename(columns={"source_id": "model", "experiment_id": "experiment",
-                                          "member_id": "ensemble", "variable_id": "variable"})
+    pangeo_df = df[
+        ["source_id", "experiment_id", "member_id", "variable_id", "zstore"]
+    ].drop_duplicates()
+    pangeo_df = pangeo_df.rename(
+        columns={
+            "source_id": "model",
+            "experiment_id": "experiment",
+            "member_id": "ensemble",
+            "variable_id": "variable",
+        }
+    )
 
     # Add the zstore file information to the data frame via a left join.
-    data = data.merge(pangeo_df, on=['variable', 'experiment', 'ensemble', 'model'], how="inner")
+    data = data.merge(
+        pangeo_df, on=["variable", "experiment", "ensemble", "model"], how="inner"
+    )
 
     # Modify the zstore path names to replace the future scn string with historical.
     # TODO replace this for loop it is pretty slow
@@ -329,7 +412,16 @@ def make_tas_archive():
         row = data.loc[i]
 
         # Check to see if the zstore needs to be changed based on if it is a future experiment.
-        fut_exps = set(['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460', 'ssp534-over', 'ssp585'])
+        fut_exps = {
+            "ssp119",
+            "ssp126",
+            "ssp245",
+            "ssp370",
+            "ssp434",
+            "ssp460",
+            "ssp534-over",
+            "ssp585",
+        }
         change = row["experiment"] in fut_exps
         if change:
             new = row["zstore"].replace(row["experiment"], "historical")
@@ -345,9 +437,9 @@ def make_tas_archive():
     # using pickle_utils.load()
 
     files = []
-    tas_data_dir = pkg_resources.resource_filename('stitches', 'data/tas-data')
-    for name, group in data.groupby(['model']):
-        path = tas_data_dir + '/' + name + '_tas.csv'
+    tas_data_dir = pkg_resources.resource_filename("stitches", "data/tas-data")
+    for name, group in data.groupby(["model"]):
+        path = tas_data_dir + "/" + name + "_tas.csv"
         files.append(path)
         group.to_csv(path, index=False)
 

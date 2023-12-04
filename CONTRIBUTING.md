@@ -1,7 +1,7 @@
 # How to contribute
 
-We welcome third-party patches, which are essential for advancing the science and architecture of Hector. 
-But there are a few guidelines that we ask contributors to follow, guidelines that ease the maintainers' organizational and logistical duties, while encouraging development by others. All contributors agree to abide by the code of conduct. 
+We welcome third-party patches, which are essential for advancing the science and architecture of Hector.
+But there are a few guidelines that we ask contributors to follow, guidelines that ease the maintainers' organizational and logistical duties, while encouraging development by others. All contributors agree to abide by the code of conduct.
 
 ## Getting Started
 

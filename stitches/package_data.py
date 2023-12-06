@@ -1,6 +1,6 @@
 import os
+from importlib import resources
 
-import pkg_resources
 import xarray as xr
 
 __all__ = ["fetch_quickstarter_data"]
@@ -23,7 +23,7 @@ def fetch_quickstarter_data(variable: str) -> xr.Dataset:
             f"Variable '{variable}' not a valid option.  Choose from 'tas' or 'pr'."
         )
 
-    data_directory = pkg_resources.resource_filename("stitches", "data")
+    data_directory = resources.files("stitches"),  "data"
     filename = f"stitched_CanESM5_{variable_lower}_ssp245~r1i1p1f1~1.nc"
 
     return xr.open_dataset(os.path.join(data_directory, filename))

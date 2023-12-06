@@ -1,8 +1,8 @@
 import os
+from importlib import resources
 
 import numpy as np
 import pandas as pd
-import pkg_resources
 import xarray as xr
 
 import stitches.fx_data as data
@@ -436,7 +436,7 @@ def gmat_stitching(rp):
         match = match.reset_index(drop=True)
 
         # Find the tas data to be stitched together.
-        data_directory = pkg_resources.resource_filename("stitches", "data")
+        data_directory = resources.files("stitches") / "data"
         dir_path = os.path.join(data_directory, "tas-data")
         all_files = util.list_files(dir_path)
 

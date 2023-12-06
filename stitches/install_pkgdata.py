@@ -1,10 +1,11 @@
+import importlib
 import os
 import shutil
 import tempfile
 import zipfile
 from io import BytesIO as BytesIO
+from importlib import resources
 
-import pkg_resources
 import requests
 from tqdm import tqdm
 
@@ -38,7 +39,7 @@ class InstallPackageData:
 
         # full path to the stitches root directory where the example dir will be stored
         if self.data_dir is None:
-            data_directory = pkg_resources.resource_filename("stitches", "data")
+            data_directory = resources.files("stitches") / "data"
         else:
             data_directory = self.data_dir
 
@@ -51,7 +52,7 @@ class InstallPackageData:
             os.mkdir(temp_data_path)
 
         # get the current version of stitches that is installed
-        current_version = pkg_resources.get_distribution("stitches").version
+        current_version = importlib.metadata.version("stitches")
 
         try:
             data_link = InstallPackageData.DATA_VERSION_URLS[current_version]

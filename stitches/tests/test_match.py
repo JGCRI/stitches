@@ -1,7 +1,7 @@
 import unittest
+from importlib import resources
 
 import pandas as pd
-import pkg_resources
 
 from stitches.fx_match import (
     drop_hist_false_duplicates,
@@ -16,7 +16,7 @@ class TestMatch(unittest.TestCase):
     def test_match_fxns(self):
         """Testing the `match_neighborhood` functions"""
         # Read in some made up target data.
-        path = pkg_resources.resource_filename("stitches", "tests/test-target_dat.csv")
+        path = resources.files("stitches") / "tests" / "test-target_dat.csv"
         data = pd.read_csv(path)
 
         # Start by checking on a self test & without the drop hist constraint.
@@ -24,7 +24,7 @@ class TestMatch(unittest.TestCase):
         self.assertEqual(data.shape[0], self_match.shape[0])
 
         # Now try matching with the test archive
-        path = pkg_resources.resource_filename("stitches", "tests/test-archive_dat.csv")
+        path = resources.files("stitches") / "tests" / "test-archive_dat.csv"
         archive = pd.read_csv(path)
         match1 = match_neighborhood(data, archive, tol=0)
         # We know this must be true because the test archive contains duplicates of the
@@ -55,7 +55,7 @@ class TestMatch(unittest.TestCase):
 
         "Test drop_hist_false_duplicates"
         # Read in the match test data.
-        path = pkg_resources.resource_filename("stitches", "tests/test-match_w_dup.csv")
+        path = resources.files("stitches") / "tests" / "test-match_w_dup.csv"
         match_data = pd.read_csv(path)
         cleaned = drop_hist_false_duplicates(match_data)
         self.assertTrue(nrow(match_data) > nrow(cleaned))

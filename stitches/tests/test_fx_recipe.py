@@ -1,7 +1,7 @@
 import unittest
+from importlib import resources
 
 import pandas as pd
-import pkg_resources
 
 from stitches.fx_match import match_neighborhood
 from stitches.fx_recipe import (
@@ -470,7 +470,7 @@ class TestRecipe(unittest.TestCase):
 
     def test_get_num_perms(self):
         # Read in the match test data.
-        path = pkg_resources.resource_filename("stitches", "tests/test-match_w_dup.csv")
+        path = resources.files("stitches") / "tests" / "test-match_w_dup.csv"
         match_data = pd.read_csv(path)
 
         "Test get_num_perms"

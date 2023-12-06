@@ -1,9 +1,9 @@
 # Define helper functions used through out the package.
 import os
+from importlib import resources
 
 import numpy as np
 import pandas as pd
-import pkg_resources
 
 
 def combine_df(df1, df2):
@@ -200,7 +200,7 @@ def load_data_files(subdir):
     :return:    pd.DataFrame object
     """
     # Make sure the sub directory exists.
-    path = pkg_resources.resource_filename("stitches", subdir)
+    path = resources.files("stitches") / subdir
     if not os.path.isdir(path):
         raise TypeError("subdir does not exist")
 

@@ -2,14 +2,12 @@
 # from pangeo CMIP6 results.
 
 import os
+from importlib import resources
 
 import pandas as pd
-import pkg_resources
 from tqdm import tqdm
 
 import stitches.fx_data as data
-
-# Import packages
 import stitches.fx_pangeo as pangeo
 import stitches.fx_util as util
 
@@ -70,7 +68,8 @@ def get_global_tas(path):
 
     :return:      str path to the location of file containing the weighted global mean.
     """
-    temp_dir = pkg_resources.resource_filename('stitches', 'data/temp-data')
+
+    temp_dir = resources.files("stitches") / "data" / "temp-data"
 
     if not os.path.isdir(temp_dir):
         os.mkdir(temp_dir)
@@ -439,7 +438,7 @@ def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
     # using pickle_utils.load()
 
     files = []
-    tas_data_dir = pkg_resources.resource_filename("stitches", "data/tas-data")
+    tas_data_dir = resources.files("stitches") / "data" / "tas-data"
     for name, group in data.groupby(["model"]):
         path = tas_data_dir + "/" + name + "_tas.csv"
         files.append(path)

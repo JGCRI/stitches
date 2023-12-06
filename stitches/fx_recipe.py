@@ -2,12 +2,10 @@
 # permutations of the recipes & re-format for stitching.
 
 import os
+from importlib import resources
 
 import numpy as np
-import pkg_resources
-
 import pandas as pd
-import pkg_resources
 
 import stitches.fx_match as match
 import stitches.fx_util as util
@@ -959,9 +957,7 @@ def generate_gridded_recipe(messy_recipe, res: str = "mon"):
     dat.loc[dat["archive_end_yr"] <= 2014, "archive_experiment"] = "historical"
 
     # Now that we have the formatted recipe add the pangeo tas information!!
-    ptable_path = os.path.join(
-        pkg_resources.resource_filename("stitches", "data"), "pangeo_table.csv"
-    )
+    ptable_path = resources.files("stitches") / "data" / "pangeo_table.csv"
     pangeo_table = pd.read_csv(ptable_path)
 
     if res == "mon":
@@ -1095,7 +1091,7 @@ def make_recipe(
         if "tas" in non_tas_variables:
             raise TypeError("non_tas_variables: cannot contain tas.")
 
-        data_directory = pkg_resources.resource_filename("stitches", "data")
+        data_directory = resources.files("stitches") / "data"
         pt_path = os.path.join(data_directory, "pangeo_table.csv")
         pangeo_table = pd.read_csv(pt_path)
 

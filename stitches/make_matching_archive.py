@@ -1,9 +1,8 @@
 # Define the functions used to create the archive that is used in the matching process,
 # aka the rate of change (dx) and median value (fx) for the temperature anomoly time series.
-
+from importlib import resources
 
 import pandas as pd
-import pkg_resources
 
 # Import packages
 import stitches.fx_processing as prep
@@ -114,7 +113,7 @@ def make_matching_archive(
     #  concatenate results into a single data frame.
     data = pd.concat(out).reset_index(drop=True)
 
-    outdir_path = pkg_resources.resource_filename("stitches", "data")
+    outdir_path = resources.files("stitches") / "data"
     if add_staggered:
         ofile = outdir_path + "/matching_archive_staggered.csv"
         # for the staggered archive, because we've added so many points to

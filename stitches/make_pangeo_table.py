@@ -1,7 +1,7 @@
 # Save a copy of the pangeo table, this has information about the z store file.
+from importlib import resources
 
 import pandas as pd
-import pkg_resources
 
 import stitches.fx_pangeo as pangeo
 
@@ -14,9 +14,7 @@ def make_pangeo_table():
     :return:          Nothing, write a file out to package data.
     """
     # Using the information about what experiment/ensemble/models that are available for matching.
-    archive_path = pkg_resources.resource_filename(
-        "stitches", "data/matching_archive.csv"
-    )
+    archive_path = resources.files("stitches") / "data" / "matching_archive.csv"
     tas_exp_model = (
         pd.read_csv(archive_path)[["experiment", "ensemble", "model"]]
         .drop_duplicates()
@@ -56,7 +54,7 @@ def make_pangeo_table():
     )
 
     # Write the file out
-    out_file = pkg_resources.resource_filename("stitches", "data") + "/pangeo_table.csv"
+    out_file = resources.files("stitches") / "data" / "pangeo_table.csv"
     final_pangeo_table.to_csv(out_file, index=False)
 
     # Return
@@ -73,10 +71,7 @@ def make_pangeo_comparison():
     """
 
     dat = pangeo.fetch_pangeo_table()
-    out_file = (
-        pkg_resources.resource_filename("stitches", "data")
-        + "/pangeo_comparison_table.csv"
-    )
+    out_file = resources.files("stitches") / "data" / "pangeo_comparison_table.csv"
     dat.to_csv(out_file, index=False)
     # Return
     return None

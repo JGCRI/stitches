@@ -1,9 +1,9 @@
 import os
 import unittest
+from importlib import resources
 
 import numpy as np
 import pandas as pd
-import pkg_resources
 
 from stitches.fx_util import (
     anti_join,
@@ -67,7 +67,8 @@ class TestUtil(unittest.TestCase):
         # Test the list files and load files function
 
         # Make sure that all of the files returned by the list_files function are all true.
-        out = list_files(pkg_resources.resource_filename("stitches", "tests"))
+        test_dir = resources.files("stitches") / "tests"
+        out = list_files(test_dir)
         self.assertTrue(all(list(map(os.path.exists, out))))
 
         # Make sure that we can load a csv data file

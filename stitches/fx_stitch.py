@@ -436,8 +436,7 @@ def gmat_stitching(rp):
         match = match.reset_index(drop=True)
 
         # Find the tas data to be stitched together.
-        data_directory = resources.files("stitches") / "data"
-        dir_path = os.path.join(data_directory, "tas-data")
+        dir_path = resources.files("stitches") / "data" / "tas-data"
         all_files = util.list_files(dir_path)
 
         # Load the tas data for a particular model.

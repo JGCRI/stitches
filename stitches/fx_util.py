@@ -41,7 +41,7 @@ def list_files(d):
     for i in range(0, len(files)):
         f = files[i]
         if not (".DS_Store" in f):
-            ofiles.append(d / f)
+            ofiles.append(os.path.join(d, f))
     return ofiles
 
 

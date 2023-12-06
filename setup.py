@@ -30,4 +30,17 @@ setup(
     python_requires=">=3.9.0",
     include_package_data=True,
     install_requires=requirements(),
+    extras_require={
+    'dev': [
+        'build>=0.5.1',
+        'nbsphinx>=0.8.6',
+        'setuptools>=57.0.0',
+        'sphinx>=7',
+        'sphinx_book_theme>=1',
+        'sphinx-click>=5.1',
+        'sphinx_copybutton>=0.5',
+        'twine~=3.4.1'
+    ]
+}
 )
+

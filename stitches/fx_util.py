@@ -41,7 +41,7 @@ def list_files(d):
     for i in range(0, len(files)):
         f = files[i]
         if not (".DS_Store" in f):
-            ofiles.append(d + "/" + f)
+            ofiles.append(d / f)
     return ofiles
 
 
@@ -210,9 +210,12 @@ def load_data_files(subdir):
 
     # Read in the data & concatenate into a single data frame.
     for f in files_to_process:
-        if ".csv" in f:
+
+        extension = os.path.splitext(f)[-1].casefold()
+
+        if extension == ".csv":
             d = pd.read_csv(f)
-        elif "pkl" in f:
+        elif extension == ".pkl":
             d = pd.read_pickle(f)
         else:
             d = None

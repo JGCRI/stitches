@@ -31,16 +31,27 @@ setup(
     include_package_data=True,
     install_requires=requirements(),
     extras_require={
-    'dev': [
-        'build>=0.5.1',
-        'nbsphinx>=0.8.6',
-        'setuptools>=57.0.0',
-        'sphinx>=7',
-        'sphinx_book_theme>=1',
-        'sphinx-click>=5.1',
-        'sphinx_copybutton>=0.5',
-        'twine~=3.4.1'
+        'dev': [
+            'build>=0.5.1',
+            'nbsphinx>=0.8.6',
+            'setuptools>=57.0.0',
+            'sphinx>=7',
+            'sphinx_book_theme>=1',
+            'sphinx-click>=5.1',
+            'sphinx_copybutton>=0.5',
+            'twine~=3.4.1'
+        ]
+    },
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: BSD License",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3 :: Only",
+        "Topic :: Scientific/Engineering :: Atmospheric Science",
     ]
-}
 )
 

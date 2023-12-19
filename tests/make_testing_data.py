@@ -30,21 +30,21 @@ def setup_package_data():
     match_df = match_neighborhood(
         target_data, archive_data, tol=0.1, drop_hist_duplicates=False
     )
-    match_path = resources.files("stitches") / "tests" / "test-match_w_dup.csv"
+    match_path = "test-match_w_dup.csv"
     match_df.to_csv(match_path, index=False)
 
     match_df = match_neighborhood(
         target_data, archive_data, tol=0.1, drop_hist_duplicates=True
     )
-    match_path = resources.files("stitches") / "tests" / "ttest-match.csv"
+    match_path = "test-match.csv"
     match_df.to_csv(match_path, index=False)
 
-    path = resources.files("stitches") / "tests" / "test-target_dat.csv"
+    path = "test-target_dat.csv"
     tar = pd.read_csv(path)
 
-    path = resources.files("stitches") / "tests" / "test-archive_dat.csv"
+    path = "test-archive_dat.csv"
     arch = pd.read_csv(path)
 
     match_df = match_neighborhood(tar, arch, tol=0.1, drop_hist_duplicates=True)
-    match_path = resources.files("stitches") / "tests" / "test-match_dat.csv"
+    match_path = "test-match_dat.csv"
     match_df.to_csv(match_path, index=False)

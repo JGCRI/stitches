@@ -14,6 +14,7 @@ stitches/tests/stitched_*
 # system
 .DS_Store
 stitches/data/.DS_Store
+tests/.DS_Store
 
 # pycharm
 .idea

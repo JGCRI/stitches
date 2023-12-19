@@ -12,3 +12,5 @@ def setup_package_data():
     """
 
     stitches.install_package_data()
+
+    return None

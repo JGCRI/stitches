@@ -1,4 +1,5 @@
 import unittest
+from importlib import resources
 
 import pandas as pd
 
@@ -463,7 +464,6 @@ class TestRecipe(unittest.TestCase):
         }
     )
 
-
     def test_get_num_perms(self):
         """
         Test the `get_num_perms` function to ensure it returns the correct number of permutations.
@@ -472,7 +472,7 @@ class TestRecipe(unittest.TestCase):
         and that the list contains the expected columns.
         """
         # Read in the match test data.
-        path = "test-match_w_dup.csv"
+        path = resources.files("stitches") / "data" / "example" / "test-match_w_dup.csv"
         match_data = pd.read_csv(path)
 
         # Test get_num_perms

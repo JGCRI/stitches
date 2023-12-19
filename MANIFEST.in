@@ -4,3 +4,4 @@ include DISCLAIMER
 include notebooks/*.*
 include data/tas-data/README.md
 include data/temp-data/README.md
+include data/example/test-*.csv

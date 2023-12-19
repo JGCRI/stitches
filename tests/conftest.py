@@ -18,6 +18,18 @@ def setup_package_data():
 
     stitches.install_package_data()
 
+
+def build_test_data():
+    """
+    Build test data for the test suite.
+
+    This function creates and writes out test data files used in the test suite.
+    It reads the matching archive CSV, filters the data for specific model,
+    experiment, and ensemble values, and then writes out the data after
+    performing neighborhood matching.
+
+    :return: None
+    """
     archive_path = resources.files("stitches") / "data" / "matching_archive.csv"
     data = pd.read_csv(archive_path)
 

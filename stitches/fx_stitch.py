@@ -451,7 +451,7 @@ def gmat_stitching(rp):
 
         # Load the tas data for a particular model.
         model = match["archive_model"].unique()[0]
-        csv_to_load = [file for file in all_files if (model in file) and (os.path.basname(file)[0] != ".")][0]
+        csv_to_load = [file for file in all_files if (model in file) and (os.path.basename(file)[0] != ".")][0]
 
         data = pd.read_csv(csv_to_load)
 

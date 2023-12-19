@@ -94,9 +94,11 @@ class TestStitch(unittest.TestCase):
 
         This test checks the type and structure of the output to ensure it meets expected formats.
         """
+
         out = gmat_stitching(self.MY_RP)
 
         self.assertEqual(type(out), pd.core.frame.DataFrame)
+
         time_steps = (
             max(self.MY_RP["target_end_yr"]) - min(self.MY_RP["target_start_yr"]) + 1
         )

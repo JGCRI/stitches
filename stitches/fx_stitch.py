@@ -452,6 +452,9 @@ def gmat_stitching(rp):
         # Load the tas data for a particular model.
         model = match["archive_model"].unique()[0]
         csv_to_load = [file for file in all_files if (model in file)][0]
+
+        print(f"HERE:  {csv_to_load}")
+
         data = pd.read_csv(csv_to_load)
 
         # Format the data so that if we have historical years in the future scenarios

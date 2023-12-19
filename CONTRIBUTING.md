@@ -20,7 +20,7 @@ But there are a few guidelines that we ask contributors to follow, guidelines th
   * We will never accept pull requests to the `master` branch.
 * Check for unnecessary whitespace with `git diff --check` before committing.
 * Make sure your commit messages are descriptive but succinct, describing what was changed and why, and **reference the relevant issue number**. Make commits of logical units.
-* Make sure you have added the necessary tests for your changes.
+* Make sure you have added the necessary tests for your changes. Tests should be included in the root `tests` directory and are facilitated using `pytest` which is installed with the development version of STITCHES.  See more info on using `pytest` here:  https://docs.pytest.org/en/7.4.x/contents.html
 * Run _all_ the tests to assure nothing else was accidentally broken.
 
 ## Submitting Changes

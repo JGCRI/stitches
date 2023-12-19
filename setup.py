@@ -32,6 +32,7 @@ setup(
     install_requires=requirements(),
     extras_require={
         'dev': [
+            'pytest>=7.4.3',
             'build>=0.5.1',
             'nbsphinx>=0.8.6',
             'setuptools>=57.0.0',

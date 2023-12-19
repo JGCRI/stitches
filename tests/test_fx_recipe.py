@@ -1,12 +1,10 @@
 import unittest
-from importlib import resources
 
 import pandas as pd
 
 from stitches.fx_match import match_neighborhood
 from stitches.fx_recipe import (
     get_num_perms,
-    make_recipe,
     permute_stitching_recipes,
     remove_duplicates,
 )
@@ -465,9 +463,6 @@ class TestRecipe(unittest.TestCase):
         }
     )
 
-    # ###################################################
-    # tests
-    # ###################################################
 
     def test_get_num_perms(self):
         """
@@ -477,10 +472,10 @@ class TestRecipe(unittest.TestCase):
         and that the list contains the expected columns.
         """
         # Read in the match test data.
-        path = resources.files("stitches") / "tests" / "test-match_w_dup.csv"
+        path = "test-match_w_dup.csv"
         match_data = pd.read_csv(path)
 
-        "Test get_num_perms"
+        # Test get_num_perms
         out = get_num_perms(match_data)
         self.assertEqual(type(out), list)
         # Throw an error if the output does not match what we would expect.

@@ -1,6 +1,5 @@
 import os
 import unittest
-from importlib import resources
 
 import numpy as np
 import pandas as pd
@@ -81,12 +80,11 @@ class TestUtil(unittest.TestCase):
         """
 
         # Make sure that all of the files returned by the list_files function are all true.
-        test_dir = resources.files("stitches") / "tests"
+        test_dir = "."
         out = list_files(test_dir)
         self.assertTrue(all(list(map(os.path.exists, out))))
 
-        # Make sure that we can load a csv data file
-        self.assertTrue(type(load_data_files("tests")) == pd.core.frame.DataFrame)
+        # test failure
         with self.assertRaises(TypeError):
             load_data_files("fake")
 

@@ -11,14 +11,13 @@ from tqdm import tqdm
 
 
 class InstallPackageData:
-    """Download and unpack example data minted on Zenodo that matches the current installed
+    """
+    Download and unpack example data minted on Zenodo that matches the current installed
     stitches distribution.
 
-    :param data_dir:    Optional, Full path oto the directory you wish to store the data in. Default
-                        os to install it in the data directory of the package.
-
-    :type data_dir:     str
-
+    :param data_dir: Optional. Full path to the directory where you wish to store the data.
+                     If not specified, the data will be installed in the data directory of the package.
+    :type data_dir: str
     """
 
     # URL for DOI minted example data hosted on Zenodo
@@ -99,13 +98,17 @@ class InstallPackageData:
 
 
 def install_package_data(data_dir: str = None):
-    """Download and unpack Zenodo-minted stitches package data that matches the current installed
-    stitches distribution.
+    """
+    Download and unpack Zenodo-minted stitches package data.
 
-    :param data_dir:                    Optional.  Full path to the directory you wish to store the data in.  Default is to install it in data directory of the package.
-    :type data_dir:                     str
+    This function matches the current installed stitches distribution and unpacks
+    the data into the specified directory or the default data directory of the package.
 
-    :return:          Nothing, write a file out to package data.
+    :param data_dir: Optional. Full path to the directory to store the data.
+                     Default is the data directory of the package.
+    :type data_dir: str
+
+    :return: None
     """
 
     zen = InstallPackageData(data_dir=data_dir)

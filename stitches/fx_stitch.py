@@ -11,9 +11,11 @@ import stitches.fx_util as util
 
 
 def find_zfiles(rp):
-    """Determine which cmip files must be downloaded from pangeo.
-    :param rp:             data frame of the recipes
-    :return:               numpy.ndarray array of the gs:// files to pull from pangeo
+    """
+    Determine which CMIP files must be downloaded from Pangeo.
+
+    :param rp: Data frame of the recipes.
+    :return: Numpy ndarray of the gs:// files to pull from Pangeo.
     """
 
     # Figure out which columns contain the string file
@@ -23,9 +25,11 @@ def find_zfiles(rp):
 
 
 def find_var_cols(x):
-    """Determine which variables that are going to be downloaded.
-    :param x:             pandas data frame of the stitches recipe
-    :return:              a list of the variables that are going to be written out to the netcdf files.
+    """
+    Determine the variables to be downloaded.
+
+    :param x: pandas DataFrame of the stitches recipe.
+    :return: List of variables to be written to the NetCDF files.
     """
 
     # Parse out the variable name so that we can use it
@@ -40,13 +44,15 @@ def find_var_cols(x):
 
 
 def get_netcdf_values(i, dl, rp, fl, name):
-    """Extract the archive values from the list of downloaded cmip data
-    :param i:              int index of the row of the recipe data frame
-    :param dl:             list of xarray cmip files
-    :param rp:             data frame of the recipe
-    :param fl:             list of the cmip files
-    :param name:           name of the variable file that is going to be processed.
-    :return:               a slice of xarray (not sure confident on the technical term)
+    """
+    Extract archive values from a list of downloaded CMIP data.
+
+    :param i: Index of the row in the recipe data frame.
+    :param dl: List of xarray datasets containing CMIP files.
+    :param rp: DataFrame of the recipe.
+    :param fl: List of CMIP file paths.
+    :param name: Name of the variable file to process.
+    :return: A slice of xarray data (unsure about the technical term).
     """
 
     file = rp[name][i]
@@ -100,12 +106,14 @@ def get_netcdf_values(i, dl, rp, fl, name):
 
 
 def get_var_info(rp, dl, fl, name):
-    """Extract the cmip variable attribute information.
-    :param rp:             data frame of the recipes
-    :param dl:             list of the data files
-    :param fl:             list of the data file names
-    :param name:           string of the column containing the variable file name from rp
-    :return:               pandas dataframe of the variable meta data
+    """
+    Extract the CMIP variable attribute information.
+
+    :param rp: Data frame of the recipes.
+    :param dl: List of the data files.
+    :param fl: List of the data file names.
+    :param name: String of the column containing the variable file name from rp.
+    :return: Pandas dataframe of the variable meta data.
     """
     util.check_columns(rp, {name})
     file = rp[name][0]
@@ -120,12 +128,14 @@ def get_var_info(rp, dl, fl, name):
 
 
 def get_atts(rp, dl, fl, name):
-    """Extract the cmip variable attribute information.
-    :param rp:             data frame of the recipes
-    :param dl:             list of the data files
-    :param fl:             list of the data file names
-    :param name:           string of the column containing the variable files to process
-    :return:               dict object containing the cmip variable information
+    """
+    Extract the CMIP variable attribute information.
+
+    :param rp: Data frame of the recipes.
+    :param dl: List of the data files.
+    :param fl: List of the data file names.
+    :param name: String of the column containing the variable file name from rp.
+    :return: Dict object containing the CMIP variable information.
     """
     file = rp[name][0]
     index = int(np.where(fl == file)[0])
@@ -138,11 +148,13 @@ def get_atts(rp, dl, fl, name):
 
 
 def internal_stitch(rp, dl, fl):
-    """Stitch a single recipe into netcdf outputs
-    :param dl:             list of xarray cmip files
-    :param rp:             data frame of the recipe
-    :param fl:             list of the cmip files
-    :return:               a list of the data arrays for the stitched products of the different variables.
+    """
+    Stitch a single recipe into netCDF outputs.
+
+    :param dl: List of xarray CMIP files.
+    :param rp: DataFrame of the recipe.
+    :param fl: List of the CMIP file names.
+    :return: List of the data arrays for the stitched products of the different variables.
     """
 
     rp = rp.sort_values(by=["stitching_id", "target_start_yr"]).copy()
@@ -228,14 +240,13 @@ def internal_stitch(rp, dl, fl):
 
 
 def gridded_stitching(out_dir: str, rp):
-    """Stitch the gridded netcdfs for variables contained in recipe file and save.
+    """
+    Stitch the gridded NetCDFs for variables contained in the recipe file and save them.
 
-    :param out_dir:        string directory location where to write the netcdf files to
-    :type out_dir:          str
-
-    :param rp:             data frame of the recipe including variables to stitch
-
-    :return:               a list of the netcdf files paths
+    :param out_dir: Directory location where to write the NetCDF files.
+    :type out_dir: str
+    :param rp: DataFrame of the recipe including variables to stitch.
+    :return: List of the NetCDF file paths.
     """
 
     flag = os.path.isdir(out_dir)
@@ -355,16 +366,15 @@ def gridded_stitching(out_dir: str, rp):
     return f
 
 
-# end gridded stitching function
-
-
 def gmat_internal_stitch(row, data):
-    """Select data from a tas archive based on a single row in a recipe data frame, this
-    function is used to iterate over an entire recipe to do the stitching.
+    """
+    Select data from a tas archive based on a single row in a recipe data frame.
 
-    :param row:        pandas.core.series.Series a row entry of a fully formatted recipe
-    :param data:       pandas.core.frame.DataFrame containing the tas values to be stitched together
-    :return:           pandas.core.frame.DataFrame of tas values
+    This function is used to iterate over an entire recipe to do the stitching.
+
+    :param row: A row entry of a fully formatted recipe as a pandas Series.
+    :param data: A DataFrame containing the tas values to be stitched together.
+    :return: A DataFrame of tas values.
     """
     years = list(range(int(row["target_start_yr"]), int(row["target_end_yr"]) + 1))
     select_years = list(
@@ -396,11 +406,11 @@ def gmat_internal_stitch(row, data):
 
 
 def gmat_stitching(rp):
-    """Based on a recipe data frame stitch together a time series of global tas data.
+    """
+    Stitch together a time series of global tas data based on a recipe data frame.
 
-    :param rp:        pandas DataFrame - a fully formatted recipe data frame.
-
-    :return:          pandas DataFrame of stitched together tas data.
+    :param rp: A fully formatted recipe data frame as a pandas DataFrame.
+    :return: A pandas DataFrame of stitched together tas data.
     """
 
     # Check inputs.
@@ -489,4 +499,5 @@ def gmat_stitching(rp):
     final_output = final_output.reset_index(drop=True).copy()
     final_output = final_output.sort_values(["stitching_id", "year"]).copy()
     final_output = final_output.reset_index(drop=True).copy()
+    
     return final_output

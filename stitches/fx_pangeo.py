@@ -7,9 +7,13 @@ import xarray as xr
 
 
 def fetch_pangeo_table():
-    """Get a copy of the pangeo archive contents
+    """
+    Fetch the Pangeo CMIP6 archive table of contents as a pandas DataFrame.
 
-    :return: a pandas data frame containing information about the model, source, experiment, ensemble and so on that is available for download on pangeo.
+    Retrieve a copy of the Pangeo CMIP6 archive contents, which includes information
+    about the available models, sources, experiments, ensembles, and more.
+
+    :return: A pandas DataFrame with details on the datasets available for download from Pangeo.
     """
 
     # The url path that contains to the pangeo archive table of contents.
@@ -20,12 +24,12 @@ def fetch_pangeo_table():
 
 
 def fetch_nc(zstore: str):
-    """Extract data for a single file.
+    """
+    Extract data for a single file from Pangeo.
 
-    :param zstore:                str of the location of the cmip6 data file on pangeo.
-    :type zstore:                  str
-
-    :return:                      an xarray containing cmip6 data downloaded from  pangeo.
+    :param zstore: The location of the CMIP6 data file on Pangeo.
+    :type zstore: str
+    :return: An xarray Dataset containing CMIP6 data downloaded from Pangeo.
     """
     ds = xr.open_zarr(fsspec.get_mapper(zstore))
     ds.sortby("time")

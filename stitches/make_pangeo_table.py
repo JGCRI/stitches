@@ -8,10 +8,12 @@ import stitches.fx_pangeo as pangeo
 
 def make_pangeo_table():
     """
-    The function that makes a copy of the files that are available on pangeo that have corresponding files
-    in the the matching archive, this will be used in the stitching process.
+    Create a copy of the Pangeo files that have corresponding entries in the matching archive.
 
-    :return:          Nothing, write a file out to package data.
+    This function is used in the stitching process to ensure that only relevant Pangeo files
+    are considered. It writes out a file to the package data directory.
+
+    :return: None
     """
     # Using the information about what experiment/ensemble/models that are available for matching.
     archive_path = resources.files("stitches") / "data" / "matching_archive.csv"
@@ -63,11 +65,12 @@ def make_pangeo_table():
 
 def make_pangeo_comparison():
     """
-    A function that makes a copy of the entire pangeo archive. This will be used in
-    testing to check to see if there has been an update to the pangeo archive, if there
-    is then may suggest updating the internal package data.
+    Create a copy of the entire Pangeo archive for testing.
 
-    :return:          Nothing, write a file out to package data.
+    This function is used to check for updates in the Pangeo archive. If an update is
+    detected, it may suggest updating the internal package data.
+
+    :return: None. Writes a file to package data.
     """
 
     dat = pangeo.fetch_pangeo_table()

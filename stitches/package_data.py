@@ -7,14 +7,14 @@ __all__ = ["fetch_quickstarter_data"]
 
 
 def fetch_quickstarter_data(variable: str) -> xr.Dataset:
-    """Get a quickstarter NetCDF dataset as an xarray object.
+    """
+    Fetch a quickstarter NetCDF dataset as an xarray object.
 
-    :param variable:                Target variable name.
-    :type variable:                 str
+    :param variable: Target variable name.
+    :type variable: str
 
-    :return:                        Xarray Dataset for example data
-    :rtype:                         xr.Dataset
-
+    :return: Xarray Dataset for example data.
+    :rtype: xr.Dataset
     """
     variable_lower = variable.casefold()
 

@@ -7,12 +7,12 @@ import pandas as pd
 
 
 def combine_df(df1, df2):
-    """Join the data frames together.
+    """
+    Join two pandas data frames into a single data frame.
 
-    :param df1:   pandas data frame 1.
-    :param df2:   pandas data frame 2.
-
-    :return:    a single pandas data frame.
+    :param df1: First pandas DataFrame.
+    :param df2: Second pandas DataFrame.
+    :return: A single pandas DataFrame resulting from the joining of df1 and df2.
     """
     incommon = df1.columns.intersection(df2.columns)
     if len(incommon) > 0:
@@ -28,13 +28,13 @@ def combine_df(df1, df2):
 
 
 def list_files(d):
-    """Return the absolute path for all of the files in a single directory with the exception of
-    .DS_Store files.
+    """
+    Return the absolute path for all files in a directory, excluding .DS_Store files.
 
-
-    :param d:   str name of a directory.
-
-    :return:    a list of the files
+    :param d: Name of the directory.
+    :type d: str
+    :returns: List of file paths.
+    :rtype: list
     """
     files = os.listdir(d)
     ofiles = []
@@ -46,13 +46,17 @@ def list_files(d):
 
 
 def selstr(a, start, stop):
-    """Select elements of a string from an array.
+    """
+    Select elements of a string from start to stop index.
 
-    :param a:   array containing a string.
-    :param start: int referring to the first character index to select.
-    :param stop: int referring to the last character index to select.
-
-    :return:    array of strings
+    :param a: Array containing a string.
+    :type a: str
+    :param start: First character index to select.
+    :type start: int
+    :param stop: Last character index to select.
+    :type stop: int
+    :returns: Array of strings.
+    :rtype: list
     """
     if type(a) not in [str]:
         raise TypeError("a: must be a single string")
@@ -65,12 +69,14 @@ def selstr(a, start, stop):
 
 
 def check_columns(data, names):
-    """Check to see if a data frame has all of the required columns.
+    """
+    Check if a DataFrame contains all required columns.
 
-    :param data:   pd data
-    :param names: set of the required names
-
-    :return:    an error message if there is a column is missing
+    :param data: DataFrame to check.
+    :type data: pd.DataFrame
+    :param names: Set of required column names.
+    :type names: set
+    :raises TypeError: If `names` is not a set or if required columns are missing.
     """
 
     col_names = set(data.columns)
@@ -82,24 +88,28 @@ def check_columns(data, names):
 
 
 def nrow(df):
-    """Return the number of rows
+    """
+    Return the number of rows in the data frame.
 
-    :param df:   pd data
-
-    :return:    an integer value that corresponds the number of rows in the data frame.
+    :param df: DataFrame to count rows for.
+    :type df: pd.DataFrame
+    :return: Number of rows in the data frame.
+    :rtype: int
     """
 
     return df.shape[0]
 
 
 def remove_obs_from_match(md, rm):
-    """Return an updated matched data frame. The idea being that this function could be
-    useful to prevent envelope collapse between generated and target ensembles
+    """
+    Return an updated matched data frame to prevent envelope collapse.
 
-    :param md:   pd data
-    :param rm:   pd data
+    This function is useful for preventing envelope collapse between
+    generated and target ensembles by removing observations from the match.
 
-    :return:    data frame
+    :param md: Matched data as a pandas DataFrame.
+    :param rm: Data to remove as a pandas DataFrame.
+    :return: Updated matched data frame as a pandas DataFrame.
     """
     rm = rm[
         [
@@ -146,16 +156,17 @@ def remove_obs_from_match(md, rm):
 
 
 def anti_join(x, y, bycols):
-    """Return a pd.DataFrame of the rows in x that do not appear in Table y.
-    Maintains only the columns of x with their names (but maybe a different
-    order?)
-    Adapted from https://towardsdatascience.com/masteriadsf-246b4c16daaf#74c6
+    """
+    Return a DataFrame of the rows in `x` that do not appear in `y`.
 
-        :param x:   pd.DataFrame object
-        :param y:   pd.DataFrame object
-        :param bycols:   list-like; columns to do the anti-join on
+    This function maintains only the columns of `x` with their original names,
+    potentially in a different order. It performs an anti-join operation based
+    on the specified columns.
 
-        :return:    pd.DataFrame object
+    :param x: DataFrame to be filtered.
+    :param y: DataFrame to filter against.
+    :param bycols: Columns to perform the anti-join on.
+    :return: A DataFrame containing the filtered result.
     """
     # Check the inputs
     check_columns(x, set(bycols))
@@ -193,11 +204,12 @@ def anti_join(x, y, bycols):
 
 
 def load_data_files(subdir):
-    """Read in a list of data frames.
+    """
+    Read in a list of data frames from a specified subdirectory.
 
-    :param subdir:   pd.DataFrame str for a sub directory that exists
-
-    :return:    pd.DataFrame object
+    :param subdir: Subdirectory from which to load data files.
+    :type subdir: str
+    :return: A single pandas DataFrame object containing concatenated data from all files.
     """
     # Make sure the sub directory exists.
     path = resources.files("stitches") / subdir

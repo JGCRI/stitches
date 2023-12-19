@@ -6,11 +6,16 @@ import pandas as pd
 
 
 def get_lat_name(ds):
-    """Get the name for the latitude values (could be either lat or latitude).
+    """Get the name for the latitude values in an xarray dataset.
 
-    :param ds:    xarray dataset of CMIP data.
+    This function searches for latitude coordinates in the dataset,
+    which could be named either 'lat' or 'latitude'.
 
-    :return:    the string name for the latitude variable.
+    :param ds: The dataset from which to retrieve the latitude coordinate name.
+    :type ds: xarray.Dataset
+    :returns: The name of the latitude variable.
+    :rtype: str
+    :raises RuntimeError: If no latitude coordinate is found in the dataset.
     """
     for lat_name in ["lat", "latitude"]:
         if lat_name in ds.coords:
@@ -19,11 +24,13 @@ def get_lat_name(ds):
 
 
 def global_mean(ds):
-    """Get the weighted global mean for a variable.
+    """
+    Calculate the weighted global mean for a variable in an xarray dataset.
 
-    :param ds:  xarray dataset of CMIP data.
-
-    :return:    xarray dataset of the weighted global mean.
+    :param ds: The xarray dataset of CMIP data.
+    :type ds: xarray.Dataset
+    :returns: The xarray dataset of the weighted global mean.
+    :rtype: xarray.Dataset
     """
     lat = ds[get_lat_name(ds)]
     weight = np.cos(np.deg2rad(lat))
@@ -33,11 +40,11 @@ def global_mean(ds):
 
 
 def get_ds_meta(ds):
-    """Get the meta data information from the xarray data set.
+    """
+    Get the metadata information from an xarray dataset.
 
-    :param ds:  xarray dataset of CMIP data.
-
-    :return:    pandas dataset of MIP information.
+    :param ds: xarray dataset of CMIP data.
+    :return: pandas DataFrame of MIP information.
     """
     v = ds.variable_id
 

@@ -8,20 +8,22 @@ import stitches.fx_util as util
 
 # Internal fx
 def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
-    """This function calculates the euclidean distance between the target values (fx and dx)
-    and the archive values contained in the data frame. It will be used to help select which
-    of the archive values best matches the target values. To ensure a consistent unit across
-    all dimensions of the space, dx is updated to be windowsize*dx so that it has units of
-    degC. This results in a distance metric (Euclidean/l2) in units of degC.
-    Could _very_ easily make that choice of unit consistency optional via arg and if-statement.
+    """
+    Calculate the Euclidean distance between target and archive values.
 
-        :param fx_pt:          a single value of the target fx value
-        :param dx_pt:          a single value of the target dx value
-        :param archivedata:    a data frame of the archive fx and dx values
-        :param archivedata:    a data frame of the archive fx and dx values
-        :param tol:            a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned
+    This function calculates the Euclidean distance between the target values (fx and dx)
+    and the archive values contained in the dataframe. It is used to select which
+    archive values best match the target values. To ensure consistent units across
+    all dimensions, dx is updated to be windowsize*dx with units of degC, resulting
+    in a distance metric (Euclidean/l2) in units of degC. The choice of unit consistency
+    could be made optional via an argument and if-statement.
 
-        :return:               a data frame with the target data and the corresponding matched archive data.
+    :param fx_pt: A single value of the target fx value.
+    :param dx_pt: A single value of the target dx value.
+    :param archivedata: A dataframe of the archive fx and dx values.
+    :param tol: A tolerance for the neighborhood of matching; defaults to 0 degC,
+                returning only the nearest neighbor.
+    :return: A dataframe with the target data and the corresponding matched archive data.
     """
 
     # Check the inputs
@@ -73,11 +75,11 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
 
 # Internal fx
 def shuffle_function(dt):
-    """Randomly shuffle the deck, this should help with the matching process.
+    """
+    Randomly shuffle the deck to assist with the matching process.
 
-    :param dt:          a data of archive values that will be used in the matching process.
-
-    :return:               a randomly ordered data frame.
+    :param dt: A DataFrame of archive values used in the matching process.
+    :return: A DataFrame with rows in random order.
     """
     nrow = dt.shape[0]
     out = dt.sample(nrow, replace=False)
@@ -87,15 +89,18 @@ def shuffle_function(dt):
 
 # Internal fx
 def drop_hist_false_duplicates(matched_data):
-    """A helper function to remove false duplicate matches in the historical period. For
-    example, target 1850 gets 1872 data from realization 13 of SSP126 and SSP585.
-    The metadata of these archive values are different, but the actual data
-    values are identical because we just pasted in the same historical data to
-    every Experiment. So this function keeps only the first match.
+    """
+    Remove false duplicate matches in the historical period.
 
-        :param matched_data:    pandas object returned from match_neighborhood.
+    This function is used to remove false duplicate matches in the historical period.
+    For example, if the target year 1850 gets data from 1872 from realization 13 of
+    SSP126 and SSP585, the metadata of these archive values are different, but the
+    actual data values are identical because the same historical data was pasted into
+    every experiment. This function keeps only the first match.
 
-        :return:               a data frame of matched data with the same structure as the input, with false duplicates in the historical period dropped
+    :param matched_data: pandas DataFrame returned from match_neighborhood.
+    :return: DataFrame with the same structure as the input, with false duplicates
+             in the historical period dropped.
     """
 
     # Subset the idealized runs, since these are not concatenated with the historical time series
@@ -227,19 +232,21 @@ def drop_hist_false_duplicates(matched_data):
 def match_neighborhood(
     target_data, archive_data, tol: float = 0, drop_hist_duplicates: bool = True
 ):
-    """This function takes data frames of target and archive data and calculates the euclidean distance between the target values (fx and dx) and the archive values.
+    """
+    Calculate the Euclidean distance between target and archive data.
 
-    :param target_data:           a data frame of the target fx and dx values
+    This function takes data frames of target and archive data and calculates the
+    Euclidean distance between the target values (fx and dx) and the archive values.
 
-    :param archive_data:         a data frame of the archive fx and dx values
-
-    :param tol:            a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned
-    :type tol:              float
-
-    :param drop_hist_duplicates:    a Boolean True/False that defaults to True to determine whether to consider historical values across SSP scenarios to be duplicates and therefore all but one dropped from matching (True) or to be distinct points for matching (False).
-    :type drop_hist_duplicates:     bool
-
-    :return:               a data frame with the target data and the corresponding matched archive data.
+    :param target_data: Data frame of the target fx and dx values.
+    :param archive_data: Data frame of the archive fx and dx values.
+    :param tol: Tolerance for the neighborhood of matching. Defaults to 0 degC,
+        meaning only the nearest-neighbor is returned. Must be a float.
+    :param drop_hist_duplicates: Determines whether to consider historical values
+        across SSP scenarios as duplicates (True) and drop all but one from matching,
+        or to consider them as distinct points for matching (False). Defaults to True.
+    :type drop_hist_duplicates: bool
+    :return: Data frame with the target data and the corresponding matched archive data.
     """
     # Check the inputs of the functions
     if util.nrow(target_data) <= 0:

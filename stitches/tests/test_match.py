@@ -14,7 +14,12 @@ from stitches.fx_util import nrow, remove_obs_from_match
 
 class TestMatch(unittest.TestCase):
     def test_match_fxns(self):
-        """Testing the `match_neighborhood` functions"""
+        """
+        Test the `match_neighborhood` function.
+
+        This test ensures that the `match_neighborhood` function
+        operates correctly.
+        """
         # Read in some made up target data.
         path = resources.files("stitches") / "tests" / "test-target_dat.csv"
         data = pd.read_csv(path)

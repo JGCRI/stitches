@@ -13,20 +13,24 @@ def make_matching_archive(
     smoothing_window: int = 9, chunk_window: int = 9, add_staggered: bool = False
 ):
     """
-    The function that creates the archive of rate of change (dx) and mean (fx) values for
-    from the CMIP6 archive, these the the values that will be using in the matching portion
-    of the stitching pipeline.
+    Create an archive of rate of change (dx) and mean (fx) values.
 
-    :param smoothing_window:   int default set to 9, the size of the smoothing window to be applied to the ts.
-    :type smoothing_window:     int
+    This function processes the CMIP6 archive to produce values used in the
+    matching portion of the stitching pipeline.
 
-    :param chunk_window:   int default set to 9, the size of the chunks of data to summarize with dx & fx.
-    :type chunk_window:     int
+    :param smoothing_window: The size of the smoothing window to be applied to the time series.
+                             Defaults to 9.
+    :type smoothing_window: int
 
-    :param add_staggered: boolean default set to False. If True, the staggered windows will be added to the archive.
-    :type add_staggered:    bool
+    :param chunk_window: The size of the chunks of data to summarize with dx & fx.
+                         Defaults to 9.
+    :type chunk_window: int
 
-    :return:               str location of the matching archive file.
+    :param add_staggered: If True, staggered windows will be added to the archive.
+                          Defaults to False.
+    :type add_staggered: bool
+
+    :return: The file location of the matching archive.
     """
     # Start by loading all of the tas files.
     raw_data = util.load_data_files("data/tas-data")

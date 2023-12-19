@@ -14,11 +14,12 @@ from stitches.fx_util import check_columns
 
 
 class TestRecipe(unittest.TestCase):
-    # ###################################################
-    # some test data
-    # ###################################################
-    # real ESM data that know will have some duplicates, etc to test with.
-    # Easier than trying to make complete
+    """
+    A collection of unittests for testing the recipe functionality within the
+    stitches package. This includes tests for duplicate removal, permutation
+    of stitching recipes, and other recipe-related functions.
+    """
+
     TARGET_DATA = pd.DataFrame(
         data={
             "ensemble": ["r1i1p1f1"] * 28,
@@ -469,6 +470,12 @@ class TestRecipe(unittest.TestCase):
     # ###################################################
 
     def test_get_num_perms(self):
+        """
+        Test the `get_num_perms` function to ensure it returns the correct number of permutations.
+
+        This test verifies that the function returns a list of permutations for the match data,
+        and that the list contains the expected columns.
+        """
         # Read in the match test data.
         path = resources.files("stitches") / "tests" / "test-match_w_dup.csv"
         match_data = pd.read_csv(path)
@@ -506,7 +513,12 @@ class TestRecipe(unittest.TestCase):
         self.assertEqual(len(out), 2, "Test get_num_perms")
 
     def test_remove_duplicates(self):
-        """Test to make sure the remove_duplicates function if working correctly."""
+        """
+        Test the remove_duplicates function for correct operation.
+
+        Ensures that the function correctly identifies and removes duplicate
+        entries from the dataset.
+        """
 
         # Initial match data
         md = match_neighborhood(
@@ -545,6 +557,7 @@ class TestRecipe(unittest.TestCase):
         )
 
     def test_permute_stitching_recipes(self):
+        """Test the permute_stitching_recipes function for correct operation."""
         # With tol < 0.17, the test data can only support one collapse free
         # recipe. So a message will be printed to that effect
         messy_rp1 = permute_stitching_recipes(

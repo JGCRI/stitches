@@ -17,7 +17,13 @@ from stitches.fx_util import nrow
 
 
 class TestStitch(unittest.TestCase):
-    # flag for run all or for ci
+    """
+    Unit tests for stitching functions in the `stitches` package.
+
+    This class provides a set of tests to ensure the correct functionality
+    of the stitching functions, which are used to combine different climate
+    model outputs into a single coherent dataset.
+    """
     RUN = "ci"
 
     # This is an example recipe that will be used to test the stitching functions
@@ -40,6 +46,7 @@ class TestStitch(unittest.TestCase):
     )
 
     def test_find_var_cols(self):
+        """Test the `find_var_cols` function for identifying variable columns."""
         o = pd.DataFrame(data={"tas": [1, 2], "col2": [3, 4]})
         self.assertEqual(len(find_var_cols(o)), 0)
 
@@ -50,6 +57,12 @@ class TestStitch(unittest.TestCase):
         self.assertEqual(len(find_var_cols(o)), 2)
 
     def test_find_zfiles(self):
+        """
+        Test the `find_zfiles` function to ensure it correctly identifies zipped file paths.
+
+        This test verifies that the `find_zfiles` function correctly identifies file paths
+        for zipped files within a given DataFrame.
+        """
         d = pd.DataFrame(data={"tas": [1, 2], "col2": [3, 4], "year": [1, 2]})
         self.assertEqual(len(find_zfiles(d)), 0)
 
@@ -76,7 +89,11 @@ class TestStitch(unittest.TestCase):
         self.assertTrue(len(file_list) != nrow(d))
 
     def test_gmat_stitching(self):
-        # Check the output returned by gmat_stitching
+        """
+        Test the output returned by `gmat_stitching`.
+
+        This test checks the type and structure of the output to ensure it meets expected formats.
+        """
         out = gmat_stitching(self.MY_RP)
 
         self.assertEqual(type(out), pd.core.frame.DataFrame)
@@ -112,6 +129,13 @@ class TestStitch(unittest.TestCase):
             gmat_stitching(rp)
 
     def test_gridded_related(self):
+        """
+        Test functions related to gridded data stitching.
+
+        This test suite covers the functionality of gridded data stitching,
+        ensuring that the output is consistent and errors are raised when
+        expected.
+        """
         if TestStitch.RUN == "ci":
             self.assertEqual(0, 0)
         else:

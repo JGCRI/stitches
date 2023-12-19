@@ -7,10 +7,16 @@ from stitches.fx_pangeo import fetch_nc, fetch_pangeo_table
 
 
 class TestPangeo(unittest.TestCase):
-    # flag for run 'all' or for 'ci'
+    """
+    A test case for Pangeo-related functions.
+
+    This test class is used to run tests for functions that interact with the Pangeo data archive.
+    It includes a flag to run tests for continuous integration or for all cases.
+    """
     RUN = "ci"
 
     def test_pangeo_fn(self):
+        """Test Pangeo-related functions for continuous integration or full cases."""
         if TestPangeo.RUN == "ci":
             self.assertEqual(0, 0)
         else:

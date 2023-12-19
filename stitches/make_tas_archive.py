@@ -61,12 +61,14 @@ def rbind(dat1, dat2):
 
 def get_global_tas(path):
     """
-    Calculate the weighted annual global mean temp.
+    Calculate the weighted annual global mean temperature.
 
-    :param path:  a zstore path to the CMIP6 files stored on pangeo.
-    :type path:   str
+    This function computes the weighted annual global mean surface air temperature
+    from CMIP6 files stored on Pangeo.
 
-    :return:      str path to the location of file containing the weighted global mean.
+    :param path: A Zarr store path to the CMIP6 files.
+    :type path: str
+    :return: Path to the file containing the weighted global mean temperature.
     """
 
     temp_dir = resources.files("stitches") / "data" / "temp-data"
@@ -103,16 +105,19 @@ def get_global_tas(path):
 
 def calculate_anomaly(data, startYr=1995, endYr=2014):
     """
-    Convert the temp data from absolute into an anomaly relative to a reference period.
+    Convert CMIP absolute temperature data to anomalies relative to a reference period.
 
-    :param data:        A data frame of the cmip absolute temperature
-    :type data:        pandas.core.frame.DataFrame
-    :param startYr:      The first year of the reference period, default set to 1995 corresponding to the IPCC defined reference period.
-    :type startYr:       int
-    :param endYr:       The final year of the reference period, default set to 2014 corresponding to the IPCC defined reference period.
-    :type endYr:        int
+    This function transforms a DataFrame containing CMIP absolute temperature
+    data into a DataFrame of temperature anomalies. Anomalies are calculated
+    relative to a time-averaged value from a specified reference period.
 
-    :return:          A pandas data frame of cmip tgav as anomalies relative to a time-averaged value from a reference period, default uses a reference period form 1995-2014
+    :param data: A DataFrame of the CMIP absolute temperature.
+    :type data: pandas.core.frame.DataFrame
+    :param startYr: The first year of the reference period. Defaults to 1995.
+    :type startYr: int
+    :param endYr: The final year of the reference period. Defaults to 2014.
+    :type endYr: int
+    :return: A DataFrame of CMIP temperature anomalies relative to the reference period.
     """
 
     # Inputs
@@ -151,14 +156,15 @@ def calculate_anomaly(data, startYr=1995, endYr=2014):
 
 
 def paste_historical_data(input_data):
-    """ "
-    Paste the appropriate historical data into each future scenario so that SSP585 realization 1, for
-    example, has the appropriate data from 1850-2100.
+    """
+    Paste historical data into each future scenario.
 
-    :param input_data:        A data frame of the cmip absolute temperature
-    :type input_data:        pandas.core.frame.DataFrame
+    This function appends the appropriate historical data to each future scenario,
+    ensuring that, for example, SSP585 realization 1 contains data from 1850-2100.
 
-    :return:          A pandas data frame of the smoothed time series (rolling mean applied)
+    :param input_data: A DataFrame of the CMIP absolute temperature.
+    :type input_data: pandas.core.frame.DataFrame
+    :return: A DataFrame of the smoothed time series with a rolling mean applied.
     """
 
     # Relabel the historical values so that there is a continuous rolling mean between the
@@ -206,9 +212,18 @@ def paste_historical_data(input_data):
 
 def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
     """
-    The function that creates the archive from Pangeo-hosted CMIP6 data.
+    Create the archive from Pangeo-hosted CMIP6 data.
 
-    :return:          Array of the tas files created.
+    This function processes CMIP6 data hosted on Pangeo to create an archive of
+    temperature anomaly files. It calculates anomalies based on a specified reference
+    period.
+
+    :param anomaly_startYr: Start year of the reference period for anomaly calculation.
+    :type anomaly_startYr: int
+    :param anomaly_endYr: End year of the reference period for anomaly calculation.
+    :type anomaly_endYr: int
+    :return: List of paths to the created tas files.
+    :rtype: list
     """
     # Get the pangeo table of contents.
     df = pangeo.fetch_pangeo_table()
@@ -445,4 +460,5 @@ def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
         group.to_csv(path, index=False)
 
     print("Global tas data complete")
+    
     return files

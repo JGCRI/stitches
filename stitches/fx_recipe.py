@@ -12,13 +12,17 @@ import stitches.fx_util as util
 
 
 def get_num_perms(matched_data):
-    """A function to give you the number of potential permutations from a
-    matched set of data. Ie Taking in the the results of `match_neighborhood(target, archive)`.
+    """
+    Calculate the number of potential permutations from matched data.
 
-        :param matched_data:          data output from match_neighborhood.
-        :return:                      A list with two entries. First, the total number of potential permutations of the
-        matches that cover 1850-2100 of the  target data in the matched_data dataframe. The second, a data frame with
-        the break down of how many matches are in each period of the target data
+    This function takes the results of `match_neighborhood(target, archive)` and
+    determines the total number of potential permutations of the matches that cover
+    the period 1850-2100 in the matched_data dataframe. It also provides a breakdown
+    of how many matches are in each period of the target data.
+
+    :param matched_data: The data output from match_neighborhood.
+    :return: A list with two entries: the total number of potential permutations, and
+             a dataframe with the breakdown of matches per period.
     """
     # Check inputs
     util.check_columns(
@@ -77,21 +81,21 @@ def get_num_perms(matched_data):
 
 
 def remove_duplicates(md, archive):
-    """A function that makes sure that within a single given matched recipe that
-    there each archive point used is unique. When two target tgav windows in
-    the trajectory match to the same archive window, the target window with
-    smaller Euclidean distance keeps the match, and the other target window
-    gets re-matched with its nearest-neighbor match from a new archive, the
-    previous one with all matched points removed.
+    """
+    Ensure each archive point in a matched recipe is unique.
 
-    :param md:          A data frame with results of matching for a single
-                        tgav recipe. Either because match_neighborhood was
-                        used specifically to return NN or because the multiple
-                        matches have been permuted into new recipes and then
-                        split with this function being applied to each recipe.
-    :param archive:     data frame object consisting of the tas archive to use
-                        for re-matching duplicate points.
-    :return:                       data frame with same structure as raw matched, with duplicate matches replaced.
+    When two target tgav windows in the trajectory match to the same archive window,
+    the target window with the smaller Euclidean distance retains the match. The other
+    target window is re-matched with its nearest-neighbor from a new archive, which
+    excludes all previously matched points.
+
+    :param md: A data frame with the results of matching for a single tgav recipe.
+               This can be from match_neighborhood specifically returning NN, or from
+               multiple matches permuted into new recipes and then split, with this
+               function applied to each recipe.
+    :param archive: A data frame consisting of the tas archive for re-matching.
+    :return: A data frame with the same structure as the raw matched data, but with
+             duplicate matches replaced.
     """
     if len(md["target_year"].unique()) < util.nrow(md):
         raise TypeError(
@@ -247,21 +251,27 @@ def remove_duplicates(md, archive):
 def permute_stitching_recipes(
     N_matches: int, matched_data, archive, optional=None, testing: bool = False
 ):
-    """A function to sample from input `matched_data` (the the results of `match_neighborhood(target, archive, tol)` to produce permutations  of possible stitching recipes that will match the target data.
+    """
+    Sample from `matched_data` to produce permutations of stitching recipes.
 
-    :param N_matches:         a int to the maximum number of matches per target data
-    :type N_matches:           int
+    This function samples from `matched_data` (the results of `match_neighborhood(target, archive, tol)`)
+    to produce permutations of possible stitching recipes that will match the target data.
 
-    :param matched_data:    data output from match_neighborhood.
+    :param N_matches: The maximum number of matches per target data.
+    :type N_matches: int
 
-    :param archive:         the archive data to use for re-matching duplicate points
+    :param matched_data: Data output from `match_neighborhood`.
 
-    :param optional:        a previous output of this function that contains a list of already created recipes to avoid re-making (this is not implemented).
+    :param archive: The archive data to use for re-matching duplicate points.
 
-    :param testing:         Boolean True/False. Defaults to False. When True, the behavior can be reliably replicated without setting global seeds.
-    :type testing:           bool
+    :param optional: A previous output of this function that contains a list of already created recipes
+                     to avoid re-making (this is not implemented).
 
-    :return:                    data frame with same structure as raw matched, with duplicate matches replaced.
+    :param testing: When True, the behavior can be reliably replicated without setting global seeds.
+                    Defaults to False.
+    :type testing: bool
+
+    :return: A data frame with the same structure as the raw matched data, with duplicate matches replaced.
     """
     # Check inputs
     util.check_columns(
@@ -667,13 +677,15 @@ def permute_stitching_recipes(
 
 
 def handle_transition_periods(rp):
-    """Go through the recipe and when there is a transition period, aka the archive years span both the
-    historical and future scenarios go through and insert in an extra period so that they don't do
-    this over lap any more.
+    """
+    Handle transition periods in the recipe data frame.
 
-        :param rp:       a data frame of the recipe.
+    This function processes the recipe data frame to ensure that there are no overlapping
+    historical and future experiments during transition periods. It inserts extra periods
+    to separate historical and future scenarios.
 
-        :return:         a data frame of of the recipe with no over lapping historical/future experiments, this is now ready to join with pangeo information.
+    :param rp: A data frame of the recipe.
+    :return: A data frame of the recipe with separated historical/future experiments, ready to join with Pangeo information.
     """
     util.check_columns(
         rp,
@@ -827,18 +839,17 @@ def handle_transition_periods(rp):
 
 
 def handle_final_period(rp):
-    """Go through a recipe and ensure that all of the periods have the same archive
-    and target period length, if not update to reflect the target period length.
-    Otherwise you'll end up with extra years in the stitched data. This is really
-    only an issue for the final period of target data because sometimes that period is somewhat short.
-    OR if the normal sized target window gets matched to the final period of data from one
-    of the archive matches. Since the final period is typically only one year shorter than the
-    full window target period in this case, we simply repeat the final archive year to get
-    enough matches.
+    """
+    Ensure all periods in a recipe have matching target and archive lengths.
 
-        :param rp:       a data frame of the recipe.
+    This function processes a recipe data frame to ensure that each period has the
+    same length for both the target and archive. This is particularly important for
+    the final period of target data, which may be shorter than expected. If the target
+    window is matched to the final period of archive data, the final archive year is
+    repeated to provide a sufficient number of matches.
 
-        :return:         a recipe data frame that has target and archive periods of the same length.
+    :param rp: A data frame of the recipe.
+    :return: A recipe data frame with target and archive periods of equal length.
     """
 
     # Define an internal function that checks row by row if we are working
@@ -908,14 +919,13 @@ def handle_final_period(rp):
 
 
 def generate_gridded_recipe(messy_recipe, res: str = "mon"):
-    """Using a messy recipe create the recipe that can be used in the stitching process.
+    """
+    Create a recipe for the stitching process using a messy recipe.
 
-    :param messy_recipe:       a data frame generated by the permute_recipes
-
-    :param res:                string mon or day
-    :type res:                 str
-
-    :return:                   a recipe data frame
+    :param messy_recipe: A data frame generated by the permute_recipes function.
+    :param res: The resolution of the recipe, either 'mon' for monthly or 'day' for daily.
+    :type res: str
+    :return: A data frame formatted as a recipe for stitching.
     """
     # Check inputs
     util.check_columns(
@@ -1009,29 +1019,24 @@ def make_recipe(
     non_tas_variables: [str] = None,
     reproducible: bool = False,
 ):
-    """Generate a stitching recipe from target and archive data.
+    """
+    Generate a stitching recipe from target and archive data.
 
-    :param target_data:       a pandas data frame of climate information to emulate.
+    :param target_data: A pandas DataFrame of climate information to emulate.
+    :param archive_data: A pandas DataFrame of temperature data to use as the archive to match on.
+    :param N_matches: The maximum number of matches per target data.
+    :param res: Resolution of the stitched data, either 'mon' or 'day'.
+    :param tol: Tolerance used in the matching process, default is 0.1.
+    :param non_tas_variables: List of variables other than tas to stitch together; defaults to None, which stitches tas only.
+    :param reproducible: If True, ensures reproducible behavior by using the testing=True argument in permute_stitching_recipes(); defaults to False.
 
-    :param archive_data:      a pandas data frame of temperature data to use as the archive to match on.
+    :type N_matches: int
+    :type res: str
+    :type tol: float
+    :type non_tas_variables: list[str]
+    :type reproducible: bool
 
-    :param N_matches:         a int to the maximum number of matches per target data
-    :type N_matches:           int
-
-    :param res:               str of 'mon' or 'day' to indicate the resolution of the stitched data
-    :type res:                 str
-
-    :param tol:               float value indicating the tolerance to use in the matching process, default set to 0.1
-    :type tol:                 float
-
-    :param non_tas_variables: a list of variables other than tas to stitch together, when using the default set to None only tas will be stitched together.
-    :type non_tas_variables: [str]
-
-    :param reproducible:         Boolean True/False. Defaults to False. If True, the call to permute_stitching_recipes() uses the testing=True argument so that the behavior can be reliably replicated without setting global seeds.
-    :type reproducible:            bool
-
-
-    :return:                   pandas data frame of a formatted recipe
+    :return: A pandas DataFrame of a formatted recipe.
     """
 
     # Check the inputs

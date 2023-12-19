@@ -11,13 +11,14 @@ import stitches.fx_util as util
 
 
 def calculate_rolling_mean(data, size):
-    """ "
-    Calculate the rolling mean for the data frame with a user defined size centered window.
-    :param data:        A data frame of the cmip absolute temperature
-    :type data:        pandas.core.frame.DataFrame
-    :param size:          An integer value for the size of the window to use when calculating the rolling mean
-    :type size:           int
-    :return:          A pandas data frame of the smoothed time series (rolling mean applied)
+    """
+    Calculate the rolling mean for the data frame with a user-defined size centered window.
+
+    :param data: A data frame of the CMIP absolute temperature.
+    :type data: pandas.core.frame.DataFrame
+    :param size: An integer value for the size of the window to use when calculating the rolling mean.
+    :type size: int
+    :return: A pandas data frame of the smoothed time series with the rolling mean applied.
     """
     # Check inputs
     util.check_columns(
@@ -61,15 +62,20 @@ def calculate_rolling_mean(data, size):
 
 
 def chunk_ts(df, n, base_chunk=0):
-    """Format a data frame into an array of data frames containing data for n-sized years of successive data.
-    :param df:     data frame of climate data to chunk into different periods
-    :type df:     pandas DataFrame
-    :param n:    the size of the windows to chunk into separate periods
-    :type n:    int
-    :param base_chunk: a helper argument for creating all of the staggered chunks, defaults to 0 (original behavior)
-    :type base_chunk: int
-    :return:    pandas DataFrame identical to df with the addition of a chunk column
+    """
+    Format a data frame into an array of data frames with n-sized years of successive data.
 
+    This function takes a data frame of climate data and chunks it into separate periods,
+    each containing data for a span of `n` years. It adds a 'chunk' column to the data frame
+    to indicate the period each row belongs to.
+
+    :param df: Data frame of climate data to chunk into different periods.
+    :type df: pandas.DataFrame
+    :param n: The size of the windows to chunk into separate periods.
+    :type n: int
+    :param base_chunk: A helper argument for creating staggered chunks, defaults to 0 (original behavior).
+    :type base_chunk: int
+    :return: A pandas DataFrame identical to `df` with the addition of a 'chunk' column.
     """
 
     # Check inputs
@@ -102,11 +108,13 @@ def chunk_ts(df, n, base_chunk=0):
 
 
 def get_chunk_info(df):
-    """Determine the value and the rate of change for each chunk.
-    :param df:     data frame of climate data chunked into different periods
-    :type df:     pandas DataFrame
-    :return:    pandas DataFrame of the chunk information, the start and end years as well as the chunk value (fx)
-    and the chunk rate of change (dx).
+    """
+    Determine the value and the rate of change for each chunk.
+
+    :param df: Data frame of climate data chunked into different periods.
+    :type df: pandas.DataFrame
+    :return: A pandas DataFrame with the chunk information, including the start and end years, the chunk value (fx),
+             and the chunk rate of change (dx).
     """
 
     # Check the inputs
@@ -189,19 +197,20 @@ def get_chunk_info(df):
 
 
 def subset_archive(staggered_archive, end_yr_vector):
-    """ Take a staggered archive with chunked data for a 9 year window following
-         each year in 1850-2100 and subset to the entries with `end_yr` in
-         `end_yr_vector`.
-      :param staggered_archive:     A formatted archive with chunked data starting
-                                                 in each year
-      :type df:     pandas DataFrame
+    """
+    Subset a staggered archive to entries with `end_yr` in `end_yr_vector`.
 
-      :param end_yr_vector:   vector of end_yrs want to subset the archive to.
+    This function takes a staggered archive with chunked data for a 9-year window
+    following each year in 1850-2100 and subsets it to the entries with `end_yr`
+    in `end_yr_vector`.
 
-
-      :return:    pandas DataFrame of the subsetted archive, same format just fewer
-                    entries
-      """
+    :param staggered_archive: A formatted archive with chunked data starting in each year.
+    :type staggered_archive: pandas.DataFrame
+    :param end_yr_vector: Vector of end years to subset the archive to.
+    :type end_yr_vector: list or similar iterable
+    :return: A pandas DataFrame of the subsetted archive, same format but fewer entries.
+    :rtype: pandas.DataFrame
+    """
 
     out = staggered_archive[staggered_archive['end_yr'].isin(end_yr_vector)].reset_index(drop=True).copy()
     return out

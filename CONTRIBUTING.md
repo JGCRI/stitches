@@ -1,6 +1,6 @@
 # How to contribute
 
-We welcome third-party patches, which are essential for advancing the science and architecture of Hector.
+We welcome third-party patches, which are essential for advancing the science and architecture of STITCHES.
 But there are a few guidelines that we ask contributors to follow, guidelines that ease the maintainers' organizational and logistical duties, while encouraging development by others. All contributors agree to abide by the code of conduct.
 
 ## Getting Started
@@ -27,8 +27,8 @@ But there are a few guidelines that we ask contributors to follow, guidelines th
 
 * Submit a pull request.
 * **Your pull request should include one of the following two statements**:
-   * You own the copyright on the code being contributed, and you hereby grant PNNL unlimited license to use this code in this version or any future version of Hector. You reserve all other rights to the code.
-   * Somebody else owns the copyright on the code being contributed (e.g., your employer because you did it as part of your work for them); you are authorized by that owner to grant PNNL an unlimited license to use this code in this version or any future version of Hector, and you hereby do so. All other rights to the code are reserved by the copyright owner.
+   * You own the copyright on the code being contributed, and you hereby grant PNNL unlimited license to use this code in this version or any future version of STITCHES. You reserve all other rights to the code.
+   * Somebody else owns the copyright on the code being contributed (e.g., your employer because you did it as part of your work for them); you are authorized by that owner to grant PNNL an unlimited license to use this code in this version or any future version of STICHES, and you hereby do so. All other rights to the code are reserved by the copyright owner.
 * The core team looks at Pull Requests on a regular basis, and will respond as soon as possible.
 
 

@@ -278,7 +278,7 @@ def gridded_stitching(out_dir: str, rp):
     # Determine which variables will be downloaded.
     variables = find_var_cols(rp)
     if not (len(variables) >= 1):
-        raise TypeError("No variables were found to be processed.")
+        raise KeyError("No variables were found to be processed.")
 
     # Determine which files need to be downloaded from pangeo.
     file_list = find_zfiles(rp)
@@ -286,13 +286,15 @@ def gridded_stitching(out_dir: str, rp):
     # Make sure that all of the files are available to download from pangeo.
     # Note that this might be excessively cautious but this is an issue we have run into in
     # the past.
+    print("Validating request availability with Pangeo archive contents...")
     avail = pangeo.fetch_pangeo_table()
     flag = all(item in list(avail["zstore"]) for item in list(file_list))
     if not flag:
-        raise TypeError("Trying to request a zstore file that does not exist.")
+        raise KeyError("Trying to request a zstore file that does not exist.")
 
     # Download all of the data from pangeo.
     data_list = list(map(pangeo.fetch_nc, file_list))
+    print(f"Compiled downloads into {len(data_list)} datasets.")
 
     # For each of the stitching recipes go through and stitch a recipe.
     for single_id in rp["stitching_id"].unique():
@@ -302,18 +304,16 @@ def gridded_stitching(out_dir: str, rp):
         f = []
 
         try:
-            print(
-                "Stitching gridded netcdf for: "
-                + rp.archive_model.unique()
-                + " "
-                + rp.archive_variable.unique()
-                + " "
-                + single_id
-            )
+            
+            _model = rp.archive_model.unique()
+            _var = rp.archive_variable.unique()
+            action_msg = f"Stitching gridded netcdf for: {_model} {_var} {single_id} ..."
+            print(action_msg)
 
             # Do the stitching!
             # ** this can be a slow step and prone to errors
             single_rp = rp.loc[rp["stitching_id"] == single_id].copy()
+
             rslt = internal_stitch(rp=single_rp, dl=data_list, fl=file_list)
 
             # Print the files out at netcdf files

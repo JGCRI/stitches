@@ -4,6 +4,7 @@
 import fsspec
 import intake
 import xarray as xr
+from tqdm import tqdm
 
 
 def fetch_pangeo_table():
@@ -31,6 +32,29 @@ def fetch_nc(zstore: str):
     :type zstore: str
     :return: An xarray Dataset containing CMIP6 data downloaded from Pangeo.
     """
-    ds = xr.open_zarr(fsspec.get_mapper(zstore))
+
+    print(f"Fetching: {zstore}")
+
+    # Function to update the progress bar
+    def update_progress_bar(mapper, bar):
+        keys = list(mapper.keys())
+
+        for key in keys:
+            _ = mapper[key]  # Trigger the actual read
+            bar.update(1)
+
+    # Create a file system mapper
+    mapper = fsspec.get_mapper(zstore)
+
+    # Initialize the progress bar
+    with tqdm(
+        total=len(mapper.keys()), 
+        desc=f"Downloading file components: "
+    ) as bar:
+        update_progress_bar(mapper, bar)
+
+    # Open the dataset
+    ds = xr.open_zarr(mapper)
     ds.sortby("time")
+
     return ds

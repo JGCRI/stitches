@@ -6,6 +6,7 @@ stitches/data/matching_archive.csv
 stitches/data/matching_archive_staggered.csv
 stitches/data/pangeo_comparison_table.csv
 stitches/data/pangeo_table.csv
+stitches/data/*.csv
 
 # generated data
 notebooks/stitched_*

@@ -1,3 +1,12 @@
+"""Module for building test data for the stitches package."""
+
+from importlib import resources
+
+import pandas as pd
+
+from stitches.fx_match import match_neighborhood
+
+
 def build_test_data():
     """
     Build test data for the test suite.

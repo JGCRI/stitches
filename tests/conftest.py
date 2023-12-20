@@ -1,4 +1,7 @@
+"""This module contains pytest fixtures and configurations for testing the stitches package."""
+
 import pytest
+
 import stitches
 
 
@@ -10,7 +13,6 @@ def setup_package_data():
     This fixture is automatically used in tests that require the package data.
     It installs the package data and prepares the testing environment.
     """
-
     stitches.install_package_data()
 
     return None

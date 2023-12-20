@@ -1,3 +1,5 @@
+"""Module for accessing package data within the stitches package."""
+
 import os
 from importlib import resources
 
@@ -23,6 +25,10 @@ def fetch_quickstarter_data(variable: str) -> xr.Dataset:
             f"Variable '{variable}' not a valid option.  Choose from 'tas' or 'pr'."
         )
 
-    f = resources.files("stitches") / "data" / f"stitched_CanESM5_{variable_lower}_ssp245~r1i1p1f1~1.nc"
+    f = (
+        resources.files("stitches")
+        / "data"
+        / f"stitched_CanESM5_{variable_lower}_ssp245~r1i1p1f1~1.nc"
+    )
 
     return xr.open_dataset(f)

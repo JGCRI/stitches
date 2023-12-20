@@ -1,10 +1,22 @@
+"""Module for generating package data for the stitches library.
+
+This module contains functions to generate the tas archive, matching archive,
+and the table of pangeo files. It is used to create the CSV files included in
+the prebuilt stitches package.
+"""
+
 import stitches.make_matching_archive as mk_match
 import stitches.make_pangeo_table as mk_pangeo
 import stitches.make_tas_archive as mk_tas
 
 
-def generate_pkg_data(smoothing_window=9, chunk_window=9, add_staggered=False,
-                     anomaly_startYr=1995, anomaly_endYr=2014):
+def generate_pkg_data(
+    smoothing_window=9,
+    chunk_window=9,
+    add_staggered=False,
+    anomaly_startYr=1995,
+    anomaly_endYr=2014,
+):
     """
     Generate all internal package data for stitches.
 
@@ -24,7 +36,6 @@ def generate_pkg_data(smoothing_window=9, chunk_window=9, add_staggered=False,
     :type anomaly_endYr: int
     :return: None
     """
-
     # This takes several hours to run.
     mk_tas(anomaly_startYr=anomaly_startYr, anomaly_endYr=anomaly_endYr)
 
@@ -37,4 +48,3 @@ def generate_pkg_data(smoothing_window=9, chunk_window=9, add_staggered=False,
     mk_pangeo()
 
     return None
-    

@@ -1,4 +1,9 @@
-# Define the functions that are used in the matching process.
+"""
+The `fx_match` module is responsible for matching target climate model outputs with archived model outputs.
+
+It includes functions to calculate distances between target and archive data points and to
+select the best matches based on those distances.
+"""
 
 import numpy as np
 import pandas as pd
@@ -25,7 +30,6 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
                 returning only the nearest neighbor.
     :return: A dataframe with the target data and the corresponding matched archive data.
     """
-
     # Check the inputs
     util.check_columns(
         archivedata,
@@ -102,7 +106,6 @@ def drop_hist_false_duplicates(matched_data):
     :return: DataFrame with the same structure as the input, with false duplicates
              in the historical period dropped.
     """
-
     # Subset the idealized runs, since these are not concatenated with the historical time series
     # they can be left alone.
     idealized_exps = ["1pctCO2", "abrupt-4xCO2", "abrupt-2xCO2"]
@@ -312,28 +315,40 @@ def match_neighborhood(
     # warn the user that they will want to validate the outcome.
 
     # get the nearest neighbor match only for each target window
-    grouped = out.groupby(["target_variable", "target_experiment", "target_ensemble", "target_model",
-                           "target_start_yr", "target_end_yr", "target_year", "target_fx", "target_dx"])
+    grouped = out.groupby(
+        [
+            "target_variable",
+            "target_experiment",
+            "target_ensemble",
+            "target_model",
+            "target_start_yr",
+            "target_end_yr",
+            "target_year",
+            "target_fx",
+            "target_dx",
+        ]
+    )
     formatted_nn = pd.DataFrame()
     for name, group in grouped:
         df = group.copy()
-        df = df[df['dist_l2'] == np.min(df['dist_l2'])].copy()
+        df = df[df["dist_l2"] == np.min(df["dist_l2"])].copy()
         formatted_nn = pd.concat([formatted_nn, df]).reset_index(drop=True)
-        del (df)
-
+        del df
 
     # subset to just the far away nearest neighbors
-    formatted_nn = formatted_nn[formatted_nn['dist_l2'] > 0.25].reset_index(drop=True).copy()
+    formatted_nn = (
+        formatted_nn[formatted_nn["dist_l2"] > 0.25].reset_index(drop=True).copy()
+    )
 
-
-    if (not formatted_nn.empty):
-        print('The following target windows have a nearest neighbor in T, dT space')
-        print('that is more than 0.25degC away. This may or may not result in poor')
-        print('matches and we recommend validation.')
+    if not formatted_nn.empty:
+        print("The following target windows have a nearest neighbor in T, dT space")
+        print("that is more than 0.25degC away. This may or may not result in poor")
+        print("matches and we recommend validation.")
         print(formatted_nn)
-        print('-----------------------------------------------------------------------------------------')
-    del(formatted_nn)
-    del(grouped)
-
+        print(
+            "-----------------------------------------------------------------------------------------"
+        )
+    del formatted_nn
+    del grouped
 
     return out

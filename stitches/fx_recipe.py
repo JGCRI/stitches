@@ -1,5 +1,4 @@
-# Define the collection of helper functions that are used to generate the different
-# permutations of the recipes & re-format for stitching.
+"""Collection of helper functions for generating permutations of recipes and reformatting for stitching."""
 
 import os
 from importlib import resources
@@ -349,7 +348,7 @@ def permute_stitching_recipes(
 
     if N_matches > N_data_max:
         print(
-            "You have requested more recipes than possible for at least one target trajectories, returning what can"
+            "More recipes requested than possible for at least one target trajectories, returning what can"
         )
 
     # Initialize the number of matches to either 0 or the input read from optional:
@@ -685,7 +684,8 @@ def handle_transition_periods(rp):
     to separate historical and future scenarios.
 
     :param rp: A data frame of the recipe.
-    :return: A data frame of the recipe with separated historical/future experiments, ready to join with Pangeo information.
+    :return: A data frame of the recipe with separated historical/future experiments, ready to join
+        with Pangeo information.
     """
     util.check_columns(
         rp,
@@ -852,9 +852,19 @@ def handle_final_period(rp):
     :return: A recipe data frame with target and archive periods of equal length.
     """
 
-    # Define an internal function that checks row by row if we are working
-    # with the final period & if that is a problem, if so handle it.
     def internal_func(x):
+        """
+        Process a single row of the recipe dataframe.
+
+        This function is applied to each row of the recipe dataframe. It ensures that
+        the target and archive periods have the same length by adjusting the archive
+        end year if necessary. It also formats the row into a dataframe with a specific
+        column order.
+
+        :param x: A pandas Series representing a row of the recipe dataframe.
+        :return: A pandas DataFrame representing the processed row, with target and
+                 archive periods of equal length and columns in a specified order.
+        """
         len_target = x["target_end_yr"] - x["target_start_yr"]
         len_archive = x["archive_end_yr"] - x["archive_start_yr"]
 
@@ -1027,8 +1037,10 @@ def make_recipe(
     :param N_matches: The maximum number of matches per target data.
     :param res: Resolution of the stitched data, either 'mon' or 'day'.
     :param tol: Tolerance used in the matching process, default is 0.1.
-    :param non_tas_variables: List of variables other than tas to stitch together; defaults to None, which stitches tas only.
-    :param reproducible: If True, ensures reproducible behavior by using the testing=True argument in permute_stitching_recipes(); defaults to False.
+    :param non_tas_variables: List of variables other than tas to stitch together; defaults to None,
+        which stitches tas only.
+    :param reproducible: If True, ensures reproducible behavior by using the testing=True argument
+        in permute_stitching_recipes(); defaults to False.
 
     :type N_matches: int
     :type res: str
@@ -1038,7 +1050,6 @@ def make_recipe(
 
     :return: A pandas DataFrame of a formatted recipe.
     """
-
     # Check the inputs
     util.check_columns(
         target_data,
@@ -1071,22 +1082,38 @@ def make_recipe(
     if not type(N_matches) is int:
         raise TypeError("N_matches: must be an integer")
     if not type(tol) is float:
-        raise TypeError(f"tol: must be a float")
+        raise TypeError("tol: must be a float")
 
-
-    if (target_data['unit'].unique() != archive_data['unit'].unique()):
-        raise TypeError(f"units of target and archive data do not match")
-
-    # pull off the unit so we have it
-    unit = target_data['unit'].unique().copy()
-
+    if target_data["unit"].unique() != archive_data["unit"].unique():
+        raise TypeError("units of target and archive data do not match")
 
     # drop the units from each dataframe so matching functions don't need updates
-    target_data = target_data[['experiment', 'variable', 'ensemble', 'model', 'start_yr',
-                                         'end_yr', 'year', 'fx', 'dx']].copy()
-    archive_data = archive_data[['experiment', 'variable', 'ensemble', 'model', 'start_yr',
-                               'end_yr', 'year', 'fx', 'dx']].copy()
-
+    target_data = target_data[
+        [
+            "experiment",
+            "variable",
+            "ensemble",
+            "model",
+            "start_yr",
+            "end_yr",
+            "year",
+            "fx",
+            "dx",
+        ]
+    ].copy()
+    archive_data = archive_data[
+        [
+            "experiment",
+            "variable",
+            "ensemble",
+            "model",
+            "start_yr",
+            "end_yr",
+            "year",
+            "fx",
+            "dx",
+        ]
+    ].copy()
 
     # If there are non tas variables to be stitched, subset the archive to limit
     # the coverage to only the entries with the complete coverage.

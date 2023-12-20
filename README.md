@@ -23,7 +23,7 @@ import stitches
 stitches.install_package_data()
 ```
 
-For users who would like to generate the package data locally, run the following: 
+For users who would like to generate the package data locally, run the following:
 
 ```python
 import stitches

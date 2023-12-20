@@ -13,6 +13,7 @@ class TestPangeo(unittest.TestCase):
     This test class is used to run tests for functions that interact with the Pangeo data archive.
     It includes a flag to run tests for continuous integration or for all cases.
     """
+
     RUN = "ci"
 
     def test_pangeo_fn(self):

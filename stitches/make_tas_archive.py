@@ -1,5 +1,4 @@
-# Define the functions used to get Get the weighted global mean temperature
-# from pangeo CMIP6 results.
+"""Module for processing weighted global mean temperature from Pangeo CMIP6 results."""
 
 import os
 from importlib import resources
@@ -14,6 +13,7 @@ import stitches.fx_util as util
 
 def join_exclude(dat, drop):
     """Drop some rows from a data frame.
+
     :param dat:   pd data frame containing the data that needs to be dropped.
     :param drop: pd data frame containing the data to drop.
     :return:    pd data frame that is subset.
@@ -48,7 +48,6 @@ def rbind(dat1, dat2):
 
     :return: a singular data frame
     """
-
     if util.nrow(dat1) == 0:
         return dat2
 
@@ -70,7 +69,6 @@ def get_global_tas(path):
     :type path: str
     :return: Path to the file containing the weighted global mean temperature.
     """
-
     temp_dir = resources.files("stitches") / "data" / "temp-data"
 
     if not os.path.isdir(temp_dir):
@@ -119,7 +117,6 @@ def calculate_anomaly(data, startYr=1995, endYr=2014):
     :type endYr: int
     :return: A DataFrame of CMIP temperature anomalies relative to the reference period.
     """
-
     # Inputs
     util.check_columns(
         data, {"variable", "experiment", "ensemble", "model", "year", "value"}
@@ -166,7 +163,6 @@ def paste_historical_data(input_data):
     :type input_data: pandas.core.frame.DataFrame
     :return: A DataFrame of the smoothed time series with a rolling mean applied.
     """
-
     # Relabel the historical values so that there is a continuous rolling mean between the
     # historical and future values.
     # #######################################################
@@ -378,9 +374,9 @@ def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
     #
     # In this section convert from absolute value to an anomaly & concatenate the historical data
     # with the future scenarios.
-    data_anomaly = calculate_anomaly(cleaned_data,
-                                     startYr= anomaly_startYr,
-                                     endYr= anomaly_endYr).copy()
+    data_anomaly = calculate_anomaly(
+        cleaned_data, startYr=anomaly_startYr, endYr=anomaly_endYr
+    ).copy()
     data = paste_historical_data(data_anomaly)
     data = data.sort_values(by=["variable", "experiment", "ensemble", "model", "year"])
     data = data[
@@ -460,5 +456,5 @@ def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
         group.to_csv(path, index=False)
 
     print("Global tas data complete")
-    
+
     return files

@@ -1,3 +1,5 @@
+"""Module for creating a Pangeo table for use in the stitches package."""
+
 # Save a copy of the pangeo table, this has information about the z store file.
 from importlib import resources
 
@@ -72,7 +74,6 @@ def make_pangeo_comparison():
 
     :return: None. Writes a file to package data.
     """
-
     dat = pangeo.fetch_pangeo_table()
     out_file = resources.files("stitches") / "data" / "pangeo_comparison_table.csv"
     dat.to_csv(out_file, index=False)

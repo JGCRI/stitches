@@ -1,3 +1,10 @@
+"""
+The `fx_stitch` module is responsible for stitching together climate model outputs.
+
+It creates a continuous time series that can be used for climate analysis and emulation.
+
+"""
+
 import os
 from importlib import resources
 
@@ -17,7 +24,6 @@ def find_zfiles(rp):
     :param rp: Data frame of the recipes.
     :return: Numpy ndarray of the gs:// files to pull from Pangeo.
     """
-
     # Figure out which columns contain the string file
     flat_list = rp.filter(regex="file", axis=1).values.flatten()
     unique_list = np.unique(flat_list)
@@ -31,7 +37,6 @@ def find_var_cols(x):
     :param x: pandas DataFrame of the stitches recipe.
     :return: List of variables to be written to the NetCDF files.
     """
-
     # Parse out the variable name so that we can use it
     # to label the final output.
     set = x.filter(regex="file").columns.tolist()
@@ -54,7 +59,6 @@ def get_netcdf_values(i, dl, rp, fl, name):
     :param name: Name of the variable file to process.
     :return: A slice of xarray data (unsure about the technical term).
     """
-
     file = rp[name][i]
     start_yr = rp["archive_start_yr"][i]
     end_yr = rp["archive_end_yr"][i]
@@ -156,7 +160,6 @@ def internal_stitch(rp, dl, fl):
     :param fl: List of the CMIP file names.
     :return: List of the data arrays for the stitched products of the different variables.
     """
-
     rp = rp.sort_values(by=["stitching_id", "target_start_yr"]).copy()
     rp.reset_index(drop=True, inplace=True)
     variables = find_var_cols(rp)
@@ -248,7 +251,6 @@ def gridded_stitching(out_dir: str, rp):
     :param rp: DataFrame of the recipe including variables to stitch.
     :return: List of the NetCDF file paths.
     """
-
     flag = os.path.isdir(out_dir)
     if not flag:
         raise TypeError("The output directory does not exist.")
@@ -304,10 +306,11 @@ def gridded_stitching(out_dir: str, rp):
         f = []
 
         try:
-            
             _model = rp.archive_model.unique()
             _var = rp.archive_variable.unique()
-            action_msg = f"Stitching gridded netcdf for: {_model} {_var} {single_id} ..."
+            action_msg = (
+                f"Stitching gridded netcdf for: {_model} {_var} {single_id} ..."
+            )
             print(action_msg)
 
             # Do the stitching!
@@ -350,7 +353,7 @@ def gridded_stitching(out_dir: str, rp):
             # end For loop over rslt keys
         # end try
 
-        except:
+        except KeyError:
             print(
                 "Stitching gridded netcdf for: "
                 + rp.archive_model.unique()
@@ -412,7 +415,6 @@ def gmat_stitching(rp):
     :param rp: A fully formatted recipe data frame as a pandas DataFrame.
     :return: A pandas DataFrame of stitched together tas data.
     """
-
     # Check inputs.
     util.check_columns(
         rp,
@@ -451,7 +453,11 @@ def gmat_stitching(rp):
 
         # Load the tas data for a particular model.
         model = match["archive_model"].unique()[0]
-        csv_to_load = [file for file in all_files if (model in file) and (os.path.basename(file)[0] != ".")][0]
+        csv_to_load = [
+            file
+            for file in all_files
+            if (model in file) and (os.path.basename(file)[0] != ".")
+        ][0]
 
         data = pd.read_csv(csv_to_load)
 
@@ -500,5 +506,5 @@ def gmat_stitching(rp):
     final_output = final_output.reset_index(drop=True).copy()
     final_output = final_output.sort_values(["stitching_id", "year"]).copy()
     final_output = final_output.reset_index(drop=True).copy()
-    
+
     return final_output

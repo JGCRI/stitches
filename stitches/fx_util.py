@@ -1,4 +1,5 @@
-# Define helper functions used through out the package.
+"""This module contains helper functions used throughout the stitches package."""
+
 import os
 from importlib import resources
 
@@ -78,7 +79,6 @@ def check_columns(data, names):
     :type names: set
     :raises TypeError: If `names` is not a set or if required columns are missing.
     """
-
     col_names = set(data.columns)
     if not (type(names) == set):
         raise TypeError("names must be a set.")
@@ -96,7 +96,6 @@ def nrow(df):
     :return: Number of rows in the data frame.
     :rtype: int
     """
-
     return df.shape[0]
 
 
@@ -222,7 +221,6 @@ def load_data_files(subdir):
 
     # Read in the data & concatenate into a single data frame.
     for f in files_to_process:
-
         extension = os.path.splitext(f)[-1].casefold()
 
         if extension == ".csv":

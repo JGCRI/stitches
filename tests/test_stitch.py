@@ -24,6 +24,7 @@ class TestStitch(unittest.TestCase):
     of the stitching functions, which are used to combine different climate
     model outputs into a single coherent dataset.
     """
+
     RUN = "ci"
 
     # This is an example recipe that will be used to test the stitching functions

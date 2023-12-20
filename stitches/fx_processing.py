@@ -1,5 +1,4 @@
-# Define the functions that are used to process raw tas time series
-# into the "chunks" of data that is used in the matching process.
+"""Module for processing raw tas time series into 'chunks' of data used in the matching process."""
 
 import math as math
 
@@ -77,7 +76,6 @@ def chunk_ts(df, n, base_chunk=0):
     :type base_chunk: int
     :return: A pandas DataFrame identical to `df` with the addition of a 'chunk' column.
     """
-
     # Check inputs
     df = df.drop_duplicates().reset_index(drop=True).copy()
     util.check_columns(df, {"year", "variable", "value"})
@@ -116,7 +114,6 @@ def get_chunk_info(df):
     :return: A pandas DataFrame with the chunk information, including the start and end years, the chunk value (fx),
              and the chunk rate of change (dx).
     """
-
     # Check the inputs
     flag = "index" in df.columns
     if flag:
@@ -211,6 +208,9 @@ def subset_archive(staggered_archive, end_yr_vector):
     :return: A pandas DataFrame of the subsetted archive, same format but fewer entries.
     :rtype: pandas.DataFrame
     """
-
-    out = staggered_archive[staggered_archive['end_yr'].isin(end_yr_vector)].reset_index(drop=True).copy()
+    out = (
+        staggered_archive[staggered_archive["end_yr"].isin(end_yr_vector)]
+        .reset_index(drop=True)
+        .copy()
+    )
     return out

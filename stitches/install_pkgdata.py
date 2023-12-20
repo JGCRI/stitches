@@ -1,10 +1,12 @@
+"""This module contains the InstallPackageData class for downloading and unpacking example data from Zenodo."""
+
 import importlib
 import os
 import shutil
 import tempfile
 import zipfile
-from io import BytesIO as BytesIO
 from importlib import resources
+from io import BytesIO as BytesIO
 
 import requests
 from tqdm import tqdm
@@ -12,8 +14,10 @@ from tqdm import tqdm
 
 class InstallPackageData:
     """
-    Download and unpack example data minted on Zenodo that matches the current installed
-    stitches distribution.
+    Download and unpack example data minted on Zenodo that matches the current installed stitches distribution.
+
+    This class handles the retrieval and organization of example data for the stitches package.
+    It ensures that the data version corresponds to the version of the installed stitches package.
 
     :param data_dir: Optional. Full path to the directory where you wish to store the data.
                      If not specified, the data will be installed in the data directory of the package.
@@ -30,12 +34,17 @@ class InstallPackageData:
     DEFAULT_VERSION = "https://zenodo.org/record/7167526/files/data.zip?download=1"
 
     def __init__(self, data_dir=None):
+        """
+        Initialize the InstallPackageData class.
+
+        :param data_dir: The directory where the data will be stored. If None, the data
+                         will be installed in the package's data directory.
+        :type data_dir: str, optional
+        """
         self.data_dir = data_dir
 
     def fetch_zenodo(self):
-        """Download and unpack the Zenodo minted data for the
-        current stitches distribution."""
-
+        """Download and unpack the Zenodo minted data for the current stitches distribution."""
         # full path to the stitches root directory where the example dir will be stored
         if self.data_dir is None:
             data_directory = resources.files("stitches") / "data"
@@ -57,7 +66,8 @@ class InstallPackageData:
             data_link = InstallPackageData.DATA_VERSION_URLS[current_version]
 
         except KeyError:
-            msg = f"Link to data missing for current version: {current_version}. Using default version: {InstallPackageData.DEFAULT_VERSION}"
+            msg = f"Link to data missing for current version: {current_version}."
+            msg += f" Using default version: {InstallPackageData.DEFAULT_VERSION}"
 
             data_link = InstallPackageData.DEFAULT_VERSION
 
@@ -110,7 +120,6 @@ def install_package_data(data_dir: str = None):
 
     :return: None
     """
-
     zen = InstallPackageData(data_dir=data_dir)
 
     zen.fetch_zenodo()

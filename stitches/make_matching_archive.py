@@ -1,7 +1,12 @@
-# Define the functions used to create the archive that is used in the matching process,
-# aka the rate of change (dx) and median value (fx) for the temperature anomoly time series.
+"""
+This module defines functions used to create the archive for the matching process.
+
+It calculates the rate of change (dx) and median value (fx) for the temperature anomaly time series.
+"""
+
 from importlib import resources
 
+import numpy as np
 import pandas as pd
 
 # Import packages
@@ -50,7 +55,7 @@ def make_matching_archive(
         ["model", "experiment", "ensemble", "year", "variable", "value"]
     ]
     data = data.reset_index(drop=True).copy()
-    group_by = ['model', 'experiment', 'ensemble', 'variable', 'unit']
+    group_by = ["model", "experiment", "ensemble", "variable", "unit"]
     out = []
     for key, d in data.groupby(group_by):
         dat = d.reset_index(drop=True).copy()
@@ -76,7 +81,7 @@ def make_matching_archive(
         else:
             dd = prep.chunk_ts(df=dat, n=chunk_window)
             rslt = prep.get_chunk_info(dd)
-            rslt['unit'] = (np.repeat(d['unit'].unique(), len(rslt))).copy()
+            rslt["unit"] = (np.repeat(d["unit"].unique(), len(rslt))).copy()
             out.append(rslt)
         # end if-else
     # end of the for loop
@@ -107,7 +112,7 @@ def make_matching_archive(
                 else:
                     dd = prep.chunk_ts(df=dat, n=chunk_window, base_chunk=offset)
                     rslt = prep.get_chunk_info(dd)
-                    rslt['unit'] = (np.repeat(d['unit'].unique(), len(rslt))).copy()
+                    rslt["unit"] = (np.repeat(d["unit"].unique(), len(rslt))).copy()
                     out.append(rslt)
                 # end if-else
             # end of the for loop over (model-experiment-ensemble-variable) combos

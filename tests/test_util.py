@@ -17,6 +17,7 @@ from stitches.fx_util import (
 
 class TestUtil(unittest.TestCase):
     """Unit tests for utility functions in the `stitches` package."""
+
     TABLE_A = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 4, 5, 6]})
     TABLE_B = pd.DataFrame(data={"col1": [3, 4, 9], "col2": [5, 6, 10]})
     TABLE_C = pd.DataFrame(data={"col1": ["a", "b"], "col2": [4, 4]})

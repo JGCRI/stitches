@@ -1,5 +1,8 @@
-# Define the functions that are useful for working with the pangeo data base
-# see https://pangeo.io/index.html for more details.
+"""Module for working with the Pangeo database.
+
+This module contains functions that are useful for interacting with the Pangeo data base.
+See https://pangeo.io/index.html for more details on Pangeo.
+"""
 
 import fsspec
 import intake
@@ -16,7 +19,6 @@ def fetch_pangeo_table():
 
     :return: A pandas DataFrame with details on the datasets available for download from Pangeo.
     """
-
     # The url path that contains to the pangeo archive table of contents.
     url = "https://storage.googleapis.com/cmip6/pangeo-cmip6.json"
     out = intake.open_esm_datastore(url)
@@ -32,7 +34,6 @@ def fetch_nc(zstore: str):
     :type zstore: str
     :return: An xarray Dataset containing CMIP6 data downloaded from Pangeo.
     """
-
     print(f"Fetching: {zstore}")
 
     # Function to update the progress bar
@@ -47,10 +48,7 @@ def fetch_nc(zstore: str):
     mapper = fsspec.get_mapper(zstore)
 
     # Initialize the progress bar
-    with tqdm(
-        total=len(mapper.keys()), 
-        desc=f"Downloading file components: "
-    ) as bar:
+    with tqdm(total=len(mapper.keys()), desc="Downloading file components: ") as bar:
         update_progress_bar(mapper, bar)
 
     # Open the dataset

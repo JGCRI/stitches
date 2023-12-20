@@ -1,5 +1,4 @@
-# Define the collection of functions that are useful for working with the
-# temperature data files.
+"""Module for working with temperature data files."""
 
 import numpy as np
 import pandas as pd

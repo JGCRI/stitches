@@ -9,4 +9,4 @@ from .make_tas_archive import make_tas_archive
 from .package_data import *
 from .generate_package_data import generate_pkg_data
 
-__version__ = "0.1.0"
+__version__ = "0.11.0"

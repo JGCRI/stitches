@@ -24,8 +24,7 @@ class InstallPackageData:
     DATA_VERSION_URLS = {
         "0.9.1": "https://zenodo.org/record/7181977/files/data.zip?download=1",
         "0.10.0": "https://zenodo.org/record/7799725/files/data.zip?download=1",
-        "0.1.0": "https://zenodo.org/records/8367628/files/data.zip?download=1",
-        "0.1.1": "https://zenodo.org/records/8367628/files/data.zip?download=1"
+        "0.11.0": "https://zenodo.org/records/8367628/files/data.zip?download=1",
     }
 
     DEFAULT_VERSION = "https://zenodo.org/record/7167526/files/data.zip?download=1"

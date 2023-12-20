@@ -1,11 +1,10 @@
 matplotlib>=3.3.2
 xarray>=2022.9.0
 numpy>=1.23.3
-pandas>=1.5.0,<2
+pandas>=2.1.0
 intake>=0.6.6
 intake-esm>=2021.8.17
 nc_time_axis>=1.4.1
 scikit-learn>=1.1
-gcsfs>=2022.5.0
-fsspec>=2022.5.0
+fsspec[gcs]>=2022.5.0
 tqdm>=4.64.1

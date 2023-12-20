@@ -6,13 +6,17 @@ stitches/data/matching_archive.csv
 stitches/data/matching_archive_staggered.csv
 stitches/data/pangeo_comparison_table.csv
 stitches/data/pangeo_table.csv
+stitches/data/*.csv
 
 # generated data
 notebooks/stitched_*
 stitches/tests/stitched_*
+tests/stitched_*
 
 # system
 .DS_Store
+stitches/data/.DS_Store
+tests/.DS_Store
 
 # pycharm
 .idea

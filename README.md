@@ -3,7 +3,6 @@ Amalgamate existing climate data to create monthly climate variable fields.
 
 [![DOI](https://zenodo.org/badge/317969428.svg)](https://zenodo.org/badge/latestdoi/317969428)
 [![build](https://github.com/JGCRI/stitches/actions/workflows/workflow.yml/badge.svg)](https://github.com/JGCRI/stitches/actions/workflows/workflow.yml)
-[![codecov](https://codecov.io/gh/JGCRI/stitches/branch/main/graph/badge.svg)](https://codecov.io/gh/JGCRI/stitches)
 [![pre-commit](https://github.com/JGCRI/stitches/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/JGCRI/stitches/actions/workflows/pre-commit.yml)
 
 ## Getting Started Using `stitches`

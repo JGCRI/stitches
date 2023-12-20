@@ -40,7 +40,8 @@ setup(
             'sphinx_book_theme>=1',
             'sphinx-click>=5.1',
             'sphinx_copybutton>=0.5',
-            'twine~=3.4.1'
+            'twine~=3.4.1',
+            'pre-commit>=3.6.0'
         ]
     },
     classifiers=[

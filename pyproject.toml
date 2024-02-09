@@ -1,18 +1,15 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel", "setuptools-scm", "pdm"] 
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm"] 
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "stitches-emulate" # PyPI installation name
-version = "dynamic" # For setups-scm to find your version
+description = "Amalgamate existing climate data to create monthly climate variable fields"
 authors = [
     { name = "Abigail Snyder", email = "abigail.snyder@pnnl.gov" },
     { name = "Kalyn Dorheim", email = "kalyn.dorheim@pnnl.gov" },
     { name = "Claudia Tebaldi", email = "claudia.tebaldi@pnnl.gov" }
 ]
-description = "Amalgamate existing climate data to create monthly climate variable fields"
-readme = "README.md"
-requires-python = ">=3.9.0" 
 license = { text = "BSD 2-Clause" } 
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -20,24 +17,58 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3 :: Only",
     "Topic :: Scientific/Engineering :: Atmospheric Science"
 ]
-# Dependencies will be managed by PDM. 
-# Use 'pdm export -f requirements.txt' to update them
+requires-python = ">=3.9" 
+dependencies = [
+    "matplotlib>=3.3.2",
+    "xarray>=2022.9.0",
+    "numpy>=1.23.3",
+    "pandas>=2.1.0",
+    "intake>=0.6.6",
+    "intake-esm>=2021.8.17",
+    "nc_time_axis>=1.4.1",
+    "scikit-learn>=1.1",
+    "fsspec[gcs]>=2022.5.0",
+    "tqdm>=4.64.1",
+]
+dynamic = ["readme", "version"]
+
+[project.urls]
+homepage = "https://jgcri.github.io/stitches/"
+documentation = "https://jgcri.github.io/stitches/"
+repository = "https://github.com/JGCRI/stitches"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.4.3",
+    "black",
+    "flake8",
     "build>=0.5.1",
-    "nbsphinx>=0.8.6",
-    "setuptools>=57.0.0",
+    "twine~=3.4.1",
+    "pre-commit>=3.6.0",
+]
+docs = [
     "sphinx>=7",
     "sphinx_book_theme>=1",
     "sphinx-click>=5.1",
     "sphinx-copybutton>=0.5",
-    "twine~=3.4.1",
-    "pre-commit>=3.6.0",
+    "nbsphinx>=0.8.6",
 ]
+testing = [
+    "pytest",
+    "pytest-cov",
+    "pytest-datadir",
+    "pytest-xdist",
+    "coverage[toml]",
+    "coveralls",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"]}
+version = {attr = "stitches.__version__"}

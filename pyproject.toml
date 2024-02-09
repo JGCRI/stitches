@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm", "pdm"] 
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stitches-emulate" # PyPI installation name
+version = "dynamic" # For setups-scm to find your version
+authors = [
+    { name = "Abigail Snyder", email = "abigail.snyder@pnnl.gov" },
+    { name = "Kalyn Dorheim", email = "kalyn.dorheim@pnnl.gov" },
+    { name = "Claudia Tebaldi", email = "claudia.tebaldi@pnnl.gov" }
+]
+description = "Amalgamate existing climate data to create monthly climate variable fields"
+readme = "README.md"
+requires-python = ">=3.9.0" 
+license = { text = "BSD 2-Clause" } 
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Atmospheric Science"
+]
+# Dependencies will be managed by PDM. 
+# Use 'pdm export -f requirements.txt' to update them
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "build>=0.5.1",
+    "nbsphinx>=0.8.6",
+    "setuptools>=57.0.0",
+    "sphinx>=7",
+    "sphinx_book_theme>=1",
+    "sphinx-click>=5.1",
+    "sphinx-copybutton>=0.5",
+    "twine~=3.4.1",
+    "pre-commit>=3.6.0",
+]

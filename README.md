@@ -15,7 +15,7 @@ Jupyter notebooks hosted on `stitches` use functionality that is contained withi
 ### Installation
 To install for use, run the following:
 ```bash
-python -m pip install git+https://github.com/JGCRI/stitches.git
+pip install stitches-emulator
 ```
 
 To install package data that has already been pre-processed run the following:

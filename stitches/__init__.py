@@ -22,7 +22,7 @@ __all__ = [
     "make_recipe",
     "permute_stitching_recipes",
     "gmat_stitching",
-    "gridded_stitching"
+    "gridded_stitching",
     "generate_pkg_data",
     "install_package_data",
     "make_matching_archive",

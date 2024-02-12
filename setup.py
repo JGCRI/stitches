@@ -10,7 +10,7 @@ import re
 
 from setuptools import find_packages, setup
 
-from ._version import __version__
+from .stitches._version import __version__
 
 
 def requirements():

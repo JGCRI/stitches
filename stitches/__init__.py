@@ -1,5 +1,5 @@
 """
-The __init.py__ file for the stitches package.
+The __init__.py file for the stitches package.
 
 The stitches package provides tools for stitching together climate model output
 into a single, coherent dataset.

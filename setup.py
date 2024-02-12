@@ -1,3 +1,11 @@
+"""
+The setup.py file for the stitches package.
+
+The stitches package provides tools for stitching together climate model output
+into a single, coherent dataset.
+"""
+
+
 import re
 
 from setuptools import find_packages, setup

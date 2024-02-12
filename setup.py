@@ -10,8 +10,6 @@ import re
 
 from setuptools import find_packages, setup
 
-from .stitches._version import __version__
-
 
 def requirements():
     """
@@ -26,13 +24,13 @@ def requirements():
         return f.read().split()
 
 
-# version = re.search(
-#     r"__version__ = ['\"]([^'\"]*)['\"]", open("stitches/_version.py").read(), re.M
-# ).group(1)
+version = re.search(
+    r"__version__ = ['\"]([^'\"]*)['\"]", open("stitches/_version.py").read(), re.M
+).group(1)
 
 setup(
     name="stitches-emulator",
-    version=__version__,  # version,
+    version=version,
     packages=find_packages(),
     url="https://github.com/JGCRI/stitches",
     license="BSD 2-Clause",

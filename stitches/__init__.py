@@ -1,4 +1,9 @@
-"""The stitches package provides tools for stitching together climate model output into a single, coherent dataset."""
+"""
+The __init.py__ file for the stitches package.
+
+The stitches package provides tools for stitching together climate model output
+into a single, coherent dataset.
+"""
 
 
 from .fx_match import match_neighborhood

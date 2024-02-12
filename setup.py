@@ -1,3 +1,11 @@
+"""
+The setup.py file for the stitches package.
+
+The stitches package provides tools for stitching together climate model output
+into a single, coherent dataset.
+"""
+
+
 import re
 
 from setuptools import find_packages, setup
@@ -17,7 +25,7 @@ def requirements():
 
 
 version = re.search(
-    r"__version__ = ['\"]([^'\"]*)['\"]", open("stitches/__init__.py").read(), re.M
+    r"__version__ = ['\"]([^'\"]*)['\"]", open("stitches/_version.py").read(), re.M
 ).group(1)
 
 setup(

@@ -3,7 +3,7 @@ Contributing to **stitches**
 
 Whether you find a typo in the documentation, find a bug, or want to develop functionality that you think will make **stitches** more robust, you are welcome to contribute!
 
-We welcome third-party patches, which are essential for advancing the science and architecture of STITCHES. 
+We welcome third-party patches, which are essential for advancing the science and architecture of STITCHES.
 But there are a few guidelines that we ask contributors to follow, guidelines that ease the maintainers' organizational and logistical duties, while encouraging development by others. All contributors agree to abide by the code of conduct.
 
 Opening issues

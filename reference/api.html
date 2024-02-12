@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Python API &#8212; stitches documentation</title>
   
@@ -19,31 +18,31 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/documentation_options.js?v=e9e33cf0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=a5fa425f"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/api';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -58,10 +57,9 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -102,11 +100,14 @@
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -121,9 +122,11 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="../index.html">
+  
   
   
   
@@ -133,12 +136,23 @@
       
     
     
-    <img src="../_static/logo_stitches.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../_static/logo_stitches.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../_static/logo_stitches.png" class="logo__image only-light" alt="stitches documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo_stitches.png" class="logo__image only-dark" alt="stitches documentation - Home"/>`);</script>
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul class="nav bd-sidenav">
@@ -322,6 +336,7 @@
 </button>
 
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
@@ -331,6 +346,7 @@ document.write(`
   </button>
 `);
 </script>
+
 
 <script>
 document.write(`
@@ -426,10 +442,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="python-api">
-<span id="pythonapi"></span><h1>Python API<a class="headerlink" href="#python-api" title="Permalink to this heading">#</a></h1>
+<span id="pythonapi"></span><h1>Python API<a class="headerlink" href="#python-api" title="Link to this heading">#</a></h1>
 <p><strong>stitches</strong> offers a programmatic API in Python.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -437,246 +453,277 @@ document.write(`
 Your feedback is much appreciated in evolving this API!</p>
 </div>
 <section id="core-functionality">
-<h2>Core functionality<a class="headerlink" href="#core-functionality" title="Permalink to this heading">#</a></h2>
+<h2>Core functionality<a class="headerlink" href="#core-functionality" title="Link to this heading">#</a></h2>
 <section id="stitches-match-neighborhood">
-<h3>stitches.match_neighborhood<a class="headerlink" href="#stitches-match-neighborhood" title="Permalink to this heading">#</a></h3>
+<h3>stitches.match_neighborhood<a class="headerlink" href="#stitches-match-neighborhood" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.match_neighborhood">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">match_neighborhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_hist_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_match.html#match_neighborhood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.match_neighborhood" title="Permalink to this definition">#</a></dt>
-<dd><p>This function takes data frames of target and archive data and calculates the euclidean distance between the target values (fx and dx) and the archive values.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">match_neighborhood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_hist_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_match.html#match_neighborhood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.match_neighborhood" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the Euclidean distance between target and archive data.</p>
+<p>This function takes data frames of target and archive data and calculates the
+Euclidean distance between the target values (fx and dx) and the archive values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>target_data</strong> – a data frame of the target fx and dx values</p></li>
-<li><p><strong>archive_data</strong> – a data frame of the archive fx and dx values</p></li>
-<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – a tolerance for the neighborhood of matching. defaults to 0 degC - only the nearest-neighbor is returned</p></li>
-<li><p><strong>drop_hist_duplicates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – a Boolean True/False that defaults to True to determine whether to consider historical values across SSP scenarios to be duplicates and therefore all but one dropped from matching (True) or to be distinct points for matching (False).</p></li>
+<li><p><strong>target_data</strong> – Data frame of the target fx and dx values.</p></li>
+<li><p><strong>archive_data</strong> – Data frame of the archive fx and dx values.</p></li>
+<li><p><strong>tol</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – Tolerance for the neighborhood of matching. Defaults to 0 degC,
+meaning only the nearest-neighbor is returned. Must be a float.</p></li>
+<li><p><strong>drop_hist_duplicates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Determines whether to consider historical values
+across SSP scenarios as duplicates (True) and drop all but one from matching,
+or to consider them as distinct points for matching (False). Defaults to True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a data frame with the target data and the corresponding matched archive data.</p>
+<dd class="field-even"><p>Data frame with the target data and the corresponding matched archive data.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-permute-stitching-recipes">
-<h3>stitches.permute_stitching_recipes<a class="headerlink" href="#stitches-permute-stitching-recipes" title="Permalink to this heading">#</a></h3>
+<h3>stitches.permute_stitching_recipes<a class="headerlink" href="#stitches-permute-stitching-recipes" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.permute_stitching_recipes">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">permute_stitching_recipes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_matches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matched_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_recipe.html#permute_stitching_recipes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.permute_stitching_recipes" title="Permalink to this definition">#</a></dt>
-<dd><p>A function to sample from input <cite>matched_data</cite> (the the results of <cite>match_neighborhood(target, archive, tol)</cite> to produce permutations  of possible stitching recipes that will match the target data.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">permute_stitching_recipes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_matches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matched_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_recipe.html#permute_stitching_recipes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.permute_stitching_recipes" title="Link to this definition">#</a></dt>
+<dd><p>Sample from <cite>matched_data</cite> to produce permutations of stitching recipes.</p>
+<p>This function samples from <cite>matched_data</cite> (the results of <cite>match_neighborhood(target, archive, tol)</cite>)
+to produce permutations of possible stitching recipes that will match the target data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>N_matches</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – a int to the maximum number of matches per target data</p></li>
-<li><p><strong>matched_data</strong> – data output from match_neighborhood.</p></li>
-<li><p><strong>archive</strong> – the archive data to use for re-matching duplicate points</p></li>
-<li><p><strong>optional</strong> – a previous output of this function that contains a list of already created recipes to avoid re-making (this is not implemented).</p></li>
-<li><p><strong>testing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Boolean True/False. Defaults to False. When True, the behavior can be reliably replicated without setting global seeds.</p></li>
+<li><p><strong>N_matches</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The maximum number of matches per target data.</p></li>
+<li><p><strong>matched_data</strong> – Data output from <cite>match_neighborhood</cite>.</p></li>
+<li><p><strong>archive</strong> – The archive data to use for re-matching duplicate points.</p></li>
+<li><p><strong>optional</strong> – A previous output of this function that contains a list of already created recipes
+to avoid re-making (this is not implemented).</p></li>
+<li><p><strong>testing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – When True, the behavior can be reliably replicated without setting global seeds.
+Defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>data frame with same structure as raw matched, with duplicate matches replaced.</p>
+<dd class="field-even"><p>A data frame with the same structure as the raw matched data, with duplicate matches replaced.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-generate-gridded-recipe">
-<h3>stitches.generate_gridded_recipe<a class="headerlink" href="#stitches-generate-gridded-recipe" title="Permalink to this heading">#</a></h3>
+<h3>stitches.generate_gridded_recipe<a class="headerlink" href="#stitches-generate-gridded-recipe" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.generate_gridded_recipe">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">generate_gridded_recipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messy_recipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mon'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_recipe.html#generate_gridded_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.generate_gridded_recipe" title="Permalink to this definition">#</a></dt>
-<dd><p>Using a messy recipe create the recipe that can be used in the stitching process.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">generate_gridded_recipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messy_recipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mon'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_recipe.html#generate_gridded_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.generate_gridded_recipe" title="Link to this definition">#</a></dt>
+<dd><p>Create a recipe for the stitching process using a messy recipe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>messy_recipe</strong> – a data frame generated by the permute_recipes</p></li>
-<li><p><strong>res</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – string mon or day</p></li>
+<li><p><strong>messy_recipe</strong> – A data frame generated by the permute_recipes function.</p></li>
+<li><p><strong>res</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The resolution of the recipe, either ‘mon’ for monthly or ‘day’ for daily.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a recipe data frame</p>
+<dd class="field-even"><p>A data frame formatted as a recipe for stitching.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-make-recipe">
-<h3>stitches.make_recipe<a class="headerlink" href="#stitches-make-recipe" title="Permalink to this heading">#</a></h3>
+<h3>stitches.make_recipe<a class="headerlink" href="#stitches-make-recipe" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.make_recipe">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_recipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_matches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mon'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_tas_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reproducible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_recipe.html#make_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_recipe" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_recipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">archive_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_matches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mon'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_tas_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reproducible</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_recipe.html#make_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_recipe" title="Link to this definition">#</a></dt>
 <dd><p>Generate a stitching recipe from target and archive data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>target_data</strong> – a pandas data frame of climate information to emulate.</p></li>
-<li><p><strong>archive_data</strong> – a pandas data frame of temperature data to use as the archive to match on.</p></li>
-<li><p><strong>N_matches</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – a int to the maximum number of matches per target data</p></li>
-<li><p><strong>res</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – str of ‘mon’ or ‘day’ to indicate the resolution of the stitched data</p></li>
-<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – float value indicating the tolerance to use in the matching process, default set to 0.1</p></li>
-<li><p><strong>non_tas_variables</strong> (<em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>]</em>) – a list of variables other than tas to stitch together, when using the default set to None only tas will be stitched together.</p></li>
-<li><p><strong>reproducible</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Boolean True/False. Defaults to False. If True, the call to permute_stitching_recipes() uses the testing=True argument so that the behavior can be reliably replicated without setting global seeds.</p></li>
+<li><p><strong>target_data</strong> – A pandas DataFrame of climate information to emulate.</p></li>
+<li><p><strong>archive_data</strong> – A pandas DataFrame of temperature data to use as the archive to match on.</p></li>
+<li><p><strong>N_matches</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The maximum number of matches per target data.</p></li>
+<li><p><strong>res</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Resolution of the stitched data, either ‘mon’ or ‘day’.</p></li>
+<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Tolerance used in the matching process, default is 0.1.</p></li>
+<li><p><strong>non_tas_variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>]</em>) – List of variables other than tas to stitch together; defaults to None,
+which stitches tas only.</p></li>
+<li><p><strong>reproducible</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – If True, ensures reproducible behavior by using the testing=True argument
+in permute_stitching_recipes(); defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>pandas data frame of a formatted recipe</p>
+<dd class="field-even"><p>A pandas DataFrame of a formatted recipe.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-gridded-stitching">
-<h3>stitches.gridded_stitching<a class="headerlink" href="#stitches-gridded-stitching" title="Permalink to this heading">#</a></h3>
+<h3>stitches.gridded_stitching<a class="headerlink" href="#stitches-gridded-stitching" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.gridded_stitching">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">gridded_stitching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_stitch.html#gridded_stitching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.gridded_stitching" title="Permalink to this definition">#</a></dt>
-<dd><p>Stitch the gridded netcdfs for variables contained in recipe file and save.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">gridded_stitching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_stitch.html#gridded_stitching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.gridded_stitching" title="Link to this definition">#</a></dt>
+<dd><p>Stitch the gridded NetCDFs for variables contained in the recipe file and save them.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>out_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – string directory location where to write the netcdf files to</p></li>
-<li><p><strong>rp</strong> – data frame of the recipe including variables to stitch</p></li>
+<li><p><strong>out_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Directory location where to write the NetCDF files.</p></li>
+<li><p><strong>rp</strong> – DataFrame of the recipe including variables to stitch.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a list of the netcdf files paths</p>
+<dd class="field-even"><p>List of the NetCDF file paths.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-gmat-stitching">
-<h3>stitches.gmat_stitching<a class="headerlink" href="#stitches-gmat-stitching" title="Permalink to this heading">#</a></h3>
+<h3>stitches.gmat_stitching<a class="headerlink" href="#stitches-gmat-stitching" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.gmat_stitching">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">gmat_stitching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_stitch.html#gmat_stitching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.gmat_stitching" title="Permalink to this definition">#</a></dt>
-<dd><p>Based on a recipe data frame stitch together a time series of global tas data.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">gmat_stitching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_stitch.html#gmat_stitching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.gmat_stitching" title="Link to this definition">#</a></dt>
+<dd><p>Stitch together a time series of global tas data based on a recipe data frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>rp</strong> – pandas DataFrame - a fully formatted recipe data frame.</p>
+<dd class="field-odd"><p><strong>rp</strong> – A fully formatted recipe data frame as a pandas DataFrame.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>pandas DataFrame of stitched together tas data.</p>
+<dd class="field-even"><p>A pandas DataFrame of stitched together tas data.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-fetch-pangeo-table">
-<h3>stitches.fetch_pangeo_table<a class="headerlink" href="#stitches-fetch-pangeo-table" title="Permalink to this heading">#</a></h3>
+<h3>stitches.fetch_pangeo_table<a class="headerlink" href="#stitches-fetch-pangeo-table" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.fetch_pangeo_table">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">fetch_pangeo_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_pangeo.html#fetch_pangeo_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.fetch_pangeo_table" title="Permalink to this definition">#</a></dt>
-<dd><p>Get a copy of the pangeo archive contents</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">fetch_pangeo_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_pangeo.html#fetch_pangeo_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.fetch_pangeo_table" title="Link to this definition">#</a></dt>
+<dd><p>Fetch the Pangeo CMIP6 archive table of contents as a pandas DataFrame.</p>
+<p>Retrieve a copy of the Pangeo CMIP6 archive contents, which includes information
+about the available models, sources, experiments, ensembles, and more.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a pandas data frame containing information about the model, source, experiment, ensemble and so on that is available for download on pangeo.</p>
+<dd class="field-odd"><p>A pandas DataFrame with details on the datasets available for download from Pangeo.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-fetch-nc">
-<h3>stitches.fetch_nc<a class="headerlink" href="#stitches-fetch-nc" title="Permalink to this heading">#</a></h3>
+<h3>stitches.fetch_nc<a class="headerlink" href="#stitches-fetch-nc" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.fetch_nc">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">fetch_nc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zstore</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_pangeo.html#fetch_nc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.fetch_nc" title="Permalink to this definition">#</a></dt>
-<dd><p>Extract data for a single file.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">fetch_nc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zstore</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/fx_pangeo.html#fetch_nc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.fetch_nc" title="Link to this definition">#</a></dt>
+<dd><p>Extract data for a single file from Pangeo.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>zstore</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – str of the location of the cmip6 data file on pangeo.</p>
+<dd class="field-odd"><p><strong>zstore</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The location of the CMIP6 data file on Pangeo.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>an xarray containing cmip6 data downloaded from  pangeo.</p>
+<dd class="field-even"><p>An xarray Dataset containing CMIP6 data downloaded from Pangeo.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-make-tas-archive">
-<h3>stitches.make_tas_archive<a class="headerlink" href="#stitches-make-tas-archive" title="Permalink to this heading">#</a></h3>
+<h3>stitches.make_tas_archive<a class="headerlink" href="#stitches-make-tas-archive" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.make_tas_archive">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_tas_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anomaly_startYr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1995</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_endYr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2014</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/make_tas_archive.html#make_tas_archive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_tas_archive" title="Permalink to this definition">#</a></dt>
-<dd><p>The function that creates the archive from Pangeo-hosted CMIP6 data.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_tas_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anomaly_startYr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1995</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anomaly_endYr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2014</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/make_tas_archive.html#make_tas_archive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_tas_archive" title="Link to this definition">#</a></dt>
+<dd><p>Create the archive from Pangeo-hosted CMIP6 data.</p>
+<p>This function processes CMIP6 data hosted on Pangeo to create an archive of
+temperature anomaly files. It calculates anomalies based on a specified reference
+period.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Array of the tas files created.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anomaly_startYr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Start year of the reference period for anomaly calculation.</p></li>
+<li><p><strong>anomaly_endYr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – End year of the reference period for anomaly calculation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of paths to the created tas files.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-make-matching-archive">
-<h3>stitches.make_matching_archive<a class="headerlink" href="#stitches-make-matching-archive" title="Permalink to this heading">#</a></h3>
+<h3>stitches.make_matching_archive<a class="headerlink" href="#stitches-make-matching-archive" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.make_matching_archive">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_matching_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smoothing_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_staggered</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/make_matching_archive.html#make_matching_archive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_matching_archive" title="Permalink to this definition">#</a></dt>
-<dd><p>The function that creates the archive of rate of change (dx) and mean (fx) values for
-from the CMIP6 archive, these the the values that will be using in the matching portion
-of the stitching pipeline.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_matching_archive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smoothing_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_staggered</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/make_matching_archive.html#make_matching_archive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_matching_archive" title="Link to this definition">#</a></dt>
+<dd><p>Create an archive of rate of change (dx) and mean (fx) values.</p>
+<p>This function processes the CMIP6 archive to produce values used in the
+matching portion of the stitching pipeline.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>smoothing_window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – int default set to 9, the size of the smoothing window to be applied to the ts.</p></li>
-<li><p><strong>chunk_window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – int default set to 9, the size of the chunks of data to summarize with dx &amp; fx.</p></li>
-<li><p><strong>add_staggered</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – boolean default set to False. If True, the staggered windows will be added to the archive.</p></li>
+<li><p><strong>smoothing_window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The size of the smoothing window to be applied to the time series.
+Defaults to 9.</p></li>
+<li><p><strong>chunk_window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The size of the chunks of data to summarize with dx &amp; fx.
+Defaults to 9.</p></li>
+<li><p><strong>add_staggered</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – If True, staggered windows will be added to the archive.
+Defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>str location of the matching archive file.</p>
+<dd class="field-even"><p>The file location of the matching archive.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-make-pangeo-table">
-<h3>stitches.make_pangeo_table<a class="headerlink" href="#stitches-make-pangeo-table" title="Permalink to this heading">#</a></h3>
+<h3>stitches.make_pangeo_table<a class="headerlink" href="#stitches-make-pangeo-table" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.make_pangeo_table">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_pangeo_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/make_pangeo_table.html#make_pangeo_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_pangeo_table" title="Permalink to this definition">#</a></dt>
-<dd><p>The function that makes a copy of the files that are available on pangeo that have corresponding files
-in the the matching archive, this will be used in the stitching process.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_pangeo_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/make_pangeo_table.html#make_pangeo_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_pangeo_table" title="Link to this definition">#</a></dt>
+<dd><p>Create a copy of the Pangeo files that have corresponding entries in the matching archive.</p>
+<p>This function is used in the stitching process to ensure that only relevant Pangeo files
+are considered. It writes out a file to the package data directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Nothing, write a file out to package data.</p>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-make-pangeo-comparison">
-<h3>stitches.make_pangeo_comparison<a class="headerlink" href="#stitches-make-pangeo-comparison" title="Permalink to this heading">#</a></h3>
+<h3>stitches.make_pangeo_comparison<a class="headerlink" href="#stitches-make-pangeo-comparison" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.make_pangeo_comparison">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_pangeo_comparison</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/make_pangeo_table.html#make_pangeo_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_pangeo_comparison" title="Permalink to this definition">#</a></dt>
-<dd><p>A function that makes a copy of the entire pangeo archive. This will be used in
-testing to check to see if there has been an update to the pangeo archive, if there
-is then may suggest updating the internal package data.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">make_pangeo_comparison</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/make_pangeo_table.html#make_pangeo_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.make_pangeo_comparison" title="Link to this definition">#</a></dt>
+<dd><p>Create a copy of the entire Pangeo archive for testing.</p>
+<p>This function is used to check for updates in the Pangeo archive. If an update is
+detected, it may suggest updating the internal package data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Nothing, write a file out to package data.</p>
+<dd class="field-odd"><p>None. Writes a file to package data.</p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="stitches-install-package-data">
-<h3>stitches.install_package_data<a class="headerlink" href="#stitches-install-package-data" title="Permalink to this heading">#</a></h3>
+<h3>stitches.install_package_data<a class="headerlink" href="#stitches-install-package-data" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="stitches.install_package_data">
-<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">install_package_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/install_pkgdata.html#install_package_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.install_package_data" title="Permalink to this definition">#</a></dt>
-<dd><p>Download and unpack Zenodo-minted stitches package data that matches the current installed
-stitches distribution.</p>
+<span class="sig-prename descclassname"><span class="pre">stitches.</span></span><span class="sig-name descname"><span class="pre">install_package_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/stitches/install_pkgdata.html#install_package_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stitches.install_package_data" title="Link to this definition">#</a></dt>
+<dd><p>Download and unpack Zenodo-minted stitches package data.</p>
+<p>This function matches the current installed stitches distribution and unpacks
+the data into the specified directory or the default data directory of the package.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Optional.  Full path to the directory you wish to store the data in.  Default is to install it in data directory of the package.</p>
+<dd class="field-odd"><p><strong>data_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Optional. Full path to the directory to store the data.
+Default is the data directory of the package.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Nothing, write a file out to package data.</p>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -694,7 +741,7 @@ stitches distribution.</p>
               
               
                 <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
+                  
 <div class="prev-next-area">
     <a class="left-prev"
        href="../getting-started/quickstarter.html"
@@ -722,6 +769,7 @@ stitches distribution.</p>
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -805,6 +853,7 @@ By Abigail Snyder; Kalyn Dorheim; Claudia Tebaldi
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2022-current, Battelle Memorial Institute.
@@ -831,8 +880,8 @@ By Abigail Snyder; Kalyn Dorheim; Claudia Tebaldi
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>

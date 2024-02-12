@@ -72,7 +72,6 @@ autodoc_member_order = "bysource"
 html_theme = "sphinx_book_theme"
 
 html_theme_options = {
-    "logo_only": True,
     "repository_url": "https://github.com/JGCRI/stitches",
     "use_repository_button": True,
     "use_issues_button": True,

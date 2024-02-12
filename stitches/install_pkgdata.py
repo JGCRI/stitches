@@ -11,6 +11,8 @@ from io import BytesIO as BytesIO
 import requests
 from tqdm import tqdm
 
+from ._version import __version__
+
 
 class InstallPackageData:
     """
@@ -29,6 +31,7 @@ class InstallPackageData:
         "0.9.1": "https://zenodo.org/record/7181977/files/data.zip?download=1",
         "0.10.0": "https://zenodo.org/record/7799725/files/data.zip?download=1",
         "0.11.0": "https://zenodo.org/records/8367628/files/data.zip?download=1",
+        "0.12.0": "https://zenodo.org/records/8367628/files/data.zip?download=1",
     }
 
     DEFAULT_VERSION = "https://zenodo.org/record/7167526/files/data.zip?download=1"
@@ -60,7 +63,7 @@ class InstallPackageData:
             os.mkdir(temp_data_path)
 
         # get the current version of stitches that is installed
-        current_version = importlib.metadata.version("stitches")
+        current_version = __version__
 
         try:
             data_link = InstallPackageData.DATA_VERSION_URLS[current_version]

@@ -129,7 +129,7 @@ realizations for variables archived by the ESM, but it can produce only finitely
 many new realizations, the maximum number depending on the number of runs
 archived by each ESM. Currently, new realizations from `stitches` can be
 appended to archived ESM realizations to result in  double to triple the number
-of runs available; This is arguably one of the main differences from the above-mentioned
+of runs available; this is arguably one of the main differences from the above-mentioned
 bottom-up approaches, which can generate infinite new realizations
 once an accurate statistical process is estimated from existing data. We see
 this as a source of complementarity between these two emulation approaches.

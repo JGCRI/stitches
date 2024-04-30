@@ -35,10 +35,10 @@ class InstallPackageData:
         "0.12.1": "https://zenodo.org/records/8367628/files/data.zip?download=1",
         "0.12.2": "https://zenodo.org/records/8367628/files/data.zip?download=1",
         "0.12.3": "https://zenodo.org/records/8367628/files/data.zip?download=1",
-        "0.13.0": "https://zenodo.org/records/8367628/files/data.zip?download=1",
+        "0.13": "https://zenodo.org/records/8367628/files/data.zip?download=1",
     }
 
-    DEFAULT_VERSION = "https://zenodo.org/record/7167526/files/data.zip?download=1"
+    DEFAULT_VERSION = "https://zenodo.org/records/8367628/files/data.zip?download=1"
 
     def __init__(self, data_dir=None):
         """

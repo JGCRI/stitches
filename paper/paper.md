@@ -38,7 +38,7 @@ spatially resolved and often multiple variables representing climatic impact-dri
 [@ruane2022climatic]. Most commonly these are derived from the outputs
 of  detailed, computationally expensive Earth System Models (ESMs) run according
 to a standard, limited set of future scenarios, the latest being the SSP-RCPs
-run under CMIP6-ScenarioMIP [@Eyringetal2016;@ONeilletal2016]. At the time of
+run under CMIP6/ScenarioMIP [@Eyringetal2016;@ONeilletal2016]. At the time of
 writing, @ONeilletal2016 has been cited more than 1750 times and @Eyringetal2016
 more than 5000 times, highlighting the broad, general applications of this data.
 
@@ -111,7 +111,7 @@ and [website](https://jgcri.github.io/stitches/), as well as in @tebaldi2022stit
 
 Research from the climate science  community has indicated that many ESM output
 variables are tightly dependent upon the GSAT trajectory and thus scenario
-independent (see [@SR15] and citations therein, in particular @james2017characterizing), justifying our approach. Thus, the statistical
+independent (see @SR15 and citations therein, in particular @james2017characterizing), justifying our approach. Thus, the statistical
 characteristics of ESM output are preserved by the construction process `STITCHES`
 implements, as outlined in @tebaldi2022stitches. One of the major benefits of this
 top-down approach is that it jointly emulates outputs of multiple ESM variables,
@@ -136,7 +136,7 @@ this as a source of complementarity between these two emulation approaches.
 The `STITCHES` Python package currently relies on close integration with the
 Pangeo Cloud catalog of CMIP6 ESM outputs (https://gallery.pangeo.io/repos/pangeo-gallery/cmip6/).
 Thanks to this integration, users are not required to pre-download the entire
-CMIP6-ScenarioMIP archive of ESM outputs, and can quickly and flexibly
+CMIP6/ScenarioMIP archive of ESM outputs, and can quickly and flexibly
 emulate variables from any of the 40 ESMs participating in ScenarioMIP.
 In addition to the requirements for working with Pangeo in Python, `STITCHES`
 relies only on a few common scientific Python packages, namely `xarray`, `numpy`,

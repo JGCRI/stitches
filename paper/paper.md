@@ -120,7 +120,7 @@ something not presently available in other packages to our knowledge. Most
 impact-relevant atmospheric variables such as temperature, precipitation, relative
 humidity, and sea level pressure can be emulated by `STITCHES` as they are
 scenario-independent and have a short memory (compared to the window used by
-‘STITCHES’, presently set to nine (9) years). Any variable that the ESM has archived can
+`STITCHES`, presently set to nine (9) years). Any variable that the ESM has archived can
 be emulated jointly. Variables that represent the cumulative effect of warming,
 such as sea level rise, or that have a long memory, like glacier mass loss or
 mega-drought, cannot be emulated with `STITCHES`. `STITCHES` can produce new

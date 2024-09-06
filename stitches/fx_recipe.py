@@ -1166,6 +1166,43 @@ def make_recipe(
     # Match the archive & target data together.
     match_df = match.match_neighborhood(target_data, archive_data, tol=tol)
 
+    # if there are any nearest neighbor matches that are maybe still large,
+    # warn the user that they will want to validate the outcome.
+
+    # get the nearest neighbor match only for each target window
+    grouped = match_df.groupby(
+        [
+            "target_variable",
+            "target_experiment",
+            "target_ensemble",
+            "target_model",
+            "target_start_yr",
+            "target_end_yr",
+            "target_year",
+            "target_fx",
+            "target_dx",
+        ]
+    )
+    formatted_nn = pd.DataFrame()
+    for name, group in grouped:
+        df = group.copy()
+        df = df[df["dist_l2"] == np.min(df["dist_l2"])].copy()
+        formatted_nn = pd.concat([formatted_nn, df]).reset_index(drop=True)
+        del df
+
+    # subset to just the far away nearest neighbors
+    formatted_nn = (
+        formatted_nn[formatted_nn["dist_l2"] > 0.25].reset_index(drop=True).copy()
+    )
+
+    if not formatted_nn.empty:
+        print("At least one target window has a nearest neighbor in T, dT space that")
+        print("is more than 0.25degC away. This may or may not result in poor matches ")
+        print("and we recommend validation.")
+
+    del formatted_nn
+    del grouped
+
     if reproducible:
         unformatted_recipe = permute_stitching_recipes(
             N_matches=N_matches,
@@ -1212,5 +1249,5 @@ def make_recipe(
         .copy()
     )
 
-    #out = out.drop_duplicates().reset_index(drop=True).copy()
+    out = out.drop_duplicates().reset_index(drop=True).copy()
     return out

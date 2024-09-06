@@ -1211,4 +1211,6 @@ def make_recipe(
         .reset_index(drop=True)
         .copy()
     )
+
+    out = out.drop_duplicates().reset_index(drop=True).copy()
     return out

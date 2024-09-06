@@ -1212,5 +1212,5 @@ def make_recipe(
         .copy()
     )
 
-    out = out.drop_duplicates().reset_index(drop=True).copy()
+    #out = out.drop_duplicates().reset_index(drop=True).copy()
     return out

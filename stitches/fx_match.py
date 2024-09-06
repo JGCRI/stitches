@@ -341,13 +341,10 @@ def match_neighborhood(
     )
 
     if not formatted_nn.empty:
-        print("The following target windows have a nearest neighbor in T, dT space")
-        print("that is more than 0.25degC away. This may or may not result in poor")
-        print("matches and we recommend validation.")
-        print(formatted_nn)
-        print(
-            "-----------------------------------------------------------------------------------------"
-        )
+        print("At least one target window has a nearest neighbor in T, dT space that")
+        print("is more than 0.25degC away. This may or may not result in poor matches ")
+        print("and we recommend validation.")
+
     del formatted_nn
     del grouped
 

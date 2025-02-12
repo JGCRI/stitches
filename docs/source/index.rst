@@ -20,7 +20,7 @@ To use **stitches**, there are a number of decisions users have to make, perhaps
 Why do we need **stitches**?
 --------------------------------
 
-Impact research often requires many output variables from ESMs, including but not limited to global gridded temperature, precipitation, sea level pressure, relative humidity, and more. Impact research also often requires these values on a monthly or even daily time scale. 
+Impact research often requires many output variables from ESMs, including but not limited to global gridded temperature, precipitation, sea level pressure, relative humidity, and more. Impact research also often requires these values on a monthly or even daily time scale.
 
 ESMs are expensive to run, often limiting the scenarios that can be explored and the number of ensemble members that can be generated for each scenario. **stitches** intelligently recombines the existing model runs available from ESMs in CMIP6 into global, gridded, multivariate outputs for *novel scenarios* (e.g., using a simple model to translate new forcing pathways into a global temperature trajectory that becomes stitches target).  on monthly or daily timescales. **stitches** can also be used to enrich the ensemble sizes of existing scenarios. The resulting generated gridded multivariate outputs preserve the ensemble statistics of the ESM's data. If the ESM has saved it, **stitches** can emulate the ESM output at any frequency: monthly, daily or even higher.
 

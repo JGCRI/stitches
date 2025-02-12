@@ -1,8 +1,8 @@
 Installation
 ============
 
-Install ```stitches``` from GitHub using pip:
+Install ```stitches``` from PyPi using pip:
 
 .. code-block:: console
 
-  $ pip install git+https://github.com/JGCRI/stitches.git
+  $ pip install stitches-emulator

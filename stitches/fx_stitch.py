@@ -1,36 +1,45 @@
+"""
+The `fx_stitch` module is responsible for stitching together climate model outputs.
+
+It creates a continuous time series that can be used for climate analysis and emulation.
+
+"""
+
 import os
-import pkg_resources
+from importlib import resources
 
 import numpy as np
 import pandas as pd
 import xarray as xr
 
-import stitches.fx_util as util
 import stitches.fx_data as data
 import stitches.fx_pangeo as pangeo
+import stitches.fx_util as util
 
 
 def find_zfiles(rp):
-    """ Determine which cmip files must be downloaded from pangeo.
-        :param rp:             data frame of the recipes
-        :return:               numpy.ndarray array of the gs:// files to pull from pangeo
     """
+    Determine which CMIP files must be downloaded from Pangeo.
 
+    :param rp: Data frame of the recipes.
+    :return: Numpy ndarray of the gs:// files to pull from Pangeo.
+    """
     # Figure out which columns contain the string file
-    flat_list = rp.filter(regex='file', axis=1).values.flatten()
+    flat_list = rp.filter(regex="file", axis=1).values.flatten()
     unique_list = np.unique(flat_list)
     return unique_list
 
 
 def find_var_cols(x):
-    """ Determine which variables that are going to be downloaded.
-        :param x:             pandas data frame of the stitches recipe
-        :return:              a list of the variables that are going to be written out to the netcdf files.
     """
+    Determine the variables to be downloaded.
 
+    :param x: pandas DataFrame of the stitches recipe.
+    :return: List of variables to be written to the NetCDF files.
+    """
     # Parse out the variable name so that we can use it
     # to label the final output.
-    set = x.filter(regex='file').columns.tolist()
+    set = x.filter(regex="file").columns.tolist()
 
     out = []
     for text in set:
@@ -40,16 +49,16 @@ def find_var_cols(x):
 
 
 def get_netcdf_values(i, dl, rp, fl, name):
-
-    """Extract the archive values from the list of downloaded cmip data
-        :param i:              int index of the row of the recipe data frame
-        :param dl:             list of xarray cmip files
-        :param rp:             data frame of the recipe
-        :param fl:             list of the cmip files
-        :param name:           name of the variable file that is going to be processed.
-        :return:               a slice of xarray (not sure confident on the technical term)
     """
+    Extract archive values from a list of downloaded CMIP data.
 
+    :param i: Index of the row in the recipe data frame.
+    :param dl: List of xarray datasets containing CMIP files.
+    :param rp: DataFrame of the recipe.
+    :param fl: List of CMIP file paths.
+    :param name: Name of the variable file to process.
+    :return: A slice of xarray data (unsure about the technical term).
+    """
     file = rp[name][i]
     start_yr = rp["archive_start_yr"][i]
     end_yr = rp["archive_end_yr"][i]
@@ -59,11 +68,11 @@ def get_netcdf_values(i, dl, rp, fl, name):
     # Figure out which index level we are on and then get the
     # xarray from the list.
     index = int(np.where(fl == file)[0])
-    extracted = dl[index].sortby('time')
+    extracted = dl[index].sortby("time")
     v = name.replace("_file", "")
 
     # Have to have special time handler
-    times = extracted.indexes['time']
+    times = extracted.indexes["time"]
 
     # Time frequency
     freq = xr.infer_freq(times)
@@ -135,13 +144,15 @@ def get_netcdf_values(i, dl, rp, fl, name):
 
 
 def get_var_info(rp, dl, fl, name):
-    """Extract the cmip variable attribute information.
-               :param rp:             data frame of the recipes
-               :param dl:             list of the data files
-               :param fl:             list of the data file names
-               :param name:           string of the column containing the variable file name from rp
-               :return:               pandas dataframe of the variable meta data
-           """
+    """
+    Extract the CMIP variable attribute information.
+
+    :param rp: Data frame of the recipes.
+    :param dl: List of the data files.
+    :param fl: List of the data file names.
+    :param name: String of the column containing the variable file name from rp.
+    :return: Pandas dataframe of the variable meta data.
+    """
     util.check_columns(rp, {name})
     file = rp[name][0]
     index = int(np.where(fl == file)[0])
@@ -155,19 +166,21 @@ def get_var_info(rp, dl, fl, name):
 
 
 def get_atts(rp, dl, fl, name):
-    """Extract the cmip variable attribute information.
-           :param rp:             data frame of the recipes
-           :param dl:             list of the data files
-           :param fl:             list of the data file names
-           :param name:           string of the column containing the variable files to process
-           :return:               dict object containing the cmip variable information
-       """
+    """
+    Extract the CMIP variable attribute information.
+
+    :param rp: Data frame of the recipes.
+    :param dl: List of the data files.
+    :param fl: List of the data file names.
+    :param name: String of the column containing the variable file name from rp.
+    :return: Dict object containing the CMIP variable information.
+    """
     file = rp[name][0]
     index = int(np.where(fl == file)[0])
     extracted = dl[index]
-    v=name.replace("_file", "")
+    v = name.replace("_file", "")
 
-    out=extracted[v].attrs.copy()
+    out = extracted[v].attrs.copy()
 
     return out
 
@@ -180,6 +193,7 @@ def internal_stitch(rp, v, dl, fl):
         :param fl:             list of the cmip files
         :return:               a list of the data arrays for the stitched products of the different variables.
     """
+    Stitch a single recipe into netCDF outputs.
 
     rp = rp.sort_values(by=['target_start_yr']).copy()
     rp.reset_index(drop=True, inplace=True)
@@ -247,24 +261,33 @@ def internal_stitch(rp, v, dl, fl):
 
 
 def gridded_stitching(out_dir: str, rp):
-    """Stitch the gridded netcdfs for variables contained in recipe file and save.
-
-        :param out_dir:        string directory location where to write the netcdf files to
-        :type out_dir:          str
-
-        :param rp:             data frame of the recipe including variables to stitch
-
-        :return:               a list of the netcdf files paths
     """
+    Stitch the gridded NetCDFs for variables contained in the recipe file and save them.
 
+    :param out_dir: Directory location where to write the NetCDF files.
+    :type out_dir: str
+    :param rp: DataFrame of the recipe including variables to stitch.
+    :return: List of the NetCDF file paths.
+    """
     flag = os.path.isdir(out_dir)
     if not flag:
-        raise TypeError(f'The output directory does not exist.')
+        raise TypeError("The output directory does not exist.")
 
     # Check inputs.
-    util.check_columns(rp, {'target_start_yr', 'target_end_yr', 'archive_experiment',
-                            'archive_variable', 'archive_model', 'archive_ensemble', 'stitching_id',
-                            'archive_start_yr', 'archive_end_yr'})
+    util.check_columns(
+        rp,
+        {
+            "target_start_yr",
+            "target_end_yr",
+            "archive_experiment",
+            "archive_variable",
+            "archive_model",
+            "archive_ensemble",
+            "stitching_id",
+            "archive_start_yr",
+            "archive_end_yr",
+        },
+    )
 
     rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
 
@@ -274,7 +297,7 @@ def gridded_stitching(out_dir: str, rp):
     # Determine which variables will be downloaded.
     variables = find_var_cols(rp)
     if not (len(variables) >= 1):
-        raise TypeError(f'No variables were found to be processed.')
+        raise KeyError("No variables were found to be processed.")
 
     # Determine which files need to be downloaded from pangeo.
     file_list = find_zfiles(rp)
@@ -282,10 +305,11 @@ def gridded_stitching(out_dir: str, rp):
     # Make sure that all of the files are available to download from pangeo.
     # Note that this might be excessively cautious but this is an issue we have run into in
     # the past.
+    print("Validating request availability with Pangeo archive contents...")
     avail = pangeo.fetch_pangeo_table()
-    flag = all(item in list(avail['zstore']) for item in list(file_list))
+    flag = all(item in list(avail["zstore"]) for item in list(file_list))
     if not flag:
-        raise TypeError(f'Trying to request a zstore file that does not exist')
+        raise KeyError("Trying to request a zstore file that does not exist.")
 
     # Download all of the data from pangeo.
     data_list = list(map(pangeo.fetch_nc, file_list))
@@ -335,89 +359,127 @@ def gridded_stitching(out_dir: str, rp):
      # end for loop over single_id
 
     return f
-# end gridded stitching function
 
 
 def gmat_internal_stitch(row, data):
-    """ Select data from a tas archive based on a single row in a recipe data frame, this
-            function is used to iterate over an entire recipe to do the stitching.
+    """
+    Select data from a tas archive based on a single row in a recipe data frame.
 
-            :param row:        pandas.core.series.Series a row entry of a fully formatted recipe
-            :param data:       pandas.core.frame.DataFrame containing the tas values to be stitched together
-            :return:           pandas.core.frame.DataFrame of tas values
+    This function is used to iterate over an entire recipe to do the stitching.
+
+    :param row: A row entry of a fully formatted recipe as a pandas Series.
+    :param data: A DataFrame containing the tas values to be stitched together.
+    :return: A DataFrame of tas values.
     """
     years = list(range(int(row["target_start_yr"]), int(row["target_end_yr"]) + 1))
-    select_years = list(range(int(row["archive_start_yr"]), int(row["archive_end_yr"]) + 1))
+    select_years = list(
+        range(int(row["archive_start_yr"]), int(row["archive_end_yr"]) + 1)
+    )
 
-    selected_data = data.loc[(data["experiment"] == row["archive_experiment"]) &
-                             (data["year"].isin(select_years)) &
-                             (data["ensemble"] == row["archive_ensemble"])]
+    selected_data = data.loc[
+        (data["experiment"] == row["archive_experiment"])
+        & (data["year"].isin(select_years))
+        & (data["ensemble"] == row["archive_ensemble"])
+    ]
 
     # some models stop at 2099 instead of 2100 - so there is a mismatch
     # between len(years) and selected data but not a fatal one.
     # Write a very specific if statement to catch this & just chop the extra year
     # off the end of selected_data.
-    if ((len(years) == (util.nrow(selected_data) - 1)) & (max(years) == 2099) ):
-        selected_data = selected_data.iloc[0:len(years), ].copy()
+    if (len(years) == (util.nrow(selected_data) - 1)) & (max(years) == 2099):
+        selected_data = selected_data.iloc[0 : len(years),].copy()
 
     if len(years) != util.nrow(selected_data):
-        raise TypeError(f"Trouble with selecting the tas data.")
+        raise TypeError("Trouble with selecting the tas data.")
 
-    new_vals = selected_data['value']
-    d = {'year': years,
-         'value': new_vals}
+    new_vals = selected_data["value"]
+    d = {"year": years, "value": new_vals}
     df = pd.DataFrame(data=d)
-    df['variable'] = 'tas'
+    df["variable"] = "tas"
 
     return df
 
 
 def gmat_stitching(rp):
-    """ Based on a recipe data frame stitch together a time series of global tas data.
-
-        :param rp:        pandas DataFrame - a fully formatted recipe data frame.
-
-        :return:          pandas DataFrame of stitched together tas data.
     """
+    Stitch together a time series of global tas data based on a recipe data frame.
 
+    :param rp: A fully formatted recipe data frame as a pandas DataFrame.
+    :return: A pandas DataFrame of stitched together tas data.
+    """
     # Check inputs.
-    util.check_columns(rp, {'target_start_yr', 'target_end_yr', 'archive_experiment',
-                            'archive_variable', 'archive_model', 'archive_ensemble', 'stitching_id',
-                            'archive_start_yr', 'archive_end_yr', 'tas_file'})
+    util.check_columns(
+        rp,
+        {
+            "target_start_yr",
+            "target_end_yr",
+            "archive_experiment",
+            "archive_variable",
+            "archive_model",
+            "archive_ensemble",
+            "stitching_id",
+            "archive_start_yr",
+            "archive_end_yr",
+            "tas_file",
+        },
+    )
 
-    rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
+    rp = (
+        rp.sort_values(by=["stitching_id", "target_start_yr"])
+        .reset_index(drop=True)
+        .copy()
+    )
 
     # One the assumptions of this function is that it only works with tas, so
     # we can safely add tas as the variable column.
-    rp['variable'] = 'tas'
+    rp["variable"] = "tas"
     out = []
-    for name, match in rp.groupby('stitching_id'):
-
+    for name, match in rp.groupby("stitching_id"):
         # Reset the index in the match data frame so that we can use a for loop
         # to iterate through match data frame an apply the gmat_internal_stitch.
         match = match.reset_index(drop=True)
 
         # Find the tas data to be stitched together.
-        data_directory = pkg_resources.resource_filename('stitches', "data")
-        dir_path = os.path.join(data_directory, "tas-data")
+        dir_path = resources.files("stitches") / "data" / "tas-data"
         all_files = util.list_files(dir_path)
 
         # Load the tas data for a particular model.
-        model = match['archive_model'].unique()[0]
-        csv_to_load = [file for file in all_files if (model in file)][0]
+        model = match["archive_model"].unique()[0]
+        csv_to_load = [
+            file
+            for file in all_files
+            if (model in file) and (os.path.basename(file)[0] != ".")
+        ][0]
+
         data = pd.read_csv(csv_to_load)
 
         # Format the data so that if we have historical years in the future scenarios
         # then that experiment is relabeled as "historical".
-        fut_exps = ['ssp245', 'ssp126', 'ssp585', 'ssp119', 'ssp370', 'ssp434', 'ssp534-over', 'ssp460']
+        fut_exps = [
+            "ssp245",
+            "ssp126",
+            "ssp585",
+            "ssp119",
+            "ssp370",
+            "ssp434",
+            "ssp534-over",
+            "ssp460",
+        ]
         nonssp_data = data.loc[~data["experiment"].isin(fut_exps)]
-        fut_data = data.loc[(data["experiment"].isin(fut_exps)) &
-                            (data["year"] > 2014)].copy()
-        hist_data = data.loc[(data["experiment"].isin(fut_exps)) &
-                             (data["year"] <= 2014)].copy()
+        fut_data = data.loc[
+            (data["experiment"].isin(fut_exps)) & (data["year"] > 2014)
+        ].copy()
+        hist_data = data.loc[
+            (data["experiment"].isin(fut_exps)) & (data["year"] <= 2014)
+        ].copy()
         hist_data["experiment"] = "historical"
-        tas_data = pd.concat([nonssp_data, fut_data, hist_data])[['variable', 'experiment', 'ensemble', 'model', 'year',
-                                                                  'value']].drop_duplicates().reset_index(drop=True)
+        tas_data = (
+            pd.concat([nonssp_data, fut_data, hist_data])[
+                ["variable", "experiment", "ensemble", "model", "year", "value"]
+            ]
+            .drop_duplicates()
+            .reset_index(drop=True)
+        )
         # Stitch the data together based on the matched recipes.
         dat = []
         for i in match.index:
@@ -426,7 +488,7 @@ def gmat_stitching(rp):
         dat = pd.concat(dat)
 
         # Add the stitching id column to the data frame.
-        dat['stitching_id'] = name
+        dat["stitching_id"] = name
 
         # Add the data to the out list
         out.append(dat)
@@ -434,7 +496,7 @@ def gmat_stitching(rp):
     # Format the list of data frames into a single data frame.
     final_output = pd.concat(out)
     final_output = final_output.reset_index(drop=True).copy()
-    final_output = final_output.sort_values(['stitching_id', 'year']).copy()
+    final_output = final_output.sort_values(["stitching_id", "year"]).copy()
     final_output = final_output.reset_index(drop=True).copy()
-    return final_output
 
+    return final_output

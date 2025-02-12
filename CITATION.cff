@@ -1,0 +1,16 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Snyder
+  given-names: Abigail C.
+  orcid: "0000-0002-9034-9948"
+- family-names: Dorheim
+  given-names: Kalyn R.
+  orcid: "0000-0001-8093-8397"
+- family-names: Tebaldi
+  given-names: Claudia
+  orcid: "0000-0001-9233-8903"
+- family-names: Vernon
+  given-names: Chris R.
+  orcid: "0000-0002-3406-6214"
+message: If you use this software, please cite as the following:
+title: "STITCHES: a Python package to amalgamate existing Earth system model output into new scenario realizations"

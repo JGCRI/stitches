@@ -1,7 +1,7 @@
 # How to contribute
 
-We welcome third-party patches, which are essential for advancing the science and architecture of Hector. 
-But there are a few guidelines that we ask contributors to follow, guidelines that ease the maintainers' organizational and logistical duties, while encouraging development by others. All contributors agree to abide by the code of conduct. 
+We welcome third-party patches, which are essential for advancing the science and architecture of STITCHES.
+But there are a few guidelines that we ask contributors to follow, guidelines that ease the maintainers' organizational and logistical duties, while encouraging development by others. All contributors agree to abide by the code of conduct.
 
 ## Getting Started
 
@@ -20,15 +20,15 @@ But there are a few guidelines that we ask contributors to follow, guidelines th
   * We will never accept pull requests to the `master` branch.
 * Check for unnecessary whitespace with `git diff --check` before committing.
 * Make sure your commit messages are descriptive but succinct, describing what was changed and why, and **reference the relevant issue number**. Make commits of logical units.
-* Make sure you have added the necessary tests for your changes.
+* Make sure you have added the necessary tests for your changes. Tests should be included in the root `tests` directory and are facilitated using `pytest` which is installed with the development version of STITCHES.  See more info on using `pytest` here:  https://docs.pytest.org/en/7.4.x/contents.html
 * Run _all_ the tests to assure nothing else was accidentally broken.
 
 ## Submitting Changes
 
 * Submit a pull request.
 * **Your pull request should include one of the following two statements**:
-   * You own the copyright on the code being contributed, and you hereby grant PNNL unlimited license to use this code in this version or any future version of Hector. You reserve all other rights to the code.
-   * Somebody else owns the copyright on the code being contributed (e.g., your employer because you did it as part of your work for them); you are authorized by that owner to grant PNNL an unlimited license to use this code in this version or any future version of Hector, and you hereby do so. All other rights to the code are reserved by the copyright owner.
+   * You own the copyright on the code being contributed, and you hereby grant PNNL unlimited license to use this code in this version or any future version of STITCHES. You reserve all other rights to the code.
+   * Somebody else owns the copyright on the code being contributed (e.g., your employer because you did it as part of your work for them); you are authorized by that owner to grant PNNL an unlimited license to use this code in this version or any future version of STICHES, and you hereby do so. All other rights to the code are reserved by the copyright owner.
 * The core team looks at Pull Requests on a regular basis, and will respond as soon as possible.
 
 

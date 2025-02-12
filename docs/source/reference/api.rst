@@ -91,4 +91,3 @@ stitches.install_package_data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: stitches.install_package_data
-

@@ -81,7 +81,11 @@ def get_netcdf_values(i, dl, rp, fl, name):
     if ((freq == 'D') | (freq == 'day')):
         # If using cftime
         if (type(times) == xr.coding.cftimeindex.CFTimeIndex):
-            target_time_range = xr.cftime_range(start = f'{target_start_yr}-01-01', end = f'{target_end_yr}-12-31', freq='D', calendar=extracted.time.dt.calendar)
+            if (extracted.time.dt.calendar == '360_day'):
+                # 360_day calendar ends on Dec 30.
+                target_time_range = xr.cftime_range(start = f'{target_start_yr}-01-01', end = f'{target_end_yr}-12-30', freq='D', calendar=extracted.time.dt.calendar)
+            else:
+                target_time_range = xr.cftime_range(start = f'{target_start_yr}-01-01', end = f'{target_end_yr}-12-31', freq='D', calendar=extracted.time.dt.calendar)
         # Otherwise using pd DatetimeIndex
         else:
             target_time_range = pd.date_range(start=f"{target_start_yr}-01-01", end=f"{target_end_yr}-12-31", freq='D')
@@ -110,7 +114,7 @@ def get_netcdf_values(i, dl, rp, fl, name):
             expected_len = len(xr.cftime_range(start = f'{start_yr}-01-01', end = f'{end_yr}-12-31', freq='D', calendar='noleap'))
         elif extracted['time'].dt.calendar == '360_day':
             # Get number of days over given period with 360 day calendar
-            expected_len = len(xr.cftime_range(start = f'{start_yr}-01-01', end = f'{end_yr}-12-31', freq='D', calendar='360_day'))
+            expected_len = len(xr.cftime_range(start = f'{start_yr}-01-01', end = f'{end_yr}-12-30', freq='D', calendar='360_day'))
     else:
         # Number of months over given year range
         expected_len = len(pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='M'))
@@ -193,7 +197,7 @@ def internal_stitch(rp, v, dl, fl):
         :param fl:             list of the cmip files
         :return:               a list of the data arrays for the stitched products of the different variables.
     """
-    Stitch a single recipe into netCDF outputs.
+    # Stitch a single recipe into netCDF outputs.
 
     rp = rp.sort_values(by=['target_start_yr']).copy()
     rp.reset_index(drop=True, inplace=True)
@@ -223,19 +227,14 @@ def internal_stitch(rp, v, dl, fl):
     else:
         raise TypeError(f"unsupported frequency")
 
+    # Array of expected dates, so we know the expected length of output
+    # Different depending on freq (day vs month) and if daily,
+    # the calendar type (standard, 360_day, noleap)
     times = pd.date_range(start=start + "-01-01", end=end + "-12-31", freq=freq)
-
-    # Again, some ESMs stop in 2099 instead of 2100 - so we just drop the
-    # last year of gridded_data when that is the case.
-    #TODO this will need something extra/different for daily data; maybe just
-    # a simple len(times)==len(gridded_data)-12 : len(times) == len(gridded_data)-(nDaysInYear)
-    # with correct parentheses would do it
-    if ((max(rp["target_end_yr"]) == 2099) & (len(times) == (len(gridded_data) - 12))):
-        gridded_data = gridded_data[0:len(times), 0:, 0:].copy()
-
-    if (freq == "D"):
-        if ((var_info["calendar"][0].lower() == "noleap") & (freq == "D")):
-            times = times[~((times.month == 2) & (times.day == 29))]
+    if (var_info["calendar"][0].lower() == '360_day') & (freq == "D"):
+        times = xr.cftime_range(start = f'{start}-01-01', end = f'{end}-12-30', freq='D', calendar='360_day')
+    elif (var_info["calendar"][0].lower() == 'noleap') & (freq == "D"):
+        times = xr.cftime_range(start = f'{start}-01-01', end = f'{end}-12-31', freq='D', calendar='noleap')
 
     assert (len(gridded_data) == len(times)), f"Problem with the length of time. Expected - {len(times)}. Actual - {len(gridded_data)}."
 
@@ -352,8 +351,9 @@ def gridded_stitching(out_dir: str, rp):
                 f[f'{single_id}_{variable}'] = netcdf_file_name
             #end try
 
-            except:
+            except Exception as e:
                 print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Error thrown within gridded_stitching fxn.'))
+                print(f"Exception: {e}")
             # end except
         # end for loop over variables
      # end for loop over single_id

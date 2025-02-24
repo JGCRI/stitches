@@ -8,3 +8,4 @@ nc_time_axis>=1.4.1
 scikit-learn>=1.1
 fsspec[gcs]>=2022.5.0
 tqdm>=4.64.1
+zarr<=2.18.4

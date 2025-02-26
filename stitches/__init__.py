@@ -17,6 +17,7 @@ from .make_matching_archive import make_matching_archive
 from .make_pangeo_table import make_pangeo_comparison, make_pangeo_table
 from .make_tas_archive import make_tas_archive
 from .package_data import fetch_quickstarter_data
+from .fx_esgf_api import get_recipe_entry_data
 
 __all__ = [
     "match_neighborhood",
@@ -34,5 +35,6 @@ __all__ = [
     "make_pangeo_table",
     "make_tas_archive",
     "fetch_quickstarter_data",
+    "get_recipe_entry_data",
     "__version__",
 ]

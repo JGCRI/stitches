@@ -15,6 +15,7 @@ import xarray as xr
 import stitches.fx_data as data
 import stitches.fx_pangeo as pangeo
 import stitches.fx_util as util
+import stitches.fx_esgf_api as esgf
 
 
 def find_zfiles(rp):
@@ -147,6 +148,117 @@ def get_netcdf_values(i, dl, rp, fl, name):
     return result
 
 
+def new_get_netcdf_values(data, row, v):
+    """
+    Extract archive values from data for given variable and recipe entry
+
+    :param data: Xarray of data for given variable that covers recipe period
+    :param row: pandas dataframe row, recipe entry
+    :param v: string, variable name
+    :return: numpy array, A slice of xarray data (unsure about the technical term).
+    """
+    # Time periods for given recipe entry, target and archive
+    start_yr = int(row.archive_start_yr)
+    end_yr = int(row.archive_end_yr)
+    target_start_yr = int(row.target_start_yr)
+    target_end_yr = int(row.target_end_yr)
+
+    # Have to have special time handler
+    times = data.indexes["time"]
+
+    # Time frequency
+    freq = xr.infer_freq(times)
+
+    # If daily frequency, check for mis-matched leap-years
+    if ((freq == 'D') | (freq == 'day')):
+        # If using cftime
+        if (type(times) == xr.coding.cftimeindex.CFTimeIndex):
+            if (data.time.dt.calendar == '360_day'):
+                # 360_day calendar ends on Dec 30.
+                target_time_range = xr.cftime_range(start = f'{target_start_yr}-01-01', end = f'{target_end_yr}-12-30', freq='D', calendar=data.time.dt.calendar)
+            else:
+                target_time_range = xr.cftime_range(start = f'{target_start_yr}-01-01', end = f'{target_end_yr}-12-31', freq='D', calendar=data.time.dt.calendar)
+        # Otherwise using pd DatetimeIndex
+        else:
+            target_time_range = pd.date_range(start=f"{target_start_yr}-01-01", end=f"{target_end_yr}-12-31", freq='D')
+
+    if type(times) in [xr.coding.cftimeindex.CFTimeIndex, pd.core.indexes.datetimes.DatetimeIndex]:
+        yrs = data.indexes['time'].year # pull out the year information from the time index
+        flags = list(map(lambda x: x in range(start_yr, end_yr+1), yrs))
+        to_keep = times[flags]
+    else:
+        raise TypeError(f"unsupported time type")
+    
+    # Select only the days within the period
+    dat = data.sel(time=to_keep)
+    # Output grid as numpy array
+    result = dat[v].values.copy()
+
+    # Get length of time series expected from archive date range
+    if ((freq == 'D') | (freq == 'day')):
+        # Create series of days using standard daily calendar
+        expected_times = pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='D')
+        # Get number of days
+        expected_len = len(expected_times)
+        # If using noleap calendar
+        if data['time'].dt.calendar == 'noleap':
+            # Get number of days over given period with no leap years
+            expected_len = len(xr.cftime_range(start = f'{start_yr}-01-01', end = f'{end_yr}-12-31', freq='D', calendar='noleap'))
+        elif data['time'].dt.calendar == '360_day':
+            # Get number of days over given period with 360 day calendar
+            expected_len = len(xr.cftime_range(start = f'{start_yr}-01-01', end = f'{end_yr}-12-30', freq='D', calendar='360_day'))
+    else:
+        # Number of months over given year range
+        expected_len = len(pd.date_range(start=str(start_yr) + "-01-01", end=str(end_yr) + "-12-31", freq='M'))
+
+    # For daily data, target_time_range and expected_len should be made to match
+    if ((freq == 'D') | (freq == 'day')):
+        len_diff = expected_len - len(target_time_range)
+        # If more leap days in archive data, need to remove that number of days (could be at most one?)
+        if(len_diff > 0):
+            # Remove last "len_diff" days
+            result = result[0:(-len_diff),:,:].copy()
+        # If more leap days in target period than archive data, need to add missing days
+        elif(len_diff < 0):
+            # Get shape of data
+            result_shape = result.shape
+            # Extra days shape
+            extra_days_shape = (np.abs(len_diff), result_shape[1], result_shape[2])
+            # Get last "len_diff" days
+            extra_days = result[(len_diff-1):-1,:,:].copy().reshape(extra_days_shape)
+            # Concatenate onto end of data
+            result = np.concatenate((result, extra_days), axis=0)
+
+    # The number of days we have in our data
+    actual_len = len(result)
+
+    # Error when number of days in data =/= to the expected number of days over the given period
+    row_id = f'{row.archive_model} {row.archive_variable} {row.stitching_id}'
+    assert (actual_len == len(target_time_range)), f"Time dimensions mismatching in {row_id} for period {start_yr}-{end_yr}. Expected: {len(target_time_range)}, Actual: {actual_len}."
+
+    # Return data over the given period as a numpy array
+    return result
+
+
+def new_get_var_info(data, row, v):
+    """
+    
+    
+    """
+    # Empty Dict
+    attrs = {}
+
+    # Populate
+    attrs['calendar'] = data['time'].dt.calendar
+    attrs['variable'] = v
+    attrs['units'] = data[v].attrs['units']
+    attrs['frequency'] = data.attrs['frequency']
+    attrs['model'] = row.archive_model
+    attrs['experiment'] = row.stitching_id
+
+    return attrs
+
+
 def get_var_info(rp, dl, fl, name):
     """
     Extract the CMIP variable attribute information.
@@ -259,13 +371,188 @@ def internal_stitch(rp, v, dl, fl):
     return rslt
 
 
-def gridded_stitching(out_dir: str, rp):
+def new_internal_stitch(rp, v, res):
+    """Stitch a single recipe into netcdf outputs
+        :param rp:             data frame of the recipe
+        :param v:              name of variable
+        :return:               a list of the data arrays for the stitched products of the different variables.
+    """
+    # Order recipe by time periods, so we're stitching in the right order
+    rp = rp.sort_values(by=['target_start_yr']).copy()
+    rp.reset_index(drop=True, inplace=True)
+
+    # For each of time slices extract the data & concatenate together.
+    all_data = []
+    for index, row in rp.iterrows():
+        xr_data = esgf.get_recipe_entry_data(row, res=res, variable=v)
+        new_vals = new_get_netcdf_values(xr_data, row, v)
+        all_data.append(new_vals)
+        # gridded_data = np.concatenate((gridded_data, new_vals), axis=0)
+
+        # Extract metadata from recipe and downloaded data
+        # (Just need to do this part once)
+        if index == 0:
+            var_info = new_get_var_info(xr_data, row, v)
+            lat = xr_data.lat.copy()
+            lon = xr_data.lon.copy()
+    
+    print(f'\t - Stitching together all periods', flush=True)
+    gridded_data = np.concatenate(all_data, axis=0)
+
+    # Note that the pd.date_range call need the date/month defined otherwise it will
+    # truncate the year from start of first year to start of end year which is not
+    # what we want. We want the full final year to be included in the times series.
+    start = str(min(rp["target_start_yr"]))
+    end = str(max(rp["target_end_yr"]))
+
+    if var_info["frequency"].lower() == "mon":
+        freq = "M"
+    elif var_info["frequency"].lower() == "day":
+        freq = "D"
+    else:
+        raise TypeError(f"unsupported frequency")
+
+    # Array of expected dates, so we know the expected length of output
+    # Different depending on freq (day vs month) and if daily,
+    # the calendar type (standard, 360_day, noleap)
+    times = pd.date_range(start=start + "-01-01", end=end + "-12-31", freq=freq)
+    if (var_info["calendar"].lower() == '360_day') & (freq == "D"):
+        times = xr.cftime_range(start = f'{start}-01-01', end = f'{end}-12-30', freq='D', calendar='360_day')
+    elif (var_info["calendar"].lower() == 'noleap') & (freq == "D"):
+        times = xr.cftime_range(start = f'{start}-01-01', end = f'{end}-12-31', freq='D', calendar='noleap')
+
+    assert (len(gridded_data) == len(times)), f"Problem with the length of time. Expected - {len(times)}. Actual - {len(gridded_data)}."
+
+    # Convert numpy array into Xarray Dataset to return
+    rslt = xr.Dataset({v: xr.DataArray(
+        gridded_data,
+        coords=[times, lat, lon],
+        dims=["time", "lat", 'lon'],
+        attrs={'units': var_info['units'],
+               'variable': var_info['variable'],
+               'experiment': var_info['experiment'],
+               'model': var_info['model'],
+               'stitching_id': var_info['experiment']})
+    })
+
+    return rslt
+
+
+def esgf_gridded_stitching(out_dir: str, single_rp, single_id, variables, res):
     """
     Stitch the gridded NetCDFs for variables contained in the recipe file and save them.
 
     :param out_dir: Directory location where to write the NetCDF files.
     :type out_dir: str
     :param rp: DataFrame of the recipe including variables to stitch.
+    :return: List of the NetCDF file paths.
+    """
+    # Model name
+    model_name = single_rp.archive_model.unique()[0]
+
+    # Empty dictionary of filenames to be populated
+    f = []
+
+    # Save recipe as csv
+    # Output file name + location
+    recipe_location = f'{out_dir}/stitched_{model_name}_{single_id}_recipe.csv'
+    single_rp.to_csv(recipe_location, index=False)
+
+    for variable in variables:
+        print(f'Stitching gridded netcdf for: {model_name}, {variable}, {single_id}')
+
+        # Do the stitching!
+        # ** this can be a slow step and prone to errors
+        rslt = new_internal_stitch(rp=single_rp, v=variable, res=res)
+
+        # Putting file name in attributes
+        rslt[variable].attrs['recipe_location'] = recipe_location
+
+        # NetCDF file name and location
+        netcdf_file_name = f'{out_dir}/stitched_{model_name}_{variable}_{single_id}.nc'
+
+        # Write to NetCDF
+        print(f'\t - Writing file: {netcdf_file_name}', flush=True)
+        rslt.to_netcdf(netcdf_file_name)
+
+        # Populate list of file names
+        f.append(netcdf_file_name)
+
+        ... # end for loop over variables
+
+    return f
+
+
+def pangeo_gridded_stitching(out_dir: str, single_rp, single_id, variables):
+    """
+    Stitch the gridded NetCDFs for variables contained in the recipe file and save them.
+
+    :param out_dir: Directory location where to write the NetCDF files.
+    :type out_dir: str
+    :param rp: DataFrame of the recipe including variables to stitch.
+    :return: List of the NetCDF file paths.
+    """
+    # Model name
+    model_name = single_rp.archive_model.unique()[0]
+
+    # Determine which files need to be downloaded from pangeo.
+    file_list = find_zfiles(single_rp)
+
+    # Make sure that all of the files are available to download from pangeo.
+    # Note that this might be excessively cautious but this is an issue we have run into in
+    # the past.
+    print("Validating request availability with Pangeo archive contents...")
+    avail = pangeo.fetch_pangeo_table()
+    flag = all(item in list(avail["zstore"]) for item in list(file_list))
+    if not flag:
+        raise KeyError("Trying to request a zstore file that does not exist.")
+
+    # Download all of the data from pangeo.
+    data_list = list(map(pangeo.fetch_nc, file_list))
+
+    # Empty dictionary of filenames to be populated
+    f = []
+
+    # Save recipe as csv
+    # Output file name + location
+    recipe_location = f'{out_dir}/stitched_{model_name}_{single_id}_recipe.csv'
+    single_rp.to_csv(recipe_location, index=False)
+
+    for variable in variables:
+        print(f'Stitching gridded netcdf for: {model_name}, {variable}, {single_id}')
+
+        # Do the stitching!
+        # ** this can be a slow step and prone to errors
+        rslt = internal_stitch(rp=single_rp, v=variable, dl=data_list, fl=file_list)
+
+        # Order dataset by time (already ordered. Can do to be safe, but takes a long time for no reason)
+        # rslt = rslt.sortby('time').copy()
+
+        # Putting file name in attributes
+        rslt[variable].attrs['recipe_location'] = recipe_location
+
+        # NetCDF file name and location
+        netcdf_file_name = f'{out_dir}/stitched_{model_name}_{variable}_{single_id}.nc'
+
+        # Write to NetCDF
+        rslt.to_netcdf(netcdf_file_name)
+
+        # Populate list of file names
+        f.append(netcdf_file_name)
+
+        ... # end for loop over variables
+
+    return f
+
+
+def gridded_stitching(out_dir: str, rp, res='day'):
+    """
+    Stitch the gridded NetCDFs for variables contained in the recipe file and save them.
+
+    :param out_dir: Directory location where to write the NetCDF files.
+    :type out_dir: str
+    :param rp: DataFrame of the recipe including variables to stitch.
+    :param res: str day or mon for daily or monthly
     :return: List of the NetCDF file paths.
     """
     flag = os.path.isdir(out_dir)
@@ -290,31 +577,13 @@ def gridded_stitching(out_dir: str, rp):
 
     rp = rp.sort_values(by=['stitching_id', 'target_start_yr']).reset_index(drop=True).copy()
 
-    # Model name
-    model_name = rp.archive_model.unique()[0]
-
     # Determine which variables will be downloaded.
     variables = find_var_cols(rp)
     if not (len(variables) >= 1):
         raise KeyError("No variables were found to be processed.")
 
-    # Determine which files need to be downloaded from pangeo.
-    file_list = find_zfiles(rp)
-
-    # Make sure that all of the files are available to download from pangeo.
-    # Note that this might be excessively cautious but this is an issue we have run into in
-    # the past.
-    print("Validating request availability with Pangeo archive contents...")
-    avail = pangeo.fetch_pangeo_table()
-    flag = all(item in list(avail["zstore"]) for item in list(file_list))
-    if not flag:
-        raise KeyError("Trying to request a zstore file that does not exist.")
-
-    # Download all of the data from pangeo.
-    data_list = list(map(pangeo.fetch_nc, file_list))
-
     # Empty dictionary of filenames to be populated
-    f = {}
+    f = []
 
     # For each of the stitching recipes go through and stitch a recipe.
     for single_id in rp['stitching_id'].unique():
@@ -322,41 +591,27 @@ def gridded_stitching(out_dir: str, rp):
         # Get the recipe for the given stitching ID
         single_rp = rp.loc[rp['stitching_id'] == single_id].copy()
 
-        # Save recipe as csv
-        # Output file name + location
-        recipe_location = f'{out_dir}/stitched_{model_name}_{single_id}_recipe.csv'
-        single_rp.to_csv(recipe_location, index=False)
+        # Try ESGF API method, move to next iter of for loop if no error
+        try:
+            f_out = esgf_gridded_stitching(out_dir, single_rp, single_id, variables, res)
+            f.append(f_out)
+            continue
+        except Exception as e:
+            print(f'Could not resolve {single_id} using ESGF API. Trying pangeo.')
+            print(f"Exception: {e}")
 
-        for variable in variables:
-            print(f'Stitching gridded netcdf for: {model_name}, {variable}, {single_id}')
-
-            try:
-                # Do the stitching!
-                # ** this can be a slow step and prone to errors
-                rslt = internal_stitch(rp=single_rp, v=variable, dl=data_list, fl=file_list)
-
-                # Order dataset by time (already ordered. Can do to be safe, but takes a long time for no reason)
-                # rslt = rslt.sortby('time').copy()
-
-                # Putting file name in attributes
-                rslt[variable].attrs['recipe_location'] = recipe_location
-
-                # NetCDF file name and location
-                netcdf_file_name = f'{out_dir}/stitched_{model_name}_{variable}_{single_id}.nc'
-
-                # Write to NetCDF
-                rslt.to_netcdf(netcdf_file_name)
-
-                # Populate list of file names
-                f[f'{single_id}_{variable}'] = netcdf_file_name
-            #end try
-
-            except Exception as e:
-                print(('Stitching gridded netcdf for: ' + rp.archive_model.unique() + " " + rp.archive_variable.unique() + " " + single_id +' failed. Skipping. Error thrown within gridded_stitching fxn.'))
-                print(f"Exception: {e}")
-            # end except
-        # end for loop over variables
-     # end for loop over single_id
+        # Try using pangeo method. If success or not, move on to next recipe
+        try:
+            f_out = pangeo_gridded_stitching(out_dir, single_rp, single_id, variables)
+            f.append(f_out)
+            continue
+        except Exception as e:
+            print(f'Could not resolve {single_id} using pangeo API.')
+            print(f"Exception: {e}")
+            print(('Stitching gridded netcdf for: ' + single_rp.archive_model.unique() + " " + single_rp.archive_variable.unique() + " " + single_id +' failed. Skipping.'))
+            continue
+            
+        ... # End for loop
 
     return f
 

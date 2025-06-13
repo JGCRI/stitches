@@ -10,6 +10,14 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import xarray as xr
 import numpy as np
+import os
+from pyesgf.search import SearchConnection
+
+
+DATA_NODES = [
+    'esgf.ceda.ac.uk',
+    'esgf-data.dkrz.de'
+]
 
 
 # Author: Unknown
@@ -132,6 +140,77 @@ def format_esgf_result(result):
     return result_df
 
 
+def get_esgf_data(res, var, scen, esm, mem, start_year, end_year, time_chunk=300):
+    os.environ['ESGF_PYCLIENT_NO_FACETS_STAR_WARNING'] = 'True'
+    for node in DATA_NODES:
+        print(f'\t - Attempting to use data node {node}:')
+        try:
+            # Establish connection to data node
+            conn = SearchConnection(f'https://{node}/esg-search', distrib=True)
+
+            # Initiate query
+            ctx = conn.new_context(
+                project='CMIP6',
+                source_id=esm,
+                experiment_id=scen,
+                variable=var,
+                frequency=res,
+                variant_label=mem
+            )
+
+            # Number of servers with the data
+            hit_count = ctx.hit_count
+
+            # If no results, throw error to be caught by exception
+            if hit_count == 0:
+                raise FileNotFoundError(f"The specified combination did not return any results on {node}.")
+
+            # Iterate through servers to try downloading data
+            for i in range(hit_count):
+                print(f'\t\t - {hit_count} servers found. Trying server {i+1}.')
+                try:
+                    # Search current server
+                    result = ctx.search()[i]
+                    # Extract result of search
+                    files = result.file_context().search()
+                    # Extract OpenDAP urls
+                    files_list = [f.opendap_url for f in files]
+                    # Select just relevant files
+                    final_files_list = []
+                    start_years = []
+                    end_years = []
+                    for file in files_list:
+                        file_year_part = file.split('/')[-1].split('_')[-1]
+                        file_start_year = file_year_part.split('-')[0][0:4]
+                        file_end_year = file_year_part.split('-')[1][0:4]
+                        if not ((int(file_end_year) < start_year) | (int(file_start_year) > end_year)):
+                            final_files_list.append(file)
+                            start_years.append(int(file_start_year))
+                            end_years.append(int(file_end_year))
+                    # Check that full time period is covered
+                    if (min(start_years) < start_year) & (max(end_years) > end_year):
+                        # Open data with Xarray
+                        data = xr.open_mfdataset(final_files_list, chunks = {'time':time_chunk})
+                        print(f'\t\t - Success.')
+                        return data
+                    else:
+                        raise FileNotFoundError(f'Not all data available.')
+                    ...
+                except Exception as e:
+                    print(f'\t\t - Failed using server {i+1}.')
+                    continue
+                    ...
+            ...
+        except Exception as e:
+            print(f'\t - Failed using node {node}')
+            ...
+        ...
+    
+    print(f'Could not resolve request.')
+    return None
+    ...
+
+
 def get_recipe_entry_data(row, res='day', variable = 'tas'):
     """
     Downloads the data associated to a given entry in the recipe 
@@ -145,16 +224,21 @@ def get_recipe_entry_data(row, res='day', variable = 'tas'):
     # Message:
     print(f'\t - Searching ESGF for archive data {row.archive_start_yr}-{row.archive_end_yr} to use as target period {row.target_start_yr}-{row.target_end_yr}', flush=True)
 
-    # Do the ESGF API search
-    result = esgf_search(
-        table_id=res, variable_id=variable, experiment_id=row.archive_experiment,
-        source_id=row.archive_model, member_id=row.archive_ensemble
-        )
+    # # Do the ESGF API search
+    # result = esgf_search(
+    #     table_id=res, variable_id=variable, experiment_id=row.archive_experiment,
+    #     source_id=row.archive_model, member_id=row.archive_ensemble
+    #     )
     
-    # Format the results
-    result_df = format_esgf_result(result)
+    # # Format the results
+    # result_df = format_esgf_result(result)
 
-    # Download the data, ensuring it contains the required period defined by the recipe
-    df = get_df_from_esgf(result_df, row.archive_start_yr, row.archive_end_yr)
+    # # Download the data, ensuring it contains the required period defined by the recipe
+    # df = get_df_from_esgf(result_df, row.archive_start_yr, row.archive_end_yr)
+
+    df = get_esgf_data(
+        res=res, var=variable, scen=row.archive_experiment, 
+        mem=row.archive_ensemble, esm=row.archive_model,
+        start_year=row.archive_start_yr, end_year=row.archive_end_yr)
 
     return df

@@ -11,8 +11,9 @@ Amalgamate existing climate data to create monthly climate variable fields.
 Jupyter notebooks hosted on `stitches` use functionality that is contained within the accompanying Python package.
 
 > **NOTE**
-> Ensure you are using Python >= 3.9. Calling `python` may use a different instance.  Some users may need to use `python3` or the like instead.
+> Ensure you are using Python >= 3.10. Calling `python` may use a different instance. Some users may need to use `python3` or the like instead.
 
+`stitches` is tested on Python 3.10–3.13 across Linux, macOS, and Windows.
 
 ### Installation
 To install for use, run the following:
@@ -42,6 +43,46 @@ but note that this will take several hours to run.
 | `stitches-quickstart.ipynb` | Simple tutorial to demonstrate how `stitches` can be used as an emulator. |
 
 ### Contributing
-`stitches`  users and developers must agree to our community guidelines outlines in our community guidelines outlines in our
+`stitches` users and developers must agree to the community guidelines set out in our
 [Contributor Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md).
-Open an issue to ask for help or report an issue ([how to open a GitHub issue](https://docs.github.com/en/enterprise-server@3.1/issues/tracking-your-work-with-issues/creating-an-issue)).
+Open an issue to ask for help or report a problem ([how to open a GitHub issue](https://docs.github.com/en/enterprise-server@3.1/issues/tracking-your-work-with-issues/creating-an-issue)).
+
+#### Cloning for development
+
+This repository's history is large relative to its working tree, so a full clone
+transfers far more than you need. Use a blobless clone, which fetches file
+contents on demand:
+
+```bash
+git clone --filter=blob:none https://github.com/JGCRI/stitches.git
+```
+
+Then install the development extra and enable the hooks:
+
+```bash
+python -m pip install -e ".[dev]"
+pre-commit install
+```
+
+#### Testing
+
+```bash
+pytest                       # offline suite, runs in seconds
+pytest tests/regression      # assert scientific outputs are unchanged
+pytest --network --slow --package-data   # full suite, downloads data
+```
+
+`stitches` produces scientific data, so output-changing modifications are held to
+a higher bar: `tests/regression/` pins outputs against recorded golden artifacts,
+and any intentional change must be justified in [`CHANGELOG.md`](CHANGELOG.md).
+See [Contributor Guidelines](CONTRIBUTING.md) for the full workflow.
+
+### Development plans
+
+Ongoing modernization work is tracked in [`plans/`](plans/):
+
+| Document | Purpose |
+|---|---|
+| [`development-plan.md`](plans/development-plan.md) | Current-state assessment, known defects, and prioritized workstreams |
+| [`benchmarks-and-regression-testing.md`](plans/benchmarks-and-regression-testing.md) | Output-invariance harness, benchmark baseline, and scaling analysis |
+| [`repo-clone-performance.md`](plans/repo-clone-performance.md) | Why clones are slow, with measurements and remediation options |

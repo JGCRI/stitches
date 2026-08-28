@@ -16,6 +16,10 @@ import xarray as xr
 from stitches.fx_data import get_lat_name, global_mean
 from stitches.fx_util import anti_join, combine_df, nrow, selstr
 
+# Every test in this module is an output-invariance check; the CI regression job
+# selects on this marker.
+pytestmark = pytest.mark.regression
+
 
 # ---------------------------------------------------------------------------
 # fx_util

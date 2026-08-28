@@ -22,6 +22,10 @@ from stitches.fx_processing import (
     subset_archive,
 )
 
+# Every test in this module is an output-invariance check; the CI regression job
+# selects on this marker.
+pytestmark = pytest.mark.regression
+
 
 def _series(start=1850, end=2100, model="test_model", experiment="ssp245", ensemble="r1i1p1f1"):
     """Build a deterministic synthetic annual temperature series.

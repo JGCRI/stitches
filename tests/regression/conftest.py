@@ -258,11 +258,10 @@ def golden(request):
         )
 
 
-@pytest.fixture(autouse=True)
-def _mark_regression(request):
-    """Apply the ``regression`` marker to everything in this package.
-
-    Keeps ``pytest -m regression`` accurate without requiring each module to
-    repeat ``pytestmark``.
-    """
-    request.node.add_marker(pytest.mark.regression)
+# Note: the `regression` marker is applied declaratively via a module-level
+# `pytestmark` in each test module rather than from a hook or autouse fixture
+# here. `-m` filtering is applied by pytest's own collection hook, and a marker
+# added from another `pytest_collection_modifyitems` is not reliably visible to
+# it, which made `pytest -m regression` deselect the whole suite. Since the CI
+# job selects on this marker, a silent full-suite skip is the worst possible
+# failure mode, so the marker is declared where it cannot be missed.

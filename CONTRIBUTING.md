@@ -3,6 +3,85 @@
 We welcome third-party patches, which are essential for advancing the science and architecture of STITCHES.
 But there are a few guidelines that we ask contributors to follow, guidelines that ease the maintainers' organizational and logistical duties, while encouraging development by others. All contributors agree to abide by the code of conduct.
 
+## Development Environment
+
+Because this repository has a large history relative to its working tree, prefer a
+blobless clone; it fetches file contents on demand and is substantially faster:
+
+```bash
+git clone --filter=blob:none https://github.com/JGCRI/stitches.git
+cd stitches
+
+python -m venv .venv && source .venv/bin/activate   # Python >= 3.10
+python -m pip install -e ".[dev]"
+pre-commit install
+```
+
+## Testing
+
+The suite is organized in tiers so the common case is fast and offline.
+
+```bash
+pytest                       # offline correctness, a few seconds
+pytest tests/regression      # golden-output invariance
+pytest --network             # additionally hit Pangeo
+pytest --package-data        # additionally download the Zenodo archive
+pytest --network --slow --package-data   # everything
+```
+
+Capability-gated tests are declared with markers and **skip visibly** when the
+capability is not enabled; they never pass vacuously. Each flag has an environment
+variable equivalent (`STITCHES_TEST_NETWORK`, `STITCHES_TEST_SLOW`,
+`STITCHES_TEST_PACKAGE_DATA`) for CI use.
+
+### Output invariance: the most important rule
+
+`stitches` produces scientific data, so **changing its output changes published
+results**. `tests/regression/` compares the current code against golden artifacts
+recorded from a known-good baseline. Any refactor, dependency bump, or
+optimization must leave these unchanged.
+
+If a regression test fails, first assume you have introduced a bug. Only if the
+recorded output is genuinely *wrong* should you regenerate:
+
+```bash
+pytest tests/regression --update-golden
+```
+
+A pull request that modifies anything under `tests/regression/golden/` **must**:
+
+1. add a `CHANGELOG.md` entry under `### Fixed` or `### Changed — outputs`
+   naming the defect the new output corrects, and
+2. be reviewed by a domain maintainer, not only a code reviewer.
+
+CI fails the build if golden artifacts change during a test run, so an accidental
+`--update-golden` cannot slip through.
+
+When adding a function that produces data, add an invariance test for it.
+
+## Benchmarks
+
+Performance is tracked separately from correctness, and is excluded from the
+default `pytest` run:
+
+```bash
+pytest benchmarks --benchmark-only --benchmark-save=baseline
+pytest benchmarks --benchmark-only --benchmark-compare=baseline
+```
+
+Run benchmarks on a single fixed OS and Python version; numbers from different
+machines, or from different CI matrix jobs, are not comparable. Optimization work
+is only acceptable when the benchmarks improve **and** the invariance suite still
+passes. Current baseline measurements and the scaling analysis derived from them
+are in [`plans/benchmarks-and-regression-testing.md`](plans/benchmarks-and-regression-testing.md).
+
+## Notebooks
+
+Notebook outputs are stripped automatically on commit by `nbstripout`. This is
+deliberate: committed base64 image outputs were the largest single source of
+repository growth. Do not re-add them, and do not commit generated data files.
+See [`plans/repo-clone-performance.md`](plans/repo-clone-performance.md).
+
 ## Getting Started
 
 * Make sure you have a [GitHub account](https://github.com/signup/free).
@@ -20,8 +99,10 @@ But there are a few guidelines that we ask contributors to follow, guidelines th
   * We will never accept pull requests to the `master` branch.
 * Check for unnecessary whitespace with `git diff --check` before committing.
 * Make sure your commit messages are descriptive but succinct, describing what was changed and why, and **reference the relevant issue number**. Make commits of logical units.
-* Make sure you have added the necessary tests for your changes. Tests should be included in the root `tests` directory and are facilitated using `pytest` which is installed with the development version of STITCHES.  See more info on using `pytest` here:  https://docs.pytest.org/en/7.4.x/contents.html
+* Make sure you have added the necessary tests for your changes. Tests belong in the root `tests` directory and run under `pytest`, which is installed with the development extra. See the [`pytest` documentation](https://docs.pytest.org/).
+* If your change touches code that produces data, add or update an invariance test in `tests/regression/` (see **Output invariance** above).
 * Run _all_ the tests to assure nothing else was accidentally broken.
+* Record notable changes in `CHANGELOG.md`. Anything that alters output **must** be recorded there.
 
 ## Submitting Changes
 

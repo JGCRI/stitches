@@ -15,6 +15,10 @@ from stitches.fx_match import (
     shuffle_function,
 )
 
+# Every test in this module is an output-invariance check; the CI regression job
+# selects on this marker.
+pytestmark = pytest.mark.regression
+
 
 @pytest.fixture(scope="module")
 def target(read_example):

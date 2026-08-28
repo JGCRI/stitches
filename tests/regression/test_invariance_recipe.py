@@ -28,6 +28,10 @@ from stitches.fx_recipe import (
 # so the regression suite and the unit suite describe the same scenario.
 from tests.test_fx_recipe import TestRecipe
 
+# Every test in this module is an output-invariance check; the CI regression job
+# selects on this marker.
+pytestmark = pytest.mark.regression
+
 TARGET_DATA = TestRecipe.TARGET_DATA
 ARCHIVE_DATA = TestRecipe.ARCHIVE_DATA
 

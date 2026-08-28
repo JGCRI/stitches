@@ -78,15 +78,20 @@ def internal_dist(fx_pt, dx_pt, archivedata, tol=0):
 
 
 # Internal fx
-def shuffle_function(dt):
+def shuffle_function(dt, seed=None):
     """
     Randomly shuffle the deck to assist with the matching process.
 
     :param dt: A DataFrame of archive values used in the matching process.
+    :param seed: Optional seed for the random number generator. When ``None``
+                 (the default) the shuffle is nondeterministic, preserving the
+                 historical behavior. Pass an integer to obtain a reproducible
+                 shuffle without mutating global random state.
+    :type seed: int or None
     :return: A DataFrame with rows in random order.
     """
     nrow = dt.shape[0]
-    out = dt.sample(nrow, replace=False)
+    out = dt.sample(nrow, replace=False, random_state=seed)
     out = out.reset_index(drop=True)
     return out
 

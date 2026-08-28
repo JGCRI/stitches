@@ -1,7 +1,29 @@
 include README.md
+include CHANGELOG.md
 include LICENSE
 include DISCLAIMER
-include notebooks/*.*
+include CITATION.cff
+include requirements.txt
+include pytest.ini
+
+# Package data. Also declared in pyproject.toml [tool.setuptools.package-data]
+# so the wheel carries it; these entries cover the sdist.
+include stitches/data/README.md
 include stitches/data/tas-data/README.md
 include stitches/data/temp-data/README.md
 include stitches/data/example/*.csv
+
+# Ship the tests and the golden regression artifacts so that an installed
+# distribution can be verified against the recorded outputs.
+recursive-include tests *.py *.csv
+recursive-include tests/regression/golden *.parquet *.json
+recursive-include benchmarks *.py
+
+# The notebooks are tutorial material; exclude their large embedded outputs from
+# the distribution. See plans/repo-clone-performance.md.
+exclude notebooks/*.ipynb
+prune notebooks
+prune docs
+prune paper
+prune plans
+prune .github

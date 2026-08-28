@@ -11,6 +11,45 @@ import stitches.fx_pangeo as pangeo
 import stitches.fx_util as util
 
 
+def write_tas_data_by_model(data_frame, output_dir):
+    """Write one CSV of global tas values per model.
+
+    Split out of `make_tas_archive` so the filename construction can be tested
+    without running the multi-hour archive build.
+
+    Two defects were fixed here:
+
+    1. The path was built as ``output_dir + "/" + name + "_tas.csv"``. Because
+       `importlib.resources.files` returns a ``Traversable`` (a ``PosixPath`` in
+       practice), ``Traversable + str`` raises ``TypeError``. ``os.path.join`` on
+       ``str(output_dir)`` is used instead, which also fixes the Windows
+       separator.
+    2. Grouping used ``groupby(["model"])``. With a *list* of keys, pandas 2.0+
+       yields a one-element ``tuple`` as the group name, so the filenames would
+       have become ``('BCC-CSM2-MR',)_tas.csv``. Grouping by the scalar key
+       ``"model"`` yields the plain string the filename expects.
+
+    :param data_frame: Global tas data containing a ``model`` column.
+    :type data_frame: pandas.DataFrame
+    :param output_dir: Directory to write the per-model CSV files into. Created
+        if it does not already exist.
+    :return: The list of paths written, ordered by model name.
+    :rtype: list[str]
+    """
+    util.check_columns(data_frame, {"model"})
+
+    directory = str(output_dir)
+    os.makedirs(directory, exist_ok=True)
+
+    files = []
+    for name, group in data_frame.groupby("model"):
+        path = os.path.join(directory, f"{name}_tas.csv")
+        files.append(path)
+        group.to_csv(path, index=False)
+
+    return files
+
+
 def join_exclude(dat, drop):
     """Drop some rows from a data frame.
 
@@ -445,15 +484,9 @@ def make_tas_archive(anomaly_startYr=1995, anomaly_endYr=2014):
     data["zstore"] = new_zstore
 
     # Save a copy of the tas values, these are the value that will be used to get the
-    # tas data chunks. Note that this file has to be compressed so will need to read in
-    # using pickle_utils.load()
-
-    files = []
+    # tas data chunks.
     tas_data_dir = resources.files("stitches") / "data" / "tas-data"
-    for name, group in data.groupby(["model"]):
-        path = tas_data_dir + "/" + name + "_tas.csv"
-        files.append(path)
-        group.to_csv(path, index=False)
+    files = write_tas_data_by_model(data, tas_data_dir)
 
     print("Global tas data complete")
 

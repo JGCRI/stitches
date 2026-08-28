@@ -4,6 +4,61 @@ The checked-out working tree is modest (a dozen Python modules, a handful of sma
 
 ---
 
+## 0. Measured Results (2026-08-28, branch `release/v1`)
+
+```
+working tree   ~2 MB
+.git           288 MB      (size-pack 274.44 MiB, 5702 objects in 1 pack)
+total blobs    784.1 MB uncompressed across all history
+```
+
+Blob bytes grouped by category:
+
+| Uncompressed | Category | In HEAD? |
+|---:|---|---|
+| 346.2 MB | `stitches/data/**` package data | No — `.gitignore`d |
+| 188.3 MB | `notebooks/quickstart-ncs/*.nc` | No — deleted |
+| 127.2 MB | `notebooks/stitches_dev/**` (HTML + CSV) | No — deleted |
+| 82.9 MB | `*.ipynb` with embedded outputs | Partly |
+| 20.2 MB | images / PDF | Partly |
+| 16.3 MB | everything else | Mostly |
+| 2.9 MB | HTML | No |
+
+**722.6 MB of 784.1 MB (92%) is blobs for paths that no longer exist in `HEAD`.**
+
+Worst individual offenders:
+
+| Size | Revs | Path |
+|---:|---:|---|
+| 94.16 MB | 1 | `notebooks/quickstart-ncs/stitched_CanESM5_tas_ssp245~r1i1p1f1~1.nc` |
+| 94.16 MB | 1 | `notebooks/quickstart-ncs/stitched_CanESM5_pr_ssp245~r1i1p1f1~1.nc` |
+| 77.10 MB | 1 | `stitches/data/pangeo_comparison_table.csv` |
+| 56.47 MB | 5 | `stitches/data/pangeo_table.csv` |
+| 49.89 MB | 3 | `stitches/data/matching_archive_staggered.csv` |
+| 41.93 MB | 1 | `notebooks/stitches_dev/inputs/main_raw_pasted_tgav_anomaly_all_pangeo_list_models.csv` |
+| 38.52 MB | **31** | `notebooks/stitches-quickstart.ipynb` |
+| 28.33 MB | 12 | `notebooks/stitches_dev/Notebook6_throwout_Duplicates-across-ensemble-members.html` |
+| 21.63 MB | 8 | `stitches/data/matching_archive.csv` |
+| 20.53 MB | 2 | `stitches/data/created_data/main_tgav_all_pangeo_list_models.csv` |
+| 11.51 MB | 3 | `stitches/data/tas-data/ACCESS-ESM1-5_tas.csv` |
+| 10.86 MB | 1 | `notebooks/figs/Tutorial_2023_tgavex.tiff` |
+| 10.14 MB | 8 | `notebooks/GCAM_AnnualMeeting2023.ipynb` |
+| 7.85 MB | 2 | `stitches/data/tas_values.pkl` |
+
+Reproduce with:
+
+```bash
+git rev-list --objects --all \
+  | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+  | awk '$1=="blob" {print $3, $4}' | sort -k2 \
+  | awk '{s[$2]+=$1; n[$2]++} END {for (p in s) printf "%12.2f MB  %4d rev  %s\n", s[p]/1048576, n[p], p}' \
+  | sort -rn | head -30
+```
+
+**Conclusion: a history rewrite (§3.4) is clearly justified.** Removing the deleted-path blobs alone should reduce the clone by roughly an order of magnitude. Notebook output stripping (§3.2) is still required to stop the problem recurring — `stitches-quickstart.ipynb` alone has accumulated 38.5 MB across 31 revisions of an ~1 MB file.
+
+---
+
 ## 1. Root Causes
 
 ### Cause A — Notebooks committed with embedded base64 outputs (primary)
@@ -26,7 +81,9 @@ Why this is disproportionately expensive:
 
 Net effect: history accumulates N copies of every figure for N notebook commits.
 
-### Cause B — Package data that was committed and later ignored
+### Cause B — Package data and generated artifacts committed and later deleted (largest total)
+
+Confirmed by §0: 346.2 MB of `stitches/data/**`, 188.3 MB of stitched NetCDF outputs under `notebooks/quickstart-ncs/`, and 127.2 MB of rendered development notebooks under `notebooks/stitches_dev/`. None of these paths exist in `HEAD`.
 
 [`.gitignore`](../.gitignore:1) begins with a block of *external data* exclusions:
 
@@ -88,6 +145,8 @@ brew install git-sizer git-filter-repo
 git-sizer --verbose
 git filter-repo --analyze   # writes .git/filter-repo/analysis/*.txt
 ```
+
+Note: `git filter-repo --analyze` refuses to run in a repo with uncommitted changes and, like all `filter-repo` invocations, expects a fresh clone. Run it against a throwaway `--mirror` clone.
 
 The `analysis/path-all-sizes.txt` output directly confirms or refutes Causes A/B/C with hard numbers.
 
@@ -171,15 +230,25 @@ Only worth doing if §2 shows that historical blobs dominate. This is the only w
 git clone --mirror https://github.com/JGCRI/stitches.git stitches-mirror
 cd stitches-mirror
 
-# Drop historical package data and generated docs renders
+# Drop historical package data, stitched outputs, and dev notebook renders.
+# Paths below are the confirmed offenders from section 0; none exist in HEAD,
+# so removing them cannot affect the current tree.
 git filter-repo \
+  --path 'notebooks/quickstart-ncs' \
+  --path 'notebooks/stitches_dev' \
+  --path 'stitches/data/created_data' \
   --path-glob 'stitches/data/tas-data/*' \
   --path-glob 'stitches/data/temp-data/*' \
   --path-glob 'stitches/data/*.nc' \
+  --path-glob 'stitches/data/*.pkl' \
   --path-glob 'stitches/data/matching_archive*.csv' \
   --path-glob 'stitches/data/pangeo_*table.csv' \
+  --path-glob '*.tiff' \
   --path-glob 'docs/source/getting-started/output_*.png' \
   --invert-paths
+
+# Verify nothing in HEAD was removed
+git diff --stat <pre-rewrite-head-sha> HEAD   # expect: empty
 
 # Strip notebook outputs from every historical revision
 git filter-repo --force \

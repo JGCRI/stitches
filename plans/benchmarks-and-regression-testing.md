@@ -1,5 +1,115 @@
 # Benchmarks and Output-Invariance Regression Testing
 
+> **Implementation status.** The harness described here is implemented and green.
+> See [§0](#0-implemented-baseline-2026-08-28) for the recorded baseline and the
+> scaling findings it produced.
+
+---
+
+## 0. Implemented baseline (2026-08-28)
+
+Environment: macOS, Python 3.13.3, pandas 2.2.3 → verified also under pandas
+3.0.5 / NumPy 2.5.2 / scikit-learn 1.9.0.
+
+Suite state:
+
+```
+tests/            98 passed, 13 skipped (network/package_data), ~8s
+tests/regression/ 70 golden-output tests, 34 artifacts, 384K
+benchmarks/       33 benchmarks, ~39s, saved as 0001_baseline.json
+```
+
+### 0.1 Bugs found by adding the suite
+
+Writing the regression tests immediately surfaced two crashes that make the
+package unusable on a current scientific Python stack. Both are recorded in
+[`CHANGELOG.md`](../CHANGELOG.md):
+
+| Function | Failure | Cause |
+|---|---|---|
+| `get_chunk_info` | `TypeError: only 0-dimensional arrays can be converted to Python scalars` | `float()` on the one-element array `model.coef_[0]`; removed in NumPy 2 |
+| `calculate_rolling_mean` | `ValueError: Cannot specify both 'axis' and 'index'/'columns'` | `drop(columns="value", axis=1)` passes both selectors; rejected by pandas 3 |
+
+This is the argument for building the suite first: neither bug was visible from
+the existing tests.
+
+### 0.2 Baseline timings (mean, sorted)
+
+Slowest twelve, which is where optimization effort belongs:
+
+| Mean | Benchmark |
+|---:|---|
+| 646.5 ms | `match_neighborhood_scaling[280]` |
+| 234.7 ms | `match_neighborhood_scaling[112]` |
+| 82.8 ms | `match_neighborhood_archive_width[16]` |
+| 78.7 ms | `permute_by_tolerance[0.3]` |
+| 67.4 ms | `match_neighborhood_archive_width[8]` |
+| 59.5 ms | `match_neighborhood_scaling[28]` |
+| 58.1 ms | `match_neighborhood_example[0.1]` |
+| 50.6 ms | `permute_by_tolerance[0.1]` |
+| 49.3 ms | `permute_stitching_recipes[5]` |
+| 49.3 ms | `permute_stitching_recipes[2]` |
+| 45.2 ms | `calculate_rolling_mean_scaling[100]` |
+| 27.6 ms | `permute_by_tolerance[0.05]` |
+
+### 0.3 Scaling findings
+
+These are the conclusions the parametrization was designed to produce.
+
+**`match_neighborhood` is superlinear in target windows — the top optimization target.**
+
+| Target windows | Mean | Factor vs. 28 |
+|---:|---:|---:|
+| 28 | 59.5 ms | 1.0× |
+| 112 (4×) | 234.7 ms | 3.9× |
+| 280 (10×) | 646.5 ms | **10.9×** |
+
+Growth is slightly worse than linear (10.9× cost for 10× input). Combined with
+its already-dominant absolute cost, this makes the per-group Python loop in
+[`stitches/fx_match.py`](../stitches/fx_match.py:150) the clear first target for
+vectorization.
+
+**Archive width costs less than target count.** Going from 2 to 16 ensemble
+members (8×) raises cost only 1.6× (53.2 → 82.8 ms), so the bottleneck is
+iterating target groups, not scanning the archive. Optimization should attack the
+loop, not the search.
+
+**`calculate_rolling_mean` is dominated by group count, not row count.**
+
+| Groups | Mean | Per group |
+|---:|---:|---:|
+| 4 | 2.75 ms | 688 µs |
+| 20 | 9.62 ms | 481 µs |
+| 100 | 45.2 ms | 452 µs |
+
+Roughly 450–700 µs of fixed overhead per group, and window size is irrelevant
+(3/9/21 all ≈ 9.65 ms at 20 groups). That overhead is the `groupby.transform`
+lambda, confirming it as a worthwhile target.
+
+**`permute_stitching_recipes` saturates in `N_matches` but grows with tolerance.**
+N=2 and N=5 are indistinguishable (49.28 vs 49.31 ms) because the synthetic
+archive cannot support five collapse-free realizations, so the loop exits early.
+Tolerance, by contrast, drives cost steadily (27.6 → 50.6 → 78.7 ms for
+0.05/0.1/0.3) as more candidate rows flow through the constraint checks. A
+realistic `N_matches` scaling benchmark needs a wider archive.
+
+**`get_chunk_info` costs 20.1 ms for 28 chunks** — about 700 µs per chunk, spent
+constructing a scikit-learn `LinearRegression` per chunk and growing the result
+with repeated `pd.concat`. A closed-form slope would remove nearly all of it, and
+the golden artifacts make that change safe to attempt.
+
+### 0.4 Reproducing
+
+```bash
+python -m pytest tests -q                     # offline correctness, ~8s
+python -m pytest tests/regression -q          # golden-output invariance
+python -m pytest benchmarks --benchmark-only --benchmark-save=baseline
+python -m pytest benchmarks --benchmark-only \
+    --benchmark-compare=baseline --benchmark-compare-fail=mean:25%
+```
+
+---
+
 Purpose: guarantee that modernization work described in [`plans/development-plan.md`](development-plan.md) does **not** alter scientific outputs, and that performance does not silently regress.
 
 Two distinct suites:

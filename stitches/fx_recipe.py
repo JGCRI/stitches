@@ -248,7 +248,12 @@ def remove_duplicates(md, archive):
 
 
 def permute_stitching_recipes(
-    N_matches: int, matched_data, archive, optional=None, testing: bool = False
+    N_matches: int,
+    matched_data,
+    archive,
+    optional=None,
+    testing: bool = False,
+    seed=None,
 ):
     """
     Sample from `matched_data` to produce permutations of stitching recipes.
@@ -267,11 +272,24 @@ def permute_stitching_recipes(
                      to avoid re-making (this is not implemented).
 
     :param testing: When True, the behavior can be reliably replicated without setting global seeds.
-                    Defaults to False.
+                    Equivalent to ``seed=1``. Defaults to False.
     :type testing: bool
+
+    :param seed: Optional seed for the per-window archive draw. When ``None``
+                 (the default) the seed is taken from ``testing`` for backward
+                 compatibility: ``testing=True`` behaves as ``seed=1`` and
+                 ``testing=False`` leaves the draw nondeterministic. Prefer
+                 passing ``seed`` explicitly; it makes results reproducible
+                 without the other connotations of a "testing" flag.
+    :type seed: int or None
 
     :return: A data frame with the same structure as the raw matched data, with duplicate matches replaced.
     """
+    # Resolve the effective random_state once so the draw below has a single
+    # source of truth. `testing=True` historically meant `random_state=1`, so
+    # that mapping is preserved exactly when `seed` is not supplied.
+    if seed is None and testing:
+        seed = 1
     # Check inputs
     util.check_columns(
         matched_data,
@@ -441,12 +459,12 @@ def permute_stitching_recipes(
             # For each target window group,
             # Randomly select one of the archive matches to use.
             # This creates one_one_match, a candidate recipe.
+            # Note: `seed` is applied per group rather than to a single shared
+            # generator. This reproduces the original `random_state=1` behavior
+            # exactly; changing it would alter published outputs.
             one_one_match = []
             for name, group in grouped_targets:
-                if testing:
-                    one_one_match.append(group.sample(1, replace=False, random_state=1))
-                else:
-                    one_one_match.append(group.sample(1, replace=False))
+                one_one_match.append(group.sample(1, replace=False, random_state=seed))
             one_one_match = pd.concat(one_one_match)
             one_one_match = one_one_match.reset_index(drop=True).copy()
 
@@ -1028,6 +1046,7 @@ def make_recipe(
     tol: float = 0.1,
     non_tas_variables: [str] = None,
     reproducible: bool = False,
+    seed=None,
 ):
     """
     Generate a stitching recipe from target and archive data.
@@ -1040,13 +1059,17 @@ def make_recipe(
     :param non_tas_variables: List of variables other than tas to stitch together; defaults to None,
         which stitches tas only.
     :param reproducible: If True, ensures reproducible behavior by using the testing=True argument
-        in permute_stitching_recipes(); defaults to False.
+        in permute_stitching_recipes(); defaults to False. Equivalent to ``seed=1``.
+    :param seed: Optional seed forwarded to `permute_stitching_recipes`. When
+        ``None`` (the default) the seed is derived from ``reproducible`` for
+        backward compatibility. Prefer passing ``seed`` explicitly.
 
     :type N_matches: int
     :type res: str
     :type tol: float
     :type non_tas_variables: list[str]
     :type reproducible: bool
+    :type seed: int or None
 
     :return: A pandas DataFrame of a formatted recipe.
     """
@@ -1166,20 +1189,13 @@ def make_recipe(
     # Match the archive & target data together.
     match_df = match.match_neighborhood(target_data, archive_data, tol=tol)
 
-    if reproducible:
-        unformatted_recipe = permute_stitching_recipes(
-            N_matches=N_matches,
-            matched_data=match_df,
-            archive=archive_data,
-            testing=True,
-        )
-    else:
-        unformatted_recipe = permute_stitching_recipes(
-            N_matches=N_matches,
-            matched_data=match_df,
-            archive=archive_data,
-            testing=False,
-        )
+    unformatted_recipe = permute_stitching_recipes(
+        N_matches=N_matches,
+        matched_data=match_df,
+        archive=archive_data,
+        testing=reproducible,
+        seed=seed,
+    )
 
     # Format the recipe into the dataframe that can be used by the stitching functions.
     recipe = generate_gridded_recipe(unformatted_recipe, res=res)

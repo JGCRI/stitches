@@ -1,8 +1,22 @@
-import os
-import unittest
+"""Tests for the stitching functions.
+
+Capability notes:
+
+* ``find_var_cols`` / ``find_zfiles`` are pure DataFrame helpers and run offline.
+* ``gmat_stitching`` reads the per-model ``tas-data`` CSVs from the installed
+  package data, so it is marked ``package_data``.
+* ``gridded_stitching`` and ``internal_stitch`` pull zarr stores from Pangeo and
+  write NetCDF, so they are marked ``network`` and ``slow``.
+
+The previous version of this module gated the gridded tests behind a
+``RUN = "ci"`` class attribute whose false branch asserted ``0 == 0``. That made
+them report as passing in CI while exercising nothing. They now skip visibly;
+run them with ``pytest --network --slow``.
+"""
 
 import numpy as np
 import pandas as pd
+import pytest
 import xarray as xr
 
 from stitches.fx_pangeo import fetch_nc
@@ -15,172 +29,191 @@ from stitches.fx_stitch import (
 )
 from stitches.fx_util import nrow
 
+# An example recipe used across the stitching tests.
+MY_RP = pd.DataFrame(
+    data={
+        "target_start_yr": [1850, 1859],
+        "target_end_yr": [1858, 1867],
+        "archive_experiment": ["historical", "historical"],
+        "archive_variable": ["tas", "tas"],
+        "archive_model": ["BCC-CSM2-MR", "BCC-CSM2-MR"],
+        "archive_ensemble": ["r1i1p1f1", "r1i1p1f1"],
+        "stitching_id": ["ssp245~r1i1p1f1~1", "ssp245~r1i1p1f1~1"],
+        "archive_start_yr": [1859, 1886],
+        "archive_end_yr": [1867, 1894],
+        "tas_file": [
+            "gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/",
+            "gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/",
+        ],
+    }
+)
 
-class TestStitch(unittest.TestCase):
-    """
-    Unit tests for stitching functions in the `stitches` package.
 
-    This class provides a set of tests to ensure the correct functionality
-    of the stitching functions, which are used to combine different climate
-    model outputs into a single coherent dataset.
-    """
+@pytest.fixture
+def recipe():
+    """Return a fresh copy of the example recipe so tests cannot mutate shared state."""
+    return MY_RP.copy()
 
-    RUN = "ci"
 
-    # This is an example recipe that will be used to test the stitching functions
-    MY_RP = pd.DataFrame(
-        data={
-            "target_start_yr": [1850, 1859],
-            "target_end_yr": [1858, 1867],
-            "archive_experiment": ["historical", "historical"],
-            "archive_variable": ["tas", "tas"],
-            "archive_model": ["BCC-CSM2-MR", "BCC-CSM2-MR"],
-            "archive_ensemble": ["r1i1p1f1", "r1i1p1f1"],
-            "stitching_id": ["ssp245~r1i1p1f1~1", "ssp245~r1i1p1f1~1"],
-            "archive_start_yr": [1859, 1886],
-            "archive_end_yr": [1867, 1894],
-            "tas_file": [
-                "gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/",
-                "gs://cmip6/CMIP6/CMIP/BCC/BCC-CSM2-MR/historical/r1i1p1f1/Amon/tas/gn/v20181126/",
-            ],
-        }
+# ---------------------------------------------------------------------------
+# Offline helpers
+# ---------------------------------------------------------------------------
+
+
+def test_find_var_cols():
+    """`find_var_cols` identifies columns whose names end in ``_file``."""
+    o = pd.DataFrame(data={"tas": [1, 2], "col2": [3, 4]})
+    assert len(find_var_cols(o)) == 0
+
+    o = pd.DataFrame(data={"tas_file": [1, 2], "col2": [3, 4]})
+    assert find_var_cols(o) == ["tas"]
+
+    o = pd.DataFrame(data={"tas_file": [1, 2], "col2": [3, 4], "fake_file": [1, 2]})
+    assert len(find_var_cols(o)) == 2
+
+
+def test_find_zfiles_returns_empty_without_file_columns():
+    """`find_zfiles` returns nothing when the frame has no ``_file`` columns."""
+    d = pd.DataFrame(data={"tas": [1, 2], "col2": [3, 4], "year": [1, 2]})
+    assert len(find_zfiles(d)) == 0
+
+
+def test_find_zfiles_collects_paths():
+    """`find_zfiles` returns an ndarray of the referenced file paths."""
+    d = pd.DataFrame(
+        data={"tas_file": ["file1.csv", "file2.csv"], "col2": [3, 4], "year": [1, 2]}
+    )
+    file_list = find_zfiles(d)
+
+    assert isinstance(file_list, np.ndarray)
+    assert len(file_list) == 2
+
+
+def test_find_zfiles_deduplicates():
+    """`find_zfiles` collapses repeated paths so each store is fetched once."""
+    d = pd.DataFrame(
+        data={"tas_file": ["file1.csv", "file1.csv"], "col2": [3, 4], "year": [1, 2]}
+    )
+    file_list = find_zfiles(d)
+
+    assert len(file_list) == len(np.unique(file_list))
+    assert len(file_list) != nrow(d)
+
+
+# ---------------------------------------------------------------------------
+# Global-mean stitching (needs the installed tas-data archive)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.package_data
+def test_gmat_stitching_shape(package_data, recipe):
+    """`gmat_stitching` returns one row per target year covered by the recipe."""
+    out = gmat_stitching(recipe)
+
+    assert isinstance(out, pd.DataFrame)
+
+    time_steps = max(recipe["target_end_yr"]) - min(recipe["target_start_yr"]) + 1
+    assert nrow(out) == time_steps
+
+
+@pytest.mark.package_data
+def test_gmat_stitching_is_row_order_invariant(package_data, recipe):
+    """Reversing the recipe row order must not change the stitched result."""
+    out = gmat_stitching(recipe)
+
+    reverse = recipe.iloc[::-1]
+    out2 = gmat_stitching(reverse)
+
+    assert out.shape == out2.shape
+    pd.testing.assert_frame_equal(
+        out.sort_values("year").reset_index(drop=True),
+        out2.sort_values("year").reset_index(drop=True),
     )
 
-    def test_find_var_cols(self):
-        """Test the `find_var_cols` function for identifying variable columns."""
-        o = pd.DataFrame(data={"tas": [1, 2], "col2": [3, 4]})
-        self.assertEqual(len(find_var_cols(o)), 0)
 
-        o = pd.DataFrame(data={"tas_file": [1, 2], "col2": [3, 4]})
-        self.assertEqual(find_var_cols(o), ["tas"])
+@pytest.mark.package_data
+def test_gmat_stitching_ignores_tas_file_column(package_data, recipe):
+    """The ``tas_file`` values are unused by `gmat_stitching`, which reads local data."""
+    recipe["tas_file"] = ["fake.nc", "fake.nc"]
+    out = gmat_stitching(recipe)
 
-        o = pd.DataFrame(data={"tas_file": [1, 2], "col2": [3, 4], "fake_file": [1, 2]})
-        self.assertEqual(len(find_var_cols(o)), 2)
-
-    def test_find_zfiles(self):
-        """
-        Test the `find_zfiles` function to ensure it correctly identifies zipped file paths.
-
-        This test verifies that the `find_zfiles` function correctly identifies file paths
-        for zipped files within a given DataFrame.
-        """
-        d = pd.DataFrame(data={"tas": [1, 2], "col2": [3, 4], "year": [1, 2]})
-        self.assertEqual(len(find_zfiles(d)), 0)
-
-        d = pd.DataFrame(
-            data={
-                "tas_file": ["file1.csv", "file2.csv"],
-                "col2": [3, 4],
-                "year": [1, 2],
-            }
-        )
-        file_list = find_zfiles(d)
-        self.assertEqual(type(file_list), np.ndarray)
-        self.assertEqual(len(file_list), 2)
-
-        d = pd.DataFrame(
-            data={
-                "tas_file": ["file1.csv", "file1.csv"],
-                "col2": [3, 4],
-                "year": [1, 2],
-            }
-        )
-        file_list = find_zfiles(d)
-        self.assertEqual(len(file_list), len(np.unique(file_list)))
-        self.assertTrue(len(file_list) != nrow(d))
-
-    def test_gmat_stitching(self):
-        """
-        Test the output returned by `gmat_stitching`.
-
-        This test checks the type and structure of the output to ensure it meets expected formats.
-        """
-
-        out = gmat_stitching(self.MY_RP)
-
-        self.assertEqual(type(out), pd.core.frame.DataFrame)
-
-        time_steps = (
-            max(self.MY_RP["target_end_yr"]) - min(self.MY_RP["target_start_yr"]) + 1
-        )
-        self.assertEqual(nrow(out), time_steps)
-
-        # If the recipe is read in backwards, it shouldn't matter. The output should be the same.
-        reverse = self.MY_RP.copy()
-        reverse = reverse.iloc[::-1]
-        out2 = gmat_stitching(reverse)
-        self.assertEqual(out.shape, out2.shape)
-        self.assertEqual(out["year"][0], out2["year"][0])
-        self.assertEqual(out["value"][6], out["value"][6])
-
-        # Manipulate the recipe, sometimes it will be fine other times it will throw an error.
-        rp = self.MY_RP.copy()
-
-        rp["tas_file"] = ["fake.nc", "fake.nc"]
-        out = gmat_stitching(rp)
-        self.assertEqual(type(out), pd.core.frame.DataFrame)
-
-        # If the recpie is missing a column the stitching function should fail.
-        with self.assertRaises(KeyError):
-            gmat_stitching(rp.drop("tas_file"))
-
-        with self.assertRaises(KeyError):
-            gmat_stitching(rp.drop("target_start_yr"))
-
-        with self.assertRaises(IndexError):
-            rp["archive_model"] = ["fake", "fake"]
-            gmat_stitching(rp)
-
-    def test_gridded_related(self):
-        """
-        Test functions related to gridded data stitching.
-
-        This test suite covers the functionality of gridded data stitching,
-        ensuring that the output is consistent and errors are raised when
-        expected.
-        """
-        if TestStitch.RUN == "ci":
-            self.assertEqual(0, 0)
-        else:
-            # Set up the elements required for internal_stitch
-            file_list = find_zfiles(self.MY_RP)
-            data_list = list(map(fetch_nc, file_list))
-            rslt = internal_stitch(self.MY_RP, data_list, file_list)
-
-            time_steps = (
-                12
-                * (
-                    max(self.MY_RP["target_end_yr"])
-                    - min(self.MY_RP["target_start_yr"])
-                )
-                + 12
-            )
-            self.assertEqual(len(rslt["tas"]["time"]), time_steps)
-
-            # Now do the stitching
-            out = gridded_stitching(".", self.MY_RP)
-            data = xr.open_dataset(out[0])
-            time1 = data["tas"]["time"].values
-            self.assertEqual(type(data), xr.core.dataset.Dataset)
-            self.assertEqual(len(data["time"]), time_steps)
-            os.remove(out[0])
-
-            # If the recipe is read in backwards, it shouldn't matter the output should be the same.
-            reverse = self.MY_RP.copy()
-            reverse = reverse.iloc[::-1]
-            out = gridded_stitching(".", reverse)
-            data2 = xr.open_dataset(out[0])
-            time2 = data2["tas"]["time"].values
-            os.remove(out[0])
-            self.assertEqual(max(time1 - time2), 0)
-
-            # Manipulate the recipe, sometimes it will be fine other times it will throw an error.
-            rp = self.MY_RP.copy()
-            with self.assertRaises(TypeError):
-                gridded_stitching("fake", rp)
-            with self.assertRaises(KeyError):
-                gridded_stitching(".", rp.drop("tas_file"))
+    assert isinstance(out, pd.DataFrame)
 
 
-if __name__ == "__main__":
-    unittest.main()
+@pytest.mark.package_data
+@pytest.mark.parametrize("missing", ["tas_file", "target_start_yr"])
+def test_gmat_stitching_requires_columns(package_data, recipe, missing):
+    """Dropping a required recipe column raises `KeyError`."""
+    with pytest.raises(KeyError):
+        gmat_stitching(recipe.drop(columns=missing))
+
+
+@pytest.mark.package_data
+def test_gmat_stitching_rejects_unknown_model(package_data, recipe):
+    """A model absent from the archive raises `IndexError`."""
+    recipe["archive_model"] = ["fake", "fake"]
+    with pytest.raises(IndexError):
+        gmat_stitching(recipe)
+
+
+# ---------------------------------------------------------------------------
+# Gridded stitching (needs Pangeo)
+# ---------------------------------------------------------------------------
+
+
+def _expected_monthly_steps(rp):
+    """Return the number of monthly time steps a recipe should produce."""
+    return 12 * (max(rp["target_end_yr"]) - min(rp["target_start_yr"])) + 12
+
+
+@pytest.mark.network
+@pytest.mark.slow
+def test_internal_stitch_time_length(recipe):
+    """`internal_stitch` produces the expected number of monthly time steps."""
+    file_list = find_zfiles(recipe)
+    data_list = list(map(fetch_nc, file_list))
+    rslt = internal_stitch(recipe, data_list, file_list)
+
+    assert len(rslt["tas"]["time"]) == _expected_monthly_steps(recipe)
+
+
+@pytest.mark.network
+@pytest.mark.slow
+def test_gridded_stitching_writes_dataset(tmp_path, recipe):
+    """`gridded_stitching` writes a NetCDF file with the expected time axis."""
+    out = gridded_stitching(str(tmp_path), recipe)
+
+    with xr.open_dataset(out[0]) as data:
+        assert isinstance(data, xr.Dataset)
+        assert len(data["time"]) == _expected_monthly_steps(recipe)
+
+
+@pytest.mark.network
+@pytest.mark.slow
+def test_gridded_stitching_is_row_order_invariant(tmp_path, recipe):
+    """Reversing the recipe row order must not change the stitched time axis."""
+    forward = gridded_stitching(str(tmp_path / "fwd"), recipe)
+    with xr.open_dataset(forward[0]) as data:
+        time1 = data["tas"]["time"].values
+
+    reverse = gridded_stitching(str(tmp_path / "rev"), recipe.iloc[::-1])
+    with xr.open_dataset(reverse[0]) as data2:
+        time2 = data2["tas"]["time"].values
+
+    assert max(time1 - time2) == 0
+
+
+@pytest.mark.network
+@pytest.mark.slow
+def test_gridded_stitching_rejects_bad_output_dir(recipe):
+    """A nonexistent output directory raises `TypeError`."""
+    with pytest.raises(TypeError):
+        gridded_stitching("fake", recipe)
+
+
+@pytest.mark.network
+@pytest.mark.slow
+def test_gridded_stitching_requires_file_column(tmp_path, recipe):
+    """Dropping ``tas_file`` raises `KeyError`."""
+    with pytest.raises(KeyError):
+        gridded_stitching(str(tmp_path), recipe.drop(columns="tas_file"))

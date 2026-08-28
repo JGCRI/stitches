@@ -21,6 +21,17 @@ tests/.DS_Store
 # pycharm
 .idea
 
+# vscode
+.vscode
+
+# local development virtualenvs
+.venv/
+venv/
+env/
+
+# pytest-benchmark results
+.benchmarks/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -51,8 +51,11 @@ def calculate_rolling_mean(data, size):
     # dplyr group_by %>% mutate()  call.
 
     # rename so that value is the smoothed data:
+    # Note: `axis=1` must not be passed alongside `columns=`; pandas 3.0 raises
+    # "Cannot specify both 'axis' and 'index'/'columns'" for that combination.
+    # `columns=` already implies the column axis, so the intent is unchanged.
     rslt = (
-        rslt.drop(columns="value", axis=1)
+        rslt.drop(columns="value")
         .rename(columns={"rollingAvg": "value"})
         .reset_index(drop=True)
     )
@@ -160,7 +163,12 @@ def get_chunk_info(df):
         # stored in a data frame.
         model = LinearRegression()
         model.fit(x_input, y_input)
-        dx = float(model.coef_[0])
+        # `y_input` is a column vector, so `coef_` has shape (1, 1) and
+        # `coef_[0]` is a 1-element array rather than a scalar. Converting a
+        # 1-element array with `float()` was deprecated in NumPy 1.25 and raises
+        # TypeError in NumPy 2. `ravel()[0]` selects the single coefficient
+        # explicitly and yields the identical value.
+        dx = float(model.coef_.ravel()[0])
 
         # Format the the chunk data into a pandas data frame.
         row = pd.DataFrame(

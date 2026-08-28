@@ -204,11 +204,42 @@ This mitigates the symptom immediately without touching history.
      args: ['--maxkb=512']
    ```
 
-3. **Stop committing generated docs images.** Delete `docs/source/getting-started/output_*.png` and let `nbsphinx` execute the notebook during the docs build (`nbsphinx_execute = "always"` with cached data), or generate them into `docs/_build/`.
+3. **Stop committing generated docs images.** `docs/source/getting-started/output_*.png` is 1.65 MB across six files.
 
-4. **Deduplicate `stitches_diagram.jpg`** to one canonical location (e.g. `docs/source/images/`) and reference it from the notebook and paper.
+   Verified caveat: they are **currently referenced** by six `.. image::`
+   directives in
+   [`docs/source/getting-started/quickstarter.rst`](../docs/source/getting-started/quickstarter.rst),
+   so deleting them breaks the docs build. Removing them properly means
+   converting `quickstarter.rst` into an `nbsphinx`-executed notebook
+   (`nbsphinx_execute = "always"`, with the package data cached) so the figures
+   are generated at build time. That is a docs-restructuring job, tracked under
+   WS-8, not a drive-by deletion.
+
+4. **Deduplicate `stitches_diagram.jpg`.** Confirmed byte-identical in all three
+   locations (md5 `fba15a18445d1bba43eee5bdff95d51e`), roughly 200 KB each:
+   `docs/source/getting-started/`, `notebooks/figs/`, `paper/`.
+
+   Caveat: the `paper/` copy belongs to the JOSS submission, which builds
+   separately via [`draft-pdf.yml`](../.github/workflows/draft-pdf.yml) and should
+   stay reproducible as published. Deduplicate the `docs/` and `notebooks/`
+   copies and leave `paper/` alone. At ~400 KB of potential saving this is minor
+   next to §3.4, and not worth risking the paper build.
 
 Trade-off to accept: stripped notebooks show no output on GitHub's static renderer. Mitigate by publishing executed notebooks in the hosted docs (already wired via `nbsphinx`) and linking to them from the README.
+
+Measured effect of stripping outputs from the four notebooks currently in the
+working tree:
+
+| Notebook | Now | Stripped |
+|---|---:|---:|
+| `stitches-quickstart.ipynb` | 2694.6 KB | 29.0 KB |
+| `stitches_takehome_GCAMAnnualMeeting2023.ipynb` | 2428.2 KB | 47.7 KB |
+| `stitches_training_GCAMAnnualMeeting2023.ipynb` | 1372.1 KB | 29.0 KB |
+| `preparing-input-data.ipynb` | 515.1 KB | 16.8 KB |
+| **Total** | **7010.1 KB** | **122.5 KB (98% smaller)** |
+
+That 7 MB is re-stored in full on every commit that touches a notebook, which is
+how a ~1 MB file accumulated 38.5 MB of history across 31 revisions.
 
 ### 3.3 Structural options for the notebooks
 

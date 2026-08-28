@@ -9,13 +9,36 @@ repos:
     rev: v3.8.0
     hooks:
       - id: pyupgrade
-        args: ['--py39-plus']
+        args: ['--py310-plus']
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: debug-statements
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-toml
+      # Repository history is ~140x the size of the working tree because large
+      # generated artifacts were committed and later deleted. This blocks the
+      # next one. See plans/repo-clone-performance.md.
+      # Golden regression artifacts are excluded: they are intentionally
+      # committed, small, and individually well under this limit.
+      - id: check-added-large-files
+        args: ['--maxkb=512']
+
+  # Jupyter notebooks are the single largest recurring contributor to repository
+  # growth: stitches-quickstart.ipynb alone accumulated 38.5 MB across 31
+  # revisions because base64-encoded PNG outputs are committed. Re-running a
+  # notebook rewrites every image byte-for-byte on one enormous JSON line, which
+  # git cannot delta-compress, so each commit stores a full new copy.
+  #
+  # Stripping outputs means GitHub's static renderer shows no figures; the
+  # executed notebooks are published through the nbsphinx docs build instead.
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.7.1
+    hooks:
+      - id: nbstripout
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:
@@ -25,7 +48,7 @@ repos:
     rev: 23.3.0
     hooks:
       - id: black
-        args: ['--target-version=py39']
+        args: ['--target-version=py310']
   - repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
@@ -40,11 +63,11 @@ repos:
     rev: 1.7.0
     hooks:
       - id: nbqa-pyupgrade
-        args: ['--py39-plus']
+        args: ['--py310-plus']
         additional_dependencies: ['pyupgrade==3.8.0']
       - id: nbqa-black
         additional_dependencies: ['black==23.3.0']
-        args: ['--line-length=88', '--target-version=py39']
+        args: ['--line-length=88', '--target-version=py310']
       - id: nbqa-isort
         additional_dependencies: ['isort==5.12.0']
         args: ['--profile=black']
@@ -57,7 +80,7 @@ repos:
     hooks:
       - id: blackdoc
         additional_dependencies: ['black==23.3.0']
-        args: ['--target-version=py39']
+        args: ['--target-version=py310']
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.32.0
     hooks:

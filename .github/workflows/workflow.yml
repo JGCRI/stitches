@@ -1,28 +1,199 @@
+---
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, master, 'release/**']
+  pull_request:
+  schedule:
+    # Weekly, Monday 06:00 UTC. Catches upstream dependency breakage before a
+    # user does, which is how the NumPy 2 and pandas 3 failures reached release.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+# Superseded runs on the same ref are pointless; cancel them.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    name: Build (${{ matrix.os }}, Python ${{ matrix.python-version }})
+  test:
+    name: Test (${{ matrix.os }}, Python ${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     strategy:
+      # Report every platform failure, not just the first.
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          # This repository carries a large history relative to its working
+          # tree; a blobless checkout avoids transferring it.
+          filter: blob:none
+          fetch-depth: 1
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install .
-      - name: Test and generate coverage report on Linux
+          python -m pip install -e ".[dev]"
+
+      - name: Run offline test suite
+        # No network and no package data: capability-gated tests skip visibly.
+        run: python -m pytest tests -v --cov=stitches --cov-report=xml --cov-report=term
+
+      - name: Upload coverage
+        # Previously coverage.xml was generated and then discarded.
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+
+  regression:
+    name: Output invariance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install
         run: |
-          pip install pytest
-          pip install pytest-cov
-          pytest --cov=./ --cov-report=xml
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Assert outputs are unchanged
+        run: python -m pytest tests/regression -v -m regression
+
+      - name: Assert golden artifacts were not silently modified
+        # --update-golden must never run in CI. If the working tree is dirty
+        # after the suite, something rewrote a golden artifact, which would let
+        # an output change pass review unnoticed.
+        run: |
+          if ! git diff --quiet -- tests/regression/golden; then
+            echo "::error::Golden artifacts were modified during the test run."
+            git diff --stat -- tests/regression/golden
+            exit 1
+          fi
+
+  benchmark:
+    name: Performance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+          python -m pip install pytest-benchmark
+
+      - name: Run benchmarks
+        # Informational: shared runners are far too noisy to gate a merge on.
+        # The saved JSON is what makes trends reviewable over time.
+        run: |
+          python -m pytest benchmarks --benchmark-only \
+            --benchmark-json=benchmark-results.json \
+            --benchmark-columns=mean,stddev,rounds \
+            --benchmark-sort=mean
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ github.sha }}
+          path: benchmark-results.json
+          retention-days: 90
+
+  integration:
+    name: Network and package data
+    # Requires the Zenodo download and live Pangeo access, so it is too slow and
+    # too flaky on third-party availability to run on every push.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Cache Zenodo package data
+        uses: actions/cache@v4
+        with:
+          path: stitches/data
+          # Keyed on the Zenodo record so a data revision busts the cache.
+          key: stitches-pkgdata-8367628
+
+      - name: Run network and package-data tests
+        run: |
+          python -m pytest tests -v --network --slow --package-data
+
+  latest-deps:
+    name: Latest dependencies
+    # Resolves dependencies without the repository pins to surface upstream
+    # breakage early. Allowed to fail so it warns rather than blocks.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install with newest resolvable dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade \
+            matplotlib xarray numpy pandas intake intake-esm nc_time_axis \
+            scikit-learn 'fsspec[gcs]' tqdm requests pytest pyarrow
+          python -m pip install -e . --no-deps
+
+      - name: Report resolved versions
+        run: python -m pip list
+
+      - name: Run offline suite against latest dependencies
+        run: python -m pytest tests -v

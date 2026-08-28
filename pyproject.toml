@@ -1,0 +1,96 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stitches-emulator"
+description = "Amalgamate existing climate data to create monthly climate variable fields"
+readme = "README.md"
+license = { text = "BSD-2-Clause" }
+# 3.9 reached end of life; 3.10 is the floor. See plans/development-plan.md.
+requires-python = ">=3.10"
+authors = [
+    { name = "Abigail Snyder", email = "abigail.snyder@pnnl.gov" },
+    { name = "Kalyn Dorheim", email = "kalyn.dorheim@pnnl.gov" },
+    { name = "Claudia Tebaldi", email = "claudia.tebaldi@pnnl.gov" },
+]
+keywords = ["climate", "emulator", "CMIP6", "downscaling", "temperature"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+
+dependencies = [
+    "matplotlib>=3.3.2",
+    "xarray>=2022.9.0",
+    "numpy>=1.23.3",
+    "pandas>=2.1.0",
+    "intake>=0.6.6",
+    "intake-esm>=2021.8.17",
+    "nc_time_axis>=1.4.1",
+    "scikit-learn>=1.1",
+    "fsspec[gcs]>=2022.5.0",
+    "tqdm>=4.64.1",
+    # `requests` is imported by stitches/install_pkgdata.py but was never
+    # declared, so a clean install could fail at install_package_data().
+    "requests>=2.28",
+]
+
+# Single source of truth for the version: stitches/_version.py.
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1",
+    "pytest-benchmark>=4.0",
+    # Golden regression artifacts are stored as Parquet.
+    "pyarrow>=14.0",
+]
+docs = [
+    "nbsphinx>=0.8.6",
+    "sphinx>=7",
+    "sphinx_book_theme>=1",
+    "sphinx-click>=5.1",
+    "sphinx_copybutton>=0.5",
+]
+dev = [
+    "stitches-emulator[test,docs]",
+    "build>=1.0",
+    "setuptools>=64",
+    "twine>=5.0",
+    "pre-commit>=3.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/JGCRI/stitches"
+Documentation = "https://jgcri.github.io/stitches/"
+Repository = "https://github.com/JGCRI/stitches"
+Issues = "https://github.com/JGCRI/stitches/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["stitches*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "stitches._version.__version__" }
+
+[tool.setuptools.package-data]
+stitches = [
+    "data/README.md",
+    "data/example/*.csv",
+    "data/tas-data/README.md",
+    "data/temp-data/README.md",
+]

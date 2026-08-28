@@ -35,6 +35,25 @@ See [`plans/benchmarks-and-regression-testing.md`](plans/benchmarks-and-regressi
 
 ### Added
 
+- **PEP 621 `pyproject.toml`** replacing `setup.py` and `setup.cfg`. The version
+  is now single-sourced from `stitches/_version.py` via `dynamic = ["version"]`
+  rather than parsed with a regex at build time.
+- **`requests` declared as a runtime dependency.** It is imported by
+  `stitches/install_pkgdata.py` but was never declared, so a clean install could
+  fail at `install_package_data()` if `requests` happened not to be pulled in
+  transitively.
+- **Extras split into `test`, `docs`, and `dev`,** with `pytest-cov`,
+  `pytest-benchmark`, and `pyarrow` now declared instead of being installed
+  ad hoc by CI.
+- **Performance benchmark suite** (`benchmarks/`, 33 benchmarks) parametrized by
+  input size to expose scaling rather than single timings. Excluded from the
+  default `pytest` run; see
+  [`plans/benchmarks-and-regression-testing.md`](plans/benchmarks-and-regression-testing.md).
+- **CI jobs for output invariance and benchmarks,** plus a guard that fails the
+  build if golden artifacts are modified during a test run, and scheduled
+  `integration` (network + package data) and `latest-deps` (unpinned resolve)
+  jobs so upstream breakage is caught before release.
+
 - **Golden-output regression suite** (`tests/regression/`) asserting that
   refactors and dependency upgrades do not change scientific output. Artifacts
   are stored as Parquet with per-quantity tolerances (exact for indices, years
@@ -52,6 +71,14 @@ See [`plans/benchmarks-and-regression-testing.md`](plans/benchmarks-and-regressi
   opt-in flags and matching `STITCHES_TEST_*` environment variables.
 
 ### Changed
+
+- **Dropped Python 3.9** (end of life); the floor is now 3.10. The CI matrix
+  covers 3.10, 3.11, 3.12, and 3.13 on Linux, macOS, and Windows, replacing the
+  previous 3.9–3.11 matrix.
+- **CI modernized:** `actions/checkout@v4` and `actions/setup-python@v5`
+  (previously v3/v4), pip caching, blobless checkout, concurrency cancellation,
+  `fail-fast: false` so every platform failure is reported, and coverage actually
+  uploaded rather than generated and discarded.
 
 - **Tests no longer download package data implicitly.** `tests/conftest.py`
   previously installed the full Zenodo archive in a session-scoped `autouse`

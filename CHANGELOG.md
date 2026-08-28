@@ -19,6 +19,35 @@ See [`plans/benchmarks-and-regression-testing.md`](plans/benchmarks-and-regressi
 
 ### Fixed
 
+- **`make_tas_archive` could not write its output files.** Two defects in the
+  same three lines:
+  1. The path was built as `tas_data_dir + "/" + name + "_tas.csv"`, but
+     `importlib.resources.files(...)` returns a `Traversable`, so
+     `Traversable + str` raises `TypeError`.
+  2. Grouping used `groupby(["model"])`. With a single-element *list* pandas 2.0+
+     yields a one-element tuple as the group name, so even with the path fixed
+     the filenames would have been `('BCC-CSM2-MR',)_tas.csv`.
+
+  The file-writing loop is now the separately testable
+  `write_tas_data_by_model`, using `os.path.join` (also correcting the hardcoded
+  `/` separator on Windows) and `groupby("model")`. This code was previously
+  unreachable in CI because exercising it requires a multi-hour download of the
+  full CMIP6 archive, which is why the bug shipped.
+- **`install_package_data` hardened.** It buffered the entire multi-hundred-
+  megabyte archive in memory via `BytesIO`, sent no `timeout` (so a hung server
+  blocked forever), never called `raise_for_status` (so an HTML error page was
+  written out and later failed as "not a zip file"), imported `tqdm` without
+  using it, and used `os.mkdir` (which fails when a parent is missing). It now
+  streams to a temporary file with a progress bar, sets connect/read timeouts,
+  raises on HTTP errors, uses `os.makedirs(exist_ok=True)`, reports a clear error
+  for a corrupt archive, and returns the list of files written instead of `None`.
+- **`temp-data` archive members are now extracted to `temp-data`.** Only paths
+  containing `tas-data` were re-nested, so `temp-data` files were flattened into
+  the top level even though the directory was created for them.
+- **An unregistered package-data version now warns.** Previously the fallback URL
+  was substituted silently, so a release without a registered dataset would
+  quietly download a possibly mismatched archive.
+
 - **`get_chunk_info` crashed on NumPy 2.** The per-chunk rate of change was
   extracted with `float(model.coef_[0])`. Because `LinearRegression` is fitted
   against a column vector, `coef_` has shape `(1, 1)` and `coef_[0]` is a

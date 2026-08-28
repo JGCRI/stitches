@@ -1,5 +1,64 @@
 # `stitches` Development Plan
 
+Status: WS-1 through WS-4 substantially delivered; see §0
+
+---
+
+## 0. Progress (2026-08-28, branch `release/v1`)
+
+| Workstream | Status |
+|---|---|
+| WS-1 Baseline & regression safety net | **Done** — 70 golden-output tests, 34 artifacts, 33 benchmarks with a saved baseline |
+| WS-2 Packaging modernization | **Done** — PEP 621 `pyproject.toml`, `requests` declared, version single-sourced |
+| WS-3 Python & dependency matrix | **Done** — 3.9 dropped, CI covers 3.10–3.13 on three OSes, scheduled unpinned resolve |
+| WS-4 Correctness fixes | **Done** — all four confirmed defects fixed, each with tests |
+| WS-5 Code quality & structure | Not started (ruff consolidation, type hints, `fx_recipe` split) |
+| WS-6 Performance | Not started; benchmarks and scaling analysis now in place to guide it |
+| WS-7 Repository size | Partial — prevention landed; history rewrite awaits maintainer sign-off |
+| WS-8 Docs & community | Partial — `CHANGELOG.md`, CONTRIBUTING, README done; quickstart restructure outstanding |
+
+Test suite: **126 passed, 13 skipped** offline in ~8s. Previously a bare `pytest`
+downloaded hundreds of megabytes before it could run at all.
+
+### Defects found and fixed
+
+Three of the five were **not** in the original assessment; they surfaced only once
+the regression suite existed, which is the argument for building it first.
+
+| Defect | Effect | Found by |
+|---|---|---|
+| `get_chunk_info` used `float()` on a 1-element array | `TypeError` on NumPy 2; broke all archive generation and matching | New regression tests |
+| `calculate_rolling_mean` passed `columns=` and `axis=` together | `ValueError` on pandas 3 | New regression tests |
+| `make_tas_archive` built paths with `Traversable + str` and `groupby([key])` | Could not write output at all; filenames would be `('MODEL',)_tas.csv` | Original assessment |
+| `requests` imported but never declared | Clean installs could fail at `install_package_data()` | Original assessment |
+| `install_pkgdata` buffered whole archive, no timeout, no `raise_for_status`, `temp-data` never populated | Memory pressure, indefinite hangs, misleading errors | Audit during the fix |
+| `pytest -m regression` selected nothing | Would have reported the CI regression job green while running zero tests | Verifying the CI wiring |
+
+The last one is worth noting: the marker bug was itself an instance of the
+silent-pass failure mode this work set out to eliminate.
+
+### Deferred, with reasons
+
+- **Hot-path optimization (WS-6).** Deliberately not attempted yet. The
+  benchmarks now identify the targets precisely — `match_neighborhood` is
+  superlinear in target windows and dominates total cost — and the golden
+  artifacts make the work verifiable. Doing it before that existed would have
+  been unverifiable.
+- **Git history rewrite (WS-7 §3.4).** Measured as worth roughly an order of
+  magnitude, but it rewrites every commit SHA and needs a coordinated freeze,
+  fork re-clones, and care around the Zenodo/JOSS citation trail. Requires
+  maintainer sign-off, not a unilateral decision.
+- **Deleting committed docs renders.** They are referenced by six `.. image::`
+  directives in `quickstarter.rst`; removing them requires converting that page
+  to an `nbsphinx`-executed notebook.
+- **Stripping outputs from existing notebooks.** The hook prevents further
+  growth; rewriting 7 MB of existing notebook content changes what readers see on
+  GitHub and belongs in its own reviewed commit.
+
+---
+
+## 1. Original Assessment
+
 Status: draft for review
 Scope: modernization, correctness, performance, repository hygiene, and regression protection for the `stitches-emulator` package (current version `0.13`).
 
